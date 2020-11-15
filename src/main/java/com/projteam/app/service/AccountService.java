@@ -1,74 +1,85 @@
 package com.projteam.app.service;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 import com.projteam.app.dao.AccountDAO;
 import com.projteam.app.domain.Account;
+import com.projteam.app.dto.LoginDTO;
+import com.projteam.app.dto.RegistrationDTO;
 
 @Service
-public class AccountService
+public class AccountService implements UserDetailsService
 {
 	private AccountDAO accDao;
 	private PasswordEncoder passEnc;
 	
 	@Autowired
+	private AuthenticationManager authManager;
+	
+	@Autowired
 	public AccountService(
-			@Qualifier("LocalAccountDAO") AccountDAO accDao,
+			@Qualifier("InMemoryAccountDAO") AccountDAO accDao,
 			@Qualifier("bCryptPasswordEncoder") PasswordEncoder passEnc)
 	{
 		this.accDao = accDao;
 		this.passEnc = passEnc;
 	}
 	
-	public void register(String email, String username, String password)
+	public void register(HttpServletRequest req, RegistrationDTO regDto)
 	{
-		String passHash = passEnc.encode(password);
-		Account acc = new Account(email, username, passHash);
+		String passHash = passEnc.encode(regDto.getPassword());
+		Account acc = new Account(regDto.getEmail(), regDto.getUsername(), passHash);
 		acc = accDao.insertAccount(acc);
-		authenticate(acc);
+		
+		authenticate(req, regDto.getEmail(), regDto.getPassword());
 	}
-	public boolean login(String email, String password)
+	public boolean login(HttpServletRequest req, LoginDTO loginDto)
 	{
-		Account acc = accDao.selectAccount(email);
+		Account acc = accDao.selectAccount(loginDto.getEmail());
 		if (acc == null)
 			return false;
-		if (passEnc.matches(password, acc.getPasswordHash()))
+		if (passEnc.matches(loginDto.getPassword(), acc.getPassword()))
 		{
-			authenticate(acc);
+			authenticate(req, loginDto.getEmail(), loginDto.getPassword());
 			return true;
 		}
 		else
 			return false;
 	}
-	public void logout()
-	{
-		deauthenticate();
-	}
 	
-	private void authenticate(Account acc)
+	private void authenticate(HttpServletRequest req, String email, CharSequence password)
 	{
-		//SessionRegistry
-//		sessionRegistry.registerNewSession(acc.getId().toString(), acc);
-//		
-//		System.out.println("New session registered.");
-//		System.out.println("Current sessions:");
-//		sessionRegistry.getAllPrincipals()
-//			.stream()
-//			.flatMap(prin -> sessionRegistry.getAllSessions(prin, true).stream())
-//			.forEach(sess -> System.out.println(
-//					"[Session: " + sess.getSessionId()
-//					+ ", " + sess.getPrincipal()
-//					+ ", " + sess.getLastRequest()
-//					+ "]"));
-		
-		//TODO implement
+		UsernamePasswordAuthenticationToken authReq
+			= new UsernamePasswordAuthenticationToken(email, password);
+	    Authentication auth = authManager.authenticate(authReq);
+	    
+	    SecurityContext sc = SecurityContextHolder.getContext();
+	    sc.setAuthentication(auth);
+	    HttpSession session = req.getSession(true);
+	    session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
 	}
-	private void deauthenticate()
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
 	{
-		//TODO implement
+		Account acc = accDao.selectAccount(username);
+		if (acc == null)
+			throw new UsernameNotFoundException("Invalid email or password.");
+		//TODO implement roles
+		return acc;
 	}
 }

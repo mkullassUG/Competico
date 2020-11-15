@@ -35,7 +35,7 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top">
       <div class="container-xl">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" href="index">
           <img src="./assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
         </a>
         <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,19 +45,19 @@
         <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
+              <a class="nav-link" href="index">Strona Domowa</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Features</a>
+              <a class="nav-link" href="#">Cechy</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Support</a>
+              <a class="nav-link" href="#">Wsparcie</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="register.html">Sign Up</a>
+              <a class="nav-link active" href="register">Rejestracja</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="login.html">Sing In</a>
+              <a class="nav-link" href="login">Zaloguj</a>
             </li>
           </ul>
         </div>
@@ -129,6 +129,7 @@ $(document).ready(function(){
       email: $('form')[0][0].value,
       username: $('form')[0][1].value,
       password: $('form')[0][2].value,
+      password2: $('form')[0][3].value,
       gamer: $('form')[0][4].value, 
       lecturer: $('form')[0][5].value, 
     };
@@ -137,6 +138,8 @@ $(document).ready(function(){
       walidacja haseł, usera, emaila
     */
     //console.log(JSON.stringify(send))
+    console.log(validateData(send));
+
     $.ajax({
       type     : "POST",
       cache    : false,
@@ -146,7 +149,7 @@ $(document).ready(function(){
 
       success: function(data, textStatus, jqXHR) {
           //called when successful
-          window.location.href = "dashboard.html";
+          window.location.href = "dashboard";
         
       },
 
@@ -155,11 +158,74 @@ $(document).ready(function(){
       
           //TODO error message on screen
           //"Jak będziesz to później implementował, znany error ma kod 400 i opis pod responseText"
-          console.warn("status: " + jqXHR.status  + ": " + err);
+          console.warn("status: " + err.status  + ": " + err);
       }
     });
 
   });
 });
+
+var validateData = (data) => {
+
+  //https://getbootstrap.com/docs/4.0/components/popovers/
   
+  let emailValid = (data) => {
+    if (!data.match(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/)) 
+      return false;
+    else
+      return true;
+  }
+  
+  let usernameValid = (data) => {
+    if (data.match(/^(?=.{8,32}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/))
+      return true
+    else 
+      return false
+
+  }
+
+  let passwordValid = (data) => {
+    if (data.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/))
+      return true;
+    else
+      return false;
+  }
+
+  let password2Valid = (pass1, pass2) => {
+    if (pass1 === pass2)
+      return true;
+    else
+      return false;
+  }
+
+  let valid = true;
+  if (!emailValid(data.email)) {
+    console.log({valid:false,text:"Niepoprawny email"});
+    valid = false;
+  }
+
+  if (!usernameValid(data.username)) {
+    console.log({valid:false,text:"Niepoprawny username, min 8 znaków, max 32, bez znaków specjalnych"});
+    valid = false;
+  }
+
+  if (!passwordValid(data.password)) {
+    console.log({valid:false,text:"Niepoprawne hasło, wzór: minimum 8 znaków, conajmniej jedna duża litera i conajmniej jedna cyfra"});
+    valid = false;
+  }
+
+  if (!password2Valid(data.password,data.password2)) {
+    console.log({valid:false,text:"Hasła nie są identyczne"});
+    valid = false;
+  }
+
+  return valid;
+  
+}
+  /*
+  1.poprawnosc emaila
+  2.długośc username
+  3.długośc hasła
+  4.czy hasła te same
+  */
 </script>

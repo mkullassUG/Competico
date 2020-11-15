@@ -1,14 +1,26 @@
 package com.projteam.app.domain;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-public class Account
+public class Account implements UserDetails
 {
 	private UUID id;
 	private String email;
 	private String username;
 	private String passwordHash;
 	
+	private boolean accEnabled = true;
+	private boolean accExpired = false;
+	private boolean accLocked = false;
+	private boolean credExpired = false;
+	
+	public Account()
+	{}
 	public Account(String email, String username, String passwordHash)
 	{
 		this(null, email, username, passwordHash);
@@ -33,7 +45,8 @@ public class Account
 	{
 		return username;
 	}
-	public String getPasswordHash()
+	@Override
+	public String getPassword()
 	{
 		return passwordHash;
 	}
@@ -101,5 +114,32 @@ public class Account
 		result = prime * result + ((passwordHash == null) ? 0 : passwordHash.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
+	}
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities()
+	{
+		//TODO implement
+		return List.of(new SimpleGrantedAuthority("TEST"));
+	}
+
+	@Override
+	public boolean isAccountNonExpired()
+	{
+		return !accExpired;
+	}
+	@Override
+	public boolean isAccountNonLocked()
+	{
+		return !accLocked;
+	}
+	@Override
+	public boolean isCredentialsNonExpired()
+	{
+		return !credExpired;
+	}
+	@Override
+	public boolean isEnabled()
+	{
+		return accEnabled;
 	}
 }

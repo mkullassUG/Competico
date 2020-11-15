@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import com.projteam.app.domain.Account;
 
 //Mock DAO for testing. DO NOT use in production.
-@Repository("LocalAccountDAO")
-public class LocalAccountDAO implements AccountDAO
+@Repository("InMemoryAccountDAO")
+public class InMemoryAccountDAO implements AccountDAO
 {
 	private ArrayList<Account> localStorage = new ArrayList<>();
 	
