@@ -1,13 +1,12 @@
 package com.projteam.app.api;
 
-import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,13 +72,25 @@ public class AccountAPI
 	}
 
 	@GetMapping("register")
-	public ModelAndView registerPage()
+	public Object registerPage()
 	{
+		if (isAuthenticated())
+			return new ModelAndView("redirect:dashboard");
 		return new ModelAndView("register");
 	}
 	@GetMapping("login")
 	public ModelAndView loginPage()
 	{
+		if (isAuthenticated())
+			return new ModelAndView("redirect:dashboard");
 		return new ModelAndView("login");
+	}
+	
+	private boolean isAuthenticated()
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null || (auth instanceof AnonymousAuthenticationToken))
+			return false;
+		return auth.isAuthenticated();
 	}
 }

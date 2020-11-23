@@ -7,9 +7,9 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 public class ProfileAPI
 {
-    @GetMapping("/profile")
-    public ModelAndView homePage()
-    {
-        return new ModelAndView("profile");
-    }
+	@GetMapping("/profile")
+	public ModelAndView homePage()
+	{
+		return new ModelAndView("profile");
+	}
 }

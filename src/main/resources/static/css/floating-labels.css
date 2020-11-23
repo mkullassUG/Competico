@@ -4,6 +4,10 @@ body {
   
   background-color: #f5f5f5;
 }
+nav {
+	z-index:2;
+	
+}
 
 .iconbig {
   height: 30px;
@@ -17,6 +21,7 @@ body {
   align-items: center;
   padding-top: 40px;
   padding-bottom: 40px;
+  z-index: 1;
 }
 .fill {
   top: 40px;

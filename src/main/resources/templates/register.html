@@ -35,7 +35,7 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top">
       <div class="container-xl">
-        <a class="navbar-brand" href="index">
+        <a class="navbar-brand" href="/">
           <img src="./assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
         </a>
         <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,7 @@
         <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link" href="index">Strona Domowa</a>
+              <a class="nav-link" href="/">Strona Domowa</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Cechy</a>
@@ -147,11 +147,11 @@ $(document).ready(function(){
       data     : JSON.stringify(send),
       contentType: "application/json",
 
-      /*success: function(data, textStatus, jqXHR) {
+      success: function(data, textStatus, jqXHR) {
           //called when successful
           window.location.href = "dashboard";
         
-      },*/
+      },
 
       error: function(data, textStatus, err) {
         //called when there is an error

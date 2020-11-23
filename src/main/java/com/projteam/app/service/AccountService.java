@@ -1,6 +1,5 @@
 package com.projteam.app.service;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +31,8 @@ public class AccountService implements UserDetailsService
 	
 	@Autowired
 	public AccountService(
-			@Qualifier("InMemoryAccountDAO") AccountDAO accDao,
-			@Qualifier("bCryptPasswordEncoder") PasswordEncoder passEnc)
+			AccountDAO accDao,
+			PasswordEncoder passEnc)
 	{
 		this.accDao = accDao;
 		this.passEnc = passEnc;
@@ -79,7 +78,6 @@ public class AccountService implements UserDetailsService
 		Account acc = accDao.selectAccount(username);
 		if (acc == null)
 			throw new UsernameNotFoundException("Invalid email or password.");
-		//TODO implement roles
 		return acc;
 	}
 }
