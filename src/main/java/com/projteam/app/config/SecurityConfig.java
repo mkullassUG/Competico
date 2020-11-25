@@ -31,7 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	@Override
 	public void configure(HttpSecurity sec) throws Exception
 	{
-		//TODO test
 		sec
 			.authorizeRequests()
 			.antMatchers(
@@ -43,17 +42,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		                "/api/v1/login/",
 		                "/api/v1/register/")
 			.permitAll()
-			.antMatchers("/actuator/**").hasRole("ACTUATOR_ADMIN")
-			.anyRequest().authenticated()
-			
-//			.and()
-//			.formLogin()
-//			.usernameParameter("email")
-//			.passwordParameter("password")
-//			.loginPage("/login")
-//			.defaultSuccessUrl("/dashboard")
-//			.permitAll()
 
+			//TODO reenable once role storage is ready
+/*			.antMatchers("/actuator/**").hasRole("ACTUATOR_ADMIN")
+			.antMatchers(
+					"/swagger-ui/**",
+					"/swagger-resources/**",
+					"/webjars/**",
+					"/v2/api-docs/**",
+					"/v3/api-docs/**")
+			.hasRole("SWAGGER_ADMIN")*/
+			
+			.anyRequest().authenticated()
 			.and()
 			.logout()
 			.invalidateHttpSession(true)
