@@ -1,6 +1,8 @@
 package com.projteam.app.api;
 
 import javax.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,20 +12,23 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.service.AccountService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 public class AccountAPI
 {
 	private AccountService accServ;
 	
-//	//Assignment equivalent to @Value("${:classpath:/static/XXX.html}")
-//	private final Resource registerPageResource = new ClassPathResource("static/register.html");
-//	private final Resource loginPageResource = new ClassPathResource("static/login.html");
+	private Logger log = LoggerFactory.getLogger(AccountAPI.class);
 	
 	@Autowired
 	public AccountAPI(AccountService accServ)
@@ -31,40 +36,42 @@ public class AccountAPI
 		this.accServ = accServ;
 	}
 	
-	/*
-	 curl 
-	 -X POST 
-	 -H "Content-Type: application/json" 
-	 -d '{"email":"test@tset.pl", "username":"Test", "password":"pass"}'
-	 localhost/api/v1/register
-	 */
-	
 	@PostMapping("api/v1/register")
-	public ResponseEntity<Object> registerAccount(HttpServletRequest req, @RequestBody RegistrationDTO regDto)
+	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(value = "Register an account with the provided details", code = 201)
+	@ApiResponses(
 	{
-		System.out.println("Register request received: " + regDto);
+		@ApiResponse(code = 201, message = "Account registered successfully"),
+		@ApiResponse(code = 400, message = "Account could not be registered "
+				+ "due to invalid or duplicate data")
+	})
+	public ResponseEntity<Object> registerAccount(HttpServletRequest req,
+			@RequestBody @ApiParam(name = "Account data") RegistrationDTO regDto)
+	{
+		log.debug("Register request received: " + regDto);
 		try
 		{
 			accServ.register(req, regDto);
-			System.out.println("Account registered successfully.");
+			log.debug("Account registered successfully.");
 			return new ResponseEntity<Object>(HttpStatus.CREATED);
 		}
 		catch (IllegalArgumentException e)
 		{
 			return ResponseEntity.badRequest().body("Konto z podanym adresem email już istnieje.");
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return new ResponseEntity<>("An unknown error occurred during account registration.",
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 	}
 	
 	@PostMapping("api/v1/login")
-	public ResponseEntity<Object> loginAccount(HttpServletRequest req, @RequestBody LoginDTO loginDto)
+	@ApiOperation(value = "Log in the user with the provided credentials", code = 200)
+	@ApiResponses(
 	{
-		System.out.println("Login request received: " + loginDto);
+		@ApiResponse(code = 200, message = "Logged in successfully"),
+		@ApiResponse(code = 400, message = "Incorrect credentials")
+	})
+	public ResponseEntity<Object> loginAccount(HttpServletRequest req,
+			@RequestBody @ApiParam(name = "User credentials") LoginDTO loginDto)
+	{
+		log.debug("Login request received: " + loginDto);
 		if (accServ.login(req, loginDto))
 			return new ResponseEntity<Object>(HttpStatus.OK);
 		else
@@ -72,6 +79,7 @@ public class AccountAPI
 	}
 
 	@GetMapping("register")
+	@ApiOperation(value = "Display the registration page", code = 200)
 	public Object registerPage()
 	{
 		if (isAuthenticated())
@@ -79,6 +87,7 @@ public class AccountAPI
 		return new ModelAndView("register");
 	}
 	@GetMapping("login")
+	@ApiOperation(value = "Display the login page", code = 200)
 	public ModelAndView loginPage()
 	{
 		if (isAuthenticated())
