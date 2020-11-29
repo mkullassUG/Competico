@@ -57,9 +57,9 @@ public class AccountAPI
 			log.debug("Account registered successfully.");
 			return new ResponseEntity<Object>(HttpStatus.CREATED);
 		}
-		catch (IllegalArgumentException e)
+		catch (Exception e)
 		{
-			return ResponseEntity.badRequest().body("Konto z podanym adresem email już istnieje.");
+			return ResponseEntity.badRequest().body("Konto z podanymi danymi już istnieje.");
 		}
 	}
 	

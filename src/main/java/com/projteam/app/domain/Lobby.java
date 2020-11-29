@@ -34,19 +34,17 @@ public class Lobby
 	public List<Account> getPlayers()
 	{
 		List<Account> ret = new ArrayList<>(players);
-//		if (host.hasRole("PLAYER"))
-//			ret.add(host);
+		if (host.hasRole("PLAYER"))
+			ret.add(host);
 		return ret;
 	}
 	public boolean addPlayer(Account player)
 	{
 		if ((players.size() + ((host != null)?1:0)) > maxPlayerCount)
 			return false;
-//		if (host.hasRole("PLAYER"))
-//		{
+		if (player.hasRole("PLAYER"))
 			return players.add(player);
-//		}
-//		return false;
+		return false;
 	}
 	public boolean removePlayer(Account player)
 	{

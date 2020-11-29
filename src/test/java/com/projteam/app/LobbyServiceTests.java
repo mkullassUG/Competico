@@ -115,7 +115,8 @@ public class LobbyServiceTests
 		{
 			List<Account> players = new ArrayList<>();
 			for (int i0 = 0; i0 < 10; i0++)
-				players.add(new Account("testPlayer" + i0 + "@test.pl", "TestPlayer" + i0, "QWERTY" + i0));
+				players.add(new Account("testPlayer" + i0 + "@test.pl", "TestPlayer" + i0, "QWERTY" + i0,
+						List.of("PLAYER")));
 			ret.add(Arguments.of(host, players));
 		}
 		return ret;

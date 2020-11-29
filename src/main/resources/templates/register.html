@@ -30,7 +30,7 @@
       }
     </style>
     <!-- Custom styles for this template -->
-    <link href="css/floating-labels.css" rel="stylesheet">
+    <link href="css/register.css" rel="stylesheet">
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top">
@@ -74,35 +74,50 @@
         <div class="form-label-group">
           <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
           <label for="inputEmail">Email address</label>
+          <div class="invalid-feedback" id="emailfeedback">
+            Wprowadź poprawny adres email.
+          </div>
         </div>
 
         <div class="form-label-group">
           <input type="username" id="inputUsername" class="form-control" placeholder="Username" required>
           <label for="inputUsername">Username</label>
+          <div class="invalid-feedback" id="usernamefeedback">
+            Wprowadż poprawny username: min 8 znaków, max 32, bez znaków specjalnych.
+          </div>
         </div>
 
         <div class="form-label-group">
           <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
           <label for="inputPassword">Password</label>
+          <div class="invalid-feedback" id="passwordfeedback">
+            Wprowadź poprawne hasło: minimum 8 znaków, conajmniej jedna duża litera i conajmniej jedna cyfra.
+          </div>
         </div>
 
         <div class="form-label-group">
           <input type="password" id="inputPassword2" class="form-control" placeholder="Password2" required>
           <label for="inputPassword2">Repeat Password</label>
+          <div class="invalid-feedback" id="password2feedback">
+            Wprowadź poprawne drugie hasło.
+          </div>
         </div>
 
         <div class="form-row">
           <div class="form-group col-6">
             <label for="inputGamer">I am a Player</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="whatAmI" id="IAmGamer" value="option1" required>
+              <input class="form-check-input" type="radio" name="whatAmI" id="IAmGamer" value="option1" required checked>
             </div>
+            
           </div>
           <div class="form-group col-6">
             <label for="inputLecturer">I am a Lecturer</label>
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="whatAmI" id="IAmLecturer" value="option2">
             </div>
+          </div>
+          <div class="form-group col-12">
           </div>
         </div>
         
@@ -115,6 +130,11 @@
         <p class="mt-5 mb-3 text-muted text-center">&copy; 2020-2020</p>
       </form>
     </div>
+    <footer class="footer">
+      <div class="container text-center">
+        <span class="text-muted m-auto">Ucz się angielskiego razem z nami</span>
+      </div>
+    </footer>
 </body>
 </html>
 <script src="js/jquery-3.5.1.min.js"></script>
@@ -123,24 +143,28 @@
 <script>
 $(document).ready(function(){
   $('form').on('submit',function(e){
+
     e.preventDefault();
+
+    let isPlayer = true;
+    if ( $('form')[0][5].checked )
+      isPlayer = false;
 
     let send = {
       email: $('form')[0][0].value,
       username: $('form')[0][1].value,
       password: $('form')[0][2].value,
       password2: $('form')[0][3].value,
-      gamer: $('form')[0][4].value, 
-      lecturer: $('form')[0][5].value, 
+      isPlayer: isPlayer, 
     };
-    //TODO
-    /*
-      walidacja haseł, usera, emaila
-    */
-    //console.log(JSON.stringify(send))
-    console.log(validateData(send));
+    $("#usernamefeedback").hide();
+    $("#password2feedback").hide();
+    $("#passwordfeedback").hide();
+    $("#emailfeedback").hide(); 
 
-    $.ajax({
+    let validation = validateData(send);
+    if (validation.valid)
+      $.ajax({
       type     : "POST",
       cache    : false,
       url      : "./api/v1/register/",
@@ -161,7 +185,17 @@ $(document).ready(function(){
           console.warn("status: " + err.status  + ": " + err);
       }
     });
-
+    else {
+      if (!validation.username)
+        $("#usernamefeedback").show();
+      if (!validation.password2)
+        $("#password2feedback").show();
+      if (!validation.password)
+        $("#passwordfeedback").show();
+      if (!validation.email)
+        $("#emailfeedback").show();
+    }
+      
   });
 });
 
@@ -175,9 +209,10 @@ var validateData = (data) => {
     else
       return true;
   }
-  
+  let username = password = password2 =  email = valid = true;
+
   let usernameValid = (data) => {
-    if (data.match(/^(?=.{8,32}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/))
+    if (data.match(/^(?=.{8,32}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)) 
       return true
     else 
       return false
@@ -198,28 +233,28 @@ var validateData = (data) => {
       return false;
   }
 
-  let valid = true;
+  
   if (!emailValid(data.email)) {
-    console.log({valid:false,text:"Niepoprawny email"});
+    email = false;//"Niepoprawny email";
     valid = false;
   }
 
   if (!usernameValid(data.username)) {
-    console.log({valid:false,text:"Niepoprawny username, min 8 znaków, max 32, bez znaków specjalnych"});
+    username = false;//"Niepoprawny username, min 8 znaków, max 32, bez znaków specjalnych";
     valid = false;
   }
 
   if (!passwordValid(data.password)) {
-    console.log({valid:false,text:"Niepoprawne hasło, wzór: minimum 8 znaków, conajmniej jedna duża litera i conajmniej jedna cyfra"});
+    password = false;//"Niepoprawne hasło, wzór: minimum 8 znaków, conajmniej jedna duża litera i conajmniej jedna cyfra";
     valid = false;
   }
 
   if (!password2Valid(data.password,data.password2)) {
-    console.log({valid:false,text:"Hasła nie są identyczne"});
+    password2 = false;//"Hasła nie są identyczne"});
     valid = false;
   }
 
-  return valid;
+  return {valid: valid, username: username, password: password, password2: password2, email: email};
   
 }
   /*

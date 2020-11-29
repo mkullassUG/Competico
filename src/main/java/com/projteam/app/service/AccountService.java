@@ -1,5 +1,6 @@
 package com.projteam.app.service;
 
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +42,9 @@ public class AccountService implements UserDetailsService
 	public void register(HttpServletRequest req, RegistrationDTO regDto)
 	{
 		String passHash = passEnc.encode(regDto.getPassword());
-		Account acc = new Account(regDto.getEmail(), regDto.getUsername(), passHash);
+		Account acc = new Account(regDto.getEmail(), regDto.getUsername(), passHash,
+				List.of(regDto.isPlayer()?"PLAYER":"LECTURER"));
 		acc = accDao.insertAccount(acc);
-		
 		authenticate(req, regDto.getEmail(), regDto.getPassword());
 	}
 	public boolean login(HttpServletRequest req, LoginDTO loginDto)

@@ -9,11 +9,13 @@ public class RegistrationDTO
 	private @NonNull String email;
 	private @NonNull String username;
 	private @NonNull CharSequence password;
+	private boolean isPlayer;
 	
 	public RegistrationDTO(
 			@JsonProperty("email") String email,
 			@JsonProperty("username") String username,
-			@JsonProperty("password") CharSequence password)
+			@JsonProperty("password") CharSequence password,
+			@JsonProperty("isPlayer") boolean isPlayer)
 	{
 		Objects.requireNonNull(email);
 		Objects.requireNonNull(username);
@@ -22,6 +24,7 @@ public class RegistrationDTO
 		this.email = email;
 		this.username = username;
 		this.password = password;
+		this.isPlayer = isPlayer;
 	}
 	
 	public String getEmail()
@@ -50,6 +53,14 @@ public class RegistrationDTO
 	{
 		Objects.requireNonNull(password);
 		this.password = password;
+	}
+	public boolean isPlayer()
+	{
+		return isPlayer;
+	}
+	public void setPlayer(boolean isPlayer)
+	{
+		this.isPlayer = isPlayer;
 	}
 
 	@Override
