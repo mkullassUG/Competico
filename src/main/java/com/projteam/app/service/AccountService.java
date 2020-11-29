@@ -3,6 +3,7 @@ package com.projteam.app.service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -69,6 +70,23 @@ public class AccountService implements UserDetailsService
 	    sc.setAuthentication(auth);
 	    HttpSession session = req.getSession(true);
 	    session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
+	}
+	
+	private Authentication getAuthentication()
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null || (auth instanceof AnonymousAuthenticationToken) || !auth.isAuthenticated())
+			return null;
+		return auth;
+	}
+	public boolean isAuthenticated()
+	{
+		return getAuthentication() != null;
+	}
+	public Account getAuthenticatedAccount()
+	{
+		Authentication auth = getAuthentication();
+		return (auth == null)?null:((Account) auth.getPrincipal());
 	}
 
 	@Override
