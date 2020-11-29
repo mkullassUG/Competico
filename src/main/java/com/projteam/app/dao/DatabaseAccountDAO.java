@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,8 +18,8 @@ import com.projteam.app.domain.Account;
 @Transactional
 public class DatabaseAccountDAO implements AccountDAO
 {
-	@PersistenceContext
-	private EntityManager em;
+	@PersistenceUnit
+	private EntityManagerFactory emf;
 	
 	@Override
 	public Account insertAccount(Account acc)
@@ -28,19 +30,12 @@ public class DatabaseAccountDAO implements AccountDAO
 			id = UUID.randomUUID();
 			acc = acc.setId(id);
 		}
-		em.createNativeQuery("INSERT INTO Account "
-				+ "(id, email, username, password, "
-				+ "accountNonExpired, accountNonLocked, credentialsNonExpired, accountEnabled) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
-			.setParameter(1, id)
-			.setParameter(2, acc.getEmail())
-			.setParameter(3, acc.getUsername())
-			.setParameter(4, acc.getPassword())
-			.setParameter(5, acc.isAccountNonExpired())
-			.setParameter(6, acc.isAccountNonLocked())
-			.setParameter(7, acc.isCredentialsNonExpired())
-			.setParameter(8, acc.isEnabled())
-			.executeUpdate();
+		
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		em.persist(acc);
+		em.getTransaction().commit();
+		em.close();
 		return acc;
 	}
 	@Override
@@ -50,6 +45,7 @@ public class DatabaseAccountDAO implements AccountDAO
 		String email = acc.getEmail();
 		Objects.requireNonNull(id);
 		Objects.requireNonNull(email);
+		EntityManager em = emf.createEntityManager();
 		em.createQuery("UPDATE Account acc SET "
 				+ "acc.username = :username"
 				+ "acc.password = :password"
@@ -67,51 +63,68 @@ public class DatabaseAccountDAO implements AccountDAO
 			.setParameter("credentialsNonExpired", acc.isCredentialsNonExpired())
 			.setParameter("enabled", acc.isEnabled())
 			.executeUpdate();
+		em.close();
 	}
 	@Override
 	public void deleteAccount(UUID id)
 	{
-		em.createQuery("DELETE acc FROM Account WHERE acc.id = :id")
-			.setParameter("id", id)
-			.executeUpdate();
+		Account acc = selectAccount(id);
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		em.remove(acc);
+		em.getTransaction().commit();
+		em.close();
+//		em.createQuery("DELETE acc FROM Account WHERE acc.id = :id")
+//			.setParameter("id", id)
+//			.executeUpdate();
 	}
 	@Override
 	public Account[] selectAccounts()
 	{
+		EntityManager em = emf.createEntityManager();
 		ArrayList<Account> ret = new ArrayList<>();
 		for (Object o: 
 			em.createQuery("SELECT acc FROM Account AS acc")
 				.getResultList())
 			ret.add((Account) o);
+		em.close();
 		return ret.toArray(l -> new Account[l]);
 	}
 	@Override
 	public Account selectAccount(UUID id)
 	{
+		EntityManager em = emf.createEntityManager();
 		try
 		{
-			return (Account) em
+			Account ret = (Account) em
 					.createQuery("SELECT acc FROM Account AS acc WHERE acc.id = :id")
 					.setParameter("id", id)
 					.getSingleResult();
+			em.close();
+			return ret;
 		}
 		catch (NoResultException e)
 		{
+			em.close();
 			return null;
 		}
 	}
 	@Override
 	public Account selectAccount(String email)
 	{
+		EntityManager em = emf.createEntityManager();
 		try
 		{
-			return (Account) em
+			Account ret = (Account) em
 					.createQuery("SELECT acc FROM Account AS acc WHERE acc.email = :email")
 					.setParameter("email", email)
 					.getSingleResult();
+			em.close();
+			return ret;
 		}
 		catch (NoResultException e)
 		{
+			em.close();
 			return null;
 		}
 	}

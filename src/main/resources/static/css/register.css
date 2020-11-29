@@ -12,7 +12,12 @@ nav {
 .iconbig {
   height: 30px;
 }
-
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  line-height: 60px;
+}
 .container {
 
   display: -ms-flexbox;

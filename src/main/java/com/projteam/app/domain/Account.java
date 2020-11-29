@@ -1,10 +1,14 @@
 package com.projteam.app.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,9 +19,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 @IdClass(AccountID.class)
 public class Account implements UserDetails
 {
-	private @Id @Column(name = "id") UUID id;
-	private @Id @Column(name = "email") String email;
-	private @Id @Column(name = "username") String username;
+	private @Id @Column(name = "id", unique = true) UUID id;
+	private @Id @Column(name = "email", unique = true) String email;
+	private @Id @Column(name = "username", unique = true) String username;
 	private @Column(name = "password") String passwordHash;
 	private @Column(name = "nickname") String nickname;
 	
@@ -26,31 +30,58 @@ public class Account implements UserDetails
 	private @Column(name = "accountNonLocked") boolean accNonLocked;
 	private @Column(name = "credentialsNonExpired") boolean credNonExpired;
 	
+	private @Column(name = "roles") @ElementCollection(fetch = FetchType.EAGER) List<String> roles;
+	
 	public Account()
 	{
 		accEnabled = true;
 		accNonExpired = true;
 		accNonLocked = true;
 		credNonExpired = true;
+		roles = new ArrayList<>();
 	}
 	public Account(String email, String username, String passwordHash)
 	{
 		this(null, email, username, passwordHash,
-				true, true, true, true);
+				true, true, true, true, new ArrayList<>());
 	}
 	public Account(UUID id, String email, String username, String passwordHash)
 	{
 		this(id, email, username, passwordHash,
-				true, true, true, true);
+				true, true, true, true, new ArrayList<>());
+	}
+	public Account(String email, String username, String passwordHash, List<String> roles)
+	{
+		this(null, email, username, passwordHash,
+				true, true, true, true, roles);
+	}
+	public Account(UUID id, String email, String username, String passwordHash, List<String> roles)
+	{
+		this(id, email, username, passwordHash,
+				true, true, true, true, roles);
 	}
 	public Account(String email, String username, String passwordHash,
 			boolean accEnabled, boolean accNonExpired, boolean accNonLocked, boolean credNonExpired)
 	{
 		this(null, email, username, passwordHash,
-				accEnabled, accNonExpired, accNonLocked, credNonExpired);
+				accEnabled, accNonExpired, accNonLocked, credNonExpired, new ArrayList<>());
 	}
 	public Account(UUID id, String email, String username, String passwordHash,
 			boolean accEnabled, boolean accNonExpired, boolean accNonLocked, boolean credNonExpired)
+	{
+		this(id, email, username, passwordHash,
+				accEnabled, accNonExpired, accNonLocked, credNonExpired, new ArrayList<>());
+	}
+	public Account(String email, String username, String passwordHash,
+			boolean accEnabled, boolean accNonExpired, boolean accNonLocked, boolean credNonExpired,
+			List<String> roles)
+	{
+		this(null, email, username, passwordHash,
+				accEnabled, accNonExpired, accNonLocked, credNonExpired, roles);
+	}
+	public Account(UUID id, String email, String username, String passwordHash,
+			boolean accEnabled, boolean accNonExpired, boolean accNonLocked, boolean credNonExpired,
+			List<String> roles)
 	{
 		this.id = id;
 		this.email = email;
@@ -61,6 +92,7 @@ public class Account implements UserDetails
 		this.accNonExpired = accNonExpired;
 		this.accNonLocked = accNonLocked;
 		this.credNonExpired = credNonExpired;
+		this.roles = new ArrayList<>(roles);
 	}
 	
 	public UUID getId()
@@ -101,6 +133,14 @@ public class Account implements UserDetails
 	{
 		this.nickname = nickname;
 	}
+	public List<String> getRoles()
+	{
+		return roles;
+	}
+	public void setRoles(List<String> roles)
+	{
+		this.roles = new ArrayList<>(roles);
+	}
 
 	@Override
 	public int hashCode()
@@ -115,6 +155,7 @@ public class Account implements UserDetails
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());
 		result = prime * result + ((passwordHash == null) ? 0 : passwordHash.hashCode());
+		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
@@ -164,6 +205,13 @@ public class Account implements UserDetails
 		}
 		else if (!passwordHash.equals(other.passwordHash))
 			return false;
+		if (roles == null)
+		{
+			if (other.roles != null)
+				return false;
+		}
+		else if (!roles.equals(other.roles))
+			return false;
 		if (username == null)
 		{
 			if (other.username != null)
@@ -173,22 +221,29 @@ public class Account implements UserDetails
 			return false;
 		return true;
 	}
+	
 	@Override
 	public String toString()
 	{
-		return "[Account: id=" + id + ", email=" + email
-				+ ", username=" + username + ", passwordHash="
-				+ passwordHash + ", nickname=" + nickname
-				+ ", accEnabled=" + accEnabled + ", accNonExpired="
-				+ accNonExpired + ", accNonLocked=" + accNonLocked
-				+ ", credNonExpired=" + credNonExpired + "]";
+		return "[Account id="
+				+ id + ", email="
+				+ email + ", username="
+				+ username + ", passwordHash="
+				+ passwordHash + ", nickname="
+				+ nickname + ", accEnabled="
+				+ accEnabled + ", accNonExpired="
+				+ accNonExpired + ", accNonLocked="
+				+ accNonLocked + ", credNonExpired="
+				+ credNonExpired + ", roles="
+				+ roles + "]";
 	}
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities()
 	{
-		//TODO implement
-		return List.of(new SimpleGrantedAuthority("TEST"));
+		return new ArrayList<>(roles.stream()
+				.map(role -> new SimpleGrantedAuthority(role))
+				.collect(Collectors.toList()));
 	}
 
 	@Override
@@ -227,5 +282,10 @@ public class Account implements UserDetails
 	public void setCredentialsNonExpired(boolean credNonExpired)
 	{
 		this.credNonExpired = credNonExpired;
+	}
+	
+	public boolean hasRole(String role)
+	{
+		return roles.contains(role);
 	}
 }

@@ -18,12 +18,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.service.AccountService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
+@Api(value = "AccountAPI", tags = "The main API managing account access")
 public class AccountAPI
 {
 	private AccountService accServ;
@@ -55,9 +57,9 @@ public class AccountAPI
 			log.debug("Account registered successfully.");
 			return new ResponseEntity<Object>(HttpStatus.CREATED);
 		}
-		catch (IllegalArgumentException e)
+		catch (Exception e)
 		{
-			return ResponseEntity.badRequest().body("Konto z podanym adresem email już istnieje.");
+			return ResponseEntity.badRequest().body("Konto z podanymi danymi już istnieje.");
 		}
 	}
 	
@@ -82,7 +84,7 @@ public class AccountAPI
 	@ApiOperation(value = "Display the registration page", code = 200)
 	public Object registerPage()
 	{
-		if (isAuthenticated())
+		if (accServ.isAuthenticated())
 			return new ModelAndView("redirect:dashboard");
 		return new ModelAndView("register");
 	}
@@ -90,16 +92,8 @@ public class AccountAPI
 	@ApiOperation(value = "Display the login page", code = 200)
 	public ModelAndView loginPage()
 	{
-		if (isAuthenticated())
+		if (accServ.isAuthenticated())
 			return new ModelAndView("redirect:dashboard");
 		return new ModelAndView("login");
-	}
-	
-	private boolean isAuthenticated()
-	{
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth == null || (auth instanceof AnonymousAuthenticationToken))
-			return false;
-		return auth.isAuthenticated();
 	}
 }
