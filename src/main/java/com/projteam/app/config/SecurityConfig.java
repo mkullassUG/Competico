@@ -38,6 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		                "/css/**",
 		                "/assets/**",
 		                "/login",
+		                "/lobby",
+		                "/lobby-join",
 		                "/register",
 		                "/api/v1/login/",
 		                "/api/v1/register/")

@@ -33,37 +33,170 @@
     <link href="css/lobby.css" rel="stylesheet">
   </head>
   <body class="bg-primary">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top">
-      <div class="container-xl">
-        <a class="navbar-brand" href="/">
-          <img src="./assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
-        </a>
-        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="/">Strona Domowa</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Cechy</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Wsparcie</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="register">Rejestracja</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="login">Zaloguj</a>
-            </li>
-          </ul>
+    
+    <div class="container fill text-center">
+      <div class="row shadow-sm rounded" id="lobbyTop">
+        <div class="col-3">
+          <buton class="btn btn-sm btn-secondary">Kopiuj kod</buton>
+        </div>
+        <div class="col-9">
+          <h2>Kod: 123456789</h2>
         </div>
       </div>
-    </nav>
-    <div class="container fill text-center">
+      <div class="row shadow-sm mt-3 rounded" id="lobbyCenter">
+        <div class="col-2 shadow-sm">
+          
+          <button type="button" id="btnSettings" class="btn btn-secondary collapse" data-toggle="popover" title="Ustawienia" data-content="Miejsce na zmiane ustawień lobby">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-gear" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M8.837 1.626c-.246-.835-1.428-.835-1.674 0l-.094.319A1.873 1.873 0 0 1 4.377 3.06l-.292-.16c-.764-.415-1.6.42-1.184 1.185l.159.292a1.873 1.873 0 0 1-1.115 2.692l-.319.094c-.835.246-.835 1.428 0 1.674l.319.094a1.873 1.873 0 0 1 1.115 2.693l-.16.291c-.415.764.42 1.6 1.185 1.184l.292-.159a1.873 1.873 0 0 1 2.692 1.116l.094.318c.246.835 1.428.835 1.674 0l.094-.319a1.873 1.873 0 0 1 2.693-1.115l.291.16c.764.415 1.6-.42 1.184-1.185l-.159-.291a1.873 1.873 0 0 1 1.116-2.693l.318-.094c.835-.246.835-1.428 0-1.674l-.319-.094a1.873 1.873 0 0 1-1.115-2.692l.16-.292c.415-.764-.42-1.6-1.185-1.184l-.291.159A1.873 1.873 0 0 1 8.93 1.945l-.094-.319zm-2.633-.283c.527-1.79 3.065-1.79 3.592 0l.094.319a.873.873 0 0 0 1.255.52l.292-.16c1.64-.892 3.434.901 2.54 2.541l-.159.292a.873.873 0 0 0 .52 1.255l.319.094c1.79.527 1.79 3.065 0 3.592l-.319.094a.873.873 0 0 0-.52 1.255l.16.292c.893 1.64-.902 3.434-2.541 2.54l-.292-.159a.873.873 0 0 0-1.255.52l-.094.319c-.527 1.79-3.065 1.79-3.592 0l-.094-.319a.873.873 0 0 0-1.255-.52l-.292.16c-1.64.893-3.433-.902-2.54-2.541l.159-.292a.873.873 0 0 0-.52-1.255l-.319-.094c-1.79-.527-1.79-3.065 0-3.592l.319-.094a.873.873 0 0 0 .52-1.255l-.16-.292c-.892-1.64.902-3.433 2.541-2.54l.292.159a.873.873 0 0 0 1.255-.52l.094-.319z"></path>
+              <path fill-rule="evenodd" d="M8 5.754a2.246 2.246 0 1 0 0 4.492 2.246 2.246 0 0 0 0-4.492zM4.754 8a3.246 3.246 0 1 1 6.492 0 3.246 3.246 0 0 1-6.492 0z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="col-10">
+          <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-primary rounded shadow-sm">
+            <div class="col-12">
+              <h6 class="border-bottom border-gray pb-2 mb-0">
+                <img class="mr-3" src="assets/myIcons/iconfinder_law_iconsArtboard_1_copy_5_2393033.svg" alt="" width="48" height="48">
+                Host:
+              </h6>
+              <div class="lh-100">
+                <h6 class="mb-0 text-white lh-100">@username</h6>
+                <small></small>
+              </div>
+            </div>
+          </div>
+          <div id="lobbyPlayerList" class="my-3 p-3 bg-primary rounded shadow-sm overflow-auto">
+            <h6 class="border-bottom border-gray pb-2 mb-0">Gracze</h6>
+            <div class="media text-muted pt-3">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">Full Name</strong>
+                  <a href="#">Usuń</a>
+                </div>
+                <span class="d-block">@username</span>
+              </div>
+            </div>
+            <div class="media text-muted pt-3">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">Full Name</strong>
+                  <a href="#">Usuń</a>
+                </div>
+                <span class="d-block">@username</span>
+              </div>
+            </div>
+            <div class="media text-muted pt-3">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">Full Name</strong>
+                  <a href="#">Usuń</a>
+                </div>
+                <span class="d-block">@username</span>
+              </div>
+            </div>
+            <div class="media text-muted pt-3">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">Full Name</strong>
+                  <a href="#">Usuń</a>
+                </div>
+                <span class="d-block">@username</span>
+              </div>
+            </div>
+            <div class="media text-muted pt-3">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">Full Name</strong>
+                  <a href="#">Usuń</a>
+                </div>
+                <span class="d-block">@username</span>
+              </div>
+            </div>
+            <div class="media text-muted pt-3">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">Full Name</strong>
+                  <a href="#">Usuń</a>
+                </div>
+                <span class="d-block">@username</span>
+              </div>
+            </div>
+            <div class="media text-muted pt-3">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">Full Name</strong>
+                  <a href="#">Usuń</a>
+                </div>
+                <span class="d-block">@username</span>
+              </div>
+            </div>
+            <div class="media text-muted pt-3">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">Full Name</strong>
+                  <a href="#">Usuń</a>
+                </div>
+                <span class="d-block">@username</span>
+              </div>
+            </div>
+            <div class="media text-muted pt-3">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">Full Name</strong>
+                  <a href="#">Usuń</a>
+                </div>
+                <span class="d-block">@username</span>
+              </div>
+            </div>
+            <div class="media text-muted pt-3">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">Full Name</strong>
+                  <a href="#">Usuń</a>
+                </div>
+                <span class="d-block">@username</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row shadow-sm mt-3 rounded" id="lobbyBottom">
+        <div class="col-3">
+          <buton class="btn btn-lg btn-secondary" id="btnLeave">Wyjdź z lobby</buton>
+        </div>
+        <div class="col-5">
+        </div>
+        <div class="col-4">
+          <buton class="btn btn-lg btn-secondary collapsed" id="btnStart">Rozpocznij gre</buton>
+        </div>
+      </div>
+      <!-- game -->
+      <div class="row shadow-sm collapse" id="gameTop">
+        <div class="col-12">
+          Timer
+        </div>
+      </div>
+      <div class="row shadow-sm mt-3 collapse" id="gameCenter">
+        <div class="col-12">
+          Miejsce na treśc zadania i odpowiedzi.
+        </div>
+      </div>
+      <div class="row shadow-sm mt-3 collapse" id="gameBottom">
+        <div class="col-12">
+          <buton class="btn btn-lg btn-secondary" id="btnNextTask">Nastepne zadanie</buton>
+        </div>
+      </div>
     </div>
     <footer class="footer">
       <div class="container text-center">
@@ -76,10 +209,184 @@
 <script src="js/popper.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script>
-  $("#btnJoin").on("click",()=>{
-    console.log("joining")
-  })
-  $("#btnCreate").on("click",()=>{
-    console.log("creating")
-  })
+  
+  const LobbyLogic = (isHost_ = true) => {
+
+    /*       logic variables          */
+    var self = {};
+
+    var lobbyTop = $("#lobbyTop");
+    var lobbyCenter = $("#lobbyCenter");
+    var lobbyBottom = $("#lobbyBottom");
+    var isHost = isHost_;
+    var gameStatus = "not started";
+    var lobbyStatus = "just entered";
+    var ajaxLoopTimer;
+
+    var gameTop = $("#gameTop");
+    var gameCenter = $("#gameCenter");
+    var gameBottom = $("#gameBottom");
+
+    /*       logic functions          */
+    var lobbyInit = () => {
+      if (isHost) {
+        $("#btnStart").show();
+        $("#btnSettings").show();
+      }
+
+      $('.btn').popover();
+
+      ajaxLoopTimer = setTimeout(ajaxConnectionLoop,1000);
+    }
+    
+    var startGame = (task) => {
+      lobbyTop.hide();
+      lobbyCenter.hide();
+      lobbyBottom.hide();
+
+
+      gameTop.show();
+      gameCenter.show();
+      gameBottom.show();
+
+      /*TODO: set visuals for recived task  */
+      //newTask(task);
+      //lub
+      //gameChange(task);
+
+    }
+    
+    var gameChange = (game) => {
+      if (game != null && gameStatus != game.gameStatus) {
+        switch (game.gameChange) {
+          case "start": 
+            startGame(game.task);
+            break;
+          case "task1": 
+            /*  TODO
+              pomyśleć jak ogarnąc nieogarniczoną liczbe tasków
+          
+            */
+            //newTask(data.task);
+            break;
+          default: console.log(game.gameStatus);
+            break;
+        }
+        gameStatus = game.gameStatus;
+      }
+    }
+
+    var lobbyChange = (lobby) => {
+      if (lobby != null && lobbyStatus != lobby.lobbyStatus) {
+        lobbyStatus = lobby.lobbyStatus;
+
+        /*TODO
+
+          odśwież liste graczy i ustawienia lobby
+          może przechowywane w odpowiedzi od serwera:
+          lobby.playerList
+          lobby.settings
+        */
+
+      }
+    }
+
+    /*       event listeners          */
+    $("#btnStart").on("click",()=>{
+      console.log("btnStart");
+
+      if (isHost == true)
+        ajaxStart();
+    });
+    $("#btnLeave").on("click",()=>{
+      console.log("btnLeave")
+      ajaxLeave();
+    });
+
+    /*     http requests       */
+    var ajaxStart = () => {
+      var send = {}
+      $.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "game/start",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          console.log("start success");
+          console.log(data);
+        },
+        error: function(jqXHR, status, err) {
+          console.log("start error");
+        }
+      });
+    }
+
+    var ajaxLeave = () => {
+      var send = {}
+      $.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "game/leave",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          console.log("leave success");
+          console.log(data);
+        },
+        error: function(jqXHR, status, err) {
+          console.log("leave error");
+        }
+      });
+    }
+
+    var ajaxConnectionLoop = () => {
+      /*
+        funkcja odbiera najnowsze informacje odnośnie zaszłych zmian w lobby i grze
+        jeśli kod statusu otrzymanego od serwera nie zgadza się z obecnie przetrzymywanym na kliencie to klient wyśle zapytanie do serwera o nowe dane
+
+      */
+      console.log("ajax loop");
+
+      var send = {}
+      $.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "game/connectionLoop",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          console.log("connectionLoop success");
+          console.log(data);
+
+          gameChange(data.game);
+          lobbyChange(data.lobby);
+
+          ajaxLoopTimer = setTimeout(ajaxConnectionLoop,1000);
+        },
+        error: function(jqXHR, status, err) {
+          console.warn("connectionLoop error");
+          ajaxLoopTimer = setTimeout(ajaxConnectionLoop,1000);
+        }
+      });
+    }
+
+    /*  initalization  */
+    lobbyInit()
+
+    return self;
+  }
+
+  /*
+    zależnie czy jest się hostem czy zwyklłym graczem w LobbyLogic trzeba ustawić:
+      true - dla hosta
+      false - dla gracza
+
+    trzeba to ustawić serverem, to może na początku wysłanie zapytania czy jest się hostem czy graczem w danym lobby/grze?
+
+
+    żeby zaczać trzeba wywołać:
+    LobbyLogic(isHost = false); 
+  */
+
 </script>
