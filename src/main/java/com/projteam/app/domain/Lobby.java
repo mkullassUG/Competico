@@ -1,26 +1,28 @@
 package com.projteam.app.domain;
 
+import static com.projteam.app.domain.Account.PLAYER_ROLE;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Lobby
 {
-	private String gameKey;
+	private String gameCode;
 	private Account host;
 	private List<Account> players;
 	private int maxPlayerCount;
 	
-	public Lobby(String gameKey, Account host)
+	public Lobby(String gameCode, Account host)
 	{
-		this(gameKey, host, 20);
+		this(gameCode, host, 20);
 	}
-	public Lobby(String gameKey, Account host, int maxPlayerCount)
+	public Lobby(String gameCode, Account host, int maxPlayerCount)
 	{
-		Objects.requireNonNull(gameKey);
+		Objects.requireNonNull(gameCode);
 		Objects.requireNonNull(host);
 		
-		this.gameKey = gameKey;
+		this.gameCode = gameCode;
 		this.host = host;
 		players = new ArrayList<>();
 		
@@ -34,7 +36,7 @@ public class Lobby
 	public List<Account> getPlayers()
 	{
 		List<Account> ret = new ArrayList<>(players);
-		if (host.hasRole("PLAYER"))
+		if (host.hasRole(PLAYER_ROLE))
 			ret.add(host);
 		return ret;
 	}
@@ -42,7 +44,7 @@ public class Lobby
 	{
 		if ((players.size() + ((host != null)?1:0)) > maxPlayerCount)
 			return false;
-		if (player.hasRole("PLAYER"))
+		if (player.hasRole(PLAYER_ROLE))
 			return players.add(player);
 		return false;
 	}
@@ -54,8 +56,8 @@ public class Lobby
 	{
 		return maxPlayerCount;
 	}
-	public String getGameKey()
+	public String getGameCode()
 	{
-		return gameKey;
+		return gameCode;
 	}
 }

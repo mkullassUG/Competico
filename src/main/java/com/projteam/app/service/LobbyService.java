@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,9 +34,8 @@ public class LobbyService
 		lobbies = new HashMap<>();
 		lobbyCodesAllowingRandomPlayers = new HashSet<>();
 		
-		gameCodeChars = IntStream.iterate(0, i -> i + 1)
-			.limit(255)
-			.filter(Character::isLetterOrDigit)
+		gameCodeChars = IntStream.range(0, 256)
+			.filter(LobbyService::isValidGameCodeChar)
 			.mapToObj(c -> Character.toString((char) c))
             .collect(Collectors.joining())
             .toCharArray();
@@ -47,6 +48,8 @@ public class LobbyService
 	}
 	public String createLobby(Account host)
 	{
+		Objects.requireNonNull(host);
+		
 		String gameCode = new Random().ints(gameCodeLength, 0, gameCodeChars.length)
 				.mapToObj(i -> Character.toString(gameCodeChars[i]))
 	            .collect(Collectors.joining());
@@ -68,32 +71,36 @@ public class LobbyService
 		lobbyCodesAllowingRandomPlayers.clear();
 		lobbies.clear();
 	}
-	
-	public boolean addPlayer(String gameKey)
+	public boolean lobbyExists(String gameCode)
 	{
-		return addPlayer(gameKey, accServ.getAuthenticatedAccount());
+		return lobbies.containsKey(gameCode);
 	}
-	public boolean addPlayer(String gameKey, Account player)
+	
+	public boolean addPlayer(String gameCode)
 	{
-		Lobby lobby = lobbies.get(gameKey);
+		return addPlayer(gameCode, accServ.getAuthenticatedAccount());
+	}
+	public boolean addPlayer(String gameCode, Account player)
+	{
+		Lobby lobby = lobbies.get(gameCode);
 		if (lobby != null)
 			return lobby.addPlayer(player);
 		return false;
 	}
-	public boolean removePlayer(String gameKey)
+	public boolean removePlayer(String gameCode)
 	{
-		return removePlayer(gameKey, accServ.getAuthenticatedAccount());
+		return removePlayer(gameCode, accServ.getAuthenticatedAccount());
 	}
-	public boolean removePlayer(String gameKey, Account player)
+	public boolean removePlayer(String gameCode, Account player)
 	{
-		Lobby lobby = lobbies.get(gameKey);
+		Lobby lobby = lobbies.get(gameCode);
 		if (lobby != null)
 			return lobby.removePlayer(player);
 		return false;
 	}
-	public List<Account> getPlayers(String gameKey)
+	public List<Account> getPlayers(String gameCode)
 	{
-		Lobby lobby = lobbies.get(gameKey);
+		Lobby lobby = lobbies.get(gameCode);
 		return lobby.getPlayers();
 	}
 	public int getMaximumPlayerCount(String gameCode)
@@ -107,16 +114,22 @@ public class LobbyService
 		lobbyCodesAllowingRandomPlayers.remove(gameCode);
 		return false;
 	}
+	public Account getHost(String gameCode)
+	{
+		Lobby lobby = lobbies.get(gameCode);
+		if (lobby == null)
+			return null;
+		return lobby.getHost();
+	}
 	public boolean isHost(String gameCode)
 	{
 		return isHost(gameCode, accServ.getAuthenticatedAccount());
 	}
 	public boolean isHost(String gameCode, Account acc)
 	{
-		Lobby lobby = lobbies.get(gameCode);
-		if (lobby == null)
-			return false;
-		return lobby.getHost().equals(acc);
+		return Optional.ofNullable(getHost(gameCode))
+				.map(host -> host.equals(acc))
+				.orElse(false);
 	}
 	public boolean allowsRandomPlayers(String gameCode)
 	{
@@ -133,5 +146,12 @@ public class LobbyService
 	public synchronized int getGameCodeLength()
 	{
 		return gameCodeLength;
+	}
+	
+	private static boolean isValidGameCodeChar(int c)
+	{
+		return ((c >= '0') && (c <= '9'))
+				|| ((c >= 'a') && (c <= 'z'))
+				|| ((c >= 'A') && (c <= 'Z'));
 	}
 }
