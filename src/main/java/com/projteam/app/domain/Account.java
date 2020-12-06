@@ -32,6 +32,9 @@ public class Account implements UserDetails
 	
 	private @Column(name = "roles") @ElementCollection(fetch = FetchType.EAGER) List<String> roles;
 	
+	public static final String PLAYER_ROLE = "PLAYER";
+	public static final String LECTURER_ROLE = "LECTURER";
+	
 	public Account()
 	{
 		accEnabled = true;

@@ -1,5 +1,8 @@
 package com.projteam.app.service;
 
+import static com.projteam.app.domain.Account.PLAYER_ROLE;
+import static com.projteam.app.domain.Account.LECTURER_ROLE;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -26,26 +29,27 @@ public class AccountService implements UserDetailsService
 {
 	private AccountDAO accDao;
 	private PasswordEncoder passEnc;
-	
-	@Autowired
 	private AuthenticationManager authManager;
 	
 	@Autowired
 	public AccountService(
 			AccountDAO accDao,
-			PasswordEncoder passEnc)
+			PasswordEncoder passEnc,
+			AuthenticationManager authManager)
 	{
 		this.accDao = accDao;
 		this.passEnc = passEnc;
+		this.authManager = authManager;
 	}
 	
-	public void register(HttpServletRequest req, RegistrationDTO regDto)
+	public void register(HttpServletRequest req, RegistrationDTO regDto, boolean autoAuthenticate)
 	{
 		String passHash = passEnc.encode(regDto.getPassword());
 		Account acc = new Account(regDto.getEmail(), regDto.getUsername(), passHash,
-				List.of(regDto.isPlayer()?"PLAYER":"LECTURER"));
+				List.of(regDto.isPlayer()?PLAYER_ROLE:LECTURER_ROLE));
 		acc = accDao.insertAccount(acc);
-		authenticate(req, regDto.getEmail(), regDto.getPassword());
+		if (autoAuthenticate)
+			authenticate(req, regDto.getEmail(), regDto.getPassword());
 	}
 	public boolean login(HttpServletRequest req, LoginDTO loginDto)
 	{
