@@ -44,7 +44,7 @@
         </div>
       </div>
       <div class="row shadow-sm mt-3 rounded" id="lobbyCenter">
-        <div class="col-2 shadow-sm">
+        <div class="col-2 shadow-sm" id="lobbySettings">
           
           <button type="button" id="btnSettings" class="btn btn-secondary collapse" data-toggle="popover" title="Ustawienia" data-content="Miejsce na zmiane ustawień lobby">
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-gear" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -53,8 +53,8 @@
             </svg>
           </button>
         </div>
-        <div class="col-10">
-          <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-primary rounded shadow-sm">
+        <div class="col-10" id="lobbyMain">
+          <div id="lobbyHost" class="d-flex align-items-center p-3 my-3 text-white-50 bg-light rounded shadow-sm">
             <div class="col-12">
               <h6 class="border-bottom border-gray pb-2 mb-0">
                 <img class="mr-3" src="assets/myIcons/iconfinder_law_iconsArtboard_1_copy_5_2393033.svg" alt="" width="48" height="48">
@@ -66,9 +66,9 @@
               </div>
             </div>
           </div>
-          <div id="lobbyPlayerList" class="my-3 p-3 bg-primary rounded shadow-sm overflow-auto">
+          <div id="lobbyPlayerList" class="my-3 p-3 bg-light rounded shadow-sm overflow-auto">
             <h6 class="border-bottom border-gray pb-2 mb-0">Gracze</h6>
-            <div class="media text-muted pt-3">
+            <div class="media text-muted pt-3 player">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -78,7 +78,7 @@
                 <span class="d-block">@username</span>
               </div>
             </div>
-            <div class="media text-muted pt-3">
+            <div class="media text-muted pt-3 player">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -88,7 +88,7 @@
                 <span class="d-block">@username</span>
               </div>
             </div>
-            <div class="media text-muted pt-3">
+            <div class="media text-muted pt-3 player">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -98,7 +98,7 @@
                 <span class="d-block">@username</span>
               </div>
             </div>
-            <div class="media text-muted pt-3">
+            <div class="media text-muted pt-3 player">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -108,7 +108,7 @@
                 <span class="d-block">@username</span>
               </div>
             </div>
-            <div class="media text-muted pt-3">
+            <div class="media text-muted pt-3 player">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -118,7 +118,7 @@
                 <span class="d-block">@username</span>
               </div>
             </div>
-            <div class="media text-muted pt-3">
+            <div class="media text-muted pt-3 player">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -128,7 +128,7 @@
                 <span class="d-block">@username</span>
               </div>
             </div>
-            <div class="media text-muted pt-3">
+            <div class="media text-muted pt-3 player">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -138,7 +138,7 @@
                 <span class="d-block">@username</span>
               </div>
             </div>
-            <div class="media text-muted pt-3">
+            <div class="media text-muted pt-3 player">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -148,7 +148,7 @@
                 <span class="d-block">@username</span>
               </div>
             </div>
-            <div class="media text-muted pt-3">
+            <div class="media text-muted pt-3 player">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -158,7 +158,7 @@
                 <span class="d-block">@username</span>
               </div>
             </div>
-            <div class="media text-muted pt-3">
+            <div class="media text-muted pt-3 player">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
@@ -189,7 +189,31 @@
       </div>
       <div class="row shadow-sm mt-3 collapse" id="gameCenter">
         <div class="col-12">
-          Miejsce na treśc zadania i odpowiedzi.
+          <!-- Task templates -->
+          <div class="collapsed" id="template0">
+            <div class="taskContext">
+
+            </div>
+            <div class="interactable">
+
+            </div>
+          </div>
+          <div class="collapsed" id="template1">
+            <div class="taskContext">
+
+            </div>
+            <div class="interactable">
+
+            </div>
+          </div>
+          <div class="collapsed" id="template2">
+            <div class="taskContext">
+
+            </div>
+            <div class="interactable">
+
+            </div>
+          </div>
         </div>
       </div>
       <div class="row shadow-sm mt-3 collapse" id="gameBottom">
@@ -210,17 +234,21 @@
 <script src="js/bootstrap.min.js"></script>
 <script>
   
-  const LobbyLogic = (isHost_ = true) => {
+  const LobbyLogic = ( logicInitVar = {isHost : true, debug : false}) => {
 
     /*       logic variables          */
     var self = {};
+    var lobbySettings = {
+      maxPlayers: 10
+
+    }
 
     var lobbyTop = $("#lobbyTop");
     var lobbyCenter = $("#lobbyCenter");
     var lobbyBottom = $("#lobbyBottom");
-    var isHost = isHost_;
+    var isHost = logicInitVar.isHost;
+    var debug = logicInitVar.debug;
     var gameStatus = "not started";
-    var lobbyStatus = "just entered";
     var ajaxLoopTimer;
 
     var gameTop = $("#gameTop");
@@ -232,65 +260,95 @@
       if (isHost) {
         $("#btnStart").show();
         $("#btnSettings").show();
-      }
+      } else {
 
+        $("#lobbyMain").removeClass("col-10").addClass("col-12");
+        $("#lobbySettings").hide();
+      }
+      
       $('.btn').popover();
 
-      ajaxLoopTimer = setTimeout(ajaxConnectionLoop,1000);
     }
-    
-    var startGame = (task) => {
+    var startGame = () => {
       lobbyTop.hide();
       lobbyCenter.hide();
       lobbyBottom.hide();
 
-
       gameTop.show();
       gameCenter.show();
       gameBottom.show();
-
-      /*TODO: set visuals for recived task  */
-      //newTask(task);
-      //lub
-      //gameChange(task);
-
     }
-    
-    var gameChange = (game) => {
-      if (game != null && gameStatus != game.gameStatus) {
-        switch (game.gameChange) {
-          case "start": 
-            startGame(game.task);
-            break;
-          case "task1": 
-            /*  TODO
-              pomyśleć jak ogarnąc nieogarniczoną liczbe tasków
-          
-            */
-            //newTask(data.task);
-            break;
-          default: console.log(game.gameStatus);
-            break;
-        }
-        gameStatus = game.gameStatus;
+    var gameSetupAfterChange = (game) => {
+
+      //setup task
+      if (gameStatus == "not started") {
+        gameStatus = "started";
+        startGame();
+        setupNewTask(game.task);
+      } else if ( game.hasEnded != null && game.hasEnded == true){
+        gameStatus = "ended";
+        setupEndGame();
+      } else {
+        gameStatus = "another task";
+        setupNewTask(game.task);
       }
     }
+    var lobbySetupAfterChange = (lobby) => {
+      //setup lobby
+      //Cleaning
+      $("#lobbyPlayerList > .player").remove();
 
-    var lobbyChange = (lobby) => {
-      if (lobby != null && lobbyStatus != lobby.lobbyStatus) {
-        lobbyStatus = lobby.lobbyStatus;
+      //1. player list game.playerList
+      let playerListLength = lobby.playerList.length;
+      for (let i = 0; i < playerListLength; i++) {
+        let player = lobby.playerList[i];
+        let playerDiv = $(`<div class="media text-muted pt-3 player">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">Full Name</strong>
+                  <a href="" class="btnKick" data-username="` + player.name + `">Usuń</a>
+                </div>
+                <span class="d-block">@username</span>
+              </div>
+            </div>`);
 
-        /*TODO
-
-          odśwież liste graczy i ustawienia lobby
-          może przechowywane w odpowiedzi od serwera:
-          lobby.playerList
-          lobby.settings
-        */
-
+        $("#lobbyPlayerList").append(playerDiv);
       }
-    }
+      
+      $(".btnKick").on("click", (e) => {
+        e.preventDefault();
 
+        sendAjaxKickPlayer($(e.target).data("username"));
+
+        if (debug == true)
+          console.log("kicking: " + $(e.target).data("username"));
+      });
+    }
+    var updateCheck = (data) => {
+      if(data.game == true) 
+        ajaxReceiveGameChange();
+      if (data.lobby == true)
+        ajaxReceiveLobbyChange();
+    } 
+    var finishTask = () => {
+      var answers = {};
+      /*
+        TODO, 
+        odczytanie odpowiedzi z templatea i przypisanie ich do obiektu answers
+      */
+      ajaxSendAnswerAndReceiveNext(answer);
+    }
+    var setupNewTask = (task) => {
+      /*
+        TODO
+        clear old task and hide templates
+      */
+      var template = taskTemplates.find((e)=>e.id == task.id)
+
+      $("#"+template.idName)
+
+    }
     /*       event listeners          */
     $("#btnStart").on("click",()=>{
       console.log("btnStart");
@@ -302,9 +360,17 @@
       console.log("btnLeave")
       ajaxLeave();
     });
+    $("#btnNextTask").on("click",(e) => {
+      console.log("btnNextTask")
 
-    /*     http requests       */
-    var ajaxStart = () => {
+      if (gameStatus != "not started" && gameStatus != "ended")
+        finishTask();
+    })
+    /*     ajax http actions       */
+    var sendAjaxStart = () => {
+      if (isHost == false)
+        return;
+
       var send = {}
       $.ajax({
         type     : "POST",
@@ -314,15 +380,13 @@
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
           console.log("start success");
-          console.log(data);
         },
         error: function(jqXHR, status, err) {
           console.log("start error");
         }
       });
     }
-
-    var ajaxLeave = () => {
+    var sendAjaxLeave = () => {
       var send = {}
       $.ajax({
         type     : "POST",
@@ -339,15 +403,54 @@
         }
       });
     }
+    var sendAjaxKickPlayer = (player) => {
+      if (isHost == false)
+        return;
 
-    var ajaxConnectionLoop = () => {
-      /*
-        funkcja odbiera najnowsze informacje odnośnie zaszłych zmian w lobby i grze
-        jeśli kod statusu otrzymanego od serwera nie zgadza się z obecnie przetrzymywanym na kliencie to klient wyśle zapytanie do serwera o nowe dane
+      var send = {player: player}
+      $.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "game/kick",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          console.log("start success");
+        },
+        error: function(jqXHR, status, err) {
+          console.log("start error");
+        }
+      });
+    }
+    var sendAjaxSettingsChange = () => {
+      if (isHost == false)
+        return;
 
-      */
-      console.log("ajax loop");
+      var send = { ...lobbySettings} 
+      if (debug == true)
+            console.log(send);
 
+      $.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "game/settings",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+
+          if (debug == true)
+            console.log("SettingsChange success");
+        },
+        error: function(jqXHR, status, err) {
+          if (debug == true)
+            console.log("SettingsChange error");
+        }
+      });
+    }
+    
+    /*   ajax http requests       */
+    var ajaxConnectionLoop = ( ) => {
+      
       var send = {}
       $.ajax({
         type     : "POST",
@@ -357,10 +460,8 @@
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
           console.log("connectionLoop success");
-          console.log(data);
-
-          gameChange(data.game);
-          lobbyChange(data.lobby);
+          
+          updateCheck(data);
 
           ajaxLoopTimer = setTimeout(ajaxConnectionLoop,1000);
         },
@@ -370,23 +471,123 @@
         }
       });
     }
+    var ajaxReceiveLobbyChange = ( ) => {
+      var send = {}
+      $.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "game/getLobby",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          console.log("ajaxGetLobbyChange success");
+
+          lobbySetupAfterChange(data);
+        },
+        error: function(jqXHR, status, err) {
+          console.warn("ajaxGetLobbyChange error");
+        }
+      });
+    }
+    var ajaxReceiveGameChange = ( ) => {
+      var send = {}
+      $.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "game/getLobby",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          console.log("ajaxGetLobbyChange success");
+
+          gameSetupAfterChange(data);
+        },
+        error: function(jqXHR, status, err) {
+          console.warn("ajaxGetLobbyChange error");
+        }
+      });
+    }
+    var ajaxSendAnswerAndReceiveNext = ( answer ) => {
+
+      var send = {answer: answer}
+      $.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "game/answer",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          console.log("ajaxSendAnswerAndReceiveNext success");
+
+          setupNewTask(data);
+        },
+        error: function(jqXHR, status, err) {
+          console.warn("ajaxSendAnswerAndReceiveNext error");
+        }
+      });
+    }
+    /* debug  */
+    var debugSetup = () => {
+      if (debug == true) {
+        self.gameSetupAfterChange = (game) => {
+          gameSetupAfterChange(game);
+        }
+        self.lobbySetupAfterChange = (lobby) => {
+          lobbySetupAfterChange(lobby);
+        }
+      }
+    }
+    debugSetup();
 
     /*  initalization  */
-    lobbyInit()
-
+    lobbyInit();
+    ajaxLoopTimer = setTimeout(ajaxConnectionLoop,1000);
+    
     return self;
   }
+  LobbyLogic.start = (isHost = true, debug = false) => {
+    
+    if (debug == true) 
+      return LobbyLogic({isHost: isHost, debug: debug});
 
-  /*
-    zależnie czy jest się hostem czy zwyklłym graczem w LobbyLogic trzeba ustawić:
-      true - dla hosta
-      false - dla gracza
+    var ajaxReceiveAmIHost = ( ) => {
+      var send = {}
+      $.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "game/getLobby",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          console.log("ajaxReceiveAmIHost success");
 
-    trzeba to ustawić serverem, to może na początku wysłanie zapytania czy jest się hostem czy graczem w danym lobby/grze?
+          LobbyLogic(data);
+        },
+        error: function(jqXHR, status, err) {
+          console.warn("ajaxReceiveAmIHost error");
+        }
+      });
+    }
+    ajaxReceiveAmIHost();
+    return false;
+  }
 
+  var debug = LobbyLogic.start(isHost = true, debug = true);
 
-    żeby zaczać trzeba wywołać:
-    LobbyLogic(isHost = false); 
-  */
+  const taskTemplates = [
+    {
+      id:0,
+      idName: `template0`,
+    },
+    {
+      id:1,
+      idName: `template1`,
+    },
+    {
+      id:2,
+      idName: `template2`,
+    }
+
+  ];
 
 </script>
