@@ -10,6 +10,10 @@ body {
 #lobbyCenter {
   overflow: hidden;
 }
+#lobbySettings {
+  box-shadow: none !important;
+  margin: auto;
+}
 
 #lobbyPlayerList {
   height:56%;
@@ -24,6 +28,7 @@ body {
   bottom: 0;
   width: 100%;
   line-height: 60px;
+  z-index: 2;
 }
 #inputCode {
   max-width: 225px;
@@ -91,3 +96,18 @@ h2 {
   border-top-right-radius: 0;
 }
 
+/*other*/
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+}

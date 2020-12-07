@@ -11,24 +11,8 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/cover/">
     <link rel="icon" href="./assets/myIcons/icon.svg">
     <!-- Bootstrap core CSS -->
-<link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
     <!-- Custom styles for this template -->
     <link href="css/lobby.css" rel="stylesheet">
   </head>
@@ -55,15 +39,13 @@
               <option>Prywatne</option>
               <option>Testowe</option>
             </select>
-            
-
             <hr>
             <h5>Pozostałe opcje</h5>
             <p>...</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="btnSaveSettings">Save changes</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnSaveSettings">Save changes</button>
           </div>
         </div>
       </div>
@@ -88,7 +70,7 @@
             </svg>
           </button>
         </div>
-        <div class="col-10" id="lobbyMain">
+        <div class="col-10" id="lobbyMainHost">
           <div id="lobbyHost" class="d-flex align-items-center p-3 my-3 text-dark-50 bg-light rounded shadow-sm">
             <div class="col-12">
               <h6 class="border-bottom border-gray pb-2 mb-0">
@@ -101,6 +83,8 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="col-12" id="lobbyMainPlayerList">
           <div id="lobbyPlayerList" class="my-3 p-3 bg-light rounded shadow-sm overflow-auto">
             <h6 class="border-bottom border-gray pb-2 mb-0 text-dark" id="lobbyMaxPlayers">Gracze</h6>
             <div class="media text-muted pt-3 player">
@@ -208,12 +192,12 @@
       </div>
       <div class="row shadow-sm mt-3 rounded" id="lobbyBottom">
         <div class="col-3">
-          <buton class="btn btn-lg btn-secondary" id="btnLeave">Wyjdź z lobby</buton>
+          <buton class="btn btn-lg btn-secondary mb-3" id="btnLeave">Wyjdź z lobby</buton>
         </div>
         <div class="col-5">
         </div>
         <div class="col-4">
-          <buton class="btn btn-lg btn-secondary collapsed" id="btnStart">Rozpocznij gre</buton>
+          <buton class="btn btn-lg btn-secondary collapsed mb-3" id="btnStart">Rozpocznij gre</buton>
         </div>
       </div>
       <!-- game -->
@@ -264,19 +248,27 @@
       <div class="row shadow-sm mt-3 collapse" id="gameEndCenter">
         <div class="col-12">
             <div class="lobbyDashboard">
-              Dziękuje za grę (lobbyDashboard)
+              <h2 class="text-white">Dziękuje za grę</h2> 
+              <div id="endGameDashboard">
+                (lobbyDashboard)
+              </div>
             </div>
         </div>
       </div>
       <div class="row shadow-sm mt-3 collapse" id="gameBottom">
         <div class="col-12">
-          <buton class="btn btn-lg btn-secondary" id="btnNextTask">Nastepne zadanie</buton>
+          <buton class="btn btn-lg btn-secondary mb-3" id="btnNextTask">Nastepne zadanie</buton>
+        </div>
+      </div>
+      <div class="row shadow-sm mt-3 collapse" id="gameEndBottom">
+        <div class="col-12">
+          <buton class="btn btn-lg btn-secondary mb-3" id="btnEndGame">Zakończ grę</buton>
         </div>
       </div>
     </div>
     <footer class="footer">
       <div class="container text-center">
-        <span class="text-muted m-auto">Ucz się angielskiego razem z nami</span>
+        <span class="text-muted m-auto">Ucz się angielskiego razem z nami <img src="./assets/myIcons/iconbigblack.svg" class="iconbig" style=" filter: invert(25%);"></span>
       </div>
     </footer>
   </body>
@@ -320,7 +312,7 @@
         $("#btnSettings").show();
       } else {
 
-        $("#lobbyMain").removeClass("col-10").addClass("col-12");
+        $("#lobbyMainHost").removeClass("col-10").addClass("col-12");
         $("#lobbySettings").hide();
       }
       
@@ -349,9 +341,11 @@
       try {
         var successful = document.execCommand('copy');
         var msg = successful ? 'successful' : 'unsuccessful';
-        console.log('Copying text command was ' + msg);
+        if (debug)
+          console.log('Copying text command was ' + msg);
       } catch (err) {
-        console.log('Oops, unable to copy');
+        if (debug)
+          console.log('Oops, unable to copy');
       }
 
       document.body.removeChild(textArea);
@@ -360,12 +354,13 @@
     var gameSetupAfterChange = (game) => {
       /*game:
       {
-        task: {
+        -task: {
           id: //wybiera odpowiednie id przypisane to template'u
           [pozostałe wartości odpowiednie dla danego template'u]
         }
-        time: //czas rozpoczęcia gry, potrzebny tylko na starcie,
-        hasEnded: true //posiada tylko jeśli gra się zakończyła i oddało się ostatnie zadanie... jeszcze do uzgodnienia z Michałem jak to będzie ogarnięte
+        -time: //czas rozpoczęcia gry, potrzebny tylko na starcie,
+        -hasEnded: true //posiada tylko jeśli gra się zakończyła i oddało się ostatnie zadanie... jeszcze do uzgodnienia z Michałem jak to będzie ogarnięte
+        -result: //wyniki graczy wyświetlane na poczekalni po zakonczeniu gry
       }*/
       //setup task
       if (gameStatus == "not started") {
@@ -439,18 +434,9 @@
         //var inputFieldId = inputFields[i].data("fieldId"); 
         //answers[inputFieldId] = inputFields[i].value();
         answers[i] = $(inputFields[i]).val();
-        console.log(i);
       }
-      if (debug == true)
-        console.log(inputFields.length);
       var testField = $("#" + currentTemplateDivId).find(".textField").html("");
-      /*
-        TODO, 
-        Przetestować odczytywanie odpowiedzi, (mogą być błędy)
-      */
-      if (debug == true)
-        console.log(answers);
-
+      
       ajaxSendAnswerAndReceiveNext(answers);
     }
     var setupNewTask = (task) => {
@@ -497,11 +483,16 @@
     }
     var setupEndGame = (game) => {
 
-      console.warn("setupEndGame not finished yet")
-      console.log(game);
       $("#gameEndCenter").show();
+      $("#gameEndBottom").show();
       $("#gameCenter").hide();
+      $("#gameBottom").hide();
       $("#gameTimer").hide();
+      if (game.result) {
+        //jeszcze nie jestem pewien w jakiej postaci będa przesyłane wyniki obecnego i pozostałych graczy. Do uzgodnienia z Michałem
+        $("#endGameDashboard").html("Twój wynik: " + game.result); 
+      }
+
     }
     var updateLobbySettingsAsHost = () => {
       
@@ -511,34 +502,45 @@
     }
     /*       event listeners          */
     $("#btnStart").on("click",()=>{
-      console.log("btnStart");
+      if (debug)
+        console.log("btnStart");
 
       if (isHost == true)
         sendAjaxStart();
     });
     $("#btnLeave").on("click",()=>{
-      console.log("btnLeave")
+      if (debug)
+        console.log("btnLeave")
       sendAjaxLeave();
     });
     $("#btnNextTask").on("click",(e) => {
-      console.log("btnNextTask")
+      if (debug)
+        console.log("btnNextTask")
 
       if (gameStatus != "not started" && gameStatus != "ended")
         finishTask();
     })
     $("#btnCopyCode").on("click",(e) => {
-
       if (debug == true)
         console.log("btnCopyCode")
 
       copyTextToClipboard(lobbyCode);
     })
     $("#btnSaveSettings").on("click",()=>{
-      console.log("btnSaveSettings");
+      if (debug)
+        console.log("btnSaveSettings");
 
       if (isHost == true)
         sendAjaxSettingsChange();
     });
+    $("#btnEndGame").on("click",()=>{
+      if (debug)
+        console.log("btnEndGame");
+
+      if (gameStatus == "ended")
+        sendAjaxEndGame();
+    });
+    
     /*     ajax http actions       */
     var sendAjaxStart = () => {
       if (isHost == false)
@@ -552,10 +554,12 @@
         data     : JSON.stringify(send),
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
-          console.log("sendAjaxStart success");
+          if (debug)
+            console.log("sendAjaxStart success");
         },
         error: function(jqXHR, status, err) {
-          console.log("sendAjaxStart error");
+          if (debug)
+            console.log("sendAjaxStart error");
         }
       });
     }
@@ -568,11 +572,12 @@
         data     : JSON.stringify(send),
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
-          console.log("leave success");
-          console.log(data);
+          if (debug)
+            console.log("sendAjaxLeave success");
         },
         error: function(jqXHR, status, err) {
-          console.log("leave error");
+          if (debug)
+            console.log("sendAjaxLeave error");
         }
       });
     }
@@ -588,10 +593,12 @@
         data     : JSON.stringify(send),
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
-          console.log("start success");
+          if (debug)
+            console.log("sendAjaxKickPlayer success");
         },
         error: function(jqXHR, status, err) {
-          console.log("start error");
+          if (debug)
+            console.log("sendAjaxKickPlayer error");
         }
       });
     }
@@ -622,7 +629,26 @@
         }
       });
     }
-    
+    var sendAjaxEndGame = () => {
+      var send = { } 
+
+      $.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "game/endGame",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+
+          if (debug == true)
+            console.log("sendAjaxEndGame success");
+        },
+        error: function(jqXHR, status, err) {
+          if (debug == true)
+            console.log("sendAjaxEndGame error");
+        }
+      });
+    }
     /*   ajax http requests       */
     var ajaxConnectionLoop = ( ) => {
       
@@ -634,14 +660,16 @@
         data     : JSON.stringify(send),
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
-          console.log("connectionLoop success");
+          if (debug)
+            console.log("connectionLoop success");
           
           updateCheck(data);
 
           ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
         },
         error: function(jqXHR, status, err) {
-          console.warn("connectionLoop error");
+          if (debug)
+            console.warn("connectionLoop error");
           ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
         }
       });
@@ -655,12 +683,14 @@
         data     : JSON.stringify(send),
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
-          console.log("ajaxGetLobbyChange success");
+          if (debug)
+            console.log("ajaxGetLobbyChange success");
 
           lobbySetupAfterChange(data);
         },
         error: function(jqXHR, status, err) {
-          console.warn("ajaxGetLobbyChange error");
+          if (debug)
+            console.warn("ajaxGetLobbyChange error");
         }
       });
     }
@@ -673,12 +703,14 @@
         data     : JSON.stringify(send),
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
-          console.log("ajaxGetLobbyChange success");
+          if (debug)
+            console.log("ajaxGetLobbyChange success");
 
           gameSetupAfterChange(data);
         },
         error: function(jqXHR, status, err) {
-          console.warn("ajaxGetLobbyChange error");
+          if (debug)
+            console.warn("ajaxGetLobbyChange error");
         }
       });
     }
@@ -692,12 +724,14 @@
         data     : JSON.stringify(send),
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
-          console.log("ajaxSendAnswerAndReceiveNext success");
+          if (debug)
+            console.log("ajaxSendAnswerAndReceiveNext success");
 
           gameSetupAfterChange(data);
         },
         error: function(jqXHR, status, err) {
-          console.warn("ajaxSendAnswerAndReceiveNext error");
+          if (debug)
+            console.warn("ajaxSendAnswerAndReceiveNext error");
         }
       });
     }
@@ -738,12 +772,14 @@
         data     : JSON.stringify(send),
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
-          console.log("ajaxReceiveAmIHost success");
+          if (debug)
+            console.log("ajaxReceiveAmIHost success");
 
           LobbyLogic(data);
         },
         error: function(jqXHR, status, err) {
-          console.warn("ajaxReceiveAmIHost error");
+          if (debug)
+            console.warn("ajaxReceiveAmIHost error");
         }
       });
     }
