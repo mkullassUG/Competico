@@ -32,21 +32,56 @@
     <!-- Custom styles for this template -->
     <link href="css/lobby.css" rel="stylesheet">
   </head>
+
   <body class="bg-primary">
-    
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="exampleModalLongTitle">Ustawienia Lobby</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <label for="inputMaxPlayers" class="col-form-label">Max graczy:</label>
+            <input type="number" class="form-control" id="inputMaxPlayers" value="10">
+
+            <hr>
+            <label for="lobbyVisibility" class="col-form-label">Widoczność lobby:</label>
+            <select id="lobbyVisibility">
+              <option>Publiczne</option>
+              <option>Prywatne</option>
+              <option>Testowe</option>
+            </select>
+            
+
+            <hr>
+            <h5>Pozostałe opcje</h5>
+            <p>...</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="btnSaveSettings">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container fill text-center">
       <div class="row shadow-sm rounded" id="lobbyTop">
         <div class="col-3">
-          <buton class="btn btn-sm btn-secondary">Kopiuj kod</buton>
+          <buton class="btn btn-sm btn-secondary" id="btnCopyCode">Kopiuj kod</buton>
         </div>
         <div class="col-9">
-          <h2>Kod: 123456789</h2>
+          <h2 id="lobbyCode" class="text-white">Kod: 123456789</h2>
         </div>
       </div>
       <div class="row shadow-sm mt-3 rounded" id="lobbyCenter">
         <div class="col-2 shadow-sm" id="lobbySettings">
           
-          <button type="button" id="btnSettings" class="btn btn-secondary collapse" data-toggle="popover" title="Ustawienia" data-content="Miejsce na zmiane ustawień lobby">
+          <button type="button" id="btnSettings" class="btn btn-secondary collapse" data-toggle="modal" data-target="#exampleModalCenter">
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-gear" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M8.837 1.626c-.246-.835-1.428-.835-1.674 0l-.094.319A1.873 1.873 0 0 1 4.377 3.06l-.292-.16c-.764-.415-1.6.42-1.184 1.185l.159.292a1.873 1.873 0 0 1-1.115 2.692l-.319.094c-.835.246-.835 1.428 0 1.674l.319.094a1.873 1.873 0 0 1 1.115 2.693l-.16.291c-.415.764.42 1.6 1.185 1.184l.292-.159a1.873 1.873 0 0 1 2.692 1.116l.094.318c.246.835 1.428.835 1.674 0l.094-.319a1.873 1.873 0 0 1 2.693-1.115l.291.16c.764.415 1.6-.42 1.184-1.185l-.159-.291a1.873 1.873 0 0 1 1.116-2.693l.318-.094c.835-.246.835-1.428 0-1.674l-.319-.094a1.873 1.873 0 0 1-1.115-2.692l.16-.292c.415-.764-.42-1.6-1.185-1.184l-.291.159A1.873 1.873 0 0 1 8.93 1.945l-.094-.319zm-2.633-.283c.527-1.79 3.065-1.79 3.592 0l.094.319a.873.873 0 0 0 1.255.52l.292-.16c1.64-.892 3.434.901 2.54 2.541l-.159.292a.873.873 0 0 0 .52 1.255l.319.094c1.79.527 1.79 3.065 0 3.592l-.319.094a.873.873 0 0 0-.52 1.255l.16.292c.893 1.64-.902 3.434-2.541 2.54l-.292-.159a.873.873 0 0 0-1.255.52l-.094.319c-.527 1.79-3.065 1.79-3.592 0l-.094-.319a.873.873 0 0 0-1.255-.52l-.292.16c-1.64.893-3.433-.902-2.54-2.541l.159-.292a.873.873 0 0 0-.52-1.255l-.319-.094c-1.79-.527-1.79-3.065 0-3.592l.319-.094a.873.873 0 0 0 .52-1.255l-.16-.292c-.892-1.64.902-3.433 2.541-2.54l.292.159a.873.873 0 0 0 1.255-.52l.094-.319z"></path>
               <path fill-rule="evenodd" d="M8 5.754a2.246 2.246 0 1 0 0 4.492 2.246 2.246 0 0 0 0-4.492zM4.754 8a3.246 3.246 0 1 1 6.492 0 3.246 3.246 0 0 1-6.492 0z"></path>
@@ -54,20 +89,20 @@
           </button>
         </div>
         <div class="col-10" id="lobbyMain">
-          <div id="lobbyHost" class="d-flex align-items-center p-3 my-3 text-white-50 bg-light rounded shadow-sm">
+          <div id="lobbyHost" class="d-flex align-items-center p-3 my-3 text-dark-50 bg-light rounded shadow-sm">
             <div class="col-12">
               <h6 class="border-bottom border-gray pb-2 mb-0">
                 <img class="mr-3" src="assets/myIcons/iconfinder_law_iconsArtboard_1_copy_5_2393033.svg" alt="" width="48" height="48">
                 Host:
               </h6>
               <div class="lh-100">
-                <h6 class="mb-0 text-white lh-100">@username</h6>
+                <h6 class="mb-0 text-dark lh-100">@username</h6>
                 <small></small>
               </div>
             </div>
           </div>
           <div id="lobbyPlayerList" class="my-3 p-3 bg-light rounded shadow-sm overflow-auto">
-            <h6 class="border-bottom border-gray pb-2 mb-0">Gracze</h6>
+            <h6 class="border-bottom border-gray pb-2 mb-0 text-dark" id="lobbyMaxPlayers">Gracze</h6>
             <div class="media text-muted pt-3 player">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
@@ -184,36 +219,53 @@
       <!-- game -->
       <div class="row shadow-sm collapse" id="gameTop">
         <div class="col-12">
-          Timer
+          <div id="gameTimer">Timer</div>
         </div>
       </div>
       <div class="row shadow-sm mt-3 collapse" id="gameCenter">
         <div class="col-12">
           <!-- Task templates -->
-          <div class="collapsed" id="template0">
+          <div class="collapse" id="template0">
             <div class="taskContext">
+              Dokończ słowa template0
+            </div>
+            <div class="interactable">
+              <div class="textField">
 
+              </div>
+            </div>
+          </div>
+          <div class="collapse" id="template1">
+            <div class="taskContext">
+              template1
             </div>
             <div class="interactable">
 
             </div>
           </div>
-          <div class="collapsed" id="template1">
+          <div class="collapse" id="template2">
             <div class="taskContext">
-
+              template2
             </div>
             <div class="interactable">
 
             </div>
           </div>
-          <div class="collapsed" id="template2">
+          <div class="collapse" id="template3">
             <div class="taskContext">
-
+              template3
             </div>
             <div class="interactable">
 
             </div>
           </div>
+        </div>
+      </div>
+      <div class="row shadow-sm mt-3 collapse" id="gameEndCenter">
+        <div class="col-12">
+            <div class="lobbyDashboard">
+              Dziękuje za grę (lobbyDashboard)
+            </div>
         </div>
       </div>
       <div class="row shadow-sm mt-3 collapse" id="gameBottom">
@@ -239,17 +291,23 @@
     /*       logic variables          */
     var self = {};
     var lobbySettings = {
-      maxPlayers: 10
-
+      maxPlayers: 10,
+      lobbyVisibility: "Publiczne"
     }
 
     var lobbyTop = $("#lobbyTop");
     var lobbyCenter = $("#lobbyCenter");
     var lobbyBottom = $("#lobbyBottom");
     var isHost = logicInitVar.isHost;
+    var isLecturer; //For future implementation of lecturer
     var debug = logicInitVar.debug;
     var gameStatus = "not started";
-    var ajaxLoopTimer;
+    var currentTemplateDivId;
+    var currentTemplate;
+    var dateOfGameStart;//For future implementation of Timer
+    var ajaxLoopTimeout;
+    var timerLoop;//For future implementation of Timer
+    var lobbyCode;
 
     var gameTop = $("#gameTop");
     var gameCenter = $("#gameCenter");
@@ -268,6 +326,9 @@
       
       $('.btn').popover();
 
+      //ustaw kod
+      lobbyCode = window.location.href.substring(this.location.href.lastIndexOf('/') + 1);
+      $("#lobbyCode").html("Kod: " + lobbyCode);
     }
     var startGame = () => {
       lobbyTop.hide();
@@ -278,27 +339,59 @@
       gameCenter.show();
       gameBottom.show();
     }
-    var gameSetupAfterChange = (game) => {
+    var copyTextToClipboard = (text) => {
+      var textArea = document.createElement("textarea");
+      textArea.value = text
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
 
+      try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        console.log('Copying text command was ' + msg);
+      } catch (err) {
+        console.log('Oops, unable to copy');
+      }
+
+      document.body.removeChild(textArea);
+    }
+
+    var gameSetupAfterChange = (game) => {
+      /*game:
+      {
+        task: {
+          id: //wybiera odpowiednie id przypisane to template'u
+          [pozostałe wartości odpowiednie dla danego template'u]
+        }
+        time: //czas rozpoczęcia gry, potrzebny tylko na starcie,
+        hasEnded: true //posiada tylko jeśli gra się zakończyła i oddało się ostatnie zadanie... jeszcze do uzgodnienia z Michałem jak to będzie ogarnięte
+      }*/
       //setup task
       if (gameStatus == "not started") {
         gameStatus = "started";
         startGame();
+        dateOfGameStart = game.time;
         setupNewTask(game.task);
       } else if ( game.hasEnded != null && game.hasEnded == true){
         gameStatus = "ended";
-        setupEndGame();
+        setupEndGame(game);
       } else {
         gameStatus = "another task";
         setupNewTask(game.task);
       }
     }
     var lobbySetupAfterChange = (lobby) => {
+      /*
+      lobby: 
+      {
+        playerList: //tablica obiektów graczy z których można odczytać np "name"
+        maxPlayers: //jedno z ustawień lobby
+      }
+      */
       //setup lobby
-      //Cleaning
+      //------player list
       $("#lobbyPlayerList > .player").remove();
-
-      //1. player list game.playerList
       let playerListLength = lobby.playerList.length;
       for (let i = 0; i < playerListLength; i++) {
         let player = lobby.playerList[i];
@@ -312,7 +405,6 @@
                 <span class="d-block">@username</span>
               </div>
             </div>`);
-
         $("#lobbyPlayerList").append(playerDiv);
       }
       
@@ -324,6 +416,12 @@
         if (debug == true)
           console.log("kicking: " + $(e.target).data("username"));
       });
+      
+      //-----max players
+      if (lobby.maxPlayers != null) {
+        $("#lobbyMaxPlayers").val("Gracze " + playerListLength + "\\" + lobby.maxPlayers);
+      }
+      //... pozostałe zmiany jakie mogą zajść w lobby dodac poniżej
     }
     var updateCheck = (data) => {
       if(data.game == true) 
@@ -333,32 +431,94 @@
     } 
     var finishTask = () => {
       var answers = {};
+
+      var inputFields = $("#" + currentTemplateDivId).find(".inputField");
+      var testField = $("#" + currentTemplateDivId).find(".textField");
+      for (let i = 0; i < inputFields.length; i++) {
+        //jeśli będzie potrzeba rozpoznawać ospowiedzi po jakimś id otrzymanym od serwera
+        //var inputFieldId = inputFields[i].data("fieldId"); 
+        //answers[inputFieldId] = inputFields[i].value();
+        answers[i] = $(inputFields[i]).val();
+        console.log(i);
+      }
+      if (debug == true)
+        console.log(inputFields.length);
+      var testField = $("#" + currentTemplateDivId).find(".textField").html("");
       /*
         TODO, 
-        odczytanie odpowiedzi z templatea i przypisanie ich do obiektu answers
+        Przetestować odczytywanie odpowiedzi, (mogą być błędy)
       */
-      ajaxSendAnswerAndReceiveNext(answer);
+      if (debug == true)
+        console.log(answers);
+
+      ajaxSendAnswerAndReceiveNext(answers);
     }
     var setupNewTask = (task) => {
+
+      if (task == null) {
+        if (debug)
+          console.log("task was empty");
+        return;
+      }
       /*
         TODO
-        clear old task and hide templates
+        przetestować podmiane taska, (mogą być błędy)
       */
-      var template = taskTemplates.find((e)=>e.id == task.id)
+      for (let i = 0; i < taskTemplates.length; i++) {
+        $("#" + taskTemplates[i].nameId).hide();
+        $("#" + taskTemplates[i].nameId).find(".inputField").val("");
+        $("#" + taskTemplates[i].nameId).find(".textField").html("");
+      }
 
-      $("#"+template.idName)
 
+      currentTemplate = taskTemplates.find((e)=>e.taskId == task.taskId)
+      currentTemplateDivId = currentTemplate.nameId;
+
+      var templateDivElement = $("#" + currentTemplateDivId);
+      templateDivElement.show();
+
+      //wybieranie odpowiedniej logiki dla konkretnego template'a
+      switch (currentTemplate.nameId) {
+        case "template0":
+          currentTemplate.textField = task.textField;
+          currentTemplate.inputSymbolDetection = task.inputSymbolDetection;
+          currentTemplate.firstLetters = task.firstLetters;
+          
+          var regexp = new RegExp(currentTemplate.inputSymbolDetection , "g");
+          var i = 0;
+          var newTextFieldString = currentTemplate.textField.replace(regexp, function() { return '<input type="text" class="inputField" value="' + currentTemplate.firstLetters[i] + '">' + (i++); });
+
+          templateDivElement.find(".textField").html(newTextFieldString);
+          break;
+        case "template1":
+
+          break;
+      }
+    }
+    var setupEndGame = (game) => {
+
+      console.warn("setupEndGame not finished yet")
+      console.log(game);
+      $("#gameEndCenter").show();
+      $("#gameCenter").hide();
+      $("#gameTimer").hide();
+    }
+    var updateLobbySettingsAsHost = () => {
+      
+      lobbySettings.maxPlayers = $("#inputMaxPlayers").val();
+      lobbySettings.lobbyVisibility = $("#lobbyVisibility").val();
+      //... pozostałe ustawienia które można dodać poniżej
     }
     /*       event listeners          */
     $("#btnStart").on("click",()=>{
       console.log("btnStart");
 
       if (isHost == true)
-        ajaxStart();
+        sendAjaxStart();
     });
     $("#btnLeave").on("click",()=>{
       console.log("btnLeave")
-      ajaxLeave();
+      sendAjaxLeave();
     });
     $("#btnNextTask").on("click",(e) => {
       console.log("btnNextTask")
@@ -366,6 +526,19 @@
       if (gameStatus != "not started" && gameStatus != "ended")
         finishTask();
     })
+    $("#btnCopyCode").on("click",(e) => {
+
+      if (debug == true)
+        console.log("btnCopyCode")
+
+      copyTextToClipboard(lobbyCode);
+    })
+    $("#btnSaveSettings").on("click",()=>{
+      console.log("btnSaveSettings");
+
+      if (isHost == true)
+        sendAjaxSettingsChange();
+    });
     /*     ajax http actions       */
     var sendAjaxStart = () => {
       if (isHost == false)
@@ -379,10 +552,10 @@
         data     : JSON.stringify(send),
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
-          console.log("start success");
+          console.log("sendAjaxStart success");
         },
         error: function(jqXHR, status, err) {
-          console.log("start error");
+          console.log("sendAjaxStart error");
         }
       });
     }
@@ -426,6 +599,8 @@
       if (isHost == false)
         return;
 
+      updateLobbySettingsAsHost();
+
       var send = { ...lobbySettings} 
       if (debug == true)
             console.log(send);
@@ -463,11 +638,11 @@
           
           updateCheck(data);
 
-          ajaxLoopTimer = setTimeout(ajaxConnectionLoop,1000);
+          ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
         },
         error: function(jqXHR, status, err) {
           console.warn("connectionLoop error");
-          ajaxLoopTimer = setTimeout(ajaxConnectionLoop,1000);
+          ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
         }
       });
     }
@@ -519,13 +694,14 @@
         success: function(data, textStatus, jqXHR) {
           console.log("ajaxSendAnswerAndReceiveNext success");
 
-          setupNewTask(data);
+          gameSetupAfterChange(data);
         },
         error: function(jqXHR, status, err) {
           console.warn("ajaxSendAnswerAndReceiveNext error");
         }
       });
     }
+    
     /* debug  */
     var debugSetup = () => {
       if (debug == true) {
@@ -535,13 +711,16 @@
         self.lobbySetupAfterChange = (lobby) => {
           lobbySetupAfterChange(lobby);
         }
+        self.getCurrentTemplateDivId = ()=>{return currentTemplateDivId;}
+
+        self.setupNewTask = setupNewTask;
       }
     }
     debugSetup();
 
     /*  initalization  */
     lobbyInit();
-    ajaxLoopTimer = setTimeout(ajaxConnectionLoop,1000);
+    ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
     
     return self;
   }
@@ -576,16 +755,35 @@
 
   const taskTemplates = [
     {
-      id:0,
-      idName: `template0`,
+      taskId: 0,
+      nameId: `template0`,
+      description: "wstaw odpowiednie słowo w zdaniu",
+      textField: "Lorem ipsum dolor sit amet, consectetur [blank] elit. Quisque vestibulum, enim id fringilla sodales, libero ipsum [blank] erat, id ullamcorper elit ante auctor est. Nulla facilisi. Maecenas ultricies, magna non pretium mattis, ligula risus pulvinar elit, eu mattis [blank] dolor nec turpis. Quisque elementum [blank] accumsan. Lorem ipsum dolor [blank] amet, consectetur adipiscing elit. In nec [blank] nisi, et semper nisl. Cras placerat [blank] orci eget congue. Duis vitae gravida odio. Etiam elit turpis, [blank] ac nisi et, dapibus blandit nibh. Duis eleifend metus in iaculis tincidunt.",
+      inputSymbolDetectionRegExp: "\\[blank\\]",
+      firstLetters: ["a","b","c","d","e","f","g","h"],
+
     },
     {
-      id:1,
-      idName: `template1`,
+      taskId: 1,
+      nameId: `template1`,
+      description: "odpowiedź true/false",
+      textField: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vestibulum, enim id fringilla sodales, libero ipsum maximus erat, id ullamcorper elit ante auctor est. Nulla facilisi. Maecenas ultricies, magna non pretium mattis, ligula risus pulvinar elit, eu mattis sem dolor nec turpis.",
+      questions: ["Nullam gravida pretium finibus. Nam scelerisque ex nec accumsan dictum?",
+      "ed consectetur ullamcorper nibh nec laoreet. Etiam scelerisque urna massa?",
+      "Nam viverra sit amet arcu sit amet posuere?",
+      "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas?",
+      "Nunc vehicula placerat orci, tristique bibendum lacus porta quis?",
+      "Duis euismod sollicitudin neque sit amet venenatis?"]
     },
     {
-      id:2,
-      idName: `template2`,
+      taskId: 2,
+      nameId: `template2`,
+      description: "Połącz odpowiednie słowa z definicjami"
+    },
+    {
+      taskId: 3,
+      nameId: `template3`,
+      description: "połącz słowa z ich synonimami"
     }
 
   ];
