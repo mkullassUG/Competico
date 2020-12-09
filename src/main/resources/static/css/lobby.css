@@ -95,7 +95,25 @@ h2 {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+/*loading modal*/
+.bd-example-modal-lg .modal-dialog{
+  display: table;
+  position: relative;
+  margin: 0 auto;
+  top: calc(50% - 24px);
+}
 
+.bd-example-modal-lg .modal-dialog .modal-content{
+  background-color: transparent;
+  border: none;
+}
+
+.hideBeforeLoad {
+  display: none;
+}
+.hideBeforeLoadModal {
+  height: 100%;
+}
 /*other*/
 .bd-placeholder-img {
   font-size: 1.125rem;
@@ -111,3 +129,4 @@ h2 {
     font-size: 3.5rem;
   }
 }
+

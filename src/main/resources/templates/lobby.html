@@ -50,8 +50,16 @@
         </div>
       </div>
     </div>
-
-    <div class="container fill text-center">
+    <!-- loading modal -->
+    <div class="hideBeforeLoadModal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+      <div class="modal-dialog modal-sm">
+          <div class="modal-content" style="width: 48px">
+              <span class="fa fa-spinner fa-spin fa-3x"></span>
+          </div>
+      </div>
+    </div>
+    <!-- main content -->
+    <div class="container fill text-center hideBeforeLoad">
       <div class="row shadow-sm rounded" id="lobbyTop">
         <div class="col-3">
           <buton class="btn btn-sm btn-secondary" id="btnCopyCode">Kopiuj kod</buton>
@@ -78,7 +86,7 @@
                 Host:
               </h6>
               <div class="lh-100">
-                <h6 class="mb-0 text-dark lh-100">@username</h6>
+                <h6 class="mb-0 text-dark lh-100" id="lobbyHostUsername">@username</h6>
                 <small></small>
               </div>
             </div>
@@ -278,7 +286,7 @@
 <script src="js/bootstrap.min.js"></script>
 <script>
   
-  const LobbyLogic = ( logicInitVar = {isHost : true, debug : false}) => {
+  const LobbyLogic = ( debug = false) => {
 
     /*       logic variables          */
     var self = {};
@@ -290,37 +298,58 @@
     var lobbyTop = $("#lobbyTop");
     var lobbyCenter = $("#lobbyCenter");
     var lobbyBottom = $("#lobbyBottom");
-    var isHost = logicInitVar.isHost;
+    var isHost;
     var isLecturer; //For future implementation of lecturer
-    var debug = logicInitVar.debug;
+    var debug = debug;
     var gameStatus = "not started";
+    var gameStarted;
     var currentTemplateDivId;
     var currentTemplate;
     var dateOfGameStart;//For future implementation of Timer
     var ajaxLoopTimeout;
     var timerLoop;//For future implementation of Timer
     var lobbyCode;
+    var nickname;
 
     var gameTop = $("#gameTop");
     var gameCenter = $("#gameCenter");
     var gameBottom = $("#gameBottom");
 
     /*       logic functions          */
-    var lobbyInit = () => {
+    var lobbyInit = (data) => {
+
+      isHost = data.isHost; 
+      nickname = data.nickname; 
+      gameStarted = data.gameStarted;
+
+      if (!data.logged)
+        window.location = "/login";
       if (isHost) {
         $("#btnStart").show();
         $("#btnSettings").show();
+        $("#lobbyHostUsername").html(nickname);
       } else {
 
         $("#lobbyMainHost").removeClass("col-10").addClass("col-12");
         $("#lobbySettings").hide();
       }
       
+      if (gameStarted) {
+        gameStatus = "started";
+        ajaxReceiveGameChange(); //nie wiem czy potrzebne... nie jeśli serwer będzie wiedział że ktośwyszedł i wrócił i trzeba mu dać znać w connectionLoopie
+        
+      }
+
       $('.btn').popover();
 
       //ustaw kod
       lobbyCode = window.location.href.substring(this.location.href.lastIndexOf('/') + 1);
       $("#lobbyCode").html("Kod: " + lobbyCode);
+      ajaxReceiveLobbyChange();
+      $('.hideBeforeLoad').fadeIn();
+
+      
+      ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
     }
     var startGame = () => {
       lobbyTop.hide();
@@ -382,9 +411,12 @@
       {
         playerList: //tablica obiektów graczy z których można odczytać np "name"
         maxPlayers: //jedno z ustawień lobby
+        whoIsHost: nazwa obecnego hosta lobby
       }
       */
       //setup lobby
+      
+      $("#lobbyHostUsername").html(lobby.whoIsHost);
       //------player list
       $("#lobbyPlayerList > .player").remove();
       let playerListLength = lobby.playerList.length;
@@ -545,7 +577,7 @@
     var sendAjaxStart = () => {
       if (isHost == false)
         return;
-
+      $('.hideBeforeLoadModal').modal('show');
       var send = {}
       $.ajax({
         type     : "POST",
@@ -556,10 +588,14 @@
         success: function(data, textStatus, jqXHR) {
           if (debug)
             console.log("sendAjaxStart success");
+          
+          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
         },
         error: function(jqXHR, status, err) {
           if (debug)
             console.log("sendAjaxStart error");
+          
+          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
         }
       });
     }
@@ -633,7 +669,7 @@
       var send = { } 
 
       $.ajax({
-        type     : "POST",
+        type     : "GET",
         cache    : false,
         url      : "game/endGame",
         data     : JSON.stringify(send),
@@ -649,12 +685,13 @@
         }
       });
     }
+    
     /*   ajax http requests       */
     var ajaxConnectionLoop = ( ) => {
       
       var send = {}
       $.ajax({
-        type     : "POST",
+        type     : "GET",
         cache    : false,
         url      : "game/connectionLoop",
         data     : JSON.stringify(send),
@@ -675,9 +712,10 @@
       });
     }
     var ajaxReceiveLobbyChange = ( ) => {
+      $('.hideBeforeLoadModal').modal('show');
       var send = {}
       $.ajax({
-        type     : "POST",
+        type     : "GET",
         cache    : false,
         url      : "game/getLobby",
         data     : JSON.stringify(send),
@@ -685,37 +723,44 @@
         success: function(data, textStatus, jqXHR) {
           if (debug)
             console.log("ajaxGetLobbyChange success");
-
+          
+          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
           lobbySetupAfterChange(data);
         },
         error: function(jqXHR, status, err) {
           if (debug)
             console.warn("ajaxGetLobbyChange error");
+          
+          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
         }
       });
     }
     var ajaxReceiveGameChange = ( ) => {
+      $('.hideBeforeLoadModal').modal('show');
       var send = {}
       $.ajax({
-        type     : "POST",
+        type     : "GET",
         cache    : false,
-        url      : "game/getLobby",
+        url      : "game/getGame",
         data     : JSON.stringify(send),
         contentType: "application/json",
         success: function(data, textStatus, jqXHR) {
           if (debug)
             console.log("ajaxGetLobbyChange success");
 
+          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
           gameSetupAfterChange(data);
         },
         error: function(jqXHR, status, err) {
           if (debug)
             console.warn("ajaxGetLobbyChange error");
+          
+          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
         }
       });
     }
     var ajaxSendAnswerAndReceiveNext = ( answer ) => {
-
+      $('.hideBeforeLoadModal').modal('show');
       var send = {answer: answer}
       $.ajax({
         type     : "POST",
@@ -726,19 +771,51 @@
         success: function(data, textStatus, jqXHR) {
           if (debug)
             console.log("ajaxSendAnswerAndReceiveNext success");
-
+          
+          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
           gameSetupAfterChange(data);
         },
         error: function(jqXHR, status, err) {
           if (debug)
             console.warn("ajaxSendAnswerAndReceiveNext error");
+          
+          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
         }
       });
     }
-    
+    var ajaxReceiveWhoAmI = ( ) => {
+      $('.hideBeforeLoadModal').modal('show');
+      var send = {}
+      $.ajax({
+        type     : "GET",
+        cache    : false,
+        url      : "game/whoAmI",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          if (debug)
+            console.log("ajaxReceiveWhoAmI success");
+          
+          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
+          lobbyInit(data);
+        },
+        error: function(jqXHR, status, err) {
+          if (debug)
+            console.warn("ajaxReceiveWhoAmI error");
+          
+          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
+        }
+      });
+    }
     /* debug  */
     var debugSetup = () => {
       if (debug == true) {
+        lobbyInit({
+          logged: true, 
+          isHost : false, 
+          nickname: "Gracztestowy", 
+          gameStarted: false});
+        
         self.gameSetupAfterChange = (game) => {
           gameSetupAfterChange(game);
         }
@@ -748,46 +825,31 @@
         self.getCurrentTemplateDivId = ()=>{return currentTemplateDivId;}
 
         self.setupNewTask = setupNewTask;
+        self.isHost = isHost;
+        self.nickname = nickname;
+        self.gameStarted = gameStarted;
       }
     }
-    debugSetup();
+    
 
     /*  initalization  */
-    lobbyInit();
-    ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
+    if (debug)
+      debugSetup();
+    else
+      ajaxReceiveWhoAmI();
     
     return self;
   }
-  LobbyLogic.start = (isHost = true, debug = false) => {
+  LobbyLogic.create = (debug = false) => {
     
-    if (debug == true) 
-      return LobbyLogic({isHost: isHost, debug: debug});
+    if (debug) 
+      return LobbyLogic(debug = true);
 
-    var ajaxReceiveAmIHost = ( ) => {
-      var send = {}
-      $.ajax({
-        type     : "POST",
-        cache    : false,
-        url      : "game/getLobby",
-        data     : JSON.stringify(send),
-        contentType: "application/json",
-        success: function(data, textStatus, jqXHR) {
-          if (debug)
-            console.log("ajaxReceiveAmIHost success");
-
-          LobbyLogic(data);
-        },
-        error: function(jqXHR, status, err) {
-          if (debug)
-            console.warn("ajaxReceiveAmIHost error");
-        }
-      });
-    }
-    ajaxReceiveAmIHost();
-    return false;
+      LobbyLogic();
   }
-  LobbyLogic.start();
-  //var debug = LobbyLogic.start(isHost = true, debug = true);
+  LobbyLogic.create();
+  //var debug = LobbyLogic.start(debug = true);
+
 
   const taskTemplates = [
     {
