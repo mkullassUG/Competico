@@ -13,11 +13,27 @@ body {
 #lobbySettings {
   box-shadow: none !important;
   margin: auto;
+  height: 20%;
+  margin-top: 50px;
+  margin-bottom: -50px;
 }
 
 #lobbyPlayerList {
   height:56%;
   /* TODO scrollbar-color: #4285F4 #F5F5F5 */
+}
+#lobbyplayers {
+  max-height: 290px;
+  margin-top: 160px!important;
+  overflow-y: scroll;
+  height: 290px;
+  /*będzie sięrozjeżdżać na większych monitorach!!!*/
+}
+#lobbyMainHost {
+  height: 20%;
+}
+#lobbyMainPlayers {
+  margin-top: -100px;
 }
 
 #lobbyCenter, #gameCenter, #gameEndCenter {
@@ -28,7 +44,7 @@ body {
   bottom: 0;
   width: 100%;
   line-height: 60px;
-  z-index: 2;
+  z-index: 0!important;
 }
 #inputCode {
   max-width: 225px;
@@ -95,7 +111,26 @@ h2 {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+/*loading modal*/
+.bd-example-modal-lg .modal-dialog{
+  display: table;
+  position: relative;
+  margin: 0 auto;
+  top: calc(50% - 24px);
+}
 
+.bd-example-modal-lg .modal-dialog .modal-content{
+  background-color: transparent;
+  border: none;
+}
+
+.hideBeforeLoad {
+  display: none;
+  z-index: 2!important; /*just cuz container div contains this class*/
+}
+.hideBeforeLoadModal {
+  height: 100%;
+}
 /*other*/
 .bd-placeholder-img {
   font-size: 1.125rem;
@@ -111,3 +146,4 @@ h2 {
     font-size: 3.5rem;
   }
 }
+
