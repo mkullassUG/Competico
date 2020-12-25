@@ -1,5 +1,7 @@
 package com.projteam.app.service;
 
+import static com.projteam.app.domain.Account.LECTURER_ROLE;
+import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +47,12 @@ public class LobbyServiceTests
 	@Test
 	public void hostPlayerAppearsInList()
 	{
-		Account host = new Account("testHost@test.pl", "TestHost", "QWERTY", List.of("PLAYER"));
+		Account host = new Account.Builder()
+				.withEmail("testHost@test.pl")
+				.withUsername("TestHost")
+				.withPasswordHash("QWERTY")
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
 		String gameCode = lobbyService.createLobby(host);
 		
 		Assert.isTrue(lobbyService.getPlayers(gameCode)
@@ -54,7 +61,12 @@ public class LobbyServiceTests
 	@Test
 	public void hostLecturerDoesNotAppearInList()
 	{
-		Account host = new Account("testHost@test.pl", "TestHost", "QWERTY", List.of("LECTURER"));
+		Account host = new Account.Builder()
+				.withEmail("testHost@test.pl")
+				.withUsername("TestHost")
+				.withPasswordHash("QWERTY")
+				.withRoles(List.of(LECTURER_ROLE))
+				.build();
 		String gameCode = lobbyService.createLobby(host);
 		
 		Assert.isTrue(!lobbyService.getPlayers(gameCode)
@@ -86,12 +98,13 @@ public class LobbyServiceTests
 				"Game host was not assigned correctly");
 	}
 	@ParameterizedTest
-	@MethodSource("mockHostAndPlayers")
+	@MethodSource({"mockPlayerHostAndPlayers", "mockLecturerHostAndPlayers"})
 	public void addedPlayersAppearInPlayerList(Account mockHost,
 			List<Account> mockPlayers)
 	{
 		String gameCode = lobbyService.createLobby(mockHost);
-		int maxPlayerCount = lobbyService.getMaximumPlayerCount(gameCode);
+		int maxPlayerCount = lobbyService.getMaximumPlayerCount(gameCode)
+				- (mockHost.hasRole(PLAYER_ROLE)?1:0);
 		
 		mockPlayers.stream()
 			.limit(maxPlayerCount)
@@ -104,12 +117,13 @@ public class LobbyServiceTests
 			"Player list does not contain added player");
 	}
 	@ParameterizedTest
-	@MethodSource("mockHostAndPlayers")
+	@MethodSource({"mockPlayerHostAndPlayers", "mockLecturerHostAndPlayers"})
 	public void removedPlayersDoNotAppearInPlayerList_sequential(Account mockHost,
 			List<Account> mockPlayers)
 	{
 		String gameCode = lobbyService.createLobby(mockHost);
-		int maxPlayerCount = lobbyService.getMaximumPlayerCount(gameCode);
+		int maxPlayerCount = lobbyService.getMaximumPlayerCount(gameCode)
+				- (mockHost.hasRole(PLAYER_ROLE)?1:0);
 		
 		mockPlayers.stream()
 			.limit(maxPlayerCount)
@@ -127,13 +141,14 @@ public class LobbyServiceTests
 					"Player list still contains removed player"));
 	}
 	@ParameterizedTest
-	@MethodSource("mockHostAndPlayers")
+	@MethodSource({"mockPlayerHostAndPlayers", "mockLecturerHostAndPlayers"})
 	public void removedPlayersDoNotAppearInPlayerList_isolated(Account mockHost,
 			List<Account> mockPlayers)
 	{
 		String gameCode = lobbyService.createLobby(mockHost);
 		mockPlayers.stream()
-			.limit(lobbyService.getMaximumPlayerCount(gameCode))
+			.limit(lobbyService.getMaximumPlayerCount(gameCode)
+					- (mockHost.hasRole(PLAYER_ROLE)?1:0))
 			.forEach(player -> 
 			{
 				Assert.isTrue(lobbyService.addPlayer(gameCode, player),
@@ -147,22 +162,17 @@ public class LobbyServiceTests
 			});
 	}
 	
-	@Test
-	public void playerNotAddedAbovePlayerLimit()
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndPlayer", "mockLecturerHostAndPlayer"})
+	public void playerNotAddedAbovePlayerLimit(Account mockHost, Account mockPlayer)
 	{
-		Account host = new Account("testHost@test.pl", "TestHost", "QWERTY");
-		Account mockPlayer = new Account("mockPlayer@mock.pl",
-				"MockPlayer",
-				"QWERTY",
-				List.of("PLAYER"));
-		String gameCode = lobbyService.createLobby(host);
-		int maxPlayerCount = lobbyService.getMaximumPlayerCount(gameCode);
+		String gameCode = lobbyService.createLobby(mockHost);
+		int maximumPlayerCount = lobbyService.getMaximumPlayerCount(gameCode)
+				- (mockHost.hasRole(PLAYER_ROLE)?1:0);
+		List<Account> mockPlayers = mockPlayers(maximumPlayerCount);
 		
-		IntStream.range(0, maxPlayerCount)
-				.mapToObj(i -> new Account("testPlayer" + i + "@test.pl",
-						"TestPlayer" + i,
-						"QWERTY" + i,
-						List.of("PLAYER")))
+		mockPlayers.stream()
+				.limit(maximumPlayerCount)
 				.forEach(player -> Assert.isTrue(lobbyService.addPlayer(gameCode, player),
 						"Failed to add player before reaching limit"));
 		
@@ -174,10 +184,10 @@ public class LobbyServiceTests
 	
 	//---Sources---
 	
-	public static List<Arguments> mockHostAndPlayers()
+	public static List<Arguments> mockPlayerHostAndPlayers()
 	{
 		List<Arguments> ret = new ArrayList<>();
-		Account host = new Account("testHost@test.pl", "TestHost", "QWERTY");
+		Account host = mockHost(PLAYER_ROLE);
 		
 		IntStream.rangeClosed(0, 50)
 			.forEach(max ->
@@ -185,13 +195,87 @@ public class LobbyServiceTests
 				List<Account> players = new ArrayList<>();
 				players.addAll(
 						IntStream.rangeClosed(0, max)
-						.mapToObj(i -> new Account("testPlayer" + i + "@test.pl",
-								"TestPlayer" + i,
-								"QWERTY" + i,
-								List.of("PLAYER")))
+						.mapToObj(i -> mockPlayer("Player" + i))
 						.collect(Collectors.toList()));
 				ret.add(Arguments.of(host, players));
 			});
 		return ret;
+	}
+	public static List<Arguments> mockLecturerHostAndPlayers()
+	{
+		List<Arguments> ret = new ArrayList<>();
+		Account host = mockHost(LECTURER_ROLE);
+		
+		IntStream.rangeClosed(0, 50)
+			.forEach(max ->
+			{
+				List<Account> players = new ArrayList<>();
+				players.addAll(
+						IntStream.rangeClosed(0, max)
+						.mapToObj(i -> mockPlayer("Player" + i))
+						.collect(Collectors.toList()));
+				ret.add(Arguments.of(host, players));
+			});
+		return ret;
+	}
+	public static List<Arguments> mockPlayerHostAndPlayer()
+	{
+		List<Arguments> ret = new ArrayList<>();
+		Account host = mockHost(PLAYER_ROLE);
+		Account player = mockPlayer("Player");
+		
+		IntStream.rangeClosed(0, 50)
+			.forEach(max ->
+			{
+				List<Account> players = new ArrayList<>();
+				players.addAll(
+						IntStream.rangeClosed(0, max)
+						.mapToObj(i -> mockPlayer("Player" + i))
+						.collect(Collectors.toList()));
+				ret.add(Arguments.of(host, player, players));
+			});
+		return ret;
+	}
+	public static List<Arguments> mockLecturerHostAndPlayer()
+	{
+		List<Arguments> ret = new ArrayList<>();
+		Account host = mockHost(LECTURER_ROLE);
+		Account player = mockPlayer("Player");
+		
+		IntStream.rangeClosed(0, 50)
+			.forEach(max ->
+			{
+				List<Account> players = new ArrayList<>();
+				players.addAll(
+						IntStream.rangeClosed(0, max)
+						.mapToObj(i -> mockPlayer("Player" + i))
+						.collect(Collectors.toList()));
+				ret.add(Arguments.of(host, player, players));
+			});
+		return ret;
+	}
+	private static Account mockHost(String role)
+	{
+		return new Account.Builder()
+				.withEmail("testHost@test.pl")
+				.withUsername("TestHost")
+				.withPasswordHash("QWERTY")
+				.withRoles(List.of(role))
+				.build();
+	}
+	private static Account mockPlayer(String name)
+	{
+		return new Account.Builder()
+				.withEmail("test" + name + "@test.pl")
+				.withUsername("Test" + name)
+				.withPasswordHash("QWERTY" + name)
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+	}
+	private static List<Account> mockPlayers(int amount)
+	{
+		return IntStream.rangeClosed(0, amount)
+				.mapToObj(i -> mockPlayer("Player" + i))
+				.collect(Collectors.toList());
 	}
 }
