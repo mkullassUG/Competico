@@ -1,5 +1,6 @@
 package com.projteam.app.service;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,11 +89,12 @@ public class AccountServiceTests
 		when(passEnc.matches(mockRegDto.getPassword(),
 				mockRegDto.getPassword().toString()))
 			.thenReturn(true);
-		when(accDao.selectAccount(mockRegDto.getEmail()))
-			.thenReturn(new Account(
-					mockRegDto.getEmail(),
-					mockRegDto.getUsername(),
-					mockRegDto.getPassword().toString()));
+		when(accDao.findOne(any()))
+			.thenReturn(Optional.of(new Account.Builder()
+					.withEmail(mockRegDto.getEmail())
+					.withUsername(mockRegDto.getUsername())
+					.withPasswordHash(mockRegDto.getPassword().toString())
+					.build()));
 		
 		accountService.register(req, mockRegDto, false);
 		boolean loggedIn = accountService.login(req, mockLoginDto);

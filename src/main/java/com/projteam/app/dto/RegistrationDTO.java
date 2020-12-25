@@ -1,6 +1,5 @@
 package com.projteam.app.dto;
 
-import java.util.Objects;
 import org.springframework.lang.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -17,10 +16,6 @@ public class RegistrationDTO
 			@JsonProperty("password") CharSequence password,
 			@JsonProperty("isPlayer") boolean isPlayer)
 	{
-		Objects.requireNonNull(email);
-		Objects.requireNonNull(username);
-		Objects.requireNonNull(password);
-		
 		this.email = email;
 		this.username = username;
 		this.password = password;
@@ -41,17 +36,14 @@ public class RegistrationDTO
 	}
 	public void setEmail(String email)
 	{
-		Objects.requireNonNull(email);
 		this.email = email;
 	}
 	public void setUsername(String username)
 	{
-		Objects.requireNonNull(username);
 		this.username = username;
 	}
 	public void setPassword(CharSequence password)
 	{
-		Objects.requireNonNull(password);
 		this.password = password;
 	}
 	public boolean isPlayer()

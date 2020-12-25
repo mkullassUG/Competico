@@ -19,7 +19,6 @@ public class ApiDocConfig
 	{
 		return new Docket(DocumentationType.SWAGGER_2)
 				.select()
-				//TODO replace with final project name
 				.apis(RequestHandlerSelectors.basePackage(SpringApp.class.getPackageName()))
 				.paths(PathSelectors.any())
 				.build()

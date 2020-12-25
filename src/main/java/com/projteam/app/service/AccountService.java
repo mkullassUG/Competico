@@ -4,9 +4,12 @@ import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static com.projteam.app.domain.Account.LECTURER_ROLE;
 
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,15 +48,22 @@ public class AccountService implements UserDetailsService
 	public void register(HttpServletRequest req, RegistrationDTO regDto, boolean autoAuthenticate)
 	{
 		String passHash = passEnc.encode(regDto.getPassword());
-		Account acc = new Account(regDto.getEmail(), regDto.getUsername(), passHash,
-				List.of(regDto.isPlayer()?PLAYER_ROLE:LECTURER_ROLE));
-		acc = accDao.insertAccount(acc);
+		
+		Account acc = new Account.Builder()
+				.withID(UUID.randomUUID())
+				.withEmail(regDto.getEmail())
+				.withUsername(regDto.getUsername())
+				.withNickname(regDto.getUsername())
+				.withPasswordHash(passHash)
+				.withRoles(List.of(regDto.isPlayer()?PLAYER_ROLE:LECTURER_ROLE))
+				.build();
+		acc = accDao.save(acc);
 		if (autoAuthenticate)
 			authenticate(req, regDto.getEmail(), regDto.getPassword());
 	}
 	public boolean login(HttpServletRequest req, LoginDTO loginDto)
 	{
-		Account acc = accDao.selectAccount(loginDto.getEmail());
+		Account acc = selectByEmailOrUsername(loginDto.getEmail());
 		if (acc == null)
 			return false;
 		if (passEnc.matches(loginDto.getPassword(), acc.getPassword()))
@@ -63,6 +73,18 @@ public class AccountService implements UserDetailsService
 		}
 		else
 			return false;
+	}
+	
+	private Account selectByEmailOrUsername(String emailOrUsername)
+	{
+		return accDao.findOne(Example.of(new Account.Builder()
+					.withEmail(emailOrUsername)
+					.withUsername(emailOrUsername)
+					.build(),
+				ExampleMatcher.matchingAny()
+					.withMatcher("email", ExampleMatcher.GenericPropertyMatchers.exact())
+					.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.exact())))
+				.orElse(null);
 	}
 	
 	private void authenticate(HttpServletRequest req, String email, CharSequence password)
@@ -97,7 +119,7 @@ public class AccountService implements UserDetailsService
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
 	{
-		Account acc = accDao.selectAccount(username);
+		Account acc = selectByEmailOrUsername(username);
 		if (acc == null)
 			throw new UsernameNotFoundException("Invalid email or password.");
 		return acc;

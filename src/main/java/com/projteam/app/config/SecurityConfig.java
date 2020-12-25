@@ -2,9 +2,9 @@ package com.projteam.app.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
 	private DaoAuthenticationProvider authProvider;
 	
-	public SecurityConfig(DaoAuthenticationProvider authProvider)
+	public SecurityConfig(@Lazy DaoAuthenticationProvider authProvider)
 	{
 		this.authProvider = authProvider;
 	}
@@ -38,8 +38,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		                "/css/**",
 		                "/assets/**",
 		                "/login",
-		                "/lobby",
-		                "/lobby-join",
 		                "/register",
 		                "/api/v1/login/",
 		                "/api/v1/register/")
@@ -54,6 +52,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 					"/v2/api-docs/**",
 					"/v3/api-docs/**")
 			.hasRole("SWAGGER_ADMIN")*/
+			.antMatchers(
+					"/swagger-ui/**",
+					"/swagger-resources/**",
+					"/webjars/**",
+					"/v2/api-docs/**",
+					"/v3/api-docs/**")
+			.permitAll()
 			
 			.anyRequest().authenticated()
 			.and()

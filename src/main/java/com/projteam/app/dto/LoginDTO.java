@@ -1,6 +1,5 @@
 package com.projteam.app.dto;
 
-import java.util.Objects;
 import org.springframework.lang.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,9 +12,6 @@ public class LoginDTO
 			@JsonProperty("email") String email,
 			@JsonProperty("password") CharSequence password)
 	{
-		Objects.requireNonNull(email);
-		Objects.requireNonNull(password);
-		
 		this.email = email;
 		this.password = password;
 	}
@@ -30,12 +26,10 @@ public class LoginDTO
 	}
 	public void setEmail(String email)
 	{
-		Objects.requireNonNull(email);
 		this.email = email;
 	}
 	public void setPassword(CharSequence password)
 	{
-		Objects.requireNonNull(password);
 		this.password = password;
 	}
 
