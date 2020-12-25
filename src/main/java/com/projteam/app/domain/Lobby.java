@@ -1,10 +1,8 @@
 package com.projteam.app.domain;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Lobby
 {
@@ -19,9 +17,6 @@ public class Lobby
 	}
 	public Lobby(String gameCode, Account host, int maxPlayerCount)
 	{
-		Objects.requireNonNull(gameCode);
-		Objects.requireNonNull(host);
-		
 		this.gameCode = gameCode;
 		this.host = host;
 		players = new ArrayList<>();
@@ -42,7 +37,9 @@ public class Lobby
 	}
 	public boolean addPlayer(Account player)
 	{
-		if ((players.size() + ((host != null)?1:0)) > maxPlayerCount)
+		if (isHost(player))
+			return false;
+		if (!canAcceptPlayer())
 			return false;
 		if (player.hasRole(PLAYER_ROLE))
 			return players.add(player);
@@ -59,5 +56,27 @@ public class Lobby
 	public String getGameCode()
 	{
 		return gameCode;
+	}
+	public boolean canAcceptPlayer()
+	{
+		return ((players.size() + ((host.hasRole(PLAYER_ROLE))?1:0)) < maxPlayerCount);
+	}
+	public boolean containsPlayer(Account player)
+	{
+		return players.contains(player);
+	}
+	public boolean containsPlayerOrHost(Account player)
+	{
+		return containsPlayer(player) || isHost(player);
+	}
+	public boolean isHost(Account player)
+	{
+		return host.equals(player);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Lobby [gameCode=" + gameCode + ", host=" + host + ", players=" + players + ", maxPlayerCount=" + maxPlayerCount + "]";
 	}
 }
