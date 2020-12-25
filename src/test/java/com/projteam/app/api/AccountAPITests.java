@@ -1,11 +1,14 @@
 package com.projteam.app.api;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ public class AccountAPITests
 	private AccountService accServ;
 	
 	private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
+	private static final String LOGIN_REDIRECT_URL = "/dashboard";
 	
 	@BeforeEach
 	public void setup()
@@ -63,7 +67,7 @@ public class AccountAPITests
 				.content(toJson(mockRegDto)))
 			.andExpect(status().isCreated());
 		
-		verify(accServ).register(any(), eq(mockRegDto), eq(true));
+		verify(accServ).register(any(), eq(mockRegDto), anyBoolean());
 		verifyNoMoreInteractions(accServ);
 	}
 	@ParameterizedTest
@@ -79,7 +83,7 @@ public class AccountAPITests
 				.content(toJson(mockRegDto)))
 			.andExpect(status().isBadRequest());
 		
-		verify(accServ).register(any(), eq(mockRegDto), eq(true));
+		verify(accServ).register(any(), eq(mockRegDto), anyBoolean());
 		verifyNoMoreInteractions(accServ);
 	}
 	
@@ -112,6 +116,43 @@ public class AccountAPITests
 		
 		verify(accServ).login(any(), eq(mockLoginDto));
 		verifyNoMoreInteractions(accServ);
+	}
+	
+	@Test
+	public void shouldRedirectFromRegisterWhenAlreadyLoggedIn() throws Exception
+	{
+		when(accServ.isAuthenticated())
+			.thenReturn(true);
+		
+		mvc.perform(get("/register"))
+			.andExpect(redirectedUrl(LOGIN_REDIRECT_URL));
+	}
+	@Test
+	public void shouldRedirectFromLoginWhenAlreadyLoggedIn() throws Exception
+	{
+		when(accServ.isAuthenticated())
+			.thenReturn(true);
+		
+		mvc.perform(get("/login"))
+			.andExpect(redirectedUrl(LOGIN_REDIRECT_URL));
+	}
+	@Test
+	public void shouldDisplayRegisterPageWhenAlreadyLoggedIn() throws Exception
+	{
+		when(accServ.isAuthenticated())
+			.thenReturn(false);
+		
+		mvc.perform(get("/register"))
+			.andExpect(status().isOk());
+	}
+	@Test
+	public void shouldDisplayLoginPageWhenAlreadyLoggedIn() throws Exception
+	{
+		when(accServ.isAuthenticated())
+			.thenReturn(false);
+		
+		mvc.perform(get("/login"))
+			.andExpect(status().isOk());
 	}
 	
 	//---Sources---

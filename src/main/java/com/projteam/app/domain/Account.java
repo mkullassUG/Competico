@@ -2,101 +2,42 @@ package com.projteam.app.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@IdClass(AccountID.class)
 public class Account implements UserDetails
 {
 	private @Id @Column(name = "id", unique = true) UUID id;
-	private @Id @Column(name = "email", unique = true) String email;
-	private @Id @Column(name = "username", unique = true) String username;
+	private @Column(name = "email", unique = true) String email;
+	private @Column(name = "username", unique = true) String username;
 	private @Column(name = "password") String passwordHash;
 	private @Column(name = "nickname") String nickname;
 	
-	private @Column(name = "accountEnabled") boolean accEnabled;
-	private @Column(name = "accountNonExpired") boolean accNonExpired;
-	private @Column(name = "accountNonLocked") boolean accNonLocked;
-	private @Column(name = "credentialsNonExpired") boolean credNonExpired;
+	private @Column(name = "accountEnabled") boolean accEnabled = true;
+	private @Column(name = "accountNonExpired") boolean accNonExpired = true;
+	private @Column(name = "accountNonLocked") boolean accNonLocked = true;
+	private @Column(name = "credentialsNonExpired") boolean credNonExpired = true;
 	
-	private @Column(name = "roles") @ElementCollection(fetch = FetchType.EAGER) List<String> roles;
+	@Column(name = "roles")
+	@ElementCollection
+	private List<String> roles = Collections.emptyList();
 	
 	public static final String PLAYER_ROLE = "PLAYER";
 	public static final String LECTURER_ROLE = "LECTURER";
 	
 	public Account()
-	{
-		accEnabled = true;
-		accNonExpired = true;
-		accNonLocked = true;
-		credNonExpired = true;
-		roles = new ArrayList<>();
-	}
-	public Account(String email, String username, String passwordHash)
-	{
-		this(null, email, username, passwordHash,
-				true, true, true, true, new ArrayList<>());
-	}
-	public Account(UUID id, String email, String username, String passwordHash)
-	{
-		this(id, email, username, passwordHash,
-				true, true, true, true, new ArrayList<>());
-	}
-	public Account(String email, String username, String passwordHash, List<String> roles)
-	{
-		this(null, email, username, passwordHash,
-				true, true, true, true, roles);
-	}
-	public Account(UUID id, String email, String username, String passwordHash, List<String> roles)
-	{
-		this(id, email, username, passwordHash,
-				true, true, true, true, roles);
-	}
-	public Account(String email, String username, String passwordHash,
-			boolean accEnabled, boolean accNonExpired, boolean accNonLocked, boolean credNonExpired)
-	{
-		this(null, email, username, passwordHash,
-				accEnabled, accNonExpired, accNonLocked, credNonExpired, new ArrayList<>());
-	}
-	public Account(UUID id, String email, String username, String passwordHash,
-			boolean accEnabled, boolean accNonExpired, boolean accNonLocked, boolean credNonExpired)
-	{
-		this(id, email, username, passwordHash,
-				accEnabled, accNonExpired, accNonLocked, credNonExpired, new ArrayList<>());
-	}
-	public Account(String email, String username, String passwordHash,
-			boolean accEnabled, boolean accNonExpired, boolean accNonLocked, boolean credNonExpired,
-			List<String> roles)
-	{
-		this(null, email, username, passwordHash,
-				accEnabled, accNonExpired, accNonLocked, credNonExpired, roles);
-	}
-	public Account(UUID id, String email, String username, String passwordHash,
-			boolean accEnabled, boolean accNonExpired, boolean accNonLocked, boolean credNonExpired,
-			List<String> roles)
-	{
-		this.id = id;
-		this.email = email;
-		this.username = username;
-		this.passwordHash = passwordHash;
-		nickname = username;
-		this.accEnabled = accEnabled;
-		this.accNonExpired = accNonExpired;
-		this.accNonLocked = accNonLocked;
-		this.credNonExpired = credNonExpired;
-		this.roles = new ArrayList<>(roles);
-	}
+	{}
 	
 	public UUID getId()
 	{
@@ -119,49 +60,36 @@ public class Account implements UserDetails
 	{
 		return nickname;
 	}
+	public List<String> getRoles()
+	{
+		return Collections.unmodifiableList(roles);
+	}
 	
-	public Account setId(UUID id)
+	public void setId(UUID id)
 	{
-		return new Account(id, email, username, passwordHash);
+		this.id = id;
 	}
-	public Account setEmail(String email)
+	public void setEmail(String email)
 	{
-		return new Account(id, email, username, passwordHash);
+		this.email = email;
 	}
-	public Account setUsername(String username)
+	public void setUsername(String username)
 	{
-		return new Account(id, email, username, passwordHash);
+		this.username = username;
+	}
+	public void setPasswordHash(String passwordHash)
+	{
+		this.passwordHash = passwordHash;
 	}
 	public void setNickname(String nickname)
 	{
 		this.nickname = nickname;
-	}
-	public List<String> getRoles()
-	{
-		return roles;
 	}
 	public void setRoles(List<String> roles)
 	{
 		this.roles = new ArrayList<>(roles);
 	}
 
-	@Override
-	public int hashCode()
-	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (accEnabled ? 1231 : 1237);
-		result = prime * result + (accNonExpired ? 1231 : 1237);
-		result = prime * result + (accNonLocked ? 1231 : 1237);
-		result = prime * result + (credNonExpired ? 1231 : 1237);
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());
-		result = prime * result + ((passwordHash == null) ? 0 : passwordHash.hashCode());
-		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
-		return result;
-	}
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -213,8 +141,9 @@ public class Account implements UserDetails
 			if (other.roles != null)
 				return false;
 		}
-		else if (!roles.equals(other.roles))
+		else if (!listsEqual(roles, other.roles))
 			return false;
+		
 		if (username == null)
 		{
 			if (other.username != null)
@@ -223,6 +152,23 @@ public class Account implements UserDetails
 		else if (!username.equals(other.username))
 			return false;
 		return true;
+	}
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (accEnabled ? 1231 : 1237);
+		result = prime * result + (accNonExpired ? 1231 : 1237);
+		result = prime * result + (accNonLocked ? 1231 : 1237);
+		result = prime * result + (credNonExpired ? 1231 : 1237);
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());
+		result = prime * result + ((passwordHash == null) ? 0 : passwordHash.hashCode());
+		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		return result;
 	}
 	
 	@Override
@@ -270,7 +216,7 @@ public class Account implements UserDetails
 		return accEnabled;
 	}
 	
-	public void setEnabled(boolean accEnabled)
+	public void setAccountEnabled(boolean accEnabled)
 	{
 		this.accEnabled = accEnabled;
 	}
@@ -290,5 +236,85 @@ public class Account implements UserDetails
 	public boolean hasRole(String role)
 	{
 		return roles.contains(role);
+	}
+	
+	private <T> boolean listsEqual(List<T> l1, List<T> l2)
+	{
+		if (l1.size() != l2.size())
+			return false;
+		Iterator<T> it1 = l1.iterator();
+		Iterator<T> it2 = l1.iterator();
+		while (it1.hasNext())
+		{
+			if (!it1.next().equals(it2.next()))
+				return false;
+		}
+		return true;
+	}
+	
+	public static class Builder
+	{
+		private Account acc;
+		
+		public Builder()
+		{
+			acc = new Account();
+		}
+		
+		public Builder withID(UUID id)
+		{
+			acc.setId(id);
+			return this;
+		}
+		public Builder withUsername(String username)
+		{
+			acc.setUsername(username);
+			return this;
+		}
+		public Builder withEmail(String email)
+		{
+			acc.setEmail(email);
+			return this;
+		}
+		public Builder withNickname(String nickname)
+		{
+			acc.setNickname(nickname);
+			return this;
+		}
+		public Builder withPasswordHash(String passwordHash)
+		{
+			acc.setPasswordHash(passwordHash);
+			return this;
+		}
+		public Builder enabled(boolean accEnabled)
+		{
+			acc.setAccountEnabled(accEnabled);
+			return this;
+		}
+		public Builder nonExpired(boolean accNonExpired)
+		{
+			acc.setAccountNonExpired(accNonExpired);
+			return this;
+		}
+		public Builder nonLocked(boolean accNonLocked)
+		{
+			acc.setAccountNonLocked(accNonLocked);
+			return this;
+		}
+		public Builder credentialsNonExpired(boolean credNonExpired)
+		{
+			acc.setCredentialsNonExpired(credNonExpired);
+			return this;
+		}
+		public Builder withRoles(List<String> roles)
+		{
+			acc.setRoles(roles);
+			return this;
+		}
+		
+		public Account build()
+		{
+			return acc;
+		}
 	}
 }

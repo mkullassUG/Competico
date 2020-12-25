@@ -41,8 +41,8 @@ public class AccountAPI
 	@ApiResponses(
 	{
 		@ApiResponse(code = 201, message = "Account registered successfully"),
-		@ApiResponse(code = 400, message = "Account could not be registered "
-				+ "due to invalid or duplicate data")
+		@ApiResponse(code = 400, message = "Account could not be registered"
+				+ " due to invalid or duplicate data")
 	})
 	public ResponseEntity<Object> registerAccount(HttpServletRequest req,
 			@RequestBody @ApiParam(name = "Account data") RegistrationDTO regDto)
@@ -54,7 +54,7 @@ public class AccountAPI
 			log.debug("Account registered successfully.");
 			return new ResponseEntity<Object>(HttpStatus.CREATED);
 		}
-		catch (Exception e)
+		catch (IllegalStateException e)
 		{
 			return ResponseEntity.badRequest().body("Konto z podanymi danymi już istnieje.");
 		}
@@ -82,15 +82,15 @@ public class AccountAPI
 	public Object registerPage()
 	{
 		if (accServ.isAuthenticated())
-			return new ModelAndView("redirect:dashboard");
-		return new ModelAndView("register");
+			return new ModelAndView("redirect:/dashboard");
+		return new ModelAndView("/register");
 	}
 	@GetMapping("login")
 	@ApiOperation(value = "Display the login page", code = 200)
 	public ModelAndView loginPage()
 	{
 		if (accServ.isAuthenticated())
-			return new ModelAndView("redirect:dashboard");
-		return new ModelAndView("login");
+			return new ModelAndView("redirect:/dashboard");
+		return new ModelAndView("/login");
 	}
 }

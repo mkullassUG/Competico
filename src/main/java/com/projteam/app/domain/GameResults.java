@@ -1,8 +1,10 @@
 package com.projteam.app.domain;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -29,6 +31,17 @@ public class GameResults
 	{
 		this.gameID = gameID;
 		results = new HashMap<>();
+	}
+	public GameResults(List<GameResult> results)
+	{
+		this.results = new HashMap<>(results.stream()
+				.collect(Collectors.toMap(GameResult::getPlayerID, gr -> gr)));
+	}
+	public GameResults(UUID gameID, List<GameResult> results)
+	{
+		this.gameID = gameID;
+		this.results = new HashMap<>(results.stream()
+				.collect(Collectors.toMap(GameResult::getPlayerID, gr -> gr)));
 	}
 	public GameResults(Map<UUID, GameResult> results)
 	{

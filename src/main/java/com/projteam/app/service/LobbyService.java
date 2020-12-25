@@ -31,7 +31,7 @@ public class LobbyService
 	@Autowired
 	public LobbyService(AccountService accServ)
 	{
-		lobbies = new HashMap<>();
+		lobbies = Collections.synchronizedMap(new HashMap<>());
 		lobbyCodesAllowingRandomPlayers = new HashSet<>();
 		
 		gameCodeChars = IntStream.range(0, 256)
@@ -127,8 +127,8 @@ public class LobbyService
 	}
 	public boolean isHost(String gameCode, Account acc)
 	{
-		return Optional.ofNullable(getHost(gameCode))
-				.map(host -> host.equals(acc))
+		return Optional.ofNullable(lobbies.get(gameCode))
+				.map(l -> l.isHost(acc))
 				.orElse(false);
 	}
 	public boolean allowsRandomPlayers(String gameCode)
@@ -141,11 +141,18 @@ public class LobbyService
 			return null;
 		List<String> lobbyCodesToChooseFrom = new ArrayList<>(lobbyCodesAllowingRandomPlayers);
 		Collections.shuffle(lobbyCodesToChooseFrom);
-		return lobbyCodesToChooseFrom.get(0);
+		return lobbyCodesToChooseFrom.stream()
+			.filter(gameCode -> lobbies.get(gameCode).canAcceptPlayer())
+			.findFirst()
+			.orElse(null);
 	}
-	public synchronized int getGameCodeLength()
+	public int getGameCodeLength()
 	{
 		return gameCodeLength;
+	}
+	public boolean isLobbyFull(String gameCode)
+	{
+		return !lobbies.get(gameCode).canAcceptPlayer();
 	}
 	
 	private static boolean isValidGameCodeChar(int c)
@@ -153,5 +160,15 @@ public class LobbyService
 		return ((c >= '0') && (c <= '9'))
 				|| ((c >= 'a') && (c <= 'z'))
 				|| ((c >= 'A') && (c <= 'Z'));
+	}
+
+	public String getLobbyForPlayer(Account player)
+	{
+		return lobbies.entrySet()
+				.stream()
+				.filter(e -> e.getValue().containsPlayerOrHost(player))
+				.map(e -> e.getKey())
+				.findAny()
+				.orElse(null);
 	}
 }
