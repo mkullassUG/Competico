@@ -243,7 +243,7 @@ public class Account implements UserDetails
 		if (l1.size() != l2.size())
 			return false;
 		Iterator<T> it1 = l1.iterator();
-		Iterator<T> it2 = l1.iterator();
+		Iterator<T> it2 = l2.iterator();
 		while (it1.hasNext())
 		{
 			if (!it1.next().equals(it2.next()))

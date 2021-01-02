@@ -2,8 +2,16 @@ package com.projteam.app.service;
 
 import static com.projteam.app.domain.Account.LECTURER_ROLE;
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.util.Assert;
 import com.projteam.app.domain.Account;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,14 +42,50 @@ public class LobbyServiceTests
 	@Test
 	public void contextLoads()
 	{
-		Assert.notNull(lobbyService, "Lobby Service initialization failed");
+		assertNotNull(lobbyService);
 	}
 	
-	@Test
-	public void canCreateLobbies()
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void canCreateLobbies(Account host)
 	{
-		Assert.hasText(lobbyService.createLobby(new Account()),
-				"Could not create a lobby");
+		String gameCode = lobbyService.createLobby(host);
+		assertFalse(gameCode.isEmpty());
+		assertTrue(lobbyService.lobbyExists(gameCode));
+		assertTrue(lobbyService.getLobbyCount() > 0);
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void canCreateLobbiesWithAuthenticatedAccount(Account host)
+	{
+		when(accountService.getAuthenticatedAccount()).thenReturn(
+				Optional.of(host));
+		
+		String gameCode = lobbyService.createLobby();
+		assertFalse(gameCode.isEmpty());
+		assertTrue(lobbyService.lobbyExists(gameCode));
+		assertTrue(lobbyService.getLobbyCount() > 0);
+	}
+	@Test
+	public void cannotCreateLobbiesWhenUnauthenticated()
+	{
+		when(accountService.getAuthenticatedAccount()).thenReturn(
+				Optional.empty());
+		
+		assertThrows(IllegalArgumentException.class, () -> lobbyService.createLobby());
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void createdLobbyHasCorrectHost(Account host)
+	{
+		when(accountService.getAuthenticatedAccount()).thenReturn(
+				Optional.of(host));
+		
+		String gameCode = lobbyService.createLobby(host);
+		
+		assertTrue(lobbyService.isHost(gameCode, host));
+		assertTrue(lobbyService.isHost(gameCode));
+		assertTrue(lobbyService.getHost(gameCode).equals(host));
 	}
 	@Test
 	public void hostPlayerAppearsInList()
@@ -55,8 +98,7 @@ public class LobbyServiceTests
 				.build();
 		String gameCode = lobbyService.createLobby(host);
 		
-		Assert.isTrue(lobbyService.getPlayers(gameCode)
-				.contains(host), "Host player not on player list");
+		assertTrue(lobbyService.getPlayers(gameCode).contains(host));
 	}
 	@Test
 	public void hostLecturerDoesNotAppearInList()
@@ -69,33 +111,39 @@ public class LobbyServiceTests
 				.build();
 		String gameCode = lobbyService.createLobby(host);
 		
-		Assert.isTrue(!lobbyService.getPlayers(gameCode)
-				.contains(host), "Host lecturer on player list");
+		assertFalse(lobbyService.getPlayers(gameCode).contains(host));
 	}
 	@Test
 	public void gameCodeHasCorrectLength()
 	{
-		Assert.isTrue(lobbyService
+		assertEquals(lobbyService
 				.createLobby(new Account())
-				.length() == lobbyService.getGameCodeLength(),
-				"Game code does not have correct length");
+				.length(), lobbyService.getGameCodeLength());
 	}
 	@Test
 	public void gameCodeContainsCorrectChars()
 	{
-		Assert.isTrue(lobbyService
+		assertTrue(lobbyService
 				.createLobby(new Account())
 				.chars()
-				.allMatch(Character::isLetterOrDigit),
-				"Game code contains invalid characters");
+				.allMatch(Character::isLetterOrDigit));
 	}
-	@Test
-	public void gameHostIsAssignedCorrectly()
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void gameHostIsAssignedCorrectly(Account host)
 	{
-		Account mockAcc = new Account();
-		String gameCode = lobbyService.createLobby(mockAcc);
-		Assert.isTrue(lobbyService.isHost(gameCode, mockAcc),
-				"Game host was not assigned correctly");
+		String gameCode = lobbyService.createLobby(host);
+		assertTrue(lobbyService.isHost(gameCode, host));
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void cannotCheckIfGameHostWithoutAccount(Account host)
+	{
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.empty());
+		
+		String gameCode = lobbyService.createLobby(host);
+		assertThrows(IllegalArgumentException.class, () -> lobbyService.isHost(gameCode));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndPlayers", "mockLecturerHostAndPlayers"})
@@ -110,11 +158,10 @@ public class LobbyServiceTests
 			.limit(maxPlayerCount)
 			.forEach(player -> lobbyService.addPlayer(gameCode, player));
 		
-		Assert.isTrue(lobbyService.getPlayers(gameCode)
+		assertTrue(lobbyService.getPlayers(gameCode)
 				.containsAll(mockPlayers.stream()
 						.limit(maxPlayerCount)
-						.collect(Collectors.toList())),
-			"Player list does not contain added player");
+						.collect(Collectors.toList())));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndPlayers", "mockLecturerHostAndPlayers"})
@@ -127,18 +174,15 @@ public class LobbyServiceTests
 		
 		mockPlayers.stream()
 			.limit(maxPlayerCount)
-			.forEach(player -> Assert.isTrue(lobbyService.addPlayer(gameCode, player),
-					"Failed to add player"));
+			.forEach(player -> assertTrue(lobbyService.addPlayer(gameCode, player)));
 		mockPlayers.stream()
 			.limit(maxPlayerCount)
-			.forEach(player -> Assert.isTrue(lobbyService.removePlayer(gameCode, player),
-					"Failed to remove player"));
+			.forEach(player -> assertTrue(lobbyService.removePlayer(gameCode, player)));
 		mockPlayers.stream()
 			.limit(maxPlayerCount)
-			.forEach(player -> Assert.isTrue(!lobbyService
+			.forEach(player -> assertFalse(lobbyService
 					.getPlayers(gameCode)
-					.contains(player),
-					"Player list still contains removed player"));
+					.contains(player)));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndPlayers", "mockLecturerHostAndPlayers"})
@@ -151,14 +195,11 @@ public class LobbyServiceTests
 					- (mockHost.hasRole(PLAYER_ROLE)?1:0))
 			.forEach(player -> 
 			{
-				Assert.isTrue(lobbyService.addPlayer(gameCode, player),
-						"Failed to add player");
-				Assert.isTrue(lobbyService.removePlayer(gameCode, player),
-						"Failed to remove player");
-				Assert.isTrue(!lobbyService
+				assertTrue(lobbyService.addPlayer(gameCode, player));
+				assertTrue(lobbyService.removePlayer(gameCode, player));
+				assertFalse(lobbyService
 						.getPlayers(gameCode)
-						.contains(player),
-						"Player list still contains removed player");
+						.contains(player));
 			});
 	}
 	
@@ -173,13 +214,286 @@ public class LobbyServiceTests
 		
 		mockPlayers.stream()
 				.limit(maximumPlayerCount)
-				.forEach(player -> Assert.isTrue(lobbyService.addPlayer(gameCode, player),
-						"Failed to add player before reaching limit"));
+				.forEach(player -> assertTrue(lobbyService.addPlayer(gameCode, player)));
 		
-		Assert.isTrue(!lobbyService.addPlayer(gameCode, mockPlayer), "Player added above limit");
-		Assert.isTrue(!lobbyService.getPlayers(gameCode)
-				.contains(mockPlayer),
-				"Player list contains player added above limit");
+		assertTrue(lobbyService.isLobbyFull(gameCode));
+		assertFalse(lobbyService.addPlayer(gameCode, mockPlayer));
+		assertFalse(lobbyService.getPlayers(gameCode).contains(mockPlayer));
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void cannotAddPlayerToInexistantLobby(Account player)
+	{
+		assertFalse(lobbyService.addPlayer("wrongCode", player));
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void canDeleteOwnLobbies(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+
+		assertTrue(lobbyService.deleteLobby(gameCode, host));
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void cannotDeleteOtherLobbies(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		Account otherAccount = new Account();
+		
+		assertFalse(lobbyService.deleteLobby(gameCode, otherAccount));
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void cannotDeleteInexistantLobbies(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		String wrongGameCode = gameCode + "wrong";
+		
+		assertFalse(lobbyService.deleteLobby(wrongGameCode, host));
+	}
+
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void canAddAuthenticatedPlayer(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		Account player = new Account.Builder()
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+		
+		when(accountService.getAuthenticatedAccount()).thenReturn(Optional.of(player));
+		
+		assertTrue(lobbyService.addPlayer(gameCode));
+		assertTrue(lobbyService.getPlayers(gameCode).contains(player));
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void cannotAddUnauthenticatedPlayer(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		Account player = new Account.Builder()
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+		
+		when(accountService.getAuthenticatedAccount()).thenReturn(Optional.empty());
+		
+		assertThrows(IllegalArgumentException.class, () -> lobbyService.addPlayer(gameCode));
+		assertFalse(lobbyService.getPlayers(gameCode).contains(player));
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void canRemoveAuthenticatedPlayer(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		Account player = new Account.Builder()
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+		
+		when(accountService.getAuthenticatedAccount()).thenReturn(Optional.of(player));
+		
+		lobbyService.addPlayer(gameCode, player);
+		
+		assertTrue(lobbyService.removePlayer(gameCode));
+		assertFalse(lobbyService.getPlayers(gameCode).contains(player));
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void cannotRemoveUnauthenticatedPlayer(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		Account player = new Account.Builder()
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+		
+		when(accountService.getAuthenticatedAccount()).thenReturn(Optional.empty());
+		
+		lobbyService.addPlayer(gameCode, player);
+		
+		assertThrows(IllegalArgumentException.class, () -> lobbyService.removePlayer(gameCode));
+		assertTrue(lobbyService.getPlayers(gameCode).contains(player));
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void canRemoveOtherPlayerAsHost(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		Account player = new Account.Builder()
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+		lobbyService.addPlayer(gameCode, player);
+		
+		assertTrue(lobbyService.removePlayer(gameCode, host, player));
+		assertFalse(lobbyService.getPlayers(gameCode).contains(player));
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void cannotRemoveOtherPlayerWhenNotHost(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		Account player = new Account.Builder()
+				.withEmail("testPlayer1@test.pl")
+				.withUsername("testPlayer1")
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+		Account otherPlayer = new Account.Builder()
+				.withEmail("testPlayer2@test.pl")
+				.withUsername("testPlayer2")
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+		lobbyService.addPlayer(gameCode, player);
+		lobbyService.addPlayer(gameCode, otherPlayer);
+		
+		assertFalse(lobbyService.removePlayer(gameCode, otherPlayer, player));
+		assertTrue(lobbyService.getPlayers(gameCode).contains(player));
+		assertTrue(lobbyService.getPlayers(gameCode).contains(otherPlayer));
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void cannotRemoveOtherPlayerWhenNotInLobby(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		Account player = new Account.Builder()
+				.withEmail("testPlayer1@test.pl")
+				.withUsername("testPlayer1")
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+		Account otherPlayer = new Account.Builder()
+				.withEmail("testPlayer2@test.pl")
+				.withUsername("testPlayer2")
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+		lobbyService.addPlayer(gameCode, player);
+		
+		assertFalse(lobbyService.removePlayer(gameCode, otherPlayer, player));
+		assertTrue(lobbyService.getPlayers(gameCode).contains(player));
+		assertFalse(lobbyService.getPlayers(gameCode).contains(otherPlayer));
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void canGetRandomLobby(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		lobbyService.allowRandomPlayers(gameCode, true, host);
+		
+		assertTrue(lobbyService.getRandomAccessibleLobbyCount() > 0);
+		assertNotNull(lobbyService.getRandomLobby());
+	}
+	@Test
+	public void cannotGetRandomLobbyWhenNoneAvailable()
+	{
+		assertEquals(lobbyService.getRandomAccessibleLobbyCount(), 0);
+		assertNull(lobbyService.getRandomLobby());
+	}
+	
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndPlayer", "mockLecturerHostAndPlayer"})
+	public void canFindLobbyThePlayerIsIn(Account mockHost, Account mockPlayer)
+	{
+		String gameCode = lobbyService.createLobby(mockHost);
+		lobbyService.addPlayer(gameCode, mockPlayer);
+		
+		assertEquals(lobbyService.getLobbyForPlayer(mockPlayer), gameCode);
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void cannotFindLobbyIfPlayerIsNotInOne(Account player)
+	{
+		assertNull(lobbyService.getLobbyForPlayer(player));
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void canSetAllowanceOfRandomPlayers(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		
+		lobbyService.allowRandomPlayers(gameCode, true, host);
+		assertTrue(lobbyService.allowsRandomPlayers(gameCode));
+		
+		lobbyService.allowRandomPlayers(gameCode, false, host);
+		assertFalse(lobbyService.allowsRandomPlayers(gameCode));
+	}
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void newLobbyShouldNotBeFull(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		
+		assertFalse(lobbyService.isLobbyFull(gameCode));
+	}
+	
+	@Test
+	public void shouldHandleNullGameCode()
+	{
+		assertFalse(lobbyService.addPlayer(null, null));
+		assertFalse(lobbyService.removePlayer(null, null));
+		assertFalse(lobbyService.removePlayer(null, null, null));
+		assertNull(lobbyService.getPlayers(null));
+		assertFalse(lobbyService.allowRandomPlayers(null, false, null));
+		assertFalse(lobbyService.allowRandomPlayers(null, true, null));
+		assertNull(lobbyService.getHost(null));
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void consecutiveCallsShouldNotHaveChanges(Account host)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		
+		lobbyService.hasAnthingChanged(gameCode, host);
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndPlayer", "mockLecturerHostAndPlayer"})
+	public void consecutiveCallsShouldNotHaveChanges(Account host, Account player)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		
+		lobbyService.hasAnthingChanged(gameCode, host);
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void addingPlayerCausesRecordedChanges(Account host, Account player1, Account player2)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		
+		lobbyService.addPlayer(gameCode, player1);
+		lobbyService.hasAnthingChanged(gameCode, player1);
+		lobbyService.addPlayer(gameCode, player2);
+		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1));
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void removingPlayerCausesRecordedChanges(Account host, Account player1, Account player2)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		
+		lobbyService.addPlayer(gameCode, player1);
+		lobbyService.addPlayer(gameCode, player2);
+		lobbyService.hasAnthingChanged(gameCode, player1);
+		lobbyService.removePlayer(gameCode, player2);
+		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1));
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void removingPlayerByHostCausesRecordedChanges(Account host, Account player1, Account player2)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		
+		lobbyService.addPlayer(gameCode, player1);
+		lobbyService.addPlayer(gameCode, player2);
+		lobbyService.hasAnthingChanged(gameCode, player1);
+		lobbyService.removePlayer(gameCode, host, player2);
+		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1));
 	}
 	
 	//---Sources---
@@ -220,39 +534,35 @@ public class LobbyServiceTests
 	}
 	public static List<Arguments> mockPlayerHostAndPlayer()
 	{
-		List<Arguments> ret = new ArrayList<>();
 		Account host = mockHost(PLAYER_ROLE);
 		Account player = mockPlayer("Player");
-		
-		IntStream.rangeClosed(0, 50)
-			.forEach(max ->
-			{
-				List<Account> players = new ArrayList<>();
-				players.addAll(
-						IntStream.rangeClosed(0, max)
-						.mapToObj(i -> mockPlayer("Player" + i))
-						.collect(Collectors.toList()));
-				ret.add(Arguments.of(host, player, players));
-			});
-		return ret;
+		return List.of(Arguments.of(host, player));
 	}
 	public static List<Arguments> mockLecturerHostAndPlayer()
 	{
-		List<Arguments> ret = new ArrayList<>();
 		Account host = mockHost(LECTURER_ROLE);
 		Account player = mockPlayer("Player");
-		
-		IntStream.rangeClosed(0, 50)
-			.forEach(max ->
-			{
-				List<Account> players = new ArrayList<>();
-				players.addAll(
-						IntStream.rangeClosed(0, max)
-						.mapToObj(i -> mockPlayer("Player" + i))
-						.collect(Collectors.toList()));
-				ret.add(Arguments.of(host, player, players));
-			});
-		return ret;
+		return List.of(Arguments.of(host, player));
+	}
+	public static List<Arguments> mockPlayerHostAndTwoPlayers()
+	{
+		Account host = mockHost(PLAYER_ROLE);
+		Account player1 = mockPlayer("Player1");
+		Account player2 = mockPlayer("Player2");
+		return List.of(Arguments.of(host, player1, player2));
+	}
+	public static List<Arguments> mockLecturerHostAndTwoPlayers()
+	{
+		Account host = mockHost(LECTURER_ROLE);
+		Account player1 = mockPlayer("Player1");
+		Account player2 = mockPlayer("Player2");
+		return List.of(Arguments.of(host, player1, player2));
+	}
+	public static List<Arguments> mockHosts()
+	{
+		return List.of(
+				Arguments.of(mockHost(PLAYER_ROLE)),
+				Arguments.of(mockHost(LECTURER_ROLE)));
 	}
 	private static Account mockHost(String role)
 	{
