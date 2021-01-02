@@ -4,6 +4,7 @@ import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static com.projteam.app.domain.Account.LECTURER_ROLE;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
+import com.projteam.app.config.SecurityContextConfig;
 import com.projteam.app.dao.AccountDAO;
 import com.projteam.app.domain.Account;
 import com.projteam.app.dto.LoginDTO;
@@ -33,16 +35,19 @@ public class AccountService implements UserDetailsService
 	private AccountDAO accDao;
 	private PasswordEncoder passEnc;
 	private AuthenticationManager authManager;
+	private SecurityContextConfig secConConf;
 	
 	@Autowired
 	public AccountService(
 			AccountDAO accDao,
 			PasswordEncoder passEnc,
-			AuthenticationManager authManager)
+			AuthenticationManager authManager,
+			SecurityContextConfig secConConf)
 	{
 		this.accDao = accDao;
 		this.passEnc = passEnc;
 		this.authManager = authManager;
+		this.secConConf = secConConf;
 	}
 	
 	public void register(HttpServletRequest req, RegistrationDTO regDto, boolean autoAuthenticate)
@@ -63,7 +68,7 @@ public class AccountService implements UserDetailsService
 	}
 	public boolean login(HttpServletRequest req, LoginDTO loginDto)
 	{
-		Account acc = selectByEmailOrUsername(loginDto.getEmail());
+		Account acc = selectByEmailOrUsername(loginDto.getEmail()).orElse(null);
 		if (acc == null)
 			return false;
 		if (passEnc.matches(loginDto.getPassword(), acc.getPassword()))
@@ -75,7 +80,7 @@ public class AccountService implements UserDetailsService
 			return false;
 	}
 	
-	private Account selectByEmailOrUsername(String emailOrUsername)
+	private Optional<Account> selectByEmailOrUsername(String emailOrUsername)
 	{
 		return accDao.findOne(Example.of(new Account.Builder()
 					.withEmail(emailOrUsername)
@@ -83,8 +88,7 @@ public class AccountService implements UserDetailsService
 					.build(),
 				ExampleMatcher.matchingAny()
 					.withMatcher("email", ExampleMatcher.GenericPropertyMatchers.exact())
-					.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.exact())))
-				.orElse(null);
+					.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.exact())));
 	}
 	
 	private void authenticate(HttpServletRequest req, String email, CharSequence password)
@@ -101,7 +105,7 @@ public class AccountService implements UserDetailsService
 	
 	private Authentication getAuthentication()
 	{
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Authentication auth = secConConf.getContext().getAuthentication();
 		if (auth == null || (auth instanceof AnonymousAuthenticationToken) || !auth.isAuthenticated())
 			return null;
 		return auth;
@@ -110,18 +114,25 @@ public class AccountService implements UserDetailsService
 	{
 		return getAuthentication() != null;
 	}
-	public Account getAuthenticatedAccount()
+	public Optional<Account> getAuthenticatedAccount()
 	{
-		Authentication auth = getAuthentication();
-		return (auth == null)?null:((Account) auth.getPrincipal());
+		return Optional.ofNullable(getAuthentication())
+				.map(auth -> (Account) auth.getPrincipal());
 	}
 
+	public Optional<Account> findByUsername(String username)
+	{
+		return accDao.findOne(Example.of(new Account.Builder()
+				.withUsername(username)
+				.build(),
+			ExampleMatcher.matchingAny()
+				.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.exact())));
+	}
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
 	{
-		Account acc = selectByEmailOrUsername(username);
-		if (acc == null)
-			throw new UsernameNotFoundException("Invalid email or password.");
-		return acc;
+		return selectByEmailOrUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("Invalid email or password."));
 	}
 }

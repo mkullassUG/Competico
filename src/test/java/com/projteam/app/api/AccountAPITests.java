@@ -1,8 +1,10 @@
 package com.projteam.app.api;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -18,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,7 +27,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.Assert;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.dto.LoginDTO;
@@ -55,7 +55,7 @@ public class AccountAPITests
 	@Test
 	public void contextLoads() throws Exception
 	{
-		Assert.notNull(mvc, "Mock MVC not loaded");
+		assertNotNull(mvc);
 	}
 	
 	@ParameterizedTest
@@ -74,7 +74,7 @@ public class AccountAPITests
 	@MethodSource("mockRegistrationData")
 	public void shouldReturnBadRequestWhenUserAlreadyRegistered(RegistrationDTO mockRegDto) throws Exception
 	{
-		Mockito.doThrow(new IllegalStateException("Account with provided data already exists"))
+		doThrow(new IllegalStateException("Account with provided data already exists"))
 			.when(accServ)
 			.register(any(), eq(mockRegDto), eq(true));
 		

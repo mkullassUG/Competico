@@ -83,7 +83,7 @@
           <input type="username" id="inputUsername" class="form-control" placeholder="Username" required>
           <label for="inputUsername">Username</label>
           <div class="invalid-feedback" id="usernamefeedback">
-            Wprowadż poprawny username: min 4 znaków, max 32, bez znaków specjalnych.
+            Wprowadż poprawny username: min 8 znaków, max 32, bez znaków specjalnych.
           </div>
         </div>
 
@@ -212,7 +212,7 @@ var validateData = (data) => {
   let username = password = password2 =  email = valid = true;
 
   let usernameValid = (data) => {
-    if (data.match(/^(?=.{4,32}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)) 
+    if (data.match(/^(?=.{8,32}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)) 
       return true
     else 
       return false

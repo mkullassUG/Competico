@@ -2,7 +2,10 @@ package com.projteam.app.domain;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class Lobby
 {
@@ -10,6 +13,9 @@ public class Lobby
 	private Account host;
 	private List<Account> players;
 	private int maxPlayerCount;
+	
+	private int changeCount;
+	private Map<UUID, Integer> playerLastChangeCounts;
 	
 	public Lobby(String gameCode, Account host)
 	{
@@ -22,6 +28,9 @@ public class Lobby
 		players = new ArrayList<>();
 		
 		this.maxPlayerCount = maxPlayerCount;
+		
+		changeCount = 0;
+		playerLastChangeCounts = new HashMap<>();
 	}
 	
 	public Account getHost()
@@ -41,13 +50,27 @@ public class Lobby
 			return false;
 		if (!canAcceptPlayer())
 			return false;
-		if (player.hasRole(PLAYER_ROLE))
-			return players.add(player);
+		if (player.hasRole(PLAYER_ROLE) && players.add(player))
+		{
+			changeOccurred();
+			return true;
+		}
 		return false;
 	}
 	public boolean removePlayer(Account player)
 	{
-		return players.remove(player);
+		if (players.remove(player))
+		{
+			changeOccurred();
+			return true;
+		}
+		return false;
+	}
+	public boolean removePlayer(Account player, Account requestSource)
+	{
+		if (host.equals(requestSource))
+			return removePlayer(player);
+		return false;
 	}
 	public int getMaximumPlayerCount()
 	{
@@ -72,6 +95,23 @@ public class Lobby
 	public boolean isHost(Account player)
 	{
 		return host.equals(player);
+	}
+	
+	private void changeOccurred()
+	{
+		changeCount++;
+	}
+	public boolean hasAnthingChanged(UUID accountID)
+	{
+		if (!playerLastChangeCounts.containsKey(accountID))
+		{
+			playerLastChangeCounts.put(accountID, changeCount);
+			return true;
+		}
+		boolean ret = changeCount != playerLastChangeCounts.get(accountID);
+		if (ret)
+			playerLastChangeCounts.put(accountID, changeCount);
+		return ret;
 	}
 	
 	@Override

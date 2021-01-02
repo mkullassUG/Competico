@@ -11,330 +11,56 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/cover/">
     <link rel="icon" href="./assets/myIcons/icon.svg">
     <!-- Bootstrap core CSS -->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
     <!-- Custom styles for this template -->
-    <link href="css/lobby-join.css" rel="stylesheet">
+    <link href="css/cover.css" rel="stylesheet">
   </head>
-  <body class="bg-primary">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top">
-      <div class="container-xl">
-        <a class="navbar-brand" href="/">
-          <img src="./assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
-        </a>
-        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="/">Strona Domowa</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Cechy</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Wsparcie</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="register">Rejestracja</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="login">Zaloguj</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <!-- loading modal -->
-    <div class="modal fade hideBeforeLoadModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
-          <span class="fa fa-spinner fa-spin fa-3x"></span>
-      </div>
+  <body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <h3 class="masthead-brand">Cover</h3>
+      <nav class="nav nav-masthead justify-content-center">
+        <a class="nav-link active" href="#">Home</a>
+        <a class="nav-link" href="#">Features</a>
+        <a class="nav-link" href="#">Contact</a>
+      </nav>
     </div>
-    <!-- main content -->
-    <div class="container fill text-center hideBeforeLoad">
-      <div class="row m-auto" >
-        <div class="col-12">
-          <h2>Szukaj gry</h2>
-          <button type="button" id="btnSearch" class="btn btn-lg 
-          btn-secondary">Szukaj</button>
-        </div>
-        <div class="col-12 col-sm-6">
-          <h2>Stwórz grę</h2>
-          <button type="button" id="btnHost" class="btn btn-lg btn-secondary">Stwórz</button>
-        </div>
-        <div class="col-12 col-sm-6">
-          <h2>Wprowadź kod</h2>
-          <input type="text" class="input-lg form-control" id="inputCode" placeholder="Kod">
-          <div class="collapse" id="btnJoinCodeCollapse">
-            <button type="button" id="btnJoinCode" class="btn btn-lg btn-secondary">Dołącz</button>
-          </div>
-          <div class="invisible" id="btnJoinCodeInvisible">
-            <button type="button" class="btn btn-lg btn-secondary" >Dołącz</button>
-          </div>
-        </div>
-      </div>
+  </header>
+
+  <main role="main" class="inner cover">
+    <h1 class="cover-heading">Cover your page.</h1>
+    <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
+    <p class="lead">
+      <a href="#" class="btn btn-lg btn-secondary">Learn more</a>
+    </p>
+  </main>
+
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+      <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
     </div>
-    <footer class="footer">
-      <div class="container text-center">
-        <span class="text-muted m-auto">Ucz się angielskiego razem z nami</span>
-      </div>
-    </footer>
-  </body>
+  </footer>
+</div>
+</body>
 </html>
 <script src="js/jquery-3.5.1.min.js"></script>
 <script src="js/popper.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script>
-const LobbyJoinLogic = (debug = false) => {
-  var self = {}
-  var nickname, gameCode, logged, isHost, gameStarted;
-  var LobbyJoinInit = (data) => {
-
-    
-    isHost = data.isHost;
-    gameCode = data.gameCode;
-    logged = data.logged;
-    gameStarted = data.gameStarted;
-    nickname = data.nickname;
-
-    /* 
-    ///ustaliliśmy, że tego nie wysyłamy, bo itak musze być zalogowany żeby to wysłać?
-    if (!data.logged)
-      window.location = "/login"; 
-    */
-
-    if ((data.isHost != null && data.isHost) || 
-      (data.gameCode != null && data.gameCode != ""))
-      window.location = "/lobby/" + data.gameCode;
-
-      /*
-        TODO
-        nie zdarzyłem napisac wstawiania nicku gracza do navbara, najpierw potrzeba wziąc navbar ze strony np dashboard któr yzdaje się miał pole nickname po prawej stronie
-      */
-
-      $('.hideBeforeLoad').css("display", "flex").fadeIn();
-  }
-
-  var gameFound = (data) => {
-
-    if (data.gameFound)
-      window.location = "lobby/" + data.code;
-    else {
-      alert("Nie znaleziono żadnych gier");
-    }
-  }
-
-  var isCodeCorrect = (data) => {
-    /*TODO
-      -w przyszłości dojdzie isPublic.
-      -dodac modala który da info o lobby z przyciskami dołączenia/ anulowania i może info czyje to lobby (pobierane przez innego endpointa)
-    */
-    if (data.exists)
-      if (!data.isFull)
-        window.location = "lobby/" + $("#inputCode")[0].value;
-      else
-        alert("lobby pełne");
-    else
-      alert("kod nie prawidłowy");
-  }
-
-  var lobbyCreated = (code) => window.location = "/lobby/" + code;
-  /*Ajax*/
-  var ajaxReceiveWhoAmI = () => {
-
-    $('.hideBeforeLoadModal').modal('show');
-    $.ajax({
-      type     : "GET",
-      cache    : false,
-      url      : "/api/v1/playerinfo",
-      contentType: "application/json",
-      success: function(data, textStatus, jqXHR) {
-        if (debug)
-          console.log("ajaxReceiveWhoAmI success");
-
-        
-        $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
-        LobbyJoinInit(data);
-      },
-      error: function(jqXHR, status, err) {
-        if (debug)
-          console.warn("ajaxReceiveWhoAmI error");
-        
-        $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
-      }
-    });
-  }
-  
-  var ajaxReceiveFoundGame = () => {
-    $('.hideBeforeLoadModal').modal('show');
-    //var send = {}
-    $.ajax({
-      type     : "GET",
-      cache    : false,
-      url      : "api/v1/lobby/random",//"game/findGame",
-      //data     : JSON.stringify(send),
-      contentType: "application/json",
-      success: function(data, textStatus, jqXHR) {
-        if (debug) {
-          console.log("ajaxReceiveFoundGame success");
-          console.log("hide")
-          console.log(data)
-          console.log(textStatus)
-          console.log(jqXHR)
-        }
-          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
-
-          if (jqXHR.status == 200) 
-            gameFound(data);
-           else
-            alert("Nie ma wolnego lobby");
-      },
-      error: function(jqXHR, status, err) {
-        if (debug) {
-          console.warn("ajaxReceiveFoundGame error");
-          console.log(jqXHR)
-          console.log(status)
-          console.log(err)
-        }
-
-        $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
-
-
-      }
-    });
-  }
-
-  var ajaxFindGameByCode = (code) => {
-    $('.hideBeforeLoadModal').modal('show');
-    //var send = {code: code}
-    $.ajax({
-      type     : "GET",
-      cache    : false,
-      url      : "api/v1/lobby/" + code,//"game/isCodeCorrect",
-      //data     : JSON.stringify(send),
-      contentType: "application/json",
-      success: function(data, textStatus, jqXHR) {
-        if (debug) {
-          console.log("ajaxFindGameByCode success");
-          
-          console.log(data)
-          console.log(textStatus)
-          console.log(jqXHR)
-        }
-          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
-          isCodeCorrect(data);
-      },
-      error: function(jqXHR, status, err) {
-        if (debug)
-          console.warn("ajaxFindGameByCode error");
-
-        $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
-      }
-    });
-  }
-  
-  var ajaxCreateLobby = () => {
-    $('.hideBeforeLoadModal').modal('show');
-    var send = {}
-    $.ajax({
-      type     : "POST",
-      cache    : false,
-      url      : "api/v1/lobby",//"game/createLobby",
-      data     : JSON.stringify(send),
-      contentType: "application/json",
-      success: function(data, textStatus, jqXHR) {
-        if (debug){
-          console.log("ajaxCreateLobby success");
-          console.log(data)
-          console.log(textStatus)
-          console.log(jqXHR)
-          }
-          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
-          
-          if (jqXHR.status == 201) {
-            
-            lobbyCreated(data);
-          } else
-            alert("nie stworzono lobby");
-      },
-      error: function(jqXHR, status, err) {
-        if (debug)
-          console.warn("ajaxCreateLobby error");
-        
-        $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
-      }
-    });
-  }
-  
-
-  $("#btnJoinCode").on("click",() => {
-    ajaxFindGameByCode($("#inputCode")[0].value);
-  });
-  $("#btnHost").on("click",()=>{
-    ajaxCreateLobby();
-  });
-  $("#btnSearch").on("click",()=>{
-    ajaxReceiveFoundGame();
-  });
-  $("#inputCode").on("click input paste change focus keypress", (e)=> {
-    if ($("#inputCode")[0].value != "") {
-      $("#btnJoinCodeInvisible").hide();
-      $("#btnJoinCodeCollapse").show();
-    } else {
-      $("#btnJoinCodeInvisible").show();
-      $("#btnJoinCodeCollapse").hide();
-    }
-
-  })
-
-  /* debug  */
-  var debugSetup = () => {
-    if (debug == true) {
-      /*LobbyJoinInit({
-        logged: true,
-        nickname: "GraczTestowy",
-        gameCode: "",
-        isHost: false,
-        gameStarted: false,
-      });*/
-      ajaxReceiveWhoAmI();
-
-      self.gameFound = (game) => {
-        gameFound(game);
-      }
-      self.isCodeCorrect = (lobby) => {
-        isCodeCorrect(lobby);
-      }
-      self.lobbyCreated = ()=>{return lobbyCreated;}
-      
-      self.nickname = nickname;
-      self.isHost = isHost;
-      self.gameCode = gameCode;
-      self.logged = logged;
-      self.gameStarted = gameStarted;
-    }
-  }
-
-  /* inicjalizacja*/
-  if (debug)
-    debugSetup();
-  else
-    ajaxReceiveWhoAmI();
-
-  return self;
-}
-
-LobbyJoinLogic.create = (debug = false) => {
-
-  if (debug)
-    return LobbyJoinLogic(debug);
-  else
-    LobbyJoinLogic()
-}
-
-//LobbyJoinLogic.create();
-var debug = LobbyJoinLogic.create(debug = true);
-</script>

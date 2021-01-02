@@ -44,7 +44,8 @@ public class LobbyService
 	
 	public String createLobby()
 	{
-		return createLobby(accServ.getAuthenticatedAccount());
+		return createLobby(accServ.getAuthenticatedAccount()
+				.orElseThrow(() -> new IllegalArgumentException("Not authenticated.")));
 	}
 	public String createLobby(Account host)
 	{
@@ -58,27 +59,30 @@ public class LobbyService
 		
 		return gameCode;
 	}
-	public boolean deleteLobby(String gameCode)
+	public boolean deleteLobby(String gameCode, Account requestSource)
 	{
-		if (!lobbies.containsKey(gameCode))
+		if (!isHost(gameCode, requestSource))
 			return false;
 		lobbyCodesAllowingRandomPlayers.remove(gameCode);
 		lobbies.remove(gameCode);
 		return true;
-	}
-	public void deleteAllLobbies()
-	{
-		lobbyCodesAllowingRandomPlayers.clear();
-		lobbies.clear();
 	}
 	public boolean lobbyExists(String gameCode)
 	{
 		return lobbies.containsKey(gameCode);
 	}
 	
+	public boolean hasAnthingChanged(String gameCode, Account account)
+	{
+		return Optional.ofNullable(lobbies.get(gameCode))
+				.map(lobby -> lobby.hasAnthingChanged(account.getId()))
+				.orElse(true);
+	}
+	
 	public boolean addPlayer(String gameCode)
 	{
-		return addPlayer(gameCode, accServ.getAuthenticatedAccount());
+		return addPlayer(gameCode, accServ.getAuthenticatedAccount()
+				.orElseThrow(() -> new IllegalArgumentException("Not authenticated.")));
 	}
 	public boolean addPlayer(String gameCode, Account player)
 	{
@@ -89,7 +93,8 @@ public class LobbyService
 	}
 	public boolean removePlayer(String gameCode)
 	{
-		return removePlayer(gameCode, accServ.getAuthenticatedAccount());
+		return removePlayer(gameCode, accServ.getAuthenticatedAccount()
+				.orElseThrow(() -> new IllegalArgumentException("Not authenticated.")));
 	}
 	public boolean removePlayer(String gameCode, Account player)
 	{
@@ -98,21 +103,31 @@ public class LobbyService
 			return lobby.removePlayer(player);
 		return false;
 	}
-	public List<Account> getPlayers(String gameCode)
+	public boolean removePlayer(String gameCode, Account requestSource, Account player)
 	{
 		Lobby lobby = lobbies.get(gameCode);
-		return lobby.getPlayers();
+		if (lobby != null)
+			return lobby.removePlayer(player, requestSource);
+		return false;
+	}
+	public List<Account> getPlayers(String gameCode)
+	{
+		return Optional.ofNullable(lobbies.get(gameCode))
+			.map(lobby -> lobby.getPlayers())
+			.orElse(null);
 	}
 	public int getMaximumPlayerCount(String gameCode)
 	{
 		return lobbies.get(gameCode).getMaximumPlayerCount();
 	}
-	public boolean allowRandomPlayers(String gameCode, boolean allow)
+	public boolean allowRandomPlayers(String gameCode, boolean allow, Account requestSource)
 	{
-		if (lobbies.containsKey(gameCode))
+		if (!isHost(gameCode, requestSource))
+			return false;
+		if (allow)
 			return lobbyCodesAllowingRandomPlayers.add(gameCode);
-		lobbyCodesAllowingRandomPlayers.remove(gameCode);
-		return false;
+		else
+			return lobbyCodesAllowingRandomPlayers.remove(gameCode);
 	}
 	public Account getHost(String gameCode)
 	{
@@ -123,7 +138,8 @@ public class LobbyService
 	}
 	public boolean isHost(String gameCode)
 	{
-		return isHost(gameCode, accServ.getAuthenticatedAccount());
+		return isHost(gameCode, accServ.getAuthenticatedAccount()
+				.orElseThrow(() -> new IllegalArgumentException("Not authenticated.")));
 	}
 	public boolean isHost(String gameCode, Account acc)
 	{
@@ -153,6 +169,14 @@ public class LobbyService
 	public boolean isLobbyFull(String gameCode)
 	{
 		return !lobbies.get(gameCode).canAcceptPlayer();
+	}
+	public int getLobbyCount()
+	{
+		return lobbies.size();
+	}
+	public int getRandomAccessibleLobbyCount()
+	{
+		return lobbyCodesAllowingRandomPlayers.size();
 	}
 	
 	private static boolean isValidGameCodeChar(int c)
