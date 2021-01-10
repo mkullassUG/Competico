@@ -43,7 +43,10 @@ public class AccountAPITests
 	@MockBean
 	private AccountService accServ;
 	
-	private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
+	private static final MediaType APPLICATION_JSON_UTF8 =
+			new MediaType(MediaType.APPLICATION_JSON.getType(),
+					MediaType.APPLICATION_JSON.getSubtype(),
+					Charset.forName("utf8"));
 	private static final String LOGIN_REDIRECT_URL = "/dashboard";
 	
 	@BeforeEach

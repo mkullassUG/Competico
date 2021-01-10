@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,8 +49,9 @@ public class GameServiceTest
 		when(lobbyService.lobbyExists(gameCode)).thenReturn(true);
 		when(lobbyService.getPlayers(gameCode)).thenReturn(players);
 		when(lobbyService.getHost(gameCode)).thenReturn(host);
+		when(lobbyService.isHost(gameCode, host)).thenReturn(true);
 		
-		assertTrue(gameService.createGameFromLobby(gameCode));
+		assertTrue(gameService.createGameFromLobby(gameCode, host));
 	}
 	@Test
 	public void cannotCreateGameIfLobbyDoesNotExist()
@@ -57,7 +59,7 @@ public class GameServiceTest
 		String gameCode = "gameCode";
 		when(lobbyService.lobbyExists(gameCode)).thenReturn(false);
 		
-		assertFalse(gameService.createGameFromLobby(gameCode));
+		assertFalse(gameService.createGameFromLobby(gameCode, null));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockLecturerHost"})
@@ -68,7 +70,7 @@ public class GameServiceTest
 		when(lobbyService.getPlayers(gameCode)).thenReturn(List.of());
 		when(lobbyService.getHost(gameCode)).thenReturn(host);
 		
-		assertFalse(gameService.createGameFromLobby(gameCode));
+		assertFalse(gameService.createGameFromLobby(gameCode, host));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndPlayer", "mockLecturerHostAndPlayer"})
@@ -83,8 +85,8 @@ public class GameServiceTest
 		when(lobbyService.getPlayers(gameCode)).thenReturn(players);
 		when(lobbyService.getHost(gameCode)).thenReturn(host);
 		
-		gameService.createGameFromLobby(gameCode);
-		assertFalse(gameService.createGameFromLobby(gameCode));
+		gameService.createGameFromLobby(gameCode, host);
+		assertFalse(gameService.createGameFromLobby(gameCode, host));
 	}
 	
 	//---Sources---
@@ -96,6 +98,7 @@ public class GameServiceTest
 	private static Account mockHost(String role)
 	{
 		return new Account.Builder()
+				.withID(UUID.randomUUID())
 				.withEmail("testHost@test.pl")
 				.withUsername("TestHost")
 				.withPasswordHash("QWERTY")
@@ -117,6 +120,7 @@ public class GameServiceTest
 	public static Account mockPlayer(String name)
 	{
 		return new Account.Builder()
+				.withID(UUID.randomUUID())
 				.withEmail("test" + name + "@test.pl")
 				.withUsername("Test" + name)
 				.withPasswordHash("QWERTY" + name)

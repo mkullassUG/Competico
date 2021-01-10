@@ -42,7 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		                "/login",
 		                "/register",
 		                "/api/v1/login/",
-		                "/api/v1/register/")
+		                "/api/v1/register/",
+		                "/api/v1/authenticated/")
 			.permitAll()
 
 			//TODO reenable once role storage is ready
@@ -67,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 			.logout()
 			.invalidateHttpSession(true)
 			.clearAuthentication(true)
-			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+			.logoutUrl("/logout")
 			.logoutSuccessUrl("/")
 			.permitAll()
 			.and()

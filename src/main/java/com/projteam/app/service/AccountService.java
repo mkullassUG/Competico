@@ -2,21 +2,17 @@ package com.projteam.app.service;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static com.projteam.app.domain.Account.LECTURER_ROLE;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -79,33 +75,21 @@ public class AccountService implements UserDetailsService
 		else
 			return false;
 	}
-	
-	private Optional<Account> selectByEmailOrUsername(String emailOrUsername)
-	{
-		return accDao.findOne(Example.of(new Account.Builder()
-					.withEmail(emailOrUsername)
-					.withUsername(emailOrUsername)
-					.build(),
-				ExampleMatcher.matchingAny()
-					.withMatcher("email", ExampleMatcher.GenericPropertyMatchers.exact())
-					.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.exact())));
-	}
-	
 	private void authenticate(HttpServletRequest req, String email, CharSequence password)
 	{
 		UsernamePasswordAuthenticationToken authReq
 			= new UsernamePasswordAuthenticationToken(email, password);
 	    Authentication auth = authManager.authenticate(authReq);
 	    
-	    SecurityContext sc = SecurityContextHolder.getContext();
+	    SecurityContext sc = secConConf.getContext();
 	    sc.setAuthentication(auth);
 	    HttpSession session = req.getSession(true);
 	    session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
 	}
-	
 	private Authentication getAuthentication()
 	{
 		Authentication auth = secConConf.getContext().getAuthentication();
+		System.out.println(auth);
 		if (auth == null || (auth instanceof AnonymousAuthenticationToken) || !auth.isAuthenticated())
 			return null;
 		return auth;
@@ -119,14 +103,13 @@ public class AccountService implements UserDetailsService
 		return Optional.ofNullable(getAuthentication())
 				.map(auth -> (Account) auth.getPrincipal());
 	}
-
+	private Optional<Account> selectByEmailOrUsername(String emailOrUsername)
+	{
+		return accDao.findByEmailOrUsername(emailOrUsername, emailOrUsername);
+	}
 	public Optional<Account> findByUsername(String username)
 	{
-		return accDao.findOne(Example.of(new Account.Builder()
-				.withUsername(username)
-				.build(),
-			ExampleMatcher.matchingAny()
-				.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.exact())));
+		return accDao.findByUsername(username);
 	}
 	
 	@Override
