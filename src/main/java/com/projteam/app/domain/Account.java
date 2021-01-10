@@ -31,7 +31,7 @@ public class Account implements UserDetails
 	
 	@Column(name = "roles")
 	@ElementCollection
-	private List<String> roles = Collections.emptyList();
+	private List<String> roles = new ArrayList<>(Collections.emptyList());
 	
 	public static final String PLAYER_ROLE = "PLAYER";
 	public static final String LECTURER_ROLE = "LECTURER";
@@ -62,7 +62,7 @@ public class Account implements UserDetails
 	}
 	public List<String> getRoles()
 	{
-		return Collections.unmodifiableList(roles);
+		return roles;
 	}
 	
 	public void setId(UUID id)
@@ -87,7 +87,7 @@ public class Account implements UserDetails
 	}
 	public void setRoles(List<String> roles)
 	{
-		this.roles = new ArrayList<>(roles);
+		this.roles = roles;
 	}
 
 	@Override

@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.projteam.app.domain.Account;
-import com.projteam.app.domain.Lobby;
+import com.projteam.app.domain.game.Lobby;
 
 @Service
 public class LobbyService
@@ -72,11 +72,10 @@ public class LobbyService
 		return lobbies.containsKey(gameCode);
 	}
 	
-	public boolean hasAnthingChanged(String gameCode, Account account)
+	public Optional<Boolean> hasAnthingChanged(String gameCode, Account account)
 	{
 		return Optional.ofNullable(lobbies.get(gameCode))
-				.map(lobby -> lobby.hasAnthingChanged(account.getId()))
-				.orElse(true);
+				.map(lobby -> lobby.hasAnthingChanged(account.getId()));
 	}
 	
 	public boolean addPlayer(String gameCode)

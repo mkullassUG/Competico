@@ -49,7 +49,7 @@ public class GameServiceTest
 		when(lobbyService.getPlayers(gameCode)).thenReturn(players);
 		when(lobbyService.getHost(gameCode)).thenReturn(host);
 		
-		assertTrue(gameService.createGameFromLobby(gameCode));
+		assertTrue(gameService.createGameFromLobby(gameCode, host));
 	}
 	@Test
 	public void cannotCreateGameIfLobbyDoesNotExist()
@@ -57,7 +57,7 @@ public class GameServiceTest
 		String gameCode = "gameCode";
 		when(lobbyService.lobbyExists(gameCode)).thenReturn(false);
 		
-		assertFalse(gameService.createGameFromLobby(gameCode));
+		assertFalse(gameService.createGameFromLobby(gameCode, null));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockLecturerHost"})
@@ -68,7 +68,7 @@ public class GameServiceTest
 		when(lobbyService.getPlayers(gameCode)).thenReturn(List.of());
 		when(lobbyService.getHost(gameCode)).thenReturn(host);
 		
-		assertFalse(gameService.createGameFromLobby(gameCode));
+		assertFalse(gameService.createGameFromLobby(gameCode, host));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndPlayer", "mockLecturerHostAndPlayer"})
@@ -83,8 +83,8 @@ public class GameServiceTest
 		when(lobbyService.getPlayers(gameCode)).thenReturn(players);
 		when(lobbyService.getHost(gameCode)).thenReturn(host);
 		
-		gameService.createGameFromLobby(gameCode);
-		assertFalse(gameService.createGameFromLobby(gameCode));
+		gameService.createGameFromLobby(gameCode, host);
+		assertFalse(gameService.createGameFromLobby(gameCode, host));
 	}
 	
 	//---Sources---

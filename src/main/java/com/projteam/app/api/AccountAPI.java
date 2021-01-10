@@ -1,5 +1,6 @@
 package com.projteam.app.api;
 
+import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class AccountAPI
 			log.debug("Account registered successfully.");
 			return new ResponseEntity<Object>(HttpStatus.CREATED);
 		}
-		catch (IllegalStateException e)
+		catch (Exception e)
 		{
 			return ResponseEntity.badRequest().body("Konto z podanymi danymi już istnieje.");
 		}

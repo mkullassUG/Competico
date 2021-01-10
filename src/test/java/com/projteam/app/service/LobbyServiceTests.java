@@ -445,9 +445,9 @@ public class LobbyServiceTests
 		String gameCode = lobbyService.createLobby(host);
 		
 		lobbyService.hasAnthingChanged(gameCode, host);
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndPlayer", "mockLecturerHostAndPlayer"})
@@ -456,9 +456,9 @@ public class LobbyServiceTests
 		String gameCode = lobbyService.createLobby(host);
 		
 		lobbyService.hasAnthingChanged(gameCode, host);
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host));
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
+		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
@@ -469,7 +469,7 @@ public class LobbyServiceTests
 		lobbyService.addPlayer(gameCode, player1);
 		lobbyService.hasAnthingChanged(gameCode, player1);
 		lobbyService.addPlayer(gameCode, player2);
-		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1));
+		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1).orElse(false));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
@@ -481,7 +481,7 @@ public class LobbyServiceTests
 		lobbyService.addPlayer(gameCode, player2);
 		lobbyService.hasAnthingChanged(gameCode, player1);
 		lobbyService.removePlayer(gameCode, player2);
-		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1));
+		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1).orElse(false));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
@@ -493,7 +493,7 @@ public class LobbyServiceTests
 		lobbyService.addPlayer(gameCode, player2);
 		lobbyService.hasAnthingChanged(gameCode, player1);
 		lobbyService.removePlayer(gameCode, host, player2);
-		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1));
+		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1).orElse(false));
 	}
 	
 	//---Sources---

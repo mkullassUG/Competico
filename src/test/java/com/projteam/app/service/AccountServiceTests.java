@@ -64,6 +64,8 @@ public class AccountServiceTests
 	public void shouldAuthenticateWhenRegisteringWithAutoAuthentication(RegistrationDTO mockRegDto)
 	{
 		HttpServletRequest req = new MockHttpServletRequest();
+		SecurityContext sc = mock(SecurityContext.class);
+		when(secConConf.getContext()).thenReturn(sc);
 		
 		accountService.register(req, mockRegDto, true);
 		
@@ -94,7 +96,9 @@ public class AccountServiceTests
 	{
 		HttpServletRequest req = new MockHttpServletRequest();
 		LoginDTO mockLoginDto = new LoginDTO(mockRegDto.getEmail(), mockRegDto.getPassword());
+		SecurityContext sc = mock(SecurityContext.class);
 		
+		when(secConConf.getContext()).thenReturn(sc);
 		when(passEnc.matches(mockRegDto.getPassword(),
 				mockRegDto.getPassword().toString()))
 			.thenReturn(true);

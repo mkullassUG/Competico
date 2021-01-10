@@ -1,4 +1,4 @@
-package com.projteam.app.domain;
+package com.projteam.app.domain.game;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.projteam.app.domain;
+package com.projteam.app.domain.game;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import com.projteam.app.domain.Account;
 
 public class Lobby
 {
@@ -47,6 +48,8 @@ public class Lobby
 	public boolean addPlayer(Account player)
 	{
 		if (isHost(player))
+			return false;
+		if (players.contains(player))
 			return false;
 		if (!canAcceptPlayer())
 			return false;

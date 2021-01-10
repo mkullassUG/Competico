@@ -2,7 +2,7 @@ package com.projteam.app.service;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static com.projteam.app.domain.Account.LECTURER_ROLE;
-
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -82,13 +82,15 @@ public class AccountService implements UserDetailsService
 	
 	private Optional<Account> selectByEmailOrUsername(String emailOrUsername)
 	{
-		return accDao.findOne(Example.of(new Account.Builder()
-					.withEmail(emailOrUsername)
-					.withUsername(emailOrUsername)
-					.build(),
-				ExampleMatcher.matchingAny()
-					.withMatcher("email", ExampleMatcher.GenericPropertyMatchers.exact())
-					.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.exact())));
+//		return accDao.findOne(Example.of(new Account.Builder()
+//					.withEmail(emailOrUsername)
+//					.withUsername(emailOrUsername)
+//					.build(),
+//				ExampleMatcher.matchingAny()
+//					.withMatcher("email", ExampleMatcher.GenericPropertyMatchers.exact())
+//					.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.exact())));
+		
+		return accDao.findByEmailOrUsername(emailOrUsername, emailOrUsername);
 	}
 	
 	private void authenticate(HttpServletRequest req, String email, CharSequence password)
@@ -97,7 +99,7 @@ public class AccountService implements UserDetailsService
 			= new UsernamePasswordAuthenticationToken(email, password);
 	    Authentication auth = authManager.authenticate(authReq);
 	    
-	    SecurityContext sc = SecurityContextHolder.getContext();
+	    SecurityContext sc = secConConf.getContext();
 	    sc.setAuthentication(auth);
 	    HttpSession session = req.getSession(true);
 	    session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
@@ -122,11 +124,12 @@ public class AccountService implements UserDetailsService
 
 	public Optional<Account> findByUsername(String username)
 	{
-		return accDao.findOne(Example.of(new Account.Builder()
-				.withUsername(username)
-				.build(),
-			ExampleMatcher.matchingAny()
-				.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.exact())));
+//		return accDao.findOne(Example.of(new Account.Builder()
+//				.withUsername(username)
+//				.build(),
+//			ExampleMatcher.matchingAny()
+//				.withMatcher("username", ExampleMatcher.GenericPropertyMatchers.exact())));
+		return accDao.findByUsername(username);
 	}
 	
 	@Override
