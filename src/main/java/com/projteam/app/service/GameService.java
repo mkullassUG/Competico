@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.projteam.app.domain.Account;
-import com.projteam.app.domain.Game;
+import com.projteam.app.domain.game.Game;
 
 @Service
 public class GameService
