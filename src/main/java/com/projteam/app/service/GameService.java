@@ -44,8 +44,7 @@ public class GameService
 		
 		if (players.size() > 0)
 		{
-			games.put(gameCode, new Game(players, spectators));
-			return true;
+			//TODO implement in next ticket
 		}
 		return false;
 	}
