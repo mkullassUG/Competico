@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.projteam.app.domain.Account;
-import com.projteam.app.domain.Lobby;
+import com.projteam.app.domain.game.Lobby;
 
 @Service
 public class LobbyService

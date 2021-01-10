@@ -54,7 +54,7 @@ public class AccountAPI
 			log.debug("Account registered successfully.");
 			return new ResponseEntity<Object>(HttpStatus.CREATED);
 		}
-		catch (IllegalStateException e)
+		catch (Exception e)
 		{
 			return ResponseEntity.badRequest().body("Konto z podanymi danymi już istnieje.");
 		}
@@ -75,6 +75,17 @@ public class AccountAPI
 			return new ResponseEntity<Object>(HttpStatus.OK);
 		else
 			return ResponseEntity.badRequest().body("Podane dane są niepoprawne.");
+	}
+	
+	@GetMapping("api/v1/authenticated")
+	@ApiOperation(value = "Check if the user is currently authenticated", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Whether the user is authenticated")
+	})
+	public boolean isAuthenticated()
+	{
+		return accServ.isAuthenticated();
 	}
 
 	@GetMapping("register")

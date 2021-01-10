@@ -64,6 +64,8 @@ public class AccountServiceTests
 	public void shouldAuthenticateWhenRegisteringWithAutoAuthentication(RegistrationDTO mockRegDto)
 	{
 		HttpServletRequest req = new MockHttpServletRequest();
+		SecurityContext sc = mock(SecurityContext.class);
+		when(secConConf.getContext()).thenReturn(sc);
 		
 		accountService.register(req, mockRegDto, true);
 		
@@ -94,11 +96,13 @@ public class AccountServiceTests
 	{
 		HttpServletRequest req = new MockHttpServletRequest();
 		LoginDTO mockLoginDto = new LoginDTO(mockRegDto.getEmail(), mockRegDto.getPassword());
+		SecurityContext sc = mock(SecurityContext.class);
 		
+		when(secConConf.getContext()).thenReturn(sc);
 		when(passEnc.matches(mockRegDto.getPassword(),
 				mockRegDto.getPassword().toString()))
 			.thenReturn(true);
-		when(accDao.findOne(any()))
+		when(accDao.findByEmailOrUsername(mockRegDto.getEmail(), mockRegDto.getEmail()))
 			.thenReturn(Optional.of(new Account.Builder()
 					.withEmail(mockRegDto.getEmail())
 					.withUsername(mockRegDto.getUsername())
@@ -125,7 +129,7 @@ public class AccountServiceTests
 		when(passEnc.matches(mockRegDto.getPassword(),
 				mockRegDto.getPassword().toString()))
 			.thenReturn(false);
-		when(accDao.findOne(any()))
+		when(accDao.findByEmailOrUsername(mockRegDto.getEmail(), mockRegDto.getEmail()))
 			.thenReturn(Optional.of(new Account.Builder()
 					.withEmail(mockRegDto.getEmail())
 					.withUsername(mockRegDto.getUsername())
@@ -146,7 +150,7 @@ public class AccountServiceTests
 		HttpServletRequest req = new MockHttpServletRequest();
 		LoginDTO mockLoginDto = new LoginDTO(mockRegDto.getEmail(), mockRegDto.getPassword());
 		
-		when(accDao.findOne(any())).thenReturn(Optional.empty());
+		when(accDao.findByEmailOrUsername(mockRegDto.getEmail(), mockRegDto.getEmail())).thenReturn(Optional.empty());
 		
 		boolean loggedIn = accountService.login(req, mockLoginDto);
 		
@@ -220,49 +224,43 @@ public class AccountServiceTests
 	@MethodSource("mockAccountAndUsername")
 	public void shouldFindAccountByUsernameWhenOneExists(String username, Account acc)
 	{
-		when(accDao.findOne(any())).thenReturn(Optional.of(acc));
+		when(accDao.findByUsername(acc.getUsername())).thenReturn(Optional.of(acc));
 		
 		Optional<Account> res = accountService.findByUsername(username);
 		
 		assertTrue(res.filter(a -> a.equals(acc)).isPresent());
-		verify(accDao, times(1)).findOne(any());
-		verifyNoMoreInteractions(accDao);
 	}
 	@ParameterizedTest
 	@MethodSource("mockUsername")
 	public void shouldNotFindAccountByUsernameWhenNoneExist(String username)
 	{
-		when(accDao.findOne(any())).thenReturn(Optional.empty());
+		when(accDao.findByUsername(username)).thenReturn(Optional.empty());
 		
 		Optional<Account> res = accountService.findByUsername(username);
 		
 		assertTrue(res.isEmpty());
-		verify(accDao, times(1)).findOne(any());
+		verify(accDao, times(1)).findByUsername(username);
 		verifyNoMoreInteractions(accDao);
 	}
 	@ParameterizedTest
 	@MethodSource("mockAccountAndUsername")
 	public void shouldLoadUserByUsernameOrEmailWhenOneExists(String username, Account acc)
 	{
-		when(accDao.findOne(any())).thenReturn(Optional.of(acc));
+		when(accDao.findByEmailOrUsername(acc.getEmail(), acc.getEmail())).thenReturn(Optional.of(acc));
+		when(accDao.findByEmailOrUsername(acc.getUsername(), acc.getUsername())).thenReturn(Optional.of(acc));
 		
 		UserDetails res = accountService.loadUserByUsername(username);
 		
 		assertNotNull(res);
-		verify(accDao, times(1)).findOne(any());
-		verifyNoMoreInteractions(accDao);
 	}
 	@ParameterizedTest
 	@MethodSource("mockUsername")
 	public void shouldNotLoadUserByUsernameOrEmailWhenNoneExist(String username)
 	{
-		when(accDao.findOne(any())).thenReturn(Optional.empty());
+		when(accDao.findByEmailOrUsername(any(), any())).thenReturn(Optional.empty());
 		
 		assertThrows(UsernameNotFoundException.class,
 				() -> accountService.loadUserByUsername(username));
-		
-		verify(accDao, times(1)).findOne(any());
-		verifyNoMoreInteractions(accDao);
 	}
 	
 	//---Sources---

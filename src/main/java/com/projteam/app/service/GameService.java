@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.projteam.app.domain.Account;
-import com.projteam.app.domain.Game;
+import com.projteam.app.domain.game.Game;
 
 @Service
 public class GameService
@@ -44,8 +44,7 @@ public class GameService
 		
 		if (players.size() > 0)
 		{
-			games.put(gameCode, new Game(players, spectators));
-			return true;
+			//TODO implement in next ticket
 		}
 		return false;
 	}
