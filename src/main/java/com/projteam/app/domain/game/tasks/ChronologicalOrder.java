@@ -3,11 +3,16 @@ package com.projteam.app.domain.game.tasks;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OrderColumn;
 import com.projteam.app.domain.game.tasks.answers.ChronologicalOrderAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
+import com.projteam.app.dto.game.tasks.ChronologicalOrderDTO;
+import com.projteam.app.dto.game.tasks.TaskInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,10 +21,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Access(AccessType.FIELD)
 public class ChronologicalOrder implements Task
 {
 	private @Id UUID id;
-	private @ElementCollection List<String> sentences;
+	private @ElementCollection @OrderColumn List<String> sentences;
 	
 	private double difficulty;
 	
@@ -32,6 +38,8 @@ public class ChronologicalOrder implements Task
 		List<String> ansList = ((ChronologicalOrderAnswer) answer).getAnswers();
 		Iterator<String> iter = sentences.iterator();
 		
+		if (ansList == null)
+			return 0;
 		if (ansList.size() != sentences.size())
 			throw new IllegalArgumentException("Answer length differs from task size: " + ansList.size() + ", " + sentences.size());
 		
@@ -44,5 +52,16 @@ public class ChronologicalOrder implements Task
 		}
 		
 		return ((double) score) / ansList.size();
+	}
+	@Override
+	public Class<? extends TaskAnswer> getAnswerType()
+	{
+		return ChronologicalOrderAnswer.class;
+	}
+	@Override
+	public TaskInfoDTO toDTO(int taskNumber)
+	{
+		return new TaskInfoDTO("ChronologicalOrder", taskNumber,
+				new ChronologicalOrderDTO(sentences));
 	}
 }
