@@ -72,11 +72,10 @@ public class LobbyService
 		return lobbies.containsKey(gameCode);
 	}
 	
-	public boolean hasAnthingChanged(String gameCode, Account account)
+	public Optional<Boolean> hasAnthingChanged(String gameCode, Account account)
 	{
 		return Optional.ofNullable(lobbies.get(gameCode))
-				.map(lobby -> lobby.hasAnthingChanged(account.getId()))
-				.orElse(true);
+				.map(lobby -> lobby.hasAnthingChanged(account.getId()));
 	}
 	
 	public boolean addPlayer(String gameCode)

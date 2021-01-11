@@ -3,12 +3,16 @@ package com.projteam.app.domain.game.tasks;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import com.projteam.app.domain.game.tasks.WordFillElement.EmptySpace;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
+import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.WordFillElementDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Access(AccessType.FIELD)
 public class WordFill implements Task
 {
 	private @Id UUID id;
@@ -49,6 +54,8 @@ public class WordFill implements Task
 				.map(wc -> wc.getAnswer())
 				.iterator();
 		
+		if (ansList == null)
+			return 0;
 		if (ansList.size() != getEmptySpaces().size())
 			throw new IllegalArgumentException("Answer length differs from task size: "
 					+ ansList.size() + ", " + getEmptySpaces().size());
@@ -62,5 +69,16 @@ public class WordFill implements Task
 		}
 		
 		return ((double) score) / ansList.size();
+	}
+	@Override
+	public Class<? extends TaskAnswer> getAnswerType()
+	{
+		return WordFillAnswer.class;
+	}
+	@Override
+	public TaskInfoDTO toDTO(int taskNumber)
+	{
+		return new TaskInfoDTO("WordFill", taskNumber, 
+				new WordFillElementDTO(content));
 	}
 }

@@ -3,11 +3,16 @@ package com.projteam.app.domain.game.tasks;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OrderColumn;
 import com.projteam.app.domain.game.tasks.answers.ListSentenceFormingAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
+import com.projteam.app.dto.game.tasks.ListSentenceFormingDTO;
+import com.projteam.app.dto.game.tasks.TaskInfoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,10 +21,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Access(AccessType.FIELD)
 public class ListSentenceForming implements Task
 {
 	private @Id UUID id;
-	private @ManyToMany List<SentenceFormingElement> rows;
+	private @ManyToMany @OrderColumn List<SentenceFormingElement> rows;
 
 	private double difficulty;
 	
@@ -30,29 +36,27 @@ public class ListSentenceForming implements Task
 			throw new IllegalArgumentException("Invalid answer type: " + answer.getClass().getTypeName());
 		
 		List<List<String>> answers = ((ListSentenceFormingAnswer) answer).getAnswers();
+		if (answers == null)
+			return 0;
 		
-		long l = answers.stream()
-				.mapToLong(list -> list.size())
-				.sum();
-		
-		Iterator<Iterator<String>> iter = rows.stream()
-				.map(row -> row.getWords()
-						.iterator())
+		Iterator<List<String>> iter = rows.stream()
+				.map(row -> row.getWords())
 				.iterator();
 		
-		long l2 = rows.stream()
+		long l = rows.stream()
 				.mapToLong(row -> row.getWords().size())
 				.sum();
-		
-		if (l != l2)
-			throw new IllegalArgumentException("Answer length differs from task size: "
-					+ l + ", " + l2);
 		
 		long score = 0;
 		
 		for (List<String> row: answers)
 		{
-			Iterator<String> currIt = iter.next();
+			if (row == null)
+				continue;
+			List<String> currList = iter.next();
+			if (row.size() != currList.size())
+				throw new IllegalArgumentException("Answer length differs from task size: ");
+			Iterator<String> currIt = currList.iterator();
 			for (String ans: row)
 			{
 				if (currIt.next().equals(ans))
@@ -61,5 +65,16 @@ public class ListSentenceForming implements Task
 		}
 		
 		return ((double) score) / l;
+	}
+	@Override
+	public Class<? extends TaskAnswer> getAnswerType()
+	{
+		return ListSentenceFormingAnswer.class;
+	}
+	@Override
+	public TaskInfoDTO toDTO(int taskNumber)
+	{
+		return new TaskInfoDTO("ListSentenceForming", taskNumber,
+				new ListSentenceFormingDTO(this));
 	}
 }

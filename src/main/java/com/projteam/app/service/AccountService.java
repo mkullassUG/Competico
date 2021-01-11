@@ -89,7 +89,6 @@ public class AccountService implements UserDetailsService
 	private Authentication getAuthentication()
 	{
 		Authentication auth = secConConf.getContext().getAuthentication();
-		System.out.println(auth);
 		if (auth == null || (auth instanceof AnonymousAuthenticationToken) || !auth.isAuthenticated())
 			return null;
 		return auth;

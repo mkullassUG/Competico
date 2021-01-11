@@ -47,4 +47,14 @@ public class Game
 	{
 		return currentTaskNumber.get(player.getId()) >= taskCount;
 	}
+
+	public int getCurrentTaskNumber(Account player)
+	{
+		return currentTaskNumber.get(player.getId());
+	}
+
+	public int getTaskCount(Account player)
+	{
+		return taskMap.get(player.getId()).size();
+	}
 }
