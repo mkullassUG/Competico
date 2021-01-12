@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import com.projteam.app.domain.Account;
+import com.projteam.app.dto.lobby.LobbyOptionsDTO;
 import com.projteam.app.service.AccountService;
 import com.projteam.app.service.GameService;
 import com.projteam.app.service.LobbyService;
@@ -90,7 +91,7 @@ public class LobbyAPI
 			return Map.of("exists", exists);
 		return Map.of(
 				"exists", exists,
-				"isPublic", true, //TODO implement service-side
+				"allowsRandomPlayers", lobbyService.allowsRandomPlayers(gameCode), //TODO implement service-side
 				"isFull", lobbyService.isLobbyFull(gameCode),
 				"maxPlayers", lobbyService.getMaximumPlayerCount(gameCode),
 				"host", Map.of(
@@ -171,9 +172,9 @@ public class LobbyAPI
 		@ApiResponse(code = 200, message = "Whether lobby settings were updated"),
 	})
 	@PutMapping("api/v1/lobby/{gameCode}")
-	public void updateLobbySettings(@PathVariable String gameCode, @RequestBody String username)
+	public boolean updateLobbySettings(@PathVariable String gameCode, @RequestBody LobbyOptionsDTO options)
 	{
-		//TODO implement
+		return lobbyService.updateOptions(gameCode, options);
 	}
 	
 	@ApiOperation(value = "Leave lobby", code = 200)

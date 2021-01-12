@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.projteam.app.domain.Account;
 import com.projteam.app.domain.game.Lobby;
+import com.projteam.app.dto.lobby.LobbyOptionsDTO;
 
 @Service
 public class LobbyService
@@ -202,5 +203,25 @@ public class LobbyService
 				.map(e -> e.getKey())
 				.findAny()
 				.orElse(null);
+	}
+
+	public boolean updateOptions(String gameCode, LobbyOptionsDTO options)
+	{
+		return updateOptions(gameCode, options, getAccount());
+	}
+	public boolean updateOptions(String gameCode, LobbyOptionsDTO options, Account requestSource)
+	{
+		Lobby lobby = lobbies.get(gameCode);
+		if ((lobby != null) && (lobby.isHost(requestSource)))
+		{
+			if (!lobby.setMaximumPlayerCount(options.getMaxPlayers()))
+				return false;
+			if (options.isAllowsRandomPlayers())
+				lobbyCodesAllowingRandomPlayers.add(gameCode);
+			else
+				lobbyCodesAllowingRandomPlayers.remove(gameCode);
+			return true;
+		}
+		return false;
 	}
 }
