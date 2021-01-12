@@ -143,14 +143,14 @@ public class LobbyAPI
 	public Map<String, Boolean> lobbyStatusChanged(@PathVariable String gameCode)
 	{
 		Optional<Boolean> lobbyContentChanged = lobbyService.hasAnthingChanged(gameCode,
-                getAuthenticatedAccount());
-        boolean gameStarted = gameService.gameExists(gameCode);
-        System.out.println(gameCode + ", "+lobbyContentChanged +", "+gameStarted);
-        if (lobbyContentChanged.isEmpty() && !gameStarted)
-            return Map.of("lobbyDeleted", true);
-        return Map.of(
-                "lobbyContentChanged", lobbyContentChanged.orElse(false),
-                "gameStarted", gameService.gameExists(gameCode));
+				getAuthenticatedAccount());
+		boolean gameStarted = gameService.gameExists(gameCode);
+		
+		if (lobbyContentChanged.isEmpty() && !gameStarted)
+			return Map.of("lobbyExists", false);
+		return Map.of(
+				"lobbyContentChanged", lobbyContentChanged.orElse(false),
+				"gameStarted", gameService.gameExists(gameCode));
 	}
 	
 	@ApiOperation(value = "Remove a player from the lobby", code = 200)
@@ -185,14 +185,8 @@ public class LobbyAPI
 	public boolean leaveLobby(@PathVariable String gameCode)
 	{
 		if (lobbyService.isHost(gameCode))
-        {
-            boolean ret = lobbyService.deleteLobby(gameCode);
-            System.out.println("deleteLobby: " + ret);
-            return ret;
-        }
-        boolean ret = lobbyService.removePlayer(gameCode);
-        System.out.println("removePlayer: " + ret);
-        return ret;
+			return lobbyService.deleteLobby(gameCode);
+		return lobbyService.removePlayer(gameCode);
 	}
 	
 	@ApiOperation(value = "Find a random lobby", code = 200)

@@ -64,9 +64,16 @@ public class GameAPI
 	@GetMapping("api/v1/game/{gameCode}/tasks/current")
 	public Object getCurrentTask(@PathVariable String gameCode)
 	{
-		if (gameService.hasGameFinished(gameCode))
-			return Map.of("hasGameFinished", true);
-		return gameService.getCurrentTaskInfo(gameCode);
+		try
+		{
+			if (gameService.hasGameFinished(gameCode))
+				return Map.of("hasGameFinished", true);
+			return gameService.getCurrentTaskInfo(gameCode);
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body("Niepoprawny format odpowiedzi na zadanie");
+		}
 	}
 	
 	@ApiOperation(value = "Send answers to the current task", code = 200)
@@ -84,6 +91,7 @@ public class GameAPI
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			return ResponseEntity.badRequest().body("Niepoprawny format odpowiedzi na zadanie");
 		}
 		return ResponseEntity.ok().build();

@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.1.1">
-    <title>index</title>
+    <title>Lobby</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/cover/">
     <link rel="icon" href="../assets/myIcons/icon.svg">
@@ -251,7 +251,24 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnSendleave">Prześlij</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnSendleave">Wyjdź</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal leave lobby-->
+    <div class="modal fade" id="kickModalCenter" tabindex="-1" role="dialog" aria-labelledby="kickModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="kickModalLongTitle">Czy napewno usunąć gracza?</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnSendkick">Wyjdź</button>
           </div>
         </div>
       </div>

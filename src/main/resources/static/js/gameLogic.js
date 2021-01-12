@@ -60,7 +60,10 @@ const GameLogic = ( lobby, _task) => {
     //wyświewtlić modala czy napewn ochce oddac zadanie
     if (!self.currentTaskVariant) {
       console.warn("nie ma gotowych odpowiedzi!");
-      return;
+      /*
+        Dla testowych danych zakomentowałem bo nie pozwalało przejśc do nastepnego zadania gdy jak opierwszy nie był działający już task
+      */
+      //return;
     }
       console.log(self.currentTaskVariant.getAnswers());
     var answers = self.currentTaskVariant.getAnswers();
@@ -116,6 +119,12 @@ const GameLogic = ( lobby, _task) => {
       case "template5":
         self.currentTaskVariant = TaskVariant5(task.task);//GameLogicVariants.logicVariant5(task);
         break;
+      default:
+          console.warn("To pole jest tylko dla jeszcze nie zaimplementowancyh tasków, w produkcji nie powinno się nigdy wykonać!");
+          self.currentTaskVariant = {};
+          //ListWordFill answers
+          self.currentTaskVariant.getAnswers = () => { console.log("hello ListWordFill");return {answers: [["test"]]} }
+        break;
     }
   }
 
@@ -146,8 +155,8 @@ const GameLogic = ( lobby, _task) => {
         $("#btnEndGame").on("click",()=>{
       if (self.debug)
         console.log("btnEndGame");
-  
-        sendAjaxEndGame();
+        
+        self.leaveLobby();
     });
 
     if (game.result) {

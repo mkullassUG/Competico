@@ -78,6 +78,7 @@ public class LobbyService
 	public Optional<Boolean> hasAnthingChanged(String gameCode, Account account)
 	{
 		return Optional.ofNullable(lobbies.get(gameCode))
+				.filter(lobby -> lobby.containsPlayerOrHost(account))
 				.map(lobby -> lobby.hasAnthingChanged(account.getId()));
 	}
 	

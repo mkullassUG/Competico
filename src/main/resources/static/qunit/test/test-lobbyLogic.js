@@ -1,6 +1,7 @@
 (function(qunit, $) {
 
 	qunit.test("Who am I", function(assert) {
+		assert.timeout(10000);
 		$.mockjax({
 			url: '/api/v1/playerinfo',
 			response: function(settings) {

@@ -60,7 +60,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       //ustawianie lobby widoku gracza
       $("#lobbyMainHost").removeClass("col-10").addClass("col-12");
       $("#lobbySettings").hide();
-      $(".btnKick").addClass("collapse")
+      $(".btnKick").addClass("collapse");
     }
     if ($('.btn').length)
       $('.btn').popover();
@@ -201,7 +201,8 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       console.warn("nie znaleziono żadnych graczy w lobby");
       return 0;
     }
-    
+    //self.removePlaver(); //todo
+    //$("#btnSendkick")
     let playersLength = lobby.players.length;
     for (let i = 0; i < playersLength; i++) {
       let player = lobby.players[i];
@@ -220,7 +221,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
         $("#lobbyplayers").append(playerDiv);
     }
     
-    if (self.isHost)
+    if (self.isHost){
       if ($(".btnKick").length)
         $(".btnKick").on("click", (e) => {
           e.preventDefault();
@@ -230,9 +231,10 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
           if (debug == true)
             console.log("kicking: " + $(e.target).data("username"));
         });
-    else
+    } else {
       if ($(".btnKick").length)
         $(".btnKick").addClass("collapse");
+    }
     //-----max players
     if (lobby.maxPlayers != null) {
       $("#lobbyMaxPlayers").val("Gracze " + playersLength + "\\" + lobby.maxPlayers);
@@ -241,7 +243,9 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   }
 
   self.updateCheck = (data) => {
-    if (data.lobbyDeleted) {
+
+    if (data.lobbyExists === false) {
+      console.log("wyjdź");
       $('#LobbyDeletedModalCenter').modal('show');
     } else if(data.gameStarted == true) 
     self.startGame(); //tutaj tworzyć obiekt taska?
@@ -351,17 +355,21 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     if (self.isHost == false)
       return;
 
-    var send = {player: player}
+    var send = player;
     $.ajax({
       type     : "DELETE",
       cache    : false,
       url      : "/api/v1/lobby/" + self.lobbyCode + "/players",
-      data     : JSON.stringify(send),
+      data     : send,
       contentType: "application/json",
       success: function(data, textStatus, jqXHR) {
-        if (self.debug)
+        if (self.debug){
           console.log("sendAjaxKickPlayer success");
-
+          console.log(data);
+          console.log(textStatus);
+          console.log(jqXHR);
+        }
+        //self.removePlaver();
         console.warn("Zaimplementować usuwanie gracza!!");
       },
       error: function(jqXHR, status, err) {
@@ -408,7 +416,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       contentType: "application/json",
       success: function(data, textStatus, jqXHR) {
         if (self.debug) {
-          console.log("connectionLoop success");
+          //console.log("connectionLoop success");
           console.log(data);
         }
         
