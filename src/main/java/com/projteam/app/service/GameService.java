@@ -167,9 +167,6 @@ public class GameService
 				Map.entry(12, 12),
 				Map.entry(13, 13));
 		
-		if (leftWords3.size() != rightWords3.size() || rightWords3.size() != correctMapping3.size())
-			throw new IllegalArgumentException(leftWords3.size() + ", " + rightWords3.size() + ", " + correctMapping3.size());
-		
 		WordConnect wc3 = new WordConnect(UUID.randomUUID(),
 				leftWords3, rightWords3, correctMapping3, targetDifficulty);
 		

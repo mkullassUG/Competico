@@ -82,6 +82,7 @@ public class Game
 		GameResults grs = new GameResults(gameId);
 		for (Account player: players)
 		{
+			UUID gameResultId = UUID.randomUUID();
 			UUID playerId = player.getId();
 			Map<Integer, Double> completion = taskCompletionMap.get(playerId);
 			Map<Integer, Double> difficulty = new HashMap<>();
@@ -96,7 +97,7 @@ public class Game
 					.stream()
 					.collect(Collectors.toMap(n -> n, n -> 10000l));
 			
-			GameResult gr = new GameResult(gameId, completion, difficulty, timeTaken);
+			GameResult gr = new GameResult(gameResultId, playerId, completion, difficulty, timeTaken);
 			grs.addResult(gr);
 		}
 		return grs;
