@@ -9,6 +9,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,9 +18,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "GameResult")
 public class GameResult
 {
-	private @Id @Column(name = "playerID", unique = true) UUID playerID;
+	private @Id UUID playerResultID;
+	private @Column(name = "playerID") UUID playerID;
 	
 	@ElementCollection
 	@CollectionTable(name = "completion_mapping")
