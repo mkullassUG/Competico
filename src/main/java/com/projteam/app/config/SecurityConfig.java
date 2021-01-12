@@ -12,11 +12,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import com.projteam.app.service.AccountService;
 
 @Configuration
@@ -42,7 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		                "/login",
 		                "/register",
 		                "/api/v1/login/",
-		                "/api/v1/register/")
+		                "/api/v1/register/",
+		                "/api/v1/authenticated/")
 			.permitAll()
 
 			//TODO reenable once role storage is ready
@@ -67,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 			.logout()
 			.invalidateHttpSession(true)
 			.clearAuthentication(true)
-			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+			.logoutUrl("/logout")
 			.logoutSuccessUrl("/")
 			.permitAll()
 			.and()

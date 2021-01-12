@@ -2,79 +2,66 @@ package com.projteam.app.domain.game.tasks;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OrderColumn;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
+import com.projteam.app.domain.game.tasks.answers.WordConnectAnswer;
+import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.WordConnectDTO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Access(AccessType.FIELD)
 public class WordConnect implements Task
 {
 	private @Id UUID id;
-	private @ElementCollection List<String> leftWords;
-	private @ElementCollection List<String> rightWords;
+	private @ElementCollection @OrderColumn List<String> leftWords;
+	private @ElementCollection @OrderColumn List<String> rightWords;
 	private @ElementCollection Map<Integer, Integer> correctMapping;
 	
 	private double difficulty;
 
-	public WordConnect()
-	{}
-	public WordConnect(UUID id, List<String> leftWords, List<String> rightWords, Map<Integer, Integer> correctMapping, double difficulty)
+	@Override
+	public double acceptAnswer(TaskAnswer answer)
 	{
-		this.id = id;
-		this.leftWords = leftWords;
-		this.rightWords = rightWords;
-		this.correctMapping = correctMapping;
-		this.difficulty = difficulty;
-	}
-	
-	public UUID getId()
-	{
-		return id;
-	}
-	public List<String> getLeftWords()
-	{
-		return leftWords;
-	}
-	public List<String> getRightWords()
-	{
-		return rightWords;
-	}
-	public Map<Integer, Integer> getCorrectMapping()
-	{
-		return correctMapping;
+		if (!(answer instanceof WordConnectAnswer))
+			throw new IllegalArgumentException("Invalid answer type: " + answer.getClass().getTypeName());
+		
+		Map<Integer, Integer> answerMapping = ((WordConnectAnswer) answer).getAnswerMapping();
+		
+		if (answerMapping == null)
+			return 0;
+		
+		long score = 0;
+		
+		for (Entry<Integer, Integer> e: correctMapping.entrySet())
+		{
+			if (answerMapping.get(e.getKey()) == e.getValue())
+				score++;
+		}
+		
+		return ((double) score) / correctMapping.size();
 	}
 	@Override
-	public double getDifficulty()
+	public Class<? extends TaskAnswer> getAnswerType()
 	{
-		return difficulty;
+		return WordConnectAnswer.class;
 	}
-
-	public void setId(UUID id)
-	{
-		this.id = id;
-	}
-	public void setLeftWords(List<String> leftWords)
-	{
-		this.leftWords = leftWords;
-	}
-	public void setRightWords(List<String> rightWords)
-	{
-		this.rightWords = rightWords;
-	}
-	public void setCorrectMapping(Map<Integer, Integer> correctMapping)
-	{
-		this.correctMapping = correctMapping;
-	}
-	public void setDifficulty(double difficulty)
-	{
-		this.difficulty = difficulty;
-	}
-	
 	@Override
-	public void acceptAnswer(TaskAnswer answer)
+	public TaskInfoDTO toDTO(int taskNumber)
 	{
-		//TODO implement
+		return new TaskInfoDTO("WordConnect", taskNumber,
+				new WordConnectDTO(this));
 	}
 }

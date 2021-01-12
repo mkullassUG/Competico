@@ -1,6 +1,6 @@
 package com.projteam.app.domain.game.tasks.answers;
 
-import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WordFillAnswer implements TaskAnswer
+public class WordConnectAnswer implements TaskAnswer
 {
-	private List<String> answers;
+	private Map<Integer, Integer> answerMapping;
 }

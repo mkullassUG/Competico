@@ -11,11 +11,18 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.domain.Account;
 import com.projteam.app.domain.game.Game;
+import com.projteam.app.domain.game.tasks.ChronologicalOrder;
 import com.projteam.app.domain.game.tasks.Task;
+import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.WordFill;
+import com.projteam.app.domain.game.tasks.WordFillElement;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
+import com.projteam.app.dto.game.tasks.TaskInfoDTO;
 
 @Service
 public class GameService
@@ -55,18 +62,99 @@ public class GameService
 		
 		if (players.size() < 1)
 			return false;
+		if (!lobbyServ.deleteLobby(gameCode, requestSource))
+			return false;
 		
-		int taskCount = 8 + (int) (Math.random() * 4); //TODO export to properties
+		int taskCount = 6 + (int) (Math.random() * 4); //TODO export to properties
 		double targetDifficulty = 100; //TODO refactor
 		Map<UUID, List<Task>> taskMap = new HashMap<>();
 		taskMap.putAll(players.stream()
 				.collect(Collectors.toMap(player -> player.getId(), player ->
 					IntStream.range(0, taskCount)
-							.mapToObj(i -> new WordFill())
+							.mapToObj(i -> generateRandomTask(targetDifficulty))
 							.collect(Collectors.toList()))));
 		
 		games.put(gameCode, new Game(players, spectators, taskCount, targetDifficulty, taskMap));
 		return true;
+	}
+
+	public Task generateRandomTask(double targetDifficulty)
+	{
+		//TODO implement proper Task data fetching
+		//this is just mock data needed to test later game behaviour
+				
+		List<String> text = List.of("Lorem ipsum dolor sit amet, consectetur ",
+				" elit. Quisque vestibulum, enim id fringilla sodales, libero   ipsum ",
+				" erat, id ullamcorper elit ante auctor est. Nulla facilisi. Maecenas ultricies, magna non pretium mattis, ligula risus pulvinar elit, eu mattis ",
+				" dolor nec turpis. Quisque elementum ",
+				" accumsan. Lorem ipsum dolor ",
+				" amet, consectetur adipiscing elit. In nec ",
+				" nisi, et semper nisl. Cras placerat ",
+				" orci eget congue. Duis vitae gravida odio. Etiam elit turpis, ",
+				" ac nisi et, dapibus blandit nibh. Duis eleifend metus in iaculis tincidunt.");
+		List<String> possibleAnswers = List.of("slowo1", "slowo2",
+				"slowo3", "slowo4", "slowo5",
+				"slowo6", "slowo7", "slowo8");
+		List<WordFillElement.EmptySpace> emptySpaces = possibleAnswers.stream()
+				.map(ans -> new WordFillElement.EmptySpace(ans))
+				.collect(Collectors.toList());
+		
+		WordFill wf = new WordFill(UUID.randomUUID(),
+				new WordFillElement(UUID.randomUUID(),
+						text, emptySpaces, true,
+						possibleAnswers), targetDifficulty);
+		
+		List<String> leftWords1 = List.of("data mining", "pattern identification", "quantitative modelling", "class label", "class membership", "explanatory variable", "variable", "fault-tolerant", "spurious pattern", "outlier");
+		List<String> rightWords1 = List.of("eksploracja danych", "identyfikacja wzorca", "modelowanie ilościowe", "etykieta klasy", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna");
+		Map<Integer, Integer> correctMapping1 = Map.ofEntries(
+				Map.entry(0, 0),
+				Map.entry(1, 1),
+				Map.entry(2, 2),
+				Map.entry(3, 3),
+				Map.entry(4, 4),
+				Map.entry(5, 5),
+				Map.entry(6, 6),
+				Map.entry(7, 7),
+				Map.entry(8, 8),
+				Map.entry(9, 9));
+
+		WordConnect wc1 = new WordConnect(UUID.randomUUID(),
+				leftWords1, rightWords1, correctMapping1, targetDifficulty);
+		
+		List<String> leftWords2 = List.of("keynote", "to convey (information)", "to unveil (a theme)", "consistent", "stiff", "a knack (for sth)", "a flair", "intricate", "dazzling", "to rehearse");
+		List<String> rightWords2 = List.of("myśl przewodnia, główny motyw", "przekazywać/dostarczać (informacje)", "odkryć, ujawnić, odsłonić", "spójny, zgodny, konsekwentny", "sztywny, zdrętwiały", "talent, zręczność", "klasa, dar", "zawiły, misterny", "olśniewający", "próbować, przygotowywać się");
+		Map<Integer, Integer> correctMapping2 = Map.ofEntries(
+				Map.entry(0, 0),
+				Map.entry(1, 1),
+				Map.entry(2, 2),
+				Map.entry(3, 3),
+				Map.entry(4, 4),
+				Map.entry(5, 5),
+				Map.entry(6, 6),
+				Map.entry(7, 7),
+				Map.entry(8, 8),
+				Map.entry(9, 9));
+		
+		WordConnect wc2 = new WordConnect(UUID.randomUUID(),
+				leftWords2, rightWords2, correctMapping2, targetDifficulty);
+		
+		List<String> coText = List.of("Lorem ipsum dolor sit amet",
+				"consectetur adipiscing elit",
+				"sed do eiusmod tempor incididunt",
+				"ut labore et dolore magna aliqua",
+				"Ut enim ad minim veniam",
+				"quis nostrud exercitation",
+				"ullamco laboris nisi ut",
+				"aliquip ex ea commodo consequat");
+		
+		ChronologicalOrder co = new ChronologicalOrder(
+				UUID.randomUUID(), coText, targetDifficulty);
+		
+		List<Task> ret = List.of(wf, wc1, wc2, co);
+		
+//		ListWordFill lwf = new ListWordFill();
+		
+		return ret.get((int) (Math.random() * ret.size()));
 	}
 
 	public boolean gameExists(String gameCode)
@@ -74,11 +162,20 @@ public class GameService
 		return games.containsKey(gameCode);
 	}
 	
-	public Task getCurrentTask(String gameCode)
+	public TaskInfoDTO getCurrentTaskInfo(String gameCode)
+	{
+		return getCurrentTaskInfo(gameCode, getAccount());
+	}
+	public TaskInfoDTO getCurrentTaskInfo(String gameCode, Account player)
+	{
+		return getCurrentTask(gameCode, player).toDTO(getTaskNumber(gameCode, player));
+	}
+	
+	private Task getCurrentTask(String gameCode)
 	{
 		return getCurrentTask(gameCode, getAccount());
 	}
-	public Task getCurrentTask(String gameCode, Account player)
+	private Task getCurrentTask(String gameCode, Account player)
 	{
 		if (!games.containsKey(gameCode))
 			return null;
@@ -102,7 +199,7 @@ public class GameService
 	{
 		acceptAnswer(gameCode, answer, getAccount());
 	}
-	public void acceptAnswer(String gameCode, TaskAnswer answer, Account player)
+	private void acceptAnswer(String gameCode, TaskAnswer answer, Account player)
 	{
 		if (!games.containsKey(gameCode))
 			return;
@@ -119,5 +216,34 @@ public class GameService
 	{
 		return accServ.getAuthenticatedAccount()
 				.orElseThrow(() -> new IllegalArgumentException("Not authenticated."));
+	}
+
+	private TaskAnswer convertRawAnswer(String gameCode, JsonNode answer) throws JsonProcessingException
+	{
+		return new ObjectMapper().treeToValue(answer, getCurrentTask(gameCode).getAnswerType());
+	}
+	public void acceptAnswer(String gameCode, JsonNode answer) throws JsonProcessingException
+	{
+		acceptAnswer(gameCode, convertRawAnswer(gameCode, answer));
+	}
+
+	public int getTaskNumber(String gameCode)
+	{
+		return getTaskNumber(gameCode, getAccount());
+	}
+	public int getTaskNumber(String gameCode, Account player)
+	{
+		if (!games.containsKey(gameCode))
+			return -1;
+		Game game = games.get(gameCode);
+		return game.getCurrentTaskNumber(player);
+	}
+
+	public int getTaskCount(String gameCode)
+	{
+		if (!games.containsKey(gameCode))
+			return -1;
+		Game game = games.get(gameCode);
+		return game.getTaskCount(getAccount());
 	}
 }

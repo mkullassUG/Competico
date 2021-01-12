@@ -1,16 +1,16 @@
 package com.projteam.app.api;
 
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.projteam.app.service.GameService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -62,40 +62,30 @@ public class GameAPI
 		@ApiResponse(code = 200, message = "Current task"),
 	})
 	@GetMapping("api/v1/game/{gameCode}/tasks/current")
-	public Map<String, Object> getCurrentTask(@PathVariable String gameCode)
+	public Object getCurrentTask(@PathVariable String gameCode)
 	{
-		//TODO implement properly
-		List<String> text = List.of("Lorem ipsum dolor sit amet, consectetur ",
-				" elit. Quisque vestibulum, enim id fringilla sodales, libero   ipsum ",
-				" erat, id ullamcorper elit ante auctor est. Nulla facilisi. Maecenas ultricies, magna non pretium mattis, ligula risus pulvinar elit, eu mattis ",
-				" dolor nec turpis. Quisque elementum ",
-				" accumsan. Lorem ipsum dolor ",
-				" amet, consectetur adipiscing elit. In nec ",
-				" nisi, et semper nisl. Cras placerat ",
-				" orci eget congue. Duis vitae gravida odio. Etiam elit turpis, ",
-				" ac nisi et, dapibus blandit nibh. Duis eleifend metus in iaculis tincidunt.");
-		List<String> possibleAnswers = List.of("slowo1", "slowo2",
-				"slowo3", "slowo4", "slowo5",
-				"slowo6", "slowo7", "slowo8");
-		
 		if (gameService.hasGameFinished(gameCode))
 			return Map.of("hasGameFinished", true);
-		return Map.of("taskNumber", 0,
-				"taskName", "WordFill",
-				"text", text,
-				"possibleAnswers", possibleAnswers,
-				"startsWithText", true,
-				"emptySpaceCount", text.size() - 1);
+		return gameService.getCurrentTaskInfo(gameCode);
 	}
 	
 	@ApiOperation(value = "Send answers to the current task", code = 200)
 	@ApiResponses(
 	{
 		@ApiResponse(code = 200, message = "Answers received and graded"),
+		@ApiResponse(code = 400, message = "Invalid answer content")
 	})
 	@PostMapping("api/v1/game/{gameCode}/tasks/answer")
-	public void answer(@PathVariable String gameCode, @RequestBody List<String> answer)
+	public ResponseEntity<Object> answer(@PathVariable String gameCode, @RequestBody JsonNode answer)
 	{
-		gameService.acceptAnswer(gameCode, new WordFillAnswer(answer));
+		try
+		{
+			gameService.acceptAnswer(gameCode, answer);
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body("Niepoprawny format odpowiedzi na zadanie");
+		}
+		return ResponseEntity.ok().build();
 	}
 }

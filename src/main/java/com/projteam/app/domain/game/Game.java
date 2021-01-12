@@ -1,6 +1,5 @@
 package com.projteam.app.domain.game;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,5 +46,15 @@ public class Game
 	public boolean hasGameFinished(Account player)
 	{
 		return currentTaskNumber.get(player.getId()) >= taskCount;
+	}
+
+	public int getCurrentTaskNumber(Account player)
+	{
+		return currentTaskNumber.get(player.getId());
+	}
+
+	public int getTaskCount(Account player)
+	{
+		return taskMap.get(player.getId()).size();
 	}
 }

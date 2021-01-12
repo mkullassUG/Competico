@@ -1,6 +1,5 @@
 package com.projteam.app.api;
 
-import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +75,17 @@ public class AccountAPI
 			return new ResponseEntity<Object>(HttpStatus.OK);
 		else
 			return ResponseEntity.badRequest().body("Podane dane są niepoprawne.");
+	}
+	
+	@GetMapping("api/v1/authenticated")
+	@ApiOperation(value = "Check if the user is currently authenticated", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Whether the user is authenticated")
+	})
+	public boolean isAuthenticated()
+	{
+		return accServ.isAuthenticated();
 	}
 
 	@GetMapping("register")

@@ -49,7 +49,7 @@ const GameLogic = ( lobby, _task) => {
     //$(window).off("resize");
     if (game.hasGameFinished ) {
       console.log("hasGameFinished");
-      console.log(task.hasGameFinished);
+      console.log(game.hasGameFinished);
       self.setupEndGame(game);
     }  else {
       self.setupNewTask(game);
@@ -99,22 +99,22 @@ const GameLogic = ( lobby, _task) => {
     //wybieranie odpowiedniej logiki dla konkretnego template'a
     switch (task.taskName) {
       case "WordFill":
-        self.currentTaskVariant = TaskVariant0(task);//GameLogicVariants.logicVariant0(task);
+        self.currentTaskVariant = TaskVariant0(task.task);//GameLogicVariants.logicVariant0(task);
         break;
-      case "template1":
-        self.currentTaskVariant = TaskVariant1(task);//GameLogicVariants.logicVariant1(task);
+      case "WordConnect":
+        self.currentTaskVariant = TaskVariant1(task.task);//GameLogicVariants.logicVariant1(task);
         break;
-      case "template2":
-        self.currentTaskVariant = TaskVariant2(task);//GameLogicVariants.logicVariant2(task);
+      case "ChronologicalOrder":
+        self.currentTaskVariant = TaskVariant2(task.task);//GameLogicVariants.logicVariant2(task);
         break;
       case "template3":
-        self.currentTaskVariant = TaskVariant3(task);//GameLogicVariants.logicVariant3(task);
+        self.currentTaskVariant = TaskVariant3(task.task);//GameLogicVariants.logicVariant3(task);
         break;
       case "template4":
-        self.currentTaskVariant = TaskVariant4(task);//GameLogicVariants.logicVariant4(task);
+        self.currentTaskVariant = TaskVariant4(task.task);//GameLogicVariants.logicVariant4(task);
         break;
       case "template5":
-        self.currentTaskVariant = TaskVariant5(task);//GameLogicVariants.logicVariant5(task);
+        self.currentTaskVariant = TaskVariant5(task.task);//GameLogicVariants.logicVariant5(task);
         break;
     }
   }
@@ -215,6 +215,7 @@ const GameLogic = ( lobby, _task) => {
   var ajaxSendAnswerAndReceiveNext = ( answer ) => {
     self.showModal();
     var send = answer;
+    console.log(send);
     $.ajax({
       type     : "POST",
       cache    : false,
@@ -222,15 +223,24 @@ const GameLogic = ( lobby, _task) => {
       data     : JSON.stringify(send),
       contentType: "application/json",
       success: function(data, textStatus, jqXHR) {
-        if (self.debug)
+        if (self.debug) {
           console.log("ajaxSendAnswerAndReceiveNext success");
-        
+          console.log(data);
+          console.log(textStatus);
+          console.log(jqXHR);
+          
+        }
         self.hideModal();
         ajaxReceiveGameChange();
       },
       error: function(jqXHR, status, err) {
-        if (self.debug)
+        if (self.debug) {
           console.warn("ajaxSendAnswerAndReceiveNext error");
+          console.warn(jqXHR);
+          console.warn(status);
+          console.warn(err);
+
+        }
         
         self.hideModal();
       }

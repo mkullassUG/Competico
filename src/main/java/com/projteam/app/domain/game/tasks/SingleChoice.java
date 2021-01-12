@@ -2,12 +2,24 @@ package com.projteam.app.domain.game.tasks;
 
 import java.util.List;
 import java.util.UUID;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import com.projteam.app.domain.game.tasks.answers.SingleChoiceAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
+import com.projteam.app.dto.game.tasks.SingleChoiceDTO;
+import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Access(AccessType.FIELD)
 public class SingleChoice implements Task
 {
 	private @Id UUID id;
@@ -17,61 +29,23 @@ public class SingleChoice implements Task
 	
 	private double difficulty;
 
-	public SingleChoice()
-	{}
-	public SingleChoice(UUID id, String content, String answer, List<String> incorrectAnswers, double difficulty)
+	@Override
+	public double acceptAnswer(TaskAnswer answer)
 	{
-		this.id = id;
-		this.content = content;
-		this.answer = answer;
-		this.incorrectAnswers = incorrectAnswers;
-		this.difficulty = difficulty;
-	}
-
-	public UUID getId()
-	{
-		return id;
-	}
-	public String getContent()
-	{
-		return content;
-	}
-	public String getAnswer()
-	{
-		return answer;
-	}
-	public List<String> getIncorrectAnswers()
-	{
-		return incorrectAnswers;
-	}
-	public void setId(UUID id)
-	{
-		this.id = id;
-	}
-	public void setContent(String content)
-	{
-		this.content = content;
-	}
-	public void setAnswer(String answer)
-	{
-		this.answer = answer;
-	}
-	public void setIncorrectAnswers(List<String> incorrectAnswers)
-	{
-		this.incorrectAnswers = incorrectAnswers;
-	}
-	public void setDifficulty(double difficulty)
-	{
-		this.difficulty = difficulty;
+		if (!(answer instanceof SingleChoiceAnswer))
+			throw new IllegalArgumentException("Invalid answer type: " + answer.getClass().getTypeName());
+		
+		return this.answer.equals(((SingleChoiceAnswer) answer).getAnswer())?1:0;
 	}
 	@Override
-	public double getDifficulty()
+	public Class<? extends TaskAnswer> getAnswerType()
 	{
-		return difficulty;
+		return SingleChoiceAnswer.class;
 	}
 	@Override
-	public void acceptAnswer(TaskAnswer answer)
+	public TaskInfoDTO toDTO(int taskNumber)
 	{
-		//TODO implement
+		return new TaskInfoDTO("SingleChoice", taskNumber,
+				new SingleChoiceDTO(this));
 	}
 }

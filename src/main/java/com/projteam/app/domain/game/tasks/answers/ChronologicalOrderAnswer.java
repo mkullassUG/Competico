@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WordFillAnswer implements TaskAnswer
+public class ChronologicalOrderAnswer implements TaskAnswer
 {
 	private List<String> answers;
 }

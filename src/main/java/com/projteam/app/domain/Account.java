@@ -14,7 +14,15 @@ import javax.persistence.Id;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 @Entity
 public class Account implements UserDetails
 {
@@ -24,8 +32,8 @@ public class Account implements UserDetails
 	private @Column(name = "password") String passwordHash;
 	private @Column(name = "nickname") String nickname;
 	
-	private @Column(name = "accountEnabled") boolean accEnabled = true;
-	private @Column(name = "accountNonExpired") boolean accNonExpired = true;
+	private @Column(name = "accountEnabled") boolean accountEnabled = true;
+	private @Column(name = "accountNonExpired") boolean accountNonExpired = true;
 	private @Column(name = "accountNonLocked") boolean accNonLocked = true;
 	private @Column(name = "credentialsNonExpired") boolean credNonExpired = true;
 	
@@ -35,9 +43,6 @@ public class Account implements UserDetails
 	
 	public static final String PLAYER_ROLE = "PLAYER";
 	public static final String LECTURER_ROLE = "LECTURER";
-	
-	public Account()
-	{}
 	
 	public UUID getId()
 	{
@@ -100,9 +105,9 @@ public class Account implements UserDetails
 		if (getClass() != obj.getClass())
 			return false;
 		Account other = (Account) obj;
-		if (accEnabled != other.accEnabled)
+		if (accountEnabled != other.accountEnabled)
 			return false;
-		if (accNonExpired != other.accNonExpired)
+		if (accountNonExpired != other.accountNonExpired)
 			return false;
 		if (accNonLocked != other.accNonLocked)
 			return false;
@@ -158,8 +163,8 @@ public class Account implements UserDetails
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (accEnabled ? 1231 : 1237);
-		result = prime * result + (accNonExpired ? 1231 : 1237);
+		result = prime * result + (accountEnabled ? 1231 : 1237);
+		result = prime * result + (accountNonExpired ? 1231 : 1237);
 		result = prime * result + (accNonLocked ? 1231 : 1237);
 		result = prime * result + (credNonExpired ? 1231 : 1237);
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
@@ -169,22 +174,6 @@ public class Account implements UserDetails
 		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "[Account id="
-				+ id + ", email="
-				+ email + ", username="
-				+ username + ", passwordHash="
-				+ passwordHash + ", nickname="
-				+ nickname + ", accEnabled="
-				+ accEnabled + ", accNonExpired="
-				+ accNonExpired + ", accNonLocked="
-				+ accNonLocked + ", credNonExpired="
-				+ credNonExpired + ", roles="
-				+ roles + "]";
 	}
 	
 	@Override
@@ -198,7 +187,7 @@ public class Account implements UserDetails
 	@Override
 	public boolean isAccountNonExpired()
 	{
-		return accNonExpired;
+		return accountNonExpired;
 	}
 	@Override
 	public boolean isAccountNonLocked()
@@ -213,16 +202,16 @@ public class Account implements UserDetails
 	@Override
 	public boolean isEnabled()
 	{
-		return accEnabled;
+		return accountEnabled;
 	}
 	
 	public void setAccountEnabled(boolean accEnabled)
 	{
-		this.accEnabled = accEnabled;
+		this.accountEnabled = accEnabled;
 	}
 	public void setAccountNonExpired(boolean accNonExpired)
 	{
-		this.accNonExpired = accNonExpired;
+		this.accountNonExpired = accNonExpired;
 	}
 	public void setAccountNonLocked(boolean accNonLocked)
 	{

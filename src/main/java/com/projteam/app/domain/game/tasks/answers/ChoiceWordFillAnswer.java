@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WordFillAnswer implements TaskAnswer
+public class ChoiceWordFillAnswer implements TaskAnswer
 {
 	private List<String> answers;
 }

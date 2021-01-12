@@ -357,7 +357,7 @@ const TaskVariant0 = (taskData) => {
     var taskVariantInitSuper = self.taskVariantInit;
     self.taskVariantInit = (taskData) => {
         taskVariantInitSuper(taskData);
-
+        console.log(taskData)
         self.answerCurrentlyAt = {};
         self.taskData = taskData;
         self.textField = taskData.text;
@@ -488,8 +488,8 @@ const TaskVariant0 = (taskData) => {
           var answerField = answerFields[i];
           answers.push($(answerField).data("answer"));
         }
-  
-        return answers;
+
+        return {"answers": answers};
     }
 
     var resetSuper = self.reset;
@@ -515,8 +515,8 @@ const TaskVariant1 = (taskData) => {
       self.connections = {};
       self.endpointSources = [];
       self.endpointDestinations = [];
-      self.words = taskData.words;
-      self.definitions = taskData.definitions;
+      self.words = taskData.leftWords;
+      self.definitions = taskData.rightWords;
       //nie mogłem zrobić tego z row i col bootstrapa bo flexbox psuł połączenia
       // var taskContentReady = `<div class="row">`;
       // for (let i = 0; i < self.words.length; i++) {
@@ -533,9 +533,9 @@ const TaskVariant1 = (taskData) => {
       for (let i = 0; i < self.words.length; i++) {
         var word = self.words[i];
         var definition = self.definitions[i];
-        taskContentReady += `<div class="line"><div class="word">`;
+        taskContentReady += `<div class="line" ><div class="word" data-order="`+i+`">`;
         taskContentReady += word;
-        taskContentReady += `</div><div class="definition">`;
+        taskContentReady += `</div><div class="definition" data-order="`+i+`">`;
         taskContentReady += definition;
         taskContentReady += `</div></div>`;
       }
@@ -691,18 +691,19 @@ const TaskVariant1 = (taskData) => {
 
     //obecnie jest bug gdzie nie czytawięcej niż jednego połączenie wychodzacego ze słowa
     //w tym przypadku odpowiedzi nie są posegregowane 
-    var answers = getAnswersSuper();
+    //var answers = getAnswersSuper();
+    var answers = {};
     
     var keys = Object.keys(self.connections);
 
     for (let i = 0; i < keys.length; i++) {
       var key = keys[i];
-      var source = self.connections[key].info.source[0].innerText;
-      var target = self.connections[key].info.target[0].innerText;
-      answers.push({source:source,target:target});
+      var sourceIndex = parseInt($(self.connections[key].info.source[0]).data("order"));
+      var targetIndex = parseInt($(self.connections[key].info.target[0]).data("order"));
+      answers[sourceIndex] = targetIndex;
     }
-
-    return answers;
+    //TODO, zrobić mapę słowo index -> defincija index
+    return  {"answerMapping": answers};
   }
 
   var resetSuper = self.reset;
@@ -765,7 +766,7 @@ const TaskVariant2 = (taskData) => {
         answers.push(sentence);
       }
 
-      return answers;
+      return {"answers": answers};
   }
 
   var resetSuper = self.reset;
@@ -787,7 +788,7 @@ const TaskVariant = (taskData) => {
     }
 
     self.getAnswers = () => {
-        var answers = [];
+        var answers = [];//nie zawsze jest arrayem
 
         return answers;
     }

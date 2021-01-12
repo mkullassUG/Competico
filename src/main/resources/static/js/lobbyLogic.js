@@ -241,7 +241,9 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   }
 
   self.updateCheck = (data) => {
-    if(data.gameStarted == true) 
+    if (data.lobbyDeleted) {
+      $('#LobbyDeletedModalCenter').modal('show');
+    } else if(data.gameStarted == true) 
     self.startGame(); //tutaj tworzyć obiekt taska?
     else if (data.lobbyContentChanged == true)
       ajaxReceiveLobbyChange();
@@ -267,7 +269,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     $("#btnSendleave").on("click",()=>{
       if (self.debug)
         console.log("btnSendleave")
-      sendAjaxLeave();
+        sendAjaxLeave();
     });
   if ($("#btnCopyCode").length)
     $("#btnCopyCode").on("click",(e) => {
@@ -291,6 +293,12 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
 
       if (self.gameStatus == "ended")
         sendAjaxEndGame();
+    });
+  if ($("#btnSendLobbyDeleted").length)
+    $("#btnSendLobbyDeleted").on("click",()=>{
+      if (self.debug)
+        console.log("btnSendLobbyDeleted");
+      self.leaveLobby();
     });
   
   /*     ajax http actions       */
@@ -319,6 +327,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     });
   }
   var sendAjaxLeave = () => {
+    console.log("sendAjaxLeave");
     $.ajax({
       type     : "POST",
       cache    : false,

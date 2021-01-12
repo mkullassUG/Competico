@@ -5,6 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.projteam.app.domain.game.tasks.ListSentenceForming;
 
 public interface ListSentenceFormingDAO extends JpaRepository<ListSentenceForming, UUID>
-{
-
-}
+{}

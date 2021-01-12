@@ -114,8 +114,7 @@ public class LobbyAPI
 	{
 		try
 		{
-			Account player = accountService.getAuthenticatedAccount()
-					.orElseThrow(() -> new IllegalArgumentException("Not authenticated."));
+			Account player = getAuthenticatedAccount();
 			return Optional.ofNullable(lobbyService.getLobbyForPlayer(player))
 					.map(gameCode -> Map.<String, Object>of(
 							"username", player.getUsername(),
@@ -144,12 +143,14 @@ public class LobbyAPI
 	public Map<String, Boolean> lobbyStatusChanged(@PathVariable String gameCode)
 	{
 		Optional<Boolean> lobbyContentChanged = lobbyService.hasAnthingChanged(gameCode,
-				accountService.getAuthenticatedAccount()
-				.orElseThrow(() -> new IllegalArgumentException("Not authenticated.")));
-		
-		return Map.of(
-				"lobbyContentChanged", lobbyContentChanged.orElse(false),
-				"gameStarted", gameService.gameExists(gameCode));
+                getAuthenticatedAccount());
+        boolean gameStarted = gameService.gameExists(gameCode);
+        System.out.println(gameCode + ", "+lobbyContentChanged +", "+gameStarted);
+        if (lobbyContentChanged.isEmpty() && !gameStarted)
+            return Map.of("lobbyDeleted", true);
+        return Map.of(
+                "lobbyContentChanged", lobbyContentChanged.orElse(false),
+                "gameStarted", gameService.gameExists(gameCode));
 	}
 	
 	@ApiOperation(value = "Remove a player from the lobby", code = 200)
@@ -161,21 +162,37 @@ public class LobbyAPI
 	public boolean removePlayer(@PathVariable String gameCode, @RequestBody String username)
 	{
 		Account player = accountService.findByUsername(username).orElse(null);
-		return lobbyService.removePlayer(gameCode,
-				accountService.getAuthenticatedAccount()
-					.orElseThrow(() -> new IllegalArgumentException("Not authenticated.")),
-				player);
+		return lobbyService.removePlayer(gameCode, getAuthenticatedAccount(), player);
 	}
 	
 	@ApiOperation(value = "Update lobby settings", code = 200)
 	@ApiResponses(
 	{
-		@ApiResponse(code = 200, message = "Whether lobby"),
+		@ApiResponse(code = 200, message = "Whether lobby settings were updated"),
 	})
 	@PutMapping("api/v1/lobby/{gameCode}")
 	public void updateLobbySettings(@PathVariable String gameCode, @RequestBody String username)
 	{
 		//TODO implement
+	}
+	
+	@ApiOperation(value = "Leave lobby", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Whether left lobby successfully"),
+	})
+	@PostMapping("api/v1/lobby/{gameCode}/leave")
+	public boolean leaveLobby(@PathVariable String gameCode)
+	{
+		if (lobbyService.isHost(gameCode))
+        {
+            boolean ret = lobbyService.deleteLobby(gameCode);
+            System.out.println("deleteLobby: " + ret);
+            return ret;
+        }
+        boolean ret = lobbyService.removePlayer(gameCode);
+        System.out.println("removePlayer: " + ret);
+        return ret;
 	}
 	
 	@ApiOperation(value = "Find a random lobby", code = 200)
@@ -209,5 +226,11 @@ public class LobbyAPI
 	public ModelAndView gamePage(@PathVariable("code") String code)
 	{
 		return new ModelAndView("game");
+	}
+	
+	private Account getAuthenticatedAccount()
+	{
+		return accountService.getAuthenticatedAccount()
+				.orElseThrow(() -> new IllegalArgumentException("Not authenticated."));
 	}
 }

@@ -7,7 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import com.projteam.app.domain.Account;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+@EqualsAndHashCode
+@ToString
 public class Lobby
 {
 	private String gameCode;
@@ -115,11 +119,5 @@ public class Lobby
 		if (ret)
 			playerLastChangeCounts.put(accountID, changeCount);
 		return ret;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "Lobby [gameCode=" + gameCode + ", host=" + host + ", players=" + players + ", maxPlayerCount=" + maxPlayerCount + "]";
 	}
 }

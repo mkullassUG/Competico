@@ -1,6 +1,5 @@
 package com.projteam.app.domain.game.tasks.answers;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WordFillAnswer implements TaskAnswer
+public class SingleChoiceAnswer implements TaskAnswer
 {
-	private List<String> answers;
+	private String answer;
 }

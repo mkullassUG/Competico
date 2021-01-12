@@ -44,8 +44,7 @@ public class LobbyService
 	
 	public String createLobby()
 	{
-		return createLobby(accServ.getAuthenticatedAccount()
-				.orElseThrow(() -> new IllegalArgumentException("Not authenticated.")));
+		return createLobby(getAccount());
 	}
 	public String createLobby(Account host)
 	{
@@ -58,6 +57,10 @@ public class LobbyService
 		lobbies.put(gameCode, new Lobby(gameCode, host));
 		
 		return gameCode;
+	}
+	public boolean deleteLobby(String gameCode)
+	{
+		return deleteLobby(gameCode, getAccount());
 	}
 	public boolean deleteLobby(String gameCode, Account requestSource)
 	{
@@ -178,6 +181,11 @@ public class LobbyService
 		return lobbyCodesAllowingRandomPlayers.size();
 	}
 	
+	private Account getAccount()
+	{
+		return accServ.getAuthenticatedAccount()
+				.orElseThrow(() -> new IllegalArgumentException("Not authenticated."));
+	}
 	private static boolean isValidGameCodeChar(int c)
 	{
 		return ((c >= '0') && (c <= '9'))

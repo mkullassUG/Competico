@@ -11,7 +11,9 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.MapKeyColumn;
+import lombok.Data;
 
+@Data
 @Entity
 public class GameResults
 {
@@ -51,24 +53,6 @@ public class GameResults
 	{
 		this.gameID = gameID;
 		this.results = new HashMap<>(results);
-	}
-	
-	public Map<UUID, GameResult> getResults()
-	{
-		return results;
-	}
-	public void setResults(Map<UUID, GameResult> results)
-	{
-		this.results = results;
-	}
-	
-	public UUID getGameID()
-	{
-		return gameID;
-	}
-	public void setGameID(UUID gameID)
-	{
-		this.gameID = gameID;
 	}
 	
 	public void addResult(GameResult gr)
