@@ -144,7 +144,10 @@ public class LobbyAPI
 	{
 		Optional<Boolean> lobbyContentChanged = lobbyService.hasAnthingChanged(gameCode,
 				getAuthenticatedAccount());
+		boolean gameStarted = gameService.gameExists(gameCode);
 		
+		if (lobbyContentChanged.isEmpty() && !gameStarted)
+			return Map.of("lobbyExists", false);
 		return Map.of(
 				"lobbyContentChanged", lobbyContentChanged.orElse(false),
 				"gameStarted", gameService.gameExists(gameCode));
@@ -178,9 +181,11 @@ public class LobbyAPI
 	{
 		@ApiResponse(code = 200, message = "Whether left lobby successfully"),
 	})
-	@PostMapping("api/v1/game/{gameCode}/leave")
+	@PostMapping("api/v1/lobby/{gameCode}/leave")
 	public boolean leaveLobby(@PathVariable String gameCode)
 	{
+		if (lobbyService.isHost(gameCode))
+			return lobbyService.deleteLobby(gameCode);
 		return lobbyService.removePlayer(gameCode);
 	}
 	

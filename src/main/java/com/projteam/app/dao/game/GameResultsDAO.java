@@ -2,7 +2,7 @@ package com.projteam.app.dao.game;
 
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.projteam.app.domain.game.GameResult;
+import com.projteam.app.domain.game.GameResults;
 
-public interface GameResultDAO extends JpaRepository<GameResult, UUID>
+public interface GameResultsDAO extends JpaRepository<GameResults, UUID>
 {}
