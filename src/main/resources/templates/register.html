@@ -6,12 +6,12 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.1.1">
-    <title>register</title>
-    <link rel="icon" href="./assets/myIcons/icon.svg">
+    <title>Rejestracja</title>
+    <link rel="icon" href="assets/myIcons/icon.svg">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/floating-labels/">
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
 
     <style>
       .bd-placeholder-img {
@@ -36,7 +36,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top">
       <div class="container-xl">
         <a class="navbar-brand" href="/">
-          <img src="./assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
+          <img src="assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
         </a>
         <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -46,9 +46,6 @@
           <ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link" href="/">Strona Domowa</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Cechy</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Wsparcie</a>
@@ -66,14 +63,14 @@
     <div class="container fill text-center">
       <form class="form-signin shadow-lg p-3 bg-white rounded">
         <div class="text-center mb-4">
-          <img class="mb-4" src="./assets/myIcons/icon.svg" alt="" width="72" height="72">
-          <h1 class="h3 mb-3 font-weight-normal">Register</h1>
+          <img class="mb-4" src="assets/myIcons/icon.svg" alt="" width="72" height="72">
+          <h1 class="h3 mb-3 font-weight-normal">Zarejestruj się</h1>
           
         </div>
 
         <div class="form-label-group">
           <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-          <label for="inputEmail">Email address</label>
+          <label for="inputEmail">Adres email</label>
           <div class="invalid-feedback" id="emailfeedback">
             Wprowadź poprawny adres email.
           </div>
@@ -81,15 +78,15 @@
 
         <div class="form-label-group">
           <input type="username" id="inputUsername" class="form-control" placeholder="Username" required>
-          <label for="inputUsername">Username</label>
+          <label for="inputUsername">Nazwa użytkownika</label>
           <div class="invalid-feedback" id="usernamefeedback">
-            Wprowadż poprawny username: min 8 znaków, max 32, bez znaków specjalnych.
+            Wprowadż poprawny username: min 4 znaków, max 32, bez znaków specjalnych.
           </div>
         </div>
 
         <div class="form-label-group">
           <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-          <label for="inputPassword">Password</label>
+          <label for="inputPassword">Hasło</label>
           <div class="invalid-feedback" id="passwordfeedback">
             Wprowadź poprawne hasło: minimum 8 znaków, conajmniej jedna duża litera i conajmniej jedna cyfra.
           </div>
@@ -97,7 +94,7 @@
 
         <div class="form-label-group">
           <input type="password" id="inputPassword2" class="form-control" placeholder="Password2" required>
-          <label for="inputPassword2">Repeat Password</label>
+          <label for="inputPassword2">Ponów hasło</label>
           <div class="invalid-feedback" id="password2feedback">
             Wprowadź poprawne drugie hasło.
           </div>
@@ -105,14 +102,14 @@
 
         <div class="form-row">
           <div class="form-group col-6">
-            <label for="inputGamer">I am a Player</label>
+            <label for="inputGamer">Jestem graczem</label>
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="whatAmI" id="IAmGamer" value="option1" required checked>
             </div>
             
           </div>
           <div class="form-group col-6">
-            <label for="inputLecturer">I am a Lecturer</label>
+            <label for="inputLecturer">Jestem lektorem</label>
             <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio" name="whatAmI" id="IAmLecturer" value="option2">
             </div>
@@ -123,10 +120,10 @@
         
         <div class="checkbox mb-3">
           <label>
-            <input type="checkbox" value="remember-me"> Remember me
+            <input type="checkbox" value="remember-me"> Zapamiętaj mnie
           </label>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Zarejestruj się</button>
         <p class="mt-5 mb-3 text-muted text-center">&copy; 2020-2020</p>
       </form>
     </div>
@@ -137,130 +134,8 @@
     </footer>
 </body>
 </html>
-<script src="js/jquery-3.5.1.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script>
-$(document).ready(function(){
-  $('form').on('submit',function(e){
+<script src="js/jquery/jquery-3.5.1.min.js"></script>
+<script src="js/bootstrap/popper.min.js"></script>
+<script src="js/bootstrap/bootstrap.min.js"></script>
 
-    e.preventDefault();
-
-    let isPlayer = true;
-    if ( $('form')[0][5].checked )
-      isPlayer = false;
-
-    let send = {
-      email: $('form')[0][0].value,
-      username: $('form')[0][1].value,
-      password: $('form')[0][2].value,
-      password2: $('form')[0][3].value,
-      isPlayer: isPlayer, 
-    };
-    $("#usernamefeedback").hide();
-    $("#password2feedback").hide();
-    $("#passwordfeedback").hide();
-    $("#emailfeedback").hide(); 
-
-    let validation = validateData(send);
-    if (validation.valid)
-      $.ajax({
-      type     : "POST",
-      cache    : false,
-      url      : "./api/v1/register/",
-      data     : JSON.stringify(send),
-      contentType: "application/json",
-
-      success: function(data, textStatus, jqXHR) {
-          //called when successful
-          window.location.href = "dashboard";
-        
-      },
-
-      error: function(data, textStatus, err) {
-        //called when there is an error
-      
-          //TODO error message on screen
-          //"Jak będziesz to później implementował, znany error ma kod 400 i opis pod responseText"
-          console.warn("status: " + err.status  + ": " + err);
-      }
-    });
-    else {
-      if (!validation.username)
-        $("#usernamefeedback").show();
-      if (!validation.password2)
-        $("#password2feedback").show();
-      if (!validation.password)
-        $("#passwordfeedback").show();
-      if (!validation.email)
-        $("#emailfeedback").show();
-    }
-      
-  });
-});
-
-var validateData = (data) => {
-
-  //https://getbootstrap.com/docs/4.0/components/popovers/
-  
-  let emailValid = (data) => {
-    if (!data.match(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/)) 
-      return false;
-    else
-      return true;
-  }
-  let username = password = password2 =  email = valid = true;
-
-  let usernameValid = (data) => {
-    if (data.match(/^(?=.{8,32}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)) 
-      return true
-    else 
-      return false
-
-  }
-
-  let passwordValid = (data) => {
-    if (data.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/))
-      return true;
-    else
-      return false;
-  }
-
-  let password2Valid = (pass1, pass2) => {
-    if (pass1 === pass2)
-      return true;
-    else
-      return false;
-  }
-
-  
-  if (!emailValid(data.email)) {
-    email = false;//"Niepoprawny email";
-    valid = false;
-  }
-
-  if (!usernameValid(data.username)) {
-    username = false;//"Niepoprawny username, min 8 znaków, max 32, bez znaków specjalnych";
-    valid = false;
-  }
-
-  if (!passwordValid(data.password)) {
-    password = false;//"Niepoprawne hasło, wzór: minimum 8 znaków, conajmniej jedna duża litera i conajmniej jedna cyfra";
-    valid = false;
-  }
-
-  if (!password2Valid(data.password,data.password2)) {
-    password2 = false;//"Hasła nie są identyczne"});
-    valid = false;
-  }
-
-  return {valid: valid, username: username, password: password, password2: password2, email: email};
-  
-}
-  /*
-  1.poprawnosc emaila
-  2.długośc username
-  3.długośc hasła
-  4.czy hasła te same
-  */
-</script>
+<script src="js/register.js"></script>
