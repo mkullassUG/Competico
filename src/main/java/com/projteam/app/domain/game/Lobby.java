@@ -68,6 +68,7 @@ public class Lobby
 	{
 		if (players.remove(player))
 		{
+			playerLastChangeCounts.remove(player.getId());
 			changeOccurred();
 			return true;
 		}
