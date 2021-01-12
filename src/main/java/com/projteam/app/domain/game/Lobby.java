@@ -84,6 +84,15 @@ public class Lobby
 	{
 		return maxPlayerCount;
 	}
+	public boolean setMaximumPlayerCount(int maxPlayers)
+	{
+		if (players.size() <= maxPlayers)
+		{
+			maxPlayerCount = maxPlayers;
+			return true;
+		}
+		return false;
+	}
 	public String getGameCode()
 	{
 		return gameCode;
