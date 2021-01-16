@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
@@ -12,15 +13,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -76,10 +78,10 @@ public class AccountServiceTests
 		verifyNoMoreInteractions(passEnc);
 		verifyNoMoreInteractions(authManager);
 	}
-	
 	@ParameterizedTest
 	@MethodSource("mockRegistrationData")
-	public void shouldNotAuthenticateWhenRegisteringWithoutAutoAuthentication(RegistrationDTO mockRegDto)
+	public void shouldNotAuthenticateWhenRegisteringWithoutAutoAuthentication(
+			RegistrationDTO mockRegDto)
 	{
 		HttpServletRequest req = new MockHttpServletRequest();
 		
@@ -89,7 +91,16 @@ public class AccountServiceTests
 		verifyNoMoreInteractions(passEnc);
 		verifyNoInteractions(authManager);
 	}
-	
+	@ParameterizedTest
+	@MethodSource("mockNullRegistrationDataAndAutoAuth")
+	public void shouldThrowWhenRegisteringWithNullValues(RegistrationDTO mockRegDto,
+			boolean autoAuthenticate)
+	{
+		HttpServletRequest req = new MockHttpServletRequest();
+		
+		assertThrows(NullPointerException.class,
+				() -> accountService.register(req, mockRegDto, autoAuthenticate));
+	}
 	@ParameterizedTest
 	@MethodSource("mockRegistrationData")
 	public void shouldAuthenticateWithRightCredentialsWhenLoggingIn(RegistrationDTO mockRegDto)
@@ -106,15 +117,17 @@ public class AccountServiceTests
 			.thenReturn(Optional.of(new Account.Builder()
 					.withEmail(mockRegDto.getEmail())
 					.withUsername(mockRegDto.getUsername())
-					.withPasswordHash(mockRegDto.getPassword().toString())
+					.withPassword(mockRegDto.getPassword().toString())
 					.build()));
 		
 		boolean loggedIn = accountService.login(req, mockLoginDto);
 		
 		assertTrue(loggedIn);
-		verify(authManager, times(1)).authenticate(argThat(auth ->
-				auth.getPrincipal().equals(mockRegDto.getEmail())
-				&& auth.getCredentials().equals(mockRegDto.getPassword())));
+		ArgumentCaptor<Authentication> authCap = ArgumentCaptor.forClass(Authentication.class);
+		verify(authManager, times(1)).authenticate(authCap.capture());
+		Authentication auth = authCap.getValue();
+		assertEquals(auth.getPrincipal(), mockRegDto.getEmail());
+		assertEquals(auth.getCredentials(), mockRegDto.getPassword());
 		verify(passEnc, times(1)).matches(mockRegDto.getPassword(), mockRegDto.getPassword().toString());
 		verifyNoMoreInteractions(passEnc);
 		verifyNoMoreInteractions(authManager);
@@ -133,7 +146,7 @@ public class AccountServiceTests
 			.thenReturn(Optional.of(new Account.Builder()
 					.withEmail(mockRegDto.getEmail())
 					.withUsername(mockRegDto.getUsername())
-					.withPasswordHash(mockRegDto.getPassword().toString())
+					.withPassword(mockRegDto.getPassword().toString())
 					.build()));
 		
 		boolean loggedIn = accountService.login(req, mockLoginDto);
@@ -178,7 +191,18 @@ public class AccountServiceTests
 		assertFalse(accountService.isAuthenticated());
 	}
 	@Test
-	public void shouldBeAuthenticatedWhenAuthenticationIsNotAnonymous()
+	public void shouldNotBeAuthenticatedWhenNotAuthenticated()
+	{
+		SecurityContext sc = mock(SecurityContext.class);
+		Authentication auth = mock(Authentication.class);
+		when(secConConf.getContext()).thenReturn(sc);
+		when(sc.getAuthentication()).thenReturn(auth);
+		when(auth.isAuthenticated()).thenReturn(false);
+		
+		assertFalse(accountService.isAuthenticated());
+	}
+	@Test
+	public void shouldBeAuthenticatedWhenIsAuthenticated()
 	{
 		SecurityContext sc = mock(SecurityContext.class);
 		Authentication auth = mock(Authentication.class);
@@ -262,25 +286,175 @@ public class AccountServiceTests
 		assertThrows(UsernameNotFoundException.class,
 				() -> accountService.loadUserByUsername(username));
 	}
+	@ParameterizedTest
+	@MethodSource("mockIdAndEmptyOrFullAccountOptional")
+	public void canFindUserById(
+			UUID id, Optional<Account> acc)
+	{
+		when(accDao.findById(id)).thenReturn(acc);
+		
+		assertEquals(accountService.findByID(id), acc);
+	}
 	
 	//---Sources---
 	
 	public static List<Arguments> mockRegistrationData()
 	{
-		List<Arguments> ret = new ArrayList<>();
-		
-		ret.add(Arguments.of(new RegistrationDTO(
-				"testplayer@test.pl",
-				"TestPlayer",
-				"QWERTY",
-				true)));
-		ret.add(Arguments.of(new RegistrationDTO(
-				"testlecturer@test.pl",
-				"TestLecturer",
-				"QWERTY",
-				false)));
-		
-		return ret;
+		return List.of(Arguments.of(new RegistrationDTO(
+						"testplayer@test.pl",
+						"TestPlayer",
+						"QWERTY",
+						true)),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						"TestLecturer",
+						"QWERTY",
+						false)));
+	}
+	public static List<Arguments> mockNullRegistrationDataAndAutoAuth()
+	{
+		return List.of(Arguments.of(null, false),
+				Arguments.of(null, true),
+				Arguments.of(new RegistrationDTO(
+						null,
+						"TestLecturer",
+						"QWERTY",
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						null,
+						"TestLecturer",
+						"QWERTY",
+						true), false),
+				Arguments.of(new RegistrationDTO(
+						null,
+						"TestLecturer",
+						"QWERTY",
+						false), true),
+				Arguments.of(new RegistrationDTO(
+						null,
+						"TestLecturer",
+						"QWERTY",
+						true), true),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						null,
+						"QWERTY",
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						null,
+						"QWERTY",
+						true), false),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						null,
+						"QWERTY",
+						false), true),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						null,
+						"QWERTY",
+						true), true),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						"TestLecturer",
+						null,
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						"TestLecturer",
+						null,
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						"TestLecturer",
+						null,
+						false), true),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						"TestLecturer",
+						null,
+						true), true),
+				Arguments.of(new RegistrationDTO(
+						null,
+						null,
+						"QWERTY",
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						null,
+						null,
+						"QWERTY",
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						null,
+						null,
+						"QWERTY",
+						false), true),
+				Arguments.of(new RegistrationDTO(
+						null,
+						null,
+						"QWERTY",
+						true), true),
+				Arguments.of(new RegistrationDTO(
+						null,
+						"TestLecturer",
+						null,
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						null,
+						"TestLecturer",
+						null,
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						null,
+						"TestLecturer",
+						null,
+						false), true),
+				Arguments.of(new RegistrationDTO(
+						null,
+						"TestLecturer",
+						null,
+						true), true),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						null,
+						null,
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						null,
+						null,
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						null,
+						null,
+						false), true),
+				Arguments.of(new RegistrationDTO(
+						"testlecturer@test.pl",
+						null,
+						null,
+						true), true),
+				Arguments.of(new RegistrationDTO(
+						null,
+						null,
+						null,
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						null,
+						null,
+						null,
+						false), false),
+				Arguments.of(new RegistrationDTO(
+						null,
+						null,
+						null,
+						false), true),
+				Arguments.of(new RegistrationDTO(
+						null,
+						null,
+						null,
+						true), true));
 	}
 	public static List<Arguments> mockAccountAndUsername()
 	{
@@ -289,7 +463,7 @@ public class AccountServiceTests
 				Arguments.of(username, new Account.Builder()
 						.withEmail("testAcc@test.pl")
 						.withUsername(username)
-						.withPasswordHash("QWERTY")
+						.withPassword("QWERTY")
 						.build()));
 	}
 	public static List<Arguments> mockAccount()
@@ -298,11 +472,22 @@ public class AccountServiceTests
 				Arguments.of(new Account.Builder()
 						.withEmail("testAcc@test.pl")
 						.withUsername("TestAccount")
-						.withPasswordHash("QWERTY")
+						.withPassword("QWERTY")
 						.build()));
 	}
 	public static List<Arguments> mockUsername()
 	{
 		return List.of(Arguments.of("TestAccount"));
+	}
+	public static List<Arguments> mockIdAndEmptyOrFullAccountOptional()
+	{
+		return List.of(
+				Arguments.of(UUID.randomUUID(), Optional.empty()),
+				Arguments.of(UUID.randomUUID(), Optional.of(
+					new Account.Builder()
+						.withEmail("testAcc@test.pl")
+						.withUsername("TestAccount")
+						.withPassword("QWERTY")
+						.build())));
 	}
 }

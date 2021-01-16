@@ -1,6 +1,7 @@
 package com.projteam.app.domain.game.tasks;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -8,22 +9,15 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.domain.game.tasks.ChoiceWordFillElement.WordChoice;
 import com.projteam.app.domain.game.tasks.WordFillElement.EmptySpace;
-import com.projteam.app.domain.game.tasks.answers.ChoiceWordFillAnswer;
-import com.projteam.app.domain.game.tasks.answers.ChronologicalOrderAnswer;
-import com.projteam.app.domain.game.tasks.answers.ListChoiceWordFillAnswer;
-import com.projteam.app.domain.game.tasks.answers.ListSentenceFormingAnswer;
-import com.projteam.app.domain.game.tasks.answers.ListWordFillAnswer;
-import com.projteam.app.domain.game.tasks.answers.MultipleChoiceAnswer;
-import com.projteam.app.domain.game.tasks.answers.SingleChoiceAnswer;
-import com.projteam.app.domain.game.tasks.answers.WordConnectAnswer;
-import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
+import com.projteam.app.dto.game.tasks.TaskInfoDTO;
 
-public class AnswerAcceptTests
+public class DTOConversionTests
 {
 	@Test
-	void wordFillAcceptsAnswer()
+	void wordFillConvertsToDTO()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -34,13 +28,13 @@ public class AnswerAcceptTests
 		List<String> possibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
 		
 		WordFill wf = new WordFill(UUID.randomUUID(),
-				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 100);
-		WordFillAnswer wfa = new WordFillAnswer(answers);
-		
-		assertEquals(wf.acceptAnswer(wfa), 1);
+				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 1);
+		TaskInfoDTO ti = wf.toDTO(0);
+		assertNotNull(ti);
+		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
 	@Test
-	void choiceWordFillAcceptsAnswer()
+	void choiceWordFillConvertsToDTO()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -50,13 +44,13 @@ public class AnswerAcceptTests
 				.collect(Collectors.toList());
 		
 		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(),
-				new ChoiceWordFillElement(UUID.randomUUID(), text, wordChoices, false), 100);
-		ChoiceWordFillAnswer cwfa = new ChoiceWordFillAnswer(answers);
-		
-		assertEquals(cwf.acceptAnswer(cwfa), 1);
+				new ChoiceWordFillElement(UUID.randomUUID(), text, wordChoices, false), 1);
+		TaskInfoDTO ti = cwf.toDTO(0);
+		assertNotNull(ti);
+		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
 	@Test
-	void listWordFillAcceptsAnswer()
+	void listWordFillConvertsToDTO()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -90,13 +84,13 @@ public class AnswerAcceptTests
 					possibleAnswersList));
 		}
 		
-		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), wordFillElemList, 100);
-		ListWordFillAnswer lwfa = new ListWordFillAnswer(answers);
-		
-		assertEquals(lwf.acceptAnswer(lwfa), 1);
+		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), wordFillElemList, 1);
+		TaskInfoDTO ti = lwf.toDTO(0);
+		assertNotNull(ti);
+		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
 	@Test
-	void listChoiceWordFillAcceptsAnswer()
+	void listChoiceWordFillConvertsToDTO()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -122,13 +116,13 @@ public class AnswerAcceptTests
 					true));
 		}
 		
-		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), wordFillElemList, 100);
-		ListChoiceWordFillAnswer lcwfa = new ListChoiceWordFillAnswer(answers);
-		
-		assertEquals(lcwf.acceptAnswer(lcwfa), 1);
+		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), wordFillElemList, 1);
+		TaskInfoDTO ti = lcwf.toDTO(0);
+		assertNotNull(ti);
+		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
 	@Test
-	void chronologicalOrderAcceptsAnswer()
+	void chronologicalOrderConvertsToDTO()
 	{
 		List<String> text = List.of("Lorem ipsum dolor sit amet",
 				"consectetur adipiscing elit",
@@ -139,13 +133,13 @@ public class AnswerAcceptTests
 				"ullamco laboris nisi ut",
 				"aliquip ex ea commodo consequat");
 		
-		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), text, 100);
-		ChronologicalOrderAnswer coa = new ChronologicalOrderAnswer(text);
-		
-		assertEquals(co.acceptAnswer(coa), 1);
+		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), text, 1);
+		TaskInfoDTO ti = co.toDTO(0);
+		assertNotNull(ti);
+		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
 	@Test
-	void listSentenceFormingAcceptsAnswer()
+	void listSentenceFormingConvertsToDTO()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -157,26 +151,26 @@ public class AnswerAcceptTests
 				.map(textList -> new SentenceFormingElement(UUID.randomUUID(), textList))
 				.collect(Collectors.toList());
 		
-		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), wordFillElemList, 100);
-		ListSentenceFormingAnswer lsfa = new ListSentenceFormingAnswer(text);
-		
-		assertEquals(lsf.acceptAnswer(lsfa), 1);
+		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), wordFillElemList, 1);
+		TaskInfoDTO ti = lsf.toDTO(0);
+		assertNotNull(ti);
+		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
 	@Test
-	void singleChoiceAcceptsAnswer()
+	void singleChoiceConvertsToDTO()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		String answer = "consectetur";
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed");
 		
-		SingleChoice sc = new SingleChoice(UUID.randomUUID(), content, answer, incorrectAnswers, 100);
-		SingleChoiceAnswer sca = new SingleChoiceAnswer(answer);
-		
-		assertEquals(sc.acceptAnswer(sca), 1);
+		SingleChoice sc = new SingleChoice(UUID.randomUUID(), content, answer, incorrectAnswers, 1);
+		TaskInfoDTO ti = sc.toDTO(0);
+		assertNotNull(ti);
+		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
 	@Test
-	void multipleChoiceAcceptsAnswer()
+	void multipleChoiceConvertsToDTO()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		List<String> correctAnswers = List.of(
@@ -185,13 +179,13 @@ public class AnswerAcceptTests
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
 		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(),
-				new MultipleChoiceElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 100);
-		MultipleChoiceAnswer mca = new MultipleChoiceAnswer(correctAnswers);
-		
-		assertEquals(mc.acceptAnswer(mca), 1);
+				new MultipleChoiceElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 1);
+		TaskInfoDTO ti = mc.toDTO(0);
+		assertNotNull(ti);
+		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
 	@Test
-	void wordConnectAcceptsAnswer()
+	void wordConnectConvertsToDTO()
 	{
 		List<String> leftWords = List.of("Lorem", "ipsum", "dolor", "sit", "amet");
 		List<String> rightWords = List.of("consectetur", "adipiscing", "elit", "sed do", "eiusmod");
@@ -202,9 +196,9 @@ public class AnswerAcceptTests
 				3, 2,
 				4, 1);
 		
-		WordConnect wc = new WordConnect(UUID.randomUUID(), leftWords, rightWords, correctMapping, 100);
-		WordConnectAnswer wca = new WordConnectAnswer(correctMapping);
-		
-		assertEquals(wc.acceptAnswer(wca), 1);
+		WordConnect wc = new WordConnect(UUID.randomUUID(), leftWords, rightWords, correctMapping, 1);
+		TaskInfoDTO ti = wc.toDTO(0);
+		assertNotNull(ti);
+		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
 }

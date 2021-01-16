@@ -1,6 +1,7 @@
 package com.projteam.app.domain;
 
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -128,7 +129,7 @@ class AccountTests
 		String passwordHash = "passHash";
 		
 		Account acc = new Account.Builder()
-				.withPasswordHash(passwordHash)
+				.withPassword(passwordHash)
 				.build();
 		
 		assertEquals(acc.getPassword(), passwordHash);
@@ -139,7 +140,7 @@ class AccountTests
 		String passwordHash = "passHash";
 		
 		Account acc = new Account();
-		acc.setPasswordHash(passwordHash);
+		acc.setPassword(passwordHash);
 		
 		assertEquals(acc.getPassword(), passwordHash);
 	}
@@ -181,7 +182,7 @@ class AccountTests
 		boolean enabled = true;
 		
 		Account acc = new Account();
-		acc.setAccountEnabled(enabled);
+		acc.setEnabled(enabled);
 		
 		assertEquals(acc.isEnabled(), enabled);
 	}
@@ -316,6 +317,22 @@ class AccountTests
 	void shouldNotBeEqualWhenUnequalObjectsCompared(Account acc1, Account acc2)
 	{
 		assertFalse(acc1.equals(acc2));
+		assertDoesNotThrow(() -> acc1.hashCode());
+		assertDoesNotThrow(() -> acc2.hashCode());
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	void shouldNotBeEqualWhenComparedToNull(Account acc)
+	{
+		assertFalse(acc.equals(null));
+		assertDoesNotThrow(() -> acc.hashCode());
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	void shouldNotBeEqualWhenComparedToDifferentType(Account acc)
+	{
+		assertFalse(acc.equals(new Object()));
+		assertDoesNotThrow(() -> acc.hashCode());
 	}
 	
 	//---Sources---
@@ -326,113 +343,1277 @@ class AccountTests
 				Arguments.of(new Account.Builder()
 						.withEmail("testAcc@test.pl")
 						.withUsername("TestAccount")
-						.withPasswordHash("QWERTY")
+						.withPassword("QWERTY")
 						.build()));
 	}
 	public static List<Arguments> mockTwoEqualAccounts()
 	{
+		UUID id = UUID.randomUUID();
 		String email = "testAcc@test.pl";
 		String username = "TestAccount";
+		String nickname = "TestAccountNickname";
 		String pass = "QWERTY";
 		List<String> roles = List.of("role1", "r2", "Role3", "role-4", "Role-5");
+		List<String> nullRoles = list(null, null, null, null);
 		
 		return List.of(
 				Arguments.of(new Account.Builder()
 							.withEmail(email)
 							.withUsername(username)
-							.withPasswordHash(pass)
+							.withPassword(pass)
 							.withRoles(roles)
 							.build(),
 						new Account.Builder()
 							.withEmail(email)
 							.withUsername(username)
-							.withPasswordHash(pass)
+							.withPassword(pass)
 							.withRoles(roles)
-							.build()));
+							.build()),
+				//Null 1 arg
+				Arguments.of(new Account.Builder()
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.build()),
+				//Null 2 args
+				Arguments.of(new Account.Builder()
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withPassword(pass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withUsername(username)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withUsername(username)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withUsername(username)
+						.withPassword(pass)
+						.build(),
+					new Account.Builder()
+						.withUsername(username)
+						.withPassword(pass)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.build()),
+				//Null 3 args
+				Arguments.of(new Account.Builder()
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withPassword(pass)
+						.build(),
+					new Account.Builder()
+						.withPassword(pass)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withUsername(username)
+						.build(),
+					new Account.Builder()
+						.withUsername(username)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.build()),
+				//All null args
+				Arguments.of(new Account.Builder().build(),
+					new Account.Builder().build()),
+				//Null roles
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(nullRoles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(nullRoles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				//Null role args
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(null)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(null)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()));
 	}
 	public static List<Arguments> mockTwoUnequalAccounts()
 	{
-		String email1 = "testAcc1@test1.pl";
-		String email2 = "testAcc2@test2.pl";
-		String email3 = "testAcc2@test3.pl";
-		String username1 = "TestAccount1";
-		String username2 = "TestAccount2";
-		String username3 = "TestAccount3";
-		String pass1 = "QWERTY1";
-		String pass2 = "QWERTY2";
-		String pass3 = "QWERTY3";
-		List<String> roles1 = List.of("role1", "r2");
-		List<String> roles2 = List.of("role1", "role2");
-		List<String> roles3 = List.of("r1", "role2", "Role3");
+		UUID id = UUID.randomUUID();
+		UUID otherId = UUID.randomUUID();
+		String email = "testAcc1@test1.pl";
+		String otherEmail = "testAcc2@test2.pl";
+		String thirdEmail = "testAcc2@test3.pl";
+		String username = "TestAccount1";
+		String otherUsername = "TestAccount2";
+		String thirdUsername = "TestAccount3";
+		String nickname = "TestAccountNickname1";
+		String otherNickname = "TestAccountNickname2";
+		String pass = "QWERTY1";
+		String otherPass = "QWERTY2";
+		String thirdPass = "QWERTY3";
+		List<String> roles = List.of("role1", "r2");
+		List<String> otherRoles = List.of("role1", "role2");
+		List<String> thridRoles = List.of("r1", "role2", "Role3");
+		List<String> nullRoles = list(null, null);
 		
 		return List.of(
+				//All args different
 				Arguments.of(new Account.Builder()
-						.withEmail(email1)
-						.withUsername(username1)
-						.withPasswordHash(pass1)
-						.withRoles(roles1)
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
 						.build(),
 					new Account.Builder()
-						.withEmail(email2)
-						.withUsername(username2)
-						.withPasswordHash(pass2)
-						.withRoles(roles2)
+						.withEmail(otherEmail)
+						.withUsername(otherUsername)
+						.withPassword(otherPass)
+						.withRoles(otherRoles)
+						.build()),
+				//One arg different
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(otherEmail)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
 						.build()),
 				Arguments.of(new Account.Builder()
-						.withEmail(email1)
-						.withUsername(username1)
-						.withPasswordHash(pass1)
-						.withRoles(roles1)
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
 						.build(),
 					new Account.Builder()
-						.withEmail(email3)
-						.withUsername(username3)
-						.withPasswordHash(pass3)
-						.withRoles(roles3)
+						.withEmail(email)
+						.withUsername(otherUsername)
+						.withPassword(pass)
+						.withRoles(roles)
 						.build()),
 				Arguments.of(new Account.Builder()
-						.withEmail(email2)
-						.withUsername(username2)
-						.withPasswordHash(pass2)
-						.withRoles(roles2)
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
 						.build(),
 					new Account.Builder()
-						.withEmail(email3)
-						.withUsername(username3)
-						.withPasswordHash(pass3)
-						.withRoles(roles3)
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(otherPass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(otherRoles)
+						.build()),
+				//One null arg
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build()),
+				//Null email
+				Arguments.of(new Account.Builder()
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withUsername(otherUsername)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withUsername(username)
+						.withPassword(otherPass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(otherRoles)
+						.build()),
+				//Null username
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(otherEmail)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withPassword(otherPass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.withRoles(otherRoles)
+						.build()),
+				//Null password
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(otherEmail)
+						.withUsername(username)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(otherUsername)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withRoles(otherRoles)
+						.build()),
+				//Null roles
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.build(),
+					new Account.Builder()
+						.withEmail(otherEmail)
+						.withUsername(username)
+						.withPassword(pass)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(otherUsername)
+						.withPassword(pass)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(otherPass)
+						.build()),
+				//Null email and username
+				Arguments.of(new Account.Builder()
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withPassword(otherPass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withPassword(pass)
+						.withRoles(otherRoles)
+						.build()),
+				//Null email and password
+				Arguments.of(new Account.Builder()
+						.withUsername(username)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withUsername(otherUsername)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withUsername(username)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withUsername(username)
+						.withRoles(otherRoles)
+						.build()),
+				//Null email and roles
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(otherEmail)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withRoles(otherRoles)
+						.build()),
+				//Null username and password
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(otherEmail)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withRoles(otherRoles)
+						.build()),
+				//Null username and roles
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.build(),
+					new Account.Builder()
+						.withEmail(otherEmail)
+						.withPassword(pass)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withPassword(pass)
+						.build(),
+					new Account.Builder()
+						.withEmail(email)
+						.withPassword(otherPass)
+						.build()),
+				//Null password and roles
+				Arguments.of(new Account.Builder()
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withPassword(otherPass)
+						.withRoles(roles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withPassword(pass)
+						.withRoles(otherRoles)
+						.build()),
+				//Null 3 arguments
+				Arguments.of(new Account.Builder()
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withRoles(otherRoles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withPassword(pass)
+						.build(),
+					new Account.Builder()
+						.withPassword(otherPass)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withUsername(username)
+						.build(),
+					new Account.Builder()
+						.withUsername(otherUsername)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.build(),
+					new Account.Builder()
+						.withEmail(otherEmail)
+						.build()),
+				//Other
+				Arguments.of(new Account.Builder()
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
+						.build(),
+					new Account.Builder()
+						.withEmail(thirdEmail)
+						.withUsername(thirdUsername)
+						.withPassword(thirdPass)
+						.withRoles(thridRoles)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withEmail(otherEmail)
+						.withUsername(otherUsername)
+						.withPassword(otherPass)
+						.withRoles(otherRoles)
+						.build(),
+					new Account.Builder()
+						.withEmail(thirdEmail)
+						.withUsername(thirdUsername)
+						.withPassword(thirdPass)
+						.withRoles(thridRoles)
 						.build()),
 				Arguments.of(new Account(),
 					new Account.Builder()
-						.withEmail(email1)
-						.withUsername(username1)
-						.withPasswordHash(pass1)
-						.withRoles(roles1)
+						.withEmail(email)
+						.withUsername(username)
+						.withPassword(pass)
+						.withRoles(roles)
 						.build()),
 				Arguments.of(new Account.Builder()
-						.withEmail(email2)
-						.withUsername(username2)
-						.withPasswordHash(pass2)
-						.withRoles(roles2)
+						.withEmail(otherEmail)
+						.withUsername(otherUsername)
+						.withPassword(otherPass)
+						.withRoles(otherRoles)
 						.build(),
 					new Account()),
 				Arguments.of(new Account.Builder()
-						.withRoles(roles1)
+						.withRoles(roles)
 						.build(),
 					new Account.Builder()
-						.withRoles(roles2)
+						.withRoles(otherRoles)
 						.build()),
 				Arguments.of(new Account.Builder()
-						.withRoles(roles1)
+						.withRoles(roles)
 						.build(),
 					new Account.Builder()
-						.withRoles(roles3)
+						.withRoles(thridRoles)
 						.build()),
 				Arguments.of(new Account.Builder()
-						.withRoles(roles2)
+						.withRoles(otherRoles)
 						.build(),
 					new Account.Builder()
-						.withRoles(roles3)
+						.withRoles(thridRoles)
+						.build()),
+				//Full arguments
+				//ID
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(otherId)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(null)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(null)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				//Email
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(otherEmail)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(null)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(null)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				//Username
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(otherUsername)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(null)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(null)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				//Nickname
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(otherNickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(null)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(null)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				//Password
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(otherPass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(null)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(null)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				//Roles
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(otherRoles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(null)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(null)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				//isEnabled
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(false)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				//isAccoundNonExpired
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(false)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				//isAccountNonLocked
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(false)
+						.credentialsNonExpired(true)
+						.build()),
+				//isCredentialsNonExpired
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(false)
+						.build()),
+				//Null roles
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(nullRoles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build()),
+				Arguments.of(new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(nullRoles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build(),
+					new Account.Builder()
+						.withID(id)
+						.withEmail(email)
+						.withUsername(username)
+						.withNickname(nickname)
+						.withPassword(pass)
+						.withRoles(roles)
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
 						.build()));
+	}
+	
+	@SafeVarargs
+	private static <T> List<T> list(T... elements)
+	{
+		List<T> ret = new ArrayList<>();
+		for (T elem: elements)
+			ret.add(elem);
+		return ret;
 	}
 }

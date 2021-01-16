@@ -48,6 +48,9 @@ public class AccountService implements UserDetailsService
 	
 	public void register(HttpServletRequest req, RegistrationDTO regDto, boolean autoAuthenticate)
 	{
+		if (containsNull(regDto))
+			throw new NullPointerException("Registration DTO contains null values: " + regDto);
+		
 		String passHash = passEnc.encode(regDto.getPassword());
 		
 		Account acc = new Account.Builder()
@@ -55,7 +58,7 @@ public class AccountService implements UserDetailsService
 				.withEmail(regDto.getEmail())
 				.withUsername(regDto.getUsername())
 				.withNickname(regDto.getUsername())
-				.withPasswordHash(passHash)
+				.withPassword(passHash)
 				.withRoles(List.of(regDto.isPlayer()?PLAYER_ROLE:LECTURER_ROLE))
 				.build();
 		acc = accDao.save(acc);
@@ -75,6 +78,10 @@ public class AccountService implements UserDetailsService
 		else
 			return false;
 	}
+	
+	/* Manual authentication, required due to lack of
+	 * Json authentication support from Spring Security
+	 * */
 	private void authenticate(HttpServletRequest req, String email, CharSequence password)
 	{
 		UsernamePasswordAuthenticationToken authReq
@@ -106,6 +113,10 @@ public class AccountService implements UserDetailsService
 	{
 		return accDao.findByEmailOrUsername(emailOrUsername, emailOrUsername);
 	}
+	public Optional<Account> findByID(UUID id)
+	{
+		return accDao.findById(id);
+	}
 	public Optional<Account> findByUsername(String username)
 	{
 		return accDao.findByUsername(username);
@@ -116,5 +127,13 @@ public class AccountService implements UserDetailsService
 	{
 		return selectByEmailOrUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("Invalid email or password."));
+	}
+	
+	private boolean containsNull(RegistrationDTO regDto)
+	{
+		return (regDto == null)
+				|| (regDto.getEmail() == null)
+				|| (regDto.getUsername() == null)
+				|| (regDto.getPassword() == null);
 	}
 }

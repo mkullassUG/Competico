@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import com.projteam.app.domain.Account;
 
 class LoginDTOTest
 {
@@ -42,23 +41,39 @@ class LoginDTOTest
 	
 	@ParameterizedTest
 	@MethodSource("mockLoginDTO")
-	void shouldBeEqualWhenSameObjectCompared(LoginDTO logDto)
+	public void shouldBeEqualWhenSameObjectCompared(LoginDTO logDto)
 	{
 		assertTrue(logDto.equals(logDto));
 		assertEquals(logDto.hashCode(), logDto.hashCode());
 	}
 	@ParameterizedTest
 	@MethodSource("mockTwoEqualLoginDTOs")
-	void shouldBeEqualWhenEqualObjectsCompared(LoginDTO logDto1, LoginDTO logDto2)
+	public void shouldBeEqualWhenEqualObjectsCompared(LoginDTO logDto1, LoginDTO logDto2)
 	{
 		assertTrue(logDto1.equals(logDto2));
 		assertEquals(logDto1.hashCode(), logDto2.hashCode());
 	}
 	@ParameterizedTest
 	@MethodSource("mockTwoUnequalLoginDTOs")
-	void shouldNotBeEqualWhenUnequalObjectsCompared(LoginDTO logDto1, LoginDTO logDto2)
+	public void shouldNotBeEqualWhenUnequalObjectsCompared(LoginDTO logDto1, LoginDTO logDto2)
 	{
 		assertFalse(logDto1.equals(logDto2));
+		assertDoesNotThrow(() -> logDto1.hashCode());
+		assertDoesNotThrow(() -> logDto2.hashCode());
+	}
+	@ParameterizedTest
+	@MethodSource("mockLoginDTO")
+	public void shouldNotBeEqualWhenComparingToNull(LoginDTO logDto1)
+	{
+		assertFalse(logDto1.equals(null));
+		assertDoesNotThrow(() -> logDto1.hashCode());
+	}
+	@ParameterizedTest
+	@MethodSource("mockLoginDTO")
+	public void shouldNotBeEqualWhenComparingToDifferentType(LoginDTO logDto1)
+	{
+		assertFalse(logDto1.equals(new Object()));
+		assertDoesNotThrow(() -> logDto1.hashCode());
 	}
 	
 	//---Sources---
@@ -82,26 +97,38 @@ class LoginDTOTest
 	}
 	public static List<Arguments> mockTwoUnequalLoginDTOs()
 	{
-		String email1 = "email1";
-		String email2 = "email2";
-		String password1 = "pass1";
-		String password2 = "pass2";
+		String email = "email1";
+		String otherEmail = "email2";
+		String password = "pass1";
+		String otherPassword = "pass2";
 		
 		return List.of(
 				Arguments.of(
-					new LoginDTO(email1, password1),
-					new LoginDTO(email2, password2)),
+					new LoginDTO(email, password),
+					new LoginDTO(otherEmail, otherPassword)),
 				Arguments.of(
-						new LoginDTO(null, password1),
-						new LoginDTO(null, password2)),
+						new LoginDTO(null, password),
+						new LoginDTO(null, otherPassword)),
 				Arguments.of(
-						new LoginDTO(email1, null),
-						new LoginDTO(email2, null)),
+						new LoginDTO(email, null),
+						new LoginDTO(otherEmail, null)),
 				Arguments.of(
 						new LoginDTO(null, null),
-						new LoginDTO(email2, password2)),
+						new LoginDTO(email, password)),
 				Arguments.of(
-						new LoginDTO(email1, password1),
-						new LoginDTO(null, null)));
+						new LoginDTO(email, password),
+						new LoginDTO(null, null)),
+				Arguments.of(
+						new LoginDTO(email, password),
+						new LoginDTO(null, password)),
+				Arguments.of(
+						new LoginDTO(null, password),
+						new LoginDTO(otherEmail, password)),
+				Arguments.of(
+						new LoginDTO(email, password),
+						new LoginDTO(email, null)),
+				Arguments.of(
+						new LoginDTO(email, null),
+						new LoginDTO(email, password)));
 	}
 }

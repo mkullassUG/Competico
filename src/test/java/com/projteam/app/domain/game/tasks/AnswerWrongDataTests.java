@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
@@ -20,10 +21,10 @@ import com.projteam.app.domain.game.tasks.answers.SingleChoiceAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordConnectAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 
-public class AnswerAcceptTests
+public class AnswerWrongDataTests
 {
 	@Test
-	void wordFillAcceptsAnswer()
+	void wordFillRejectsWrongAnswer()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -34,13 +35,15 @@ public class AnswerAcceptTests
 		List<String> possibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
 		
 		WordFill wf = new WordFill(UUID.randomUUID(),
-				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 100);
-		WordFillAnswer wfa = new WordFillAnswer(answers);
+				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 1);
+		WordFillAnswer wfa = new WordFillAnswer(answers.stream()
+				.map(a -> a + "wrong")
+				.collect(Collectors.toList()));
 		
-		assertEquals(wf.acceptAnswer(wfa), 1);
+		assertEquals(wf.acceptAnswer(wfa), 0);
 	}
 	@Test
-	void choiceWordFillAcceptsAnswer()
+	void choiceWordFillRejectsWrongAnswer()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -50,13 +53,15 @@ public class AnswerAcceptTests
 				.collect(Collectors.toList());
 		
 		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(),
-				new ChoiceWordFillElement(UUID.randomUUID(), text, wordChoices, false), 100);
-		ChoiceWordFillAnswer cwfa = new ChoiceWordFillAnswer(answers);
+				new ChoiceWordFillElement(UUID.randomUUID(), text, wordChoices, false), 1);
+		ChoiceWordFillAnswer cwfa = new ChoiceWordFillAnswer(answers.stream()
+				.map(a -> a + "wrong")
+				.collect(Collectors.toList()));
 		
-		assertEquals(cwf.acceptAnswer(cwfa), 1);
+		assertEquals(cwf.acceptAnswer(cwfa), 0);
 	}
 	@Test
-	void listWordFillAcceptsAnswer()
+	void listWordFillRejectsWrongAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -90,13 +95,17 @@ public class AnswerAcceptTests
 					possibleAnswersList));
 		}
 		
-		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), wordFillElemList, 100);
-		ListWordFillAnswer lwfa = new ListWordFillAnswer(answers);
+		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), wordFillElemList, 1);
+		ListWordFillAnswer lwfa = new ListWordFillAnswer(answers.stream()
+				.map(aList -> aList.stream()
+						.map(a -> a + "wrong")
+						.collect(Collectors.toList()))
+				.collect(Collectors.toList()));
 		
-		assertEquals(lwf.acceptAnswer(lwfa), 1);
+		assertEquals(lwf.acceptAnswer(lwfa), 0);
 	}
 	@Test
-	void listChoiceWordFillAcceptsAnswer()
+	void listChoiceWordFillRejectsWrongAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -122,13 +131,17 @@ public class AnswerAcceptTests
 					true));
 		}
 		
-		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), wordFillElemList, 100);
-		ListChoiceWordFillAnswer lcwfa = new ListChoiceWordFillAnswer(answers);
+		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), wordFillElemList, 1);
+		ListChoiceWordFillAnswer lcwfa = new ListChoiceWordFillAnswer(answers.stream()
+				.map(aList -> aList.stream()
+						.map(a -> a + "wrong")
+						.collect(Collectors.toList()))
+				.collect(Collectors.toList()));
 		
-		assertEquals(lcwf.acceptAnswer(lcwfa), 1);
+		assertEquals(lcwf.acceptAnswer(lcwfa), 0);
 	}
 	@Test
-	void chronologicalOrderAcceptsAnswer()
+	void chronologicalOrderRejectsWrongAnswer()
 	{
 		List<String> text = List.of("Lorem ipsum dolor sit amet",
 				"consectetur adipiscing elit",
@@ -139,13 +152,15 @@ public class AnswerAcceptTests
 				"ullamco laboris nisi ut",
 				"aliquip ex ea commodo consequat");
 		
-		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), text, 100);
-		ChronologicalOrderAnswer coa = new ChronologicalOrderAnswer(text);
+		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), text, 1);
+		ChronologicalOrderAnswer coa = new ChronologicalOrderAnswer(text.stream()
+				.map(a -> a + "wrong")
+				.collect(Collectors.toList()));
 		
-		assertEquals(co.acceptAnswer(coa), 1);
+		assertEquals(co.acceptAnswer(coa), 0);
 	}
 	@Test
-	void listSentenceFormingAcceptsAnswer()
+	void listSentenceFormingRejectsWrongAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -157,26 +172,30 @@ public class AnswerAcceptTests
 				.map(textList -> new SentenceFormingElement(UUID.randomUUID(), textList))
 				.collect(Collectors.toList());
 		
-		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), wordFillElemList, 100);
-		ListSentenceFormingAnswer lsfa = new ListSentenceFormingAnswer(text);
+		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), wordFillElemList, 1);
+		ListSentenceFormingAnswer lsfa = new ListSentenceFormingAnswer(text.stream()
+				.map(aList -> aList.stream()
+						.map(a -> a + "wrong")
+						.collect(Collectors.toList()))
+				.collect(Collectors.toList()));
 		
-		assertEquals(lsf.acceptAnswer(lsfa), 1);
+		assertEquals(lsf.acceptAnswer(lsfa), 0);
 	}
 	@Test
-	void singleChoiceAcceptsAnswer()
+	void singleChoiceRejectsWrongAnswer()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		String answer = "consectetur";
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed");
 		
-		SingleChoice sc = new SingleChoice(UUID.randomUUID(), content, answer, incorrectAnswers, 100);
-		SingleChoiceAnswer sca = new SingleChoiceAnswer(answer);
+		SingleChoice sc = new SingleChoice(UUID.randomUUID(), content, answer, incorrectAnswers, 1);
+		SingleChoiceAnswer sca = new SingleChoiceAnswer(answer + "wrong");
 		
-		assertEquals(sc.acceptAnswer(sca), 1);
+		assertEquals(sc.acceptAnswer(sca), 0);
 	}
 	@Test
-	void multipleChoiceAcceptsAnswer()
+	void multipleChoiceRejectsWrongAnswer()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		List<String> correctAnswers = List.of(
@@ -185,13 +204,15 @@ public class AnswerAcceptTests
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
 		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(),
-				new MultipleChoiceElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 100);
-		MultipleChoiceAnswer mca = new MultipleChoiceAnswer(correctAnswers);
+				new MultipleChoiceElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 1);
+		MultipleChoiceAnswer mca = new MultipleChoiceAnswer(correctAnswers.stream()
+				.map(a -> a + "wrong")
+				.collect(Collectors.toList()));
 		
-		assertEquals(mc.acceptAnswer(mca), 1);
+		assertEquals(mc.acceptAnswer(mca), 0);
 	}
 	@Test
-	void wordConnectAcceptsAnswer()
+	void wordConnectRejectsWrongAnswer()
 	{
 		List<String> leftWords = List.of("Lorem", "ipsum", "dolor", "sit", "amet");
 		List<String> rightWords = List.of("consectetur", "adipiscing", "elit", "sed do", "eiusmod");
@@ -202,9 +223,13 @@ public class AnswerAcceptTests
 				3, 2,
 				4, 1);
 		
-		WordConnect wc = new WordConnect(UUID.randomUUID(), leftWords, rightWords, correctMapping, 100);
-		WordConnectAnswer wca = new WordConnectAnswer(correctMapping);
+		WordConnect wc = new WordConnect(UUID.randomUUID(), leftWords, rightWords, correctMapping, 1);
+		WordConnectAnswer wca = new WordConnectAnswer(correctMapping.entrySet()
+				.stream()
+				.collect(Collectors.toMap(Entry::getKey, e ->
+					(e.getValue() >= correctMapping.size())?
+						0:(e.getValue() + 1))));
 		
-		assertEquals(wc.acceptAnswer(wca), 1);
+		assertEquals(wc.acceptAnswer(wca), 0);
 	}
 }

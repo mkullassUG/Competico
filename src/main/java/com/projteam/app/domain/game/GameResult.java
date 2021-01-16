@@ -3,6 +3,8 @@ package com.projteam.app.domain.game;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -19,6 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "GameResult")
+@Access(AccessType.FIELD)
 public class GameResult
 {
 	private @Id UUID playerResultID;

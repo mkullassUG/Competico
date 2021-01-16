@@ -29,6 +29,7 @@ public class ChoiceWordFillElement
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Entity
+	@Access(AccessType.FIELD)
 	public static class WordChoice
 	{
 		private @Id UUID id;

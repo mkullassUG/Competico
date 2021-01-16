@@ -5,22 +5,23 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,12 +50,6 @@ public class AccountAPITests
 					Charset.forName("utf8"));
 	private static final String LOGIN_REDIRECT_URL = "/dashboard";
 	
-	@BeforeEach
-	public void setup()
-	{
-		MockitoAnnotations.initMocks(this);
-	}
-	
 	@Test
 	public void contextLoads() throws Exception
 	{
@@ -70,7 +65,7 @@ public class AccountAPITests
 				.content(toJson(mockRegDto)))
 			.andExpect(status().isCreated());
 		
-		verify(accServ).register(any(), eq(mockRegDto), anyBoolean());
+		verify(accServ, times(1)).register(any(), eq(mockRegDto), anyBoolean());
 		verifyNoMoreInteractions(accServ);
 	}
 	@ParameterizedTest
@@ -86,7 +81,7 @@ public class AccountAPITests
 				.content(toJson(mockRegDto)))
 			.andExpect(status().isBadRequest());
 		
-		verify(accServ).register(any(), eq(mockRegDto), anyBoolean());
+		verify(accServ, times(1)).register(any(), eq(mockRegDto), anyBoolean());
 		verifyNoMoreInteractions(accServ);
 	}
 	
@@ -102,7 +97,7 @@ public class AccountAPITests
 				.content(toJson(mockLoginDto)))
 			.andExpect(status().isOk());
 		
-		verify(accServ).login(any(), eq(mockLoginDto));
+		verify(accServ, times(1)).login(any(), eq(mockLoginDto));
 		verifyNoMoreInteractions(accServ);
 	}
 	@ParameterizedTest
@@ -117,8 +112,21 @@ public class AccountAPITests
 				.content(toJson(mockLoginDto)))
 			.andExpect(status().isBadRequest());
 		
-		verify(accServ).login(any(), eq(mockLoginDto));
+		verify(accServ, times(1)).login(any(), eq(mockLoginDto));
 		verifyNoMoreInteractions(accServ);
+	}
+	
+	@ParameterizedTest
+	@ValueSource(booleans = {false, true})
+	public void shouldReturnCheckIfUserIsAuthenticated(boolean isAuthenticated) throws Exception
+	{
+		when(accServ.isAuthenticated()).thenReturn(isAuthenticated);
+		
+		mvc.perform(get("/api/v1/authenticated")
+				.contentType(APPLICATION_JSON_UTF8)
+				.content("" + isAuthenticated))
+			.andExpect(status().isOk())
+			.andExpect(content().string("" + isAuthenticated));
 	}
 	
 	@Test
