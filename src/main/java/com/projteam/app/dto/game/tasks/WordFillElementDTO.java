@@ -3,13 +3,11 @@ package com.projteam.app.dto.game.tasks;
 import java.util.ArrayList;
 import java.util.List;
 import com.projteam.app.domain.game.tasks.WordFillElement;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class WordFillElementDTO implements TaskDTO
 {
 	private List<String> text;

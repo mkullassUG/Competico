@@ -1,6 +1,8 @@
 package com.projteam.app.domain.game;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
+import static java.util.Collections.synchronizedList;
+import static java.util.Collections.synchronizedMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,12 +32,12 @@ public class Lobby
 	{
 		this.gameCode = gameCode;
 		this.host = host;
-		players = new ArrayList<>();
+		players = syncList();
 		
 		this.maxPlayerCount = maxPlayerCount;
 		
 		changeCount = 0;
-		playerLastChangeCounts = new HashMap<>();
+		playerLastChangeCounts = syncMap();
 	}
 	
 	public Account getHost()
@@ -129,5 +131,14 @@ public class Lobby
 		if (ret)
 			playerLastChangeCounts.put(accountID, changeCount);
 		return ret;
+	}
+	
+	private <T, U> Map<T, U> syncMap()
+	{
+		return synchronizedMap(new HashMap<>());
+	}
+	private <T> List<T> syncList()
+	{
+		return synchronizedList(new ArrayList<>());
 	}
 }

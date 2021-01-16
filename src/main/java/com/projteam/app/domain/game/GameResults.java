@@ -1,8 +1,11 @@
 package com.projteam.app.domain.game;
 
+import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -19,6 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "GameResults")
+@Access(AccessType.FIELD)
 public class GameResults
 {
 	private @Id UUID gameID;
@@ -27,7 +31,7 @@ public class GameResults
 	@CollectionTable(name = "result_mapping")
 	@MapKeyColumn(name = "playerID")
 	@Column(name = "results")
-	private Map<UUID, GameResult> results = new HashMap<>();
+	private Map<UUID, GameResult> results = synchronizedMap(new HashMap<>());
 	
 	public GameResults(UUID gameID)
 	{

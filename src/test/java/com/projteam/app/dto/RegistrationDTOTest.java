@@ -52,11 +52,14 @@ class RegistrationDTOTest
 	@Test
 	public void shouldChangePlayerStatusOnSet()
 	{
-		boolean isPlayer = true;
+		boolean isPlayer1 = true;
+		boolean isPlayer2 = false;
 		
 		RegistrationDTO regDTO = new RegistrationDTO("e", "u", "p", false);
-		regDTO.setPlayer(isPlayer);
-		assertEquals(regDTO.isPlayer(), isPlayer);
+		regDTO.setPlayer(isPlayer1);
+		assertEquals(regDTO.isPlayer(), isPlayer1);
+		regDTO.setIsPlayer(isPlayer2);
+		assertEquals(regDTO.isPlayer(), isPlayer2);
 	}
 	
 	@ParameterizedTest
@@ -78,6 +81,22 @@ class RegistrationDTOTest
 	void shouldNotBeEqualWhenUnequalObjectsCompared(RegistrationDTO regDto1, RegistrationDTO regDto2)
 	{
 		assertFalse(regDto1.equals(regDto2));
+		assertDoesNotThrow(() -> regDto1.hashCode());
+		assertDoesNotThrow(() -> regDto2.hashCode());
+	}
+	@ParameterizedTest
+	@MethodSource("mockRegistrationDTO")
+	void shouldNotBeEqualWhenComparingToNull(RegistrationDTO regDto1)
+	{
+		assertFalse(regDto1.equals(null));
+		assertDoesNotThrow(() -> regDto1.hashCode());
+	}
+	@ParameterizedTest
+	@MethodSource("mockRegistrationDTO")
+	void shouldNotBeEqualWhenComparingToDifferentType(RegistrationDTO regDto1)
+	{
+		assertFalse(regDto1.equals(new Object()));
+		assertDoesNotThrow(() -> regDto1.hashCode());
 	}
 	
 	//---Sources---
@@ -106,45 +125,75 @@ class RegistrationDTOTest
 	}
 	public static List<Arguments> mockTwoUnequalRegistrationDTOs()
 	{
-		String email1 = "email1";
-		String email2 = "email2";
-		String username1 = "username1";
-		String username2 = "username2";
-		String password1 = "pass1";
-		String password2 = "pass2";
-		boolean isPlayer1 = true;
-		boolean isPlayer2 = false;
+		String email = "email1";
+		String otherEmail = "email2";
+		String username = "username1";
+		String otherUsername = "username2";
+		String password = "pass1";
+		String otherPassword = "pass2";
+		boolean isPlayer = true;
+		boolean otherIsPlayer = false;
 		
 		return List.of(
 				Arguments.of(
-					new RegistrationDTO(email1, username1, password1, isPlayer1),
-					new RegistrationDTO(email2, username2, password2, isPlayer2)),
+					new RegistrationDTO(email, username, password, isPlayer),
+					new RegistrationDTO(otherEmail, otherUsername, otherPassword, otherIsPlayer)),
 				Arguments.of(
-						new RegistrationDTO(null, username1, password1, isPlayer1),
-						new RegistrationDTO(email2, username2, password2, isPlayer2)),
+						new RegistrationDTO(email, username, password, isPlayer),
+						new RegistrationDTO(otherEmail, username, password, isPlayer)),
 				Arguments.of(
-						new RegistrationDTO(email1, username1, password1, isPlayer1),
-						new RegistrationDTO(null, username2, password2, isPlayer2)),
+						new RegistrationDTO(email, username, password, isPlayer),
+						new RegistrationDTO(email, otherUsername, password, isPlayer)),
 				Arguments.of(
-						new RegistrationDTO(null, username1, password1, isPlayer1),
-						new RegistrationDTO(null, username2, password2, isPlayer2)),
+						new RegistrationDTO(email, username, password, isPlayer),
+						new RegistrationDTO(email, username, otherPassword, isPlayer)),
 				Arguments.of(
-						new RegistrationDTO(email1, null, password1, isPlayer1),
-						new RegistrationDTO(email2, username2, password2, isPlayer2)),
+						new RegistrationDTO(email, username, password, isPlayer),
+						new RegistrationDTO(email, username, password, otherIsPlayer)),
 				Arguments.of(
-						new RegistrationDTO(email1, username1, password1, isPlayer1),
-						new RegistrationDTO(email2, null, password2, isPlayer2)),
+						new RegistrationDTO(null, username, password, isPlayer),
+						new RegistrationDTO(email, username, password, isPlayer)),
 				Arguments.of(
-						new RegistrationDTO(email1, null, password1, isPlayer1),
-						new RegistrationDTO(email2, null, password2, isPlayer2)),
+						new RegistrationDTO(email, username, password, isPlayer),
+						new RegistrationDTO(null, username, password, isPlayer)),
 				Arguments.of(
-						new RegistrationDTO(email1, username1, null, isPlayer1),
-						new RegistrationDTO(email2, username2, password2, isPlayer2)),
+						new RegistrationDTO(null, username, password, isPlayer),
+						new RegistrationDTO(null, otherUsername, password, isPlayer)),
 				Arguments.of(
-						new RegistrationDTO(email1, username1, password1, isPlayer1),
-						new RegistrationDTO(email2, username2, null, isPlayer2)),
+						new RegistrationDTO(null, username, password, isPlayer),
+						new RegistrationDTO(null, username, otherPassword, isPlayer)),
 				Arguments.of(
-						new RegistrationDTO(email1, username1, null, isPlayer1),
-						new RegistrationDTO(email2, username2, null, isPlayer2)));
+						new RegistrationDTO(null, username, password, isPlayer),
+						new RegistrationDTO(null, username, password, otherIsPlayer)),
+				Arguments.of(
+						new RegistrationDTO(email, null, password, isPlayer),
+						new RegistrationDTO(email, username, password, isPlayer)),
+				Arguments.of(
+						new RegistrationDTO(email, username, password, isPlayer),
+						new RegistrationDTO(email, null, password, isPlayer)),
+				Arguments.of(
+						new RegistrationDTO(email, null, password, isPlayer),
+						new RegistrationDTO(otherEmail, null, password, isPlayer)),
+				Arguments.of(
+						new RegistrationDTO(email, null, password, isPlayer),
+						new RegistrationDTO(email, null, otherPassword, isPlayer)),
+				Arguments.of(
+						new RegistrationDTO(email, null, password, isPlayer),
+						new RegistrationDTO(email, null, password, otherIsPlayer)),
+				Arguments.of(
+						new RegistrationDTO(email, username, null, isPlayer),
+						new RegistrationDTO(email, username, password, isPlayer)),
+				Arguments.of(
+						new RegistrationDTO(email, username, password, isPlayer),
+						new RegistrationDTO(email, username, null, isPlayer)),
+				Arguments.of(
+						new RegistrationDTO(email, username, null, isPlayer),
+						new RegistrationDTO(otherEmail, username, null, isPlayer)),
+				Arguments.of(
+						new RegistrationDTO(email, username, null, isPlayer),
+						new RegistrationDTO(email, otherUsername, null, isPlayer)),
+				Arguments.of(
+						new RegistrationDTO(email, username, null, isPlayer),
+						new RegistrationDTO(email, username, null, otherIsPlayer)));
 	}
 }

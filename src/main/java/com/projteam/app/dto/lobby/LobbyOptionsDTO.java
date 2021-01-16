@@ -11,4 +11,9 @@ public class LobbyOptionsDTO
 {
 	private int maxPlayers;
 	private boolean allowsRandomPlayers;
+	
+	public boolean allowsRandomPlayers()
+	{
+		return allowsRandomPlayers;
+	}
 }

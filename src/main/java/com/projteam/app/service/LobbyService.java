@@ -1,5 +1,6 @@
 package com.projteam.app.service;
 
+import static java.util.Collections.synchronizedMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,8 +33,8 @@ public class LobbyService
 	@Autowired
 	public LobbyService(AccountService accServ)
 	{
-		lobbies = Collections.synchronizedMap(new HashMap<>());
-		lobbyCodesAllowingRandomPlayers = new HashSet<>();
+		lobbies = syncMap();
+		lobbyCodesAllowingRandomPlayers = syncSet();
 		
 		gameCodeChars = IntStream.range(0, 256)
 			.filter(LobbyService::isValidGameCodeChar)
@@ -160,11 +161,7 @@ public class LobbyService
 		if (lobbyCodesAllowingRandomPlayers.isEmpty())
 			return null;
 		List<String> lobbyCodesToChooseFrom = new ArrayList<>(lobbyCodesAllowingRandomPlayers);
-		Collections.shuffle(lobbyCodesToChooseFrom);
-		return lobbyCodesToChooseFrom.stream()
-			.filter(gameCode -> lobbies.get(gameCode).canAcceptPlayer())
-			.findFirst()
-			.orElse(null);
+		return lobbyCodesToChooseFrom.get((int) (Math.random() * lobbyCodesToChooseFrom.size()));
 	}
 	public int getGameCodeLength()
 	{
@@ -195,14 +192,13 @@ public class LobbyService
 				|| ((c >= 'A') && (c <= 'Z'));
 	}
 
-	public String getLobbyForPlayer(Account player)
+	public Optional<String> getLobbyForAccount(Account acc)
 	{
 		return lobbies.entrySet()
 				.stream()
-				.filter(e -> e.getValue().containsPlayerOrHost(player))
+				.filter(e -> e.getValue().containsPlayerOrHost(acc))
 				.map(e -> e.getKey())
-				.findAny()
-				.orElse(null);
+				.findAny();
 	}
 
 	public boolean updateOptions(String gameCode, LobbyOptionsDTO options)
@@ -223,5 +219,14 @@ public class LobbyService
 			return true;
 		}
 		return false;
+	}
+	
+	private <T, U> Map<T, U> syncMap()
+	{
+		return synchronizedMap(new HashMap<>());
+	}
+	private <T> Set<T> syncSet()
+	{
+		return Collections.synchronizedSet(new HashSet<>());
 	}
 }

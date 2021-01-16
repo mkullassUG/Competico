@@ -1,6 +1,8 @@
 package com.projteam.app.service;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
+import static java.util.Collections.synchronizedMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,9 @@ import com.projteam.app.domain.game.tasks.WordFill;
 import com.projteam.app.domain.game.tasks.WordFillElement;
 import com.projteam.app.domain.game.tasks.WordFillElement.EmptySpace;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
+import com.projteam.app.dto.game.GameResultPersonalDTO;
+import com.projteam.app.dto.game.GameResultTotalDTO;
+import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
 
 @Service
@@ -49,7 +54,7 @@ public class GameService
 		this.grDAO = grDAO;
 		this.grsDAO = grsDAO;
 		
-		games = new HashMap<>();
+		games = syncMap();
 	}
 	
 	public boolean createGameFromLobby(String gameCode)
@@ -85,7 +90,7 @@ public class GameService
 							.mapToObj(i -> generateRandomTask(targetDifficulty))
 							.collect(Collectors.toList()))));
 		
-		games.put(gameCode, new Game(players, spectators, taskCount, targetDifficulty, taskMap));
+		games.put(gameCode, new Game(players, spectators, taskCount, taskMap));
 		return true;
 	}
 
@@ -289,7 +294,10 @@ public class GameService
 	}
 	public TaskInfoDTO getCurrentTaskInfo(String gameCode, Account player)
 	{
-		return getCurrentTask(gameCode, player).toDTO(getTaskNumber(gameCode, player));
+		return 
+				Optional.ofNullable(getCurrentTask(gameCode, player))
+					.map(task -> task.toDTO(getTaskNumber(gameCode, player)))
+					.orElse(null);
 	}
 	
 	private Task getCurrentTask(String gameCode)
@@ -316,23 +324,35 @@ public class GameService
 		return games.get(gameCode).hasGameFinishedFor(player);
 	}
 	
-	public void acceptAnswer(String gameCode, TaskAnswer answer)
+	public boolean acceptAnswer(String gameCode, TaskAnswer answer)
 	{
-		acceptAnswer(gameCode, answer, getAccount());
+		return acceptAnswer(gameCode, answer, getAccount());
 	}
-	private void acceptAnswer(String gameCode, TaskAnswer answer, Account player)
+	private boolean acceptAnswer(String gameCode, TaskAnswer answer, Account player)
 	{
 		if (!games.containsKey(gameCode))
-			return;
+			return false;
 		
 		Game game = games.get(gameCode);
 		if (game.hasGameFinishedFor(player))
-			return;
+			return false;
 		Task task = game.getCurrentTask(player);
 		double completion = task.acceptAnswer(answer);
 		game.advance(player, completion);
 		
 		checkIfGameFinished(gameCode, game);
+		return true;
+	}
+	public Class<? extends TaskAnswer> getCurrentAnswerClass(String gameCode, Account player)
+	{
+		if (!games.containsKey(gameCode))
+			return null;
+		
+		Game game = games.get(gameCode);
+		if (game.hasGameFinishedFor(player))
+			return null;
+		
+		return game.getCurrentTask(player).getAnswerType();
 	}
 	private void checkIfGameFinished(String gameCode, Game game)
 	{
@@ -383,5 +403,128 @@ public class GameService
 			return -1;
 		Game game = games.get(gameCode);
 		return game.getTaskCount(getAccount());
+	}
+
+	public Optional<List<GameResultTotalDTO>> getResults(UUID gameID)
+	{
+		return grsDAO.findById(gameID)
+				.map(grs ->
+				{
+					List<GameResultTotalDTO> ret = new ArrayList<>();
+					for (GameResult gr: grs.getResults().values())
+					{
+						Account player = accServ.findByID(gr.getPlayerID())
+								.orElse(null);
+						var completion = gr.getCompletion();
+						var difficulty = gr.getDifficulty();
+						var timeTaken = gr.getTimeTaken();
+						int l = Math.min(completion.size(),
+								Math.min(difficulty.size(),
+										timeTaken.size()));
+						double score = 0;
+						long totalTime = 0;
+						for (int i = 0; i < l; i++)
+						{
+							long time = timeTaken.get(i);
+							score += Game.calculateScore(
+									completion.get(i),
+									difficulty.get(i),
+									time);
+							totalTime += time;
+						}
+						ret.add(new GameResultTotalDTO(
+								player.getUsername(),
+								player.getNickname(),
+								(long) score,
+								totalTime));
+					}
+					return ret.stream()
+							.sorted((r1, r2) -> -Long.compare(r1.getTotalScore(), r2.getTotalScore()))
+							.collect(Collectors.toList());
+				});
+	}
+	public Optional<List<GameResultTotalDuringGameDTO>> getCurrentResults(UUID gameID)
+	{
+		return games.values()
+			.stream()
+			.filter(game -> game.getID().equals(gameID))
+			.findFirst()
+			.map(game -> game.getCurrentResults());
+	}
+	public Optional<List<GameResultPersonalDTO>> getPersonalResults(UUID gameID)
+	{
+		return getPersonalResults(gameID, getAccount());
+	}
+	public Optional<List<GameResultPersonalDTO>> getPersonalResults(UUID gameID, Account player)
+	{
+		Optional<List<GameResultPersonalDTO>> ret = games.values()
+				.stream()
+				.filter(game -> game.getID().equals(gameID))
+				.findFirst()
+				.map(game -> game.getPersonalResults(player));
+		if (ret.isEmpty())
+			return grsDAO.findById(gameID)
+					.map(grs ->
+					{
+						return grs.getResults()
+							.values()
+							.stream()
+							.filter(gr -> gr.getPlayerID().equals(player.getId()))
+							.findFirst()
+							.map(gr ->
+							{
+								List<GameResultPersonalDTO> retList = new ArrayList<>();
+								var completion = gr.getCompletion();
+								var difficulty = gr.getDifficulty();
+								var timeTaken = gr.getTimeTaken();
+								int l = Math.min(completion.size(),
+										Math.min(difficulty.size(),
+												timeTaken.size()));
+								for (int i = 0; i < l; i++)
+								{
+									retList.add(new GameResultPersonalDTO(
+											completion.get(i),
+											timeTaken.get(i),
+											difficulty.get(i)));
+								}
+								return retList;
+							})
+							.orElse(null);
+					});
+		return ret;
+	}
+	public Optional<Boolean> haveResultsChanged(UUID gameID)
+	{
+		return haveResultsChanged(gameID, getAccount());
+	}
+	public Optional<Boolean> haveResultsChanged(UUID gameID, Account acc)
+	{
+		return games.values()
+				.stream()
+				.filter(game -> game.getID().equals(gameID))
+				.findFirst()
+				.map(game -> game.haveResultsChanged(gameID, acc));
+	}
+
+	public UUID getGameID(String gameCode)
+	{
+		return Optional.ofNullable(games.get(gameCode))
+				.map(g -> g.getID())
+				.orElse(null);
+	}
+	public Optional<String> getGameForAccount(Account acc)
+	{
+		return games.entrySet()
+				.stream()
+				.filter(e -> e.getValue().containsPlayerOrSpectator(acc))
+				.filter(e -> !acc.hasRole(PLAYER_ROLE)
+						|| !e.getValue().hasGameFinishedFor(acc))
+				.map(e -> e.getKey())
+				.findAny();
+	}
+	
+	private <T, U> Map<T, U> syncMap()
+	{
+		return synchronizedMap(new HashMap<>());
 	}
 }
