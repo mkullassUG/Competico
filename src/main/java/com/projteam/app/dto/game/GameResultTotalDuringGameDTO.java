@@ -14,4 +14,5 @@ public class GameResultTotalDuringGameDTO implements GameResultDTO
 	private long totalScore;
 	private long totalTime;
 	private boolean hasFinished;
+	private boolean removedForInactivity;
 }

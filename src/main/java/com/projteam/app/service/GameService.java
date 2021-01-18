@@ -5,6 +5,7 @@ import static java.util.Collections.synchronizedMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -44,6 +46,8 @@ public class GameService
 	private GameResultsDAO grsDAO;
 	
 	private Map<String, Game> games;
+	
+	private final long MAX_TIME_SINCE_LAST_INTERACTION_MILLI = 120000;
 	
 	@Autowired
 	public GameService(AccountService accServ, LobbyService lobbyServ,
@@ -521,6 +525,47 @@ public class GameService
 						|| !e.getValue().hasGameFinishedFor(acc))
 				.map(e -> e.getKey())
 				.findAny();
+	}
+	
+	public void noteInteraction(String gameCode)
+	{
+		noteInteraction(gameCode, getAccount());
+	}
+	public void noteInteraction(String gameCode, Account acc)
+	{
+		Game game = games.get(gameCode);
+		if (game == null)
+			return;
+		game.noteInteraction(acc);
+	}
+	public void markInactive(String gameCode, Account acc)
+	{
+		Game game = games.get(gameCode);
+		if (game == null)
+			return;
+		game.markInactive(acc);
+	}
+	@Scheduled(fixedDelay = 30000)
+	public void removeInactive()
+	{
+		synchronized (games)
+		{
+			Iterator<Game> it = games.values().iterator();
+			while (it.hasNext())
+			{
+				Game game = it.next();
+				game.removeInactivePlayers(MAX_TIME_SINCE_LAST_INTERACTION_MILLI);
+				if (game.isInactive())
+					it.remove();
+			}
+		}
+	}
+	public boolean isPlayerActive(String gameCode, Account acc)
+	{
+		Game game = games.get(gameCode);
+		if (game == null)
+			return false;
+		return game.isPlayerActive(acc);
 	}
 	
 	private <T, U> Map<T, U> syncMap()

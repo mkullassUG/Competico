@@ -148,7 +148,7 @@ public class LobbyAPI
 	@GetMapping("api/v1/lobby/{gameCode}/changes")
 	public Map<String, Object> lobbyStatusChanged(@PathVariable String gameCode)
 	{
-		Optional<Boolean> lobbyContentChanged = lobbyService.hasAnthingChanged(gameCode,
+		Optional<Boolean> lobbyContentChanged = lobbyService.hasAnythingChanged(gameCode,
 				getAuthenticatedAccount());
 		boolean gameStarted = gameService.gameExists(gameCode);
 		

@@ -176,14 +176,14 @@ public class GameAPITests
 		UUID gameID = UUID.randomUUID();
 		
 		GameResultTotalDuringGameDTO grt1 = new GameResultTotalDuringGameDTO(
-				"mockUsername1", "mockNickname1", 1250, 8000, true);
+				"mockUsername1", "mockNickname1", 1250, 8000, true, false);
 		GameResultTotalDuringGameDTO grt2 = new GameResultTotalDuringGameDTO(
-				"mockUsername2", "mockNickname2", 1000, 7658, false);
+				"mockUsername2", "mockNickname2", 1000, 7658, false, false);
 		Class<GameResultTotalDuringGameDTO> grClass = GameResultTotalDuringGameDTO.class;
 		
 		when(gameServ.getCurrentResults(gameID)).thenReturn(Optional.of(List.of(grt1, grt2)));
 		
-		String res = mvc.perform(get("/api/v1/" + gameID + "/scores/total"))
+		String res = mvc.perform(get("/api/v1/scores/" + gameID + "/total"))
 			.andExpect(status().isOk())
 			.andReturn()
 			.getResponse()
@@ -208,7 +208,7 @@ public class GameAPITests
 		when(gameServ.getCurrentResults(gameID)).thenReturn(Optional.empty());
 		when(gameServ.getResults(gameID)).thenReturn(Optional.of(List.of(grt1, grt2)));
 		
-		String res = mvc.perform(get("/api/v1/" + gameID + "/scores/total"))
+		String res = mvc.perform(get("/api/v1/scores/" + gameID + "/total"))
 			.andExpect(status().isOk())
 			.andReturn()
 			.getResponse()
@@ -230,7 +230,7 @@ public class GameAPITests
 		
 		when(gameServ.getPersonalResults(gameID)).thenReturn(Optional.of(List.of(grp1, grp2)));
 		
-		String res = mvc.perform(get("/api/v1/" + gameID + "/scores/personal"))
+		String res = mvc.perform(get("/api/v1/scores/" + gameID + "/personal"))
 			.andExpect(status().isOk())
 			.andReturn()
 			.getResponse()
@@ -249,7 +249,7 @@ public class GameAPITests
 		
 		when(gameServ.haveResultsChanged(gameID)).thenReturn(Optional.of(resultsChanged));
 		
-		mvc.perform(get("/api/v1/" + gameID + "/scores/total/changes"))
+		mvc.perform(get("/api/v1/scores/" + gameID + "/total/changes"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.haveResultsChanged", is(resultsChanged)));
 		
@@ -263,7 +263,7 @@ public class GameAPITests
 		
 		when(gameServ.haveResultsChanged(gameID)).thenReturn(Optional.empty());
 		
-		mvc.perform(get("/api/v1/" + gameID + "/scores/total/changes"))
+		mvc.perform(get("/api/v1/scores/" + gameID + "/total/changes"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.gameExists", is(false)));
 		
@@ -281,7 +281,7 @@ public class GameAPITests
 			.thenThrow(new IllegalArgumentException(
 					msg));
 		
-		mvc.perform(get("/api/v1/" + gameID + "/scores/total/changes"))
+		mvc.perform(get("/api/v1/scores/" + gameID + "/total/changes"))
 			.andExpect(status().isBadRequest())
 			.andExpect(content().string(msg));
 		

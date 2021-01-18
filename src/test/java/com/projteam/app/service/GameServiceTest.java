@@ -679,6 +679,215 @@ public class GameServiceTest
 				() -> gameService.haveResultsChanged(gameID));
 	}
 	
+	@ParameterizedTest
+	@MethodSource("mockPlayerHostAndTwoPlayers")
+	public void shouldNotRemoveActivePlayersWithPlayerHost(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
+		gameService.removeInactive();
+
+		assertTrue(gameService.gameExists(gameCode));
+		assertTrue(gameService.isPlayerActive(gameCode, host));
+		assertTrue(gameService.isPlayerActive(gameCode, player));
+		assertTrue(gameService.isPlayerActive(gameCode, otherPlayer));
+	}
+	@ParameterizedTest
+	@MethodSource("mockLecturerHostAndTwoPlayers")
+	public void shouldNotRemoveActivePlayersWithLecturerHost(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
+		gameService.removeInactive();
+
+		assertTrue(gameService.gameExists(gameCode));
+		assertTrue(gameService.isPlayerActive(gameCode, player));
+		assertTrue(gameService.isPlayerActive(gameCode, otherPlayer));
+	}
+	@ParameterizedTest
+	@MethodSource("mockPlayerHostAndTwoPlayers")
+	public void shouldRemoveInactivePlayersWithPlayerHost(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
+		gameService.markInactive(gameCode, player);
+		
+		gameService.removeInactive();
+
+		assertTrue(gameService.gameExists(gameCode));
+		assertTrue(gameService.isPlayerActive(gameCode, host));
+		assertFalse(gameService.isPlayerActive(gameCode, player));
+		assertTrue(gameService.isPlayerActive(gameCode, otherPlayer));
+	}
+	@ParameterizedTest
+	@MethodSource("mockLecturerHostAndTwoPlayers")
+	public void shouldRemoveInactivePlayersWithLecturerHost(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
+		gameService.markInactive(gameCode, player);
+		
+		gameService.removeInactive();
+		
+		assertTrue(gameService.gameExists(gameCode));
+		assertFalse(gameService.isPlayerActive(gameCode, player));
+		assertTrue(gameService.isPlayerActive(gameCode, otherPlayer));
+	}
+	@ParameterizedTest
+	@MethodSource("mockPlayerHostAndTwoPlayers")
+	public void shouldDeleteGameWhenAllInactiveWithPlayerHost(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
+		gameService.markInactive(gameCode, host);
+		gameService.markInactive(gameCode, player);
+		gameService.markInactive(gameCode, otherPlayer);
+		
+		gameService.removeInactive();
+		
+		assertFalse(gameService.gameExists(gameCode));
+	}
+	@ParameterizedTest
+	@MethodSource("mockLecturerHostAndTwoPlayers")
+	public void shouldDeleteGameWhenAllInactiveWithLecturerHost(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
+		gameService.markInactive(gameCode, player);
+		gameService.markInactive(gameCode, otherPlayer);
+		
+		gameService.removeInactive();
+		
+		assertFalse(gameService.gameExists(gameCode));
+	}
+	@ParameterizedTest
+	@MethodSource("mockPlayerHostAndTwoPlayers")
+	public void shouldRemoveInactiveHost(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
+		gameService.markInactive(gameCode, host);
+		
+		gameService.removeInactive();
+
+		assertTrue(gameService.gameExists(gameCode));
+		assertFalse(gameService.isPlayerActive(gameCode, host));
+		assertTrue(gameService.isPlayerActive(gameCode, player));
+		assertTrue(gameService.isPlayerActive(gameCode, otherPlayer));
+	}
+	@ParameterizedTest
+	@MethodSource("mockPlayerHostAndTwoPlayers")
+	public void shouldNotRemovePlayerWhenActiveAgainWithPlayerHost(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
+		gameService.markInactive(gameCode, player);
+		gameService.noteInteraction(gameCode, player);
+		
+		gameService.removeInactive();
+
+		assertTrue(gameService.gameExists(gameCode));
+		assertTrue(gameService.isPlayerActive(gameCode, host));
+		assertTrue(gameService.isPlayerActive(gameCode, player));
+		assertTrue(gameService.isPlayerActive(gameCode, otherPlayer));
+	}
+	@ParameterizedTest
+	@MethodSource("mockLecturerHostAndTwoPlayers")
+	public void shouldNotRemovePlayerWhenActiveAgainWithLecturerHost(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
+		gameService.markInactive(gameCode, player);
+		gameService.noteInteraction(gameCode, player);
+		
+		gameService.removeInactive();
+		
+		assertTrue(gameService.gameExists(gameCode));
+		assertTrue(gameService.isPlayerActive(gameCode, player));
+		assertTrue(gameService.isPlayerActive(gameCode, otherPlayer));
+	}
+	
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void canNoteInteractionWithAuthenticatedAccount(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(host));
+		assertDoesNotThrow(() -> gameService.noteInteraction(gameCode));
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(player));
+		assertDoesNotThrow(() -> gameService.noteInteraction(gameCode));
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(otherPlayer));
+		assertDoesNotThrow(() -> gameService.noteInteraction(gameCode));
+	}
+	
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void noActivePlayerWhenGameDoesNotExist(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		String wrongGameCode = gameCode + "wrong";
+		
+		assertFalse(gameService.isPlayerActive(wrongGameCode, host));
+		assertFalse(gameService.isPlayerActive(wrongGameCode, player));
+		assertFalse(gameService.isPlayerActive(wrongGameCode, otherPlayer));
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void shouldNotMarkPlayersAsActiveWhenGameDoesNotExist(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		String wrongGameCode = gameCode + "wrong";
+		
+		gameService.noteInteraction(wrongGameCode, host);
+		gameService.noteInteraction(wrongGameCode, player);
+		gameService.noteInteraction(wrongGameCode, otherPlayer);
+		
+		assertFalse(gameService.isPlayerActive(wrongGameCode, host));
+		assertFalse(gameService.isPlayerActive(wrongGameCode, player));
+		assertFalse(gameService.isPlayerActive(wrongGameCode, otherPlayer));
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void shouldNotThrowOnMarkingPlayersAsInactiveWhenGameDoesNotExist(
+			Account host, Account player, Account otherPlayer)
+	{
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		String wrongGameCode = gameCode + "wrong";
+		
+		assertDoesNotThrow(() -> gameService.markInactive(wrongGameCode, host));
+		assertDoesNotThrow(() -> gameService.markInactive(wrongGameCode, player));
+		assertDoesNotThrow(() -> gameService.markInactive(wrongGameCode, otherPlayer));
+	}
+	
 	//---Sources---
 	
 	public static List<Arguments> mockPlayerHost()

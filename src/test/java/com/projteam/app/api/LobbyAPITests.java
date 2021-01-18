@@ -202,14 +202,14 @@ public class LobbyAPITests
 		String gameCode = "gameCode";
 		Account host = mockHost(PLAYER_ROLE);
 		when(accountService.getAuthenticatedAccount()).thenReturn(Optional.of(host));
-		when(lobbyService.hasAnthingChanged(gameCode, host)).thenReturn(Optional.empty());
+		when(lobbyService.hasAnythingChanged(gameCode, host)).thenReturn(Optional.empty());
 		when(gameService.gameExists(gameCode)).thenReturn(false);
 		
 		mvc.perform(get("/api/v1/lobby/" + gameCode + "/changes"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.lobbyExists", is(false)));
 		
-		verify(lobbyService, times(1)).hasAnthingChanged(gameCode, host);
+		verify(lobbyService, times(1)).hasAnythingChanged(gameCode, host);
 		verifyNoMoreInteractions(lobbyService);
 	}
 	@ParameterizedTest
@@ -219,7 +219,7 @@ public class LobbyAPITests
 		String gameCode = "gameCode";
 		Account host = mockHost(PLAYER_ROLE);
 		when(accountService.getAuthenticatedAccount()).thenReturn(Optional.of(host));
-		when(lobbyService.hasAnthingChanged(gameCode, host)).thenReturn(Optional.of(lobbyStatusChanged));
+		when(lobbyService.hasAnythingChanged(gameCode, host)).thenReturn(Optional.of(lobbyStatusChanged));
 		when(gameService.gameExists(gameCode)).thenReturn(false);
 		
 		mvc.perform(get("/api/v1/lobby/" + gameCode + "/changes"))
@@ -227,7 +227,7 @@ public class LobbyAPITests
 			.andExpect(jsonPath("$.lobbyContentChanged", is(lobbyStatusChanged)))
 			.andExpect(jsonPath("$.gameStarted", is(false)));
 		
-		verify(lobbyService, times(1)).hasAnthingChanged(gameCode, host);
+		verify(lobbyService, times(1)).hasAnythingChanged(gameCode, host);
 		verifyNoMoreInteractions(lobbyService);
 	}
 	@Test
@@ -237,7 +237,7 @@ public class LobbyAPITests
 		String gameCode = "gameCode";
 		Account host = mockHost(PLAYER_ROLE);
 		when(accountService.getAuthenticatedAccount()).thenReturn(Optional.of(host));
-		when(lobbyService.hasAnthingChanged(gameCode, host)).thenReturn(Optional.of(false));
+		when(lobbyService.hasAnythingChanged(gameCode, host)).thenReturn(Optional.of(false));
 		when(gameService.gameExists(gameCode)).thenReturn(true);
 		when(gameService.getGameID(gameCode)).thenReturn(gameID);
 		
@@ -247,7 +247,7 @@ public class LobbyAPITests
 			.andExpect(jsonPath("$.gameStarted", is(true)))
 			.andExpect(jsonPath("$.gameID", is(gameID.toString())));
 		
-		verify(lobbyService, times(1)).hasAnthingChanged(gameCode, host);
+		verify(lobbyService, times(1)).hasAnythingChanged(gameCode, host);
 		verifyNoMoreInteractions(lobbyService);
 	}
 	

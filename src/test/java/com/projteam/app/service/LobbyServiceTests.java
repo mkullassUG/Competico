@@ -117,18 +117,20 @@ public class LobbyServiceTests
 		
 		assertFalse(lobbyService.getPlayers(gameCode).contains(host));
 	}
-	@Test
-	public void gameCodeHasCorrectLength()
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void gameCodeHasCorrectLength(Account host)
 	{
 		assertEquals(lobbyService
-				.createLobby(new Account())
+				.createLobby(host)
 				.length(), lobbyService.getGameCodeLength());
 	}
-	@Test
-	public void gameCodeContainsCorrectChars()
+	@ParameterizedTest
+	@MethodSource("mockHosts")
+	public void gameCodeContainsCorrectChars(Account host)
 	{
 		assertTrue(lobbyService
-				.createLobby(new Account())
+				.createLobby(host)
 				.chars()
 				.allMatch(Character::isLetterOrDigit));
 	}
@@ -489,10 +491,10 @@ public class LobbyServiceTests
 	{
 		String gameCode = lobbyService.createLobby(host);
 		
-		lobbyService.hasAnthingChanged(gameCode, host);
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
+		lobbyService.hasAnythingChanged(gameCode, host);
+		assertFalse(lobbyService.hasAnythingChanged(gameCode, host).orElse(false));
+		assertFalse(lobbyService.hasAnythingChanged(gameCode, host).orElse(false));
+		assertFalse(lobbyService.hasAnythingChanged(gameCode, host).orElse(false));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndPlayer", "mockLecturerHostAndPlayer"})
@@ -500,10 +502,10 @@ public class LobbyServiceTests
 	{
 		String gameCode = lobbyService.createLobby(host);
 		
-		lobbyService.hasAnthingChanged(gameCode, host);
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
-		assertFalse(lobbyService.hasAnthingChanged(gameCode, host).orElse(false));
+		lobbyService.hasAnythingChanged(gameCode, host);
+		assertFalse(lobbyService.hasAnythingChanged(gameCode, host).orElse(false));
+		assertFalse(lobbyService.hasAnythingChanged(gameCode, host).orElse(false));
+		assertFalse(lobbyService.hasAnythingChanged(gameCode, host).orElse(false));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
@@ -512,9 +514,9 @@ public class LobbyServiceTests
 		String gameCode = lobbyService.createLobby(host);
 		
 		lobbyService.addPlayer(gameCode, player1);
-		lobbyService.hasAnthingChanged(gameCode, player1);
+		lobbyService.hasAnythingChanged(gameCode, player1);
 		lobbyService.addPlayer(gameCode, player2);
-		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1).orElse(false));
+		assertTrue(lobbyService.hasAnythingChanged(gameCode, player1).orElse(false));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
@@ -524,9 +526,9 @@ public class LobbyServiceTests
 		
 		lobbyService.addPlayer(gameCode, player1);
 		lobbyService.addPlayer(gameCode, player2);
-		lobbyService.hasAnthingChanged(gameCode, player1);
+		lobbyService.hasAnythingChanged(gameCode, player1);
 		lobbyService.removePlayer(gameCode, player2);
-		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1).orElse(false));
+		assertTrue(lobbyService.hasAnythingChanged(gameCode, player1).orElse(false));
 	}
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
@@ -536,9 +538,9 @@ public class LobbyServiceTests
 		
 		lobbyService.addPlayer(gameCode, player1);
 		lobbyService.addPlayer(gameCode, player2);
-		lobbyService.hasAnthingChanged(gameCode, player1);
+		lobbyService.hasAnythingChanged(gameCode, player1);
 		lobbyService.removePlayer(gameCode, host, player2);
-		assertTrue(lobbyService.hasAnthingChanged(gameCode, player1).orElse(false));
+		assertTrue(lobbyService.hasAnythingChanged(gameCode, player1).orElse(false));
 	}
 	@ParameterizedTest
 	@MethodSource("mockHostAndSettings")
@@ -630,6 +632,93 @@ public class LobbyServiceTests
 				originalMaxPlayers);
 		assertEquals(lobbyService.allowsRandomPlayers(gameCode),
 				originalAllowsRandomPlayers);
+	}
+	
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void shouldNotRemovePlayersWhileTheyAreActive(Account host, Account player1, Account player2)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		lobbyService.addPlayer(gameCode, player1);
+		lobbyService.addPlayer(gameCode, player2);
+		
+		lobbyService.removeInactive();
+		
+		assertTrue(lobbyService.lobbyExists(gameCode));
+		assertTrue(lobbyService.isHost(gameCode, host));
+		List<Account> players = lobbyService.getPlayers(gameCode);
+		assertTrue(players.contains(player1));
+		assertTrue(players.contains(player2));
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void shouldRemovePlayersWhenTheyAreInactive(Account host, Account playerToRemove, Account playerToStay)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		lobbyService.addPlayer(gameCode, playerToRemove);
+		lobbyService.addPlayer(gameCode, playerToStay);
+		
+		lobbyService.markInactive(gameCode, playerToRemove);
+		
+		lobbyService.removeInactive();
+		
+		assertTrue(lobbyService.lobbyExists(gameCode));
+		assertTrue(lobbyService.isHost(gameCode, host));
+		List<Account> players = lobbyService.getPlayers(gameCode);
+		assertFalse(players.contains(playerToRemove));
+		assertTrue(players.contains(playerToStay));
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void shouldRemoveAllPlayersWhenAllInactive(Account host, Account playerToRemove1, Account playerToRemove2)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		lobbyService.addPlayer(gameCode, playerToRemove1);
+		lobbyService.addPlayer(gameCode, playerToRemove2);
+		
+		lobbyService.markInactive(gameCode, playerToRemove1);
+		lobbyService.markInactive(gameCode, playerToRemove2);
+		
+		lobbyService.removeInactive();
+		
+		assertTrue(lobbyService.lobbyExists(gameCode));
+		assertTrue(lobbyService.isHost(gameCode, host));
+		List<Account> players = lobbyService.getPlayers(gameCode);
+		assertFalse(players.contains(playerToRemove1));
+		assertFalse(players.contains(playerToRemove2));
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void shouldDeleteLobbyWhenHostInactive(Account host, Account playerToRemove1, Account playerToRemove2)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		lobbyService.addPlayer(gameCode, playerToRemove1);
+		lobbyService.addPlayer(gameCode, playerToRemove2);
+		
+		lobbyService.markInactive(gameCode, host);
+		
+		lobbyService.removeInactive();
+		
+		assertFalse(lobbyService.lobbyExists(gameCode));
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void shouldNotRemovePlayersIfTheyBecameActiveAgain(Account host, Account playerToStay1, Account playerToStay2)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		lobbyService.addPlayer(gameCode, playerToStay1);
+		lobbyService.addPlayer(gameCode, playerToStay2);
+		
+		lobbyService.markInactive(gameCode, playerToStay1);
+		lobbyService.hasAnythingChanged(gameCode, playerToStay1);
+		
+		lobbyService.removeInactive();
+		
+		assertTrue(lobbyService.lobbyExists(gameCode));
+		assertTrue(lobbyService.isHost(gameCode, host));
+		List<Account> players = lobbyService.getPlayers(gameCode);
+		assertTrue(players.contains(playerToStay1));
+		assertTrue(players.contains(playerToStay2));
 	}
 	
 	//---Sources---
