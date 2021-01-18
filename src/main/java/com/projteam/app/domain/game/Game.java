@@ -269,7 +269,8 @@ public class Game
 			while (it.hasNext())
 			{
 				Account player = it.next();
-				if (isPlayerInactive(player, maxTimeSinceLastInteractionMilli))
+				if (isPlayerInactive(player, maxTimeSinceLastInteractionMilli)
+						&& !hasGameFinishedFor(player))
 					it.remove();
 			}
 		}
