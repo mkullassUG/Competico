@@ -96,7 +96,7 @@ public class GameAPI
 	{
 		@ApiResponse(code = 200, message = "Total results of this game")
 	})
-	@GetMapping("api/v1/{gameID}/scores/total")
+	@GetMapping("api/v1/scores/{gameID}/total")
 	public List<? extends GameResultDTO> getTotalResults(@PathVariable UUID gameID)
 	{
 		Optional<List<GameResultTotalDuringGameDTO>> ret =
@@ -110,7 +110,7 @@ public class GameAPI
 	{
 		@ApiResponse(code = 200, message = "Personal results of this game")
 	})
-	@GetMapping("api/v1/{gameID}/scores/personal")
+	@GetMapping("api/v1/scores/{gameID}/personal")
 	public List<? extends GameResultDTO> getPersonalResults(@PathVariable UUID gameID)
 	{
 		return gameService.getPersonalResults(gameID).orElse(null);
@@ -120,7 +120,7 @@ public class GameAPI
 	{
 		@ApiResponse(code = 200, message = "Whether total results for this game changed")
 	})
-	@GetMapping("api/v1/{gameID}/scores/total/changes")
+	@GetMapping("api/v1/scores/{gameID}/total/changes")
 	public Object haveResultsChanged(@PathVariable UUID gameID)
 	{
 		try
@@ -134,5 +134,16 @@ public class GameAPI
 		{
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
+	}
+	
+	@ApiOperation(value = "Notify the server that the user is still in a game", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Server notified successfully")
+	})
+	@PostMapping("api/v1/game/{gameCode}/ping")
+	public void noteInteraction(@PathVariable String gameCode)
+	{
+		gameService.noteInteraction(gameCode);
 	}
 }

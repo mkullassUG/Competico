@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.projteam.app.domain.Account;
 import com.projteam.app.domain.game.Lobby;
@@ -29,6 +31,8 @@ public class LobbyService
 
 	private final char[] gameCodeChars;
 	private final int gameCodeLength = 8;
+	private final int maxGameCodeRerollCount = 1000;
+	private final long MAX_TIME_SINCE_LAST_INTERACTION_MILLI = 120000;
 	
 	@Autowired
 	public LobbyService(AccountService accServ)
@@ -52,14 +56,22 @@ public class LobbyService
 	{
 		Objects.requireNonNull(host);
 		
-		String gameCode = new Random().ints(gameCodeLength, 0, gameCodeChars.length)
-				.mapToObj(i -> Character.toString(gameCodeChars[i]))
-	            .collect(Collectors.joining());
+		String gameCode = generateGameCode();
 		
-		lobbies.put(gameCode, new Lobby(gameCode, host));
+		for (int i = 0; i < maxGameCodeRerollCount; i++)
+		{
+			if (lobbies.containsKey(gameCode))
+				gameCode = generateGameCode();
+		}
+		
+		synchronized (lobbies)
+		{
+			lobbies.put(gameCode, new Lobby(gameCode, host));
+		}
 		
 		return gameCode;
 	}
+
 	public boolean deleteLobby(String gameCode)
 	{
 		return deleteLobby(gameCode, getAccount());
@@ -68,16 +80,19 @@ public class LobbyService
 	{
 		if (!isHost(gameCode, requestSource))
 			return false;
-		lobbyCodesAllowingRandomPlayers.remove(gameCode);
-		lobbies.remove(gameCode);
-		return true;
+		synchronized (lobbies)
+		{
+			lobbyCodesAllowingRandomPlayers.remove(gameCode);
+			lobbies.remove(gameCode);
+			return true;
+		}
 	}
 	public boolean lobbyExists(String gameCode)
 	{
 		return lobbies.containsKey(gameCode);
 	}
 	
-	public Optional<Boolean> hasAnthingChanged(String gameCode, Account account)
+	public Optional<Boolean> hasAnythingChanged(String gameCode, Account account)
 	{
 		return Optional.ofNullable(lobbies.get(gameCode))
 				.filter(lobby -> lobby.containsPlayerOrHost(account))
@@ -197,6 +212,11 @@ public class LobbyService
 		return lobbies.entrySet()
 				.stream()
 				.filter(e -> e.getValue().containsPlayerOrHost(acc))
+				.map(e ->
+				{
+					e.getValue().noteInteraction(acc);
+					return e;
+				})
 				.map(e -> e.getKey())
 				.findAny();
 	}
@@ -210,7 +230,7 @@ public class LobbyService
 		Lobby lobby = lobbies.get(gameCode);
 		if ((lobby != null) && (lobby.isHost(requestSource)))
 		{
-			if (!lobby.setMaximumPlayerCount(options.getMaxPlayers()))
+			if (!lobby.setMaximumPlayerCount(options.getMaxPlayers(), requestSource))
 				return false;
 			if (options.isAllowsRandomPlayers())
 				lobbyCodesAllowingRandomPlayers.add(gameCode);
@@ -221,11 +241,45 @@ public class LobbyService
 		return false;
 	}
 	
-	private <T, U> Map<T, U> syncMap()
+	public void markInactive(String gameCode, Account acc)
+	{
+		Lobby lobby = lobbies.get(gameCode);
+		if (lobby == null)
+			return;
+		lobby.markInactive(acc);
+	}
+	@Scheduled(fixedDelay = 30000)
+	public void removeInactive()
+	{
+		synchronized (lobbies)
+		{
+			Iterator<Lobby> it = lobbies.values().iterator();
+			while (it.hasNext())
+			{
+				Lobby lobby = it.next();
+				if (lobby.isInactive(MAX_TIME_SINCE_LAST_INTERACTION_MILLI))
+				{
+					it.remove();
+					lobbyCodesAllowingRandomPlayers.remove(lobby.getGameCode());
+				}
+				else
+					lobby.removeInactivePlayers(MAX_TIME_SINCE_LAST_INTERACTION_MILLI);
+			}
+		}
+	}
+	
+	private String generateGameCode()
+	{
+		return new Random().ints(gameCodeLength, 0, gameCodeChars.length)
+			.mapToObj(i -> Character.toString(gameCodeChars[i]))
+	        .collect(Collectors.joining());
+	}
+	
+	private static <T, U> Map<T, U> syncMap()
 	{
 		return synchronizedMap(new HashMap<>());
 	}
-	private <T> Set<T> syncSet()
+	private static <T> Set<T> syncSet()
 	{
 		return Collections.synchronizedSet(new HashSet<>());
 	}

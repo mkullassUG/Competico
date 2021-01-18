@@ -5,6 +5,7 @@ import static java.util.Collections.synchronizedMap;
 import static java.util.stream.Collectors.toMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,7 +19,8 @@ import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
 public class Game
 {
 	private UUID gameID;
-	private List<Account> players;
+	private List<Account> originalPlayers;
+	private List<Account> activePlayers;
 	private List<Account> spectators;
 	private int taskCount;
 	private Map<UUID, Integer> currentTaskNumber;
@@ -28,14 +30,19 @@ public class Game
 	private int resultsChangeCount;
 	private Map<UUID, Integer> lastResultCheckForAccount;
 	
+	private Map<UUID, Long> lastInteractions;
+	
+	private static final long NANOS_IN_MILLI = 1000000;
+	
 	public Game(List<Account> players,
 			List<Account> spectators,
 			int taskCount,
 			Map<UUID, List<Task>> taskMap)
 	{
 		gameID = UUID.randomUUID();
-		this.players = players;
-		this.spectators = spectators;
+		originalPlayers = syncList(players);
+		activePlayers = syncList(players);
+		this.spectators = syncList(spectators);
 		this.taskCount = taskCount;
 		currentTaskNumber = syncMap();
 		currentTaskNumber.putAll(players.stream()
@@ -49,6 +56,9 @@ public class Game
 		
 		resultsChangeCount = 0;
 		lastResultCheckForAccount = syncMap();
+		
+		lastInteractions = syncMap();
+		players.forEach(p -> noteInteraction(p));
 	}
 	
 	public UUID getID()
@@ -57,12 +67,15 @@ public class Game
 	}
 	public Task getCurrentTask(Account player)
 	{
-		return taskMap.get(player.getId()).get(currentTaskNumber.get(player.getId()));
+		UUID id = player.getId();
+		noteInteraction(id);
+		return taskMap.get(id).get(currentTaskNumber.get(id));
 	}
 
 	public void advance(Account player, double completion)
 	{
 		UUID playerId = player.getId();
+		noteInteraction(playerId);
 		Integer taskNumber = currentTaskNumber.get(playerId);
 		//TODO implement bonuses for time
 		taskCompletionMap.get(playerId).put(taskNumber, completion);
@@ -72,7 +85,9 @@ public class Game
 
 	public boolean hasGameFinishedFor(Account player)
 	{
-		return currentTaskNumber.get(player.getId()) >= taskCount;
+		UUID id = player.getId();
+		noteInteraction(id);
+		return currentTaskNumber.get(id) >= taskCount;
 	}
 	public boolean hasGameFinished()
 	{
@@ -83,17 +98,21 @@ public class Game
 
 	public int getCurrentTaskNumber(Account player)
 	{
-		return currentTaskNumber.get(player.getId());
+		UUID id = player.getId();
+		noteInteraction(id);
+		return currentTaskNumber.get(id);
 	}
 
 	public int getTaskCount(Account player)
 	{
-		return taskMap.get(player.getId()).size();
+		UUID id = player.getId();
+		noteInteraction(id);
+		return taskMap.get(id).size();
 	}
 	public GameResults createGameResult()
 	{
 		GameResults grs = new GameResults(gameID);
-		for (Account player: players)
+		for (Account player: originalPlayers)
 		{
 			UUID gameResultId = UUID.randomUUID();
 			UUID playerId = player.getId();
@@ -110,6 +129,9 @@ public class Game
 					.stream()
 					.collect(toMap(n -> n, n -> 10000l));
 			
+			//TODO include in game result
+			boolean isActive = activePlayers.contains(player);
+			
 			GameResult gr = new GameResult(gameResultId, playerId, completion, difficulty, timeTaken);
 			grs.addResult(gr);
 		}
@@ -119,7 +141,7 @@ public class Game
 	public List<GameResultTotalDuringGameDTO> getCurrentResults()
 	{
 		List<GameResultTotalDuringGameDTO> ret = new ArrayList<>();
-		for (Account player: players)
+		for (Account player: originalPlayers)
 		{
 			UUID playerId = player.getId();
 			int currentTask = currentTaskNumber.get(playerId);
@@ -136,13 +158,15 @@ public class Game
 				totalTime += time;
 			}
 			boolean hasFinished = currentTask >= taskCount;
+			boolean isActive = activePlayers.contains(player);
 			
 			ret.add(new GameResultTotalDuringGameDTO(
 					player.getUsername(),
 					player.getNickname(), 
 					(long) score,
 					totalTime,
-					hasFinished));
+					hasFinished,
+					!isActive));
 		}
 		return ret.stream()
 				.sorted((r1, r2) -> -Long.compare(r1.getTotalScore(), r2.getTotalScore()))
@@ -151,7 +175,7 @@ public class Game
 	public List<GameResultPersonalDTO> getPersonalResults(Account player)
 	{
 		UUID playerId = player.getId();
-		if (!players.contains(player))
+		if (!originalPlayers.contains(player))
 			return null;
 		
 		List<GameResultPersonalDTO> ret = new ArrayList<>();
@@ -169,6 +193,10 @@ public class Game
 		int l = Math.min(completion.size(),
 				Math.min(difficulty.size(),
 						timeTaken.size()));
+		
+		//TODO include in game result
+		boolean isActive = activePlayers.contains(player);
+		
 		for (int i = 0; i < l; i++)
 		{
 			ret.add(new GameResultPersonalDTO(
@@ -187,7 +215,11 @@ public class Game
 	
 	public boolean containsPlayer(Account acc)
 	{
-		return players.contains(acc);
+		return originalPlayers.contains(acc);
+	}
+	public boolean isPlayerActive(Account acc)
+	{
+		return activePlayers.contains(acc);
 	}
 	public boolean containsSpectator(Account acc)
 	{
@@ -211,6 +243,51 @@ public class Game
 		}
 		lastResultCheckForAccount.put(id, resultsChangeCount);
 		return true;
+	}
+	
+	public void noteInteraction(Account account)
+	{
+		noteInteraction(account.getId());
+	}
+	private void noteInteraction(UUID accountID)
+	{
+		synchronized (activePlayers)
+		{
+			if (activePlayers.stream()
+					.anyMatch(acc -> acc.getId().equals(accountID))
+					|| spectators.stream()
+						.anyMatch(acc -> acc.getId().equals(accountID)))
+				lastInteractions.put(accountID, System.nanoTime());
+		}
+	}
+	
+	public void removeInactivePlayers(long maxTimeSinceLastInteractionMilli)
+	{
+		synchronized (activePlayers)
+		{
+			Iterator<Account> it = activePlayers.iterator();
+			while (it.hasNext())
+			{
+				Account player = it.next();
+				if (isPlayerInactive(player, maxTimeSinceLastInteractionMilli)
+						&& !hasGameFinishedFor(player))
+					it.remove();
+			}
+		}
+	}
+	private boolean isPlayerInactive(Account acc, long maxTimeSinceLastInteractionMilli)
+	{
+		long diff = System.nanoTime() - lastInteractions.getOrDefault(acc.getId(), 0l);
+		return (diff / NANOS_IN_MILLI) > maxTimeSinceLastInteractionMilli;
+	}
+
+	public boolean isInactive()
+	{
+		return activePlayers.isEmpty();
+	}
+	public void markInactive(Account acc)
+	{
+		lastInteractions.remove(acc.getId());
 	}
 	
 	private <T, U> Map<T, U> syncMap()
