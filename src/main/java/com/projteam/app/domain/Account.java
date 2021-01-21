@@ -13,9 +13,12 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.projteam.app.utils.Initializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,7 +30,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @Entity
 @Access(AccessType.FIELD)
-public class Account implements UserDetails
+@Table(name = "Account", uniqueConstraints =
+	@UniqueConstraint(columnNames = {"email", "username"}))
+public class Account implements UserDetails, Initializable
 {
 	private @Id @Column(name = "id", unique = true) UUID id;
 	private @Column(name = "email", unique = true) String email;
@@ -46,6 +51,8 @@ public class Account implements UserDetails
 	
 	public static final String PLAYER_ROLE = "PLAYER";
 	public static final String LECTURER_ROLE = "LECTURER";
+	public static final String ACTUATOR_ADMIN = "ACTUATOR_ADMIN";
+	public static final String SWAGGER_ADMIN = "SWAGGER_ADMIN";
 	
 	@Override
 	public boolean equals(Object obj)
@@ -227,5 +234,11 @@ public class Account implements UserDetails
 		{
 			return acc;
 		}
+	}
+
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(roles);
 	}
 }

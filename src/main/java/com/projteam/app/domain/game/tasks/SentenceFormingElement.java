@@ -8,6 +8,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OrderColumn;
+import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Access(AccessType.FIELD)
-public class SentenceFormingElement
+public class SentenceFormingElement implements Initializable
 {
 	private @Id UUID id;
 	private @ElementCollection @OrderColumn List<String> words;
+	
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(words);
+	}
 }

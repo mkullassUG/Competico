@@ -13,6 +13,7 @@ import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
 import com.projteam.app.dto.game.tasks.WordFillElementDTO;
+import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -80,5 +81,10 @@ public class WordFill implements Task
 	{
 		return new TaskInfoDTO("WordFill", taskNumber, 
 				new WordFillElementDTO(content));
+	}
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(content);
 	}
 }

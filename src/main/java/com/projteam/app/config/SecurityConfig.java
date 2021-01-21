@@ -1,5 +1,7 @@
 package com.projteam.app.config;
 
+import static com.projteam.app.domain.Account.ACTUATOR_ADMIN;
+import static com.projteam.app.domain.Account.SWAGGER_ADMIN;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -42,24 +44,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		                "/api/v1/register/",
 		                "/api/v1/authenticated/")
 			.permitAll()
-
-			//TODO reenable once role storage is ready
-/*			.antMatchers("/actuator/**").hasRole("ACTUATOR_ADMIN")
+			.antMatchers("/actuator/**").hasAuthority(ACTUATOR_ADMIN)
 			.antMatchers(
 					"/swagger-ui/**",
 					"/swagger-resources/**",
 					"/webjars/**",
 					"/v2/api-docs/**",
 					"/v3/api-docs/**")
-			.hasRole("SWAGGER_ADMIN")*/
-			.antMatchers(
-					"/swagger-ui/**",
-					"/swagger-resources/**",
-					"/webjars/**",
-					"/v2/api-docs/**",
-					"/v3/api-docs/**")
-			.permitAll()
-			
+			.hasAuthority(SWAGGER_ADMIN)
 			.anyRequest().authenticated()
 			.and()
 			.logout()

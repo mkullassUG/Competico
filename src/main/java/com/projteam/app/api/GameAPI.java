@@ -87,6 +87,7 @@ public class GameAPI
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			return ResponseEntity.badRequest().body("Niepoprawny format odpowiedzi na zadanie");
 		}
 	}

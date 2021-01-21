@@ -13,6 +13,7 @@ import com.projteam.app.domain.game.tasks.answers.ChronologicalOrderAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.dto.game.tasks.ChronologicalOrderDTO;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -63,5 +64,10 @@ public class ChronologicalOrder implements Task
 	{
 		return new TaskInfoDTO("ChronologicalOrder", taskNumber,
 				new ChronologicalOrderDTO(sentences));
+	}
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(sentences);
 	}
 }

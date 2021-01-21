@@ -10,8 +10,6 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
@@ -75,8 +73,6 @@ public class AccountServiceTests
 		verify(authManager, times(1)).authenticate(argThat(auth ->
 			auth.getPrincipal().equals(mockRegDto.getEmail())
 			&& auth.getCredentials().equals(mockRegDto.getPassword())));
-		verifyNoMoreInteractions(passEnc);
-		verifyNoMoreInteractions(authManager);
 	}
 	@ParameterizedTest
 	@MethodSource("mockRegistrationData")
@@ -88,8 +84,6 @@ public class AccountServiceTests
 		accountService.register(req, mockRegDto, false);
 		
 		verify(passEnc, times(1)).encode(mockRegDto.getPassword());
-		verifyNoMoreInteractions(passEnc);
-		verifyNoInteractions(authManager);
 	}
 	@ParameterizedTest
 	@MethodSource("mockNullRegistrationDataAndAutoAuth")
@@ -129,8 +123,6 @@ public class AccountServiceTests
 		assertEquals(auth.getPrincipal(), mockRegDto.getEmail());
 		assertEquals(auth.getCredentials(), mockRegDto.getPassword());
 		verify(passEnc, times(1)).matches(mockRegDto.getPassword(), mockRegDto.getPassword().toString());
-		verifyNoMoreInteractions(passEnc);
-		verifyNoMoreInteractions(authManager);
 	}
 	@ParameterizedTest
 	@MethodSource("mockRegistrationData")
@@ -153,8 +145,6 @@ public class AccountServiceTests
 		
 		assertFalse(loggedIn);
 		verify(passEnc, times(1)).matches(mockRegDto.getPassword(), mockRegDto.getPassword().toString());
-		verifyNoMoreInteractions(passEnc);
-		verifyNoInteractions(authManager);
 	}
 	@ParameterizedTest
 	@MethodSource("mockRegistrationData")
@@ -168,8 +158,6 @@ public class AccountServiceTests
 		boolean loggedIn = accountService.login(req, mockLoginDto);
 		
 		assertFalse(loggedIn);
-		verifyNoInteractions(passEnc);
-		verifyNoInteractions(authManager);
 	}
 	
 	@Test
@@ -264,7 +252,6 @@ public class AccountServiceTests
 		
 		assertTrue(res.isEmpty());
 		verify(accDao, times(1)).findByUsername(username);
-		verifyNoMoreInteractions(accDao);
 	}
 	@ParameterizedTest
 	@MethodSource("mockAccountAndUsername")

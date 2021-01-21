@@ -12,6 +12,7 @@ import com.projteam.app.domain.game.tasks.answers.MultipleChoiceAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.dto.game.tasks.MultipleChoiceElementDTO;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -64,5 +65,10 @@ public class MultipleChoice implements Task
 	{
 		return new TaskInfoDTO("MultipleChoice", taskNumber,
 				new MultipleChoiceElementDTO(content));
+	}
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(content);
 	}
 }

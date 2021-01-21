@@ -1,6 +1,7 @@
 package com.projteam.app.integration.game;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -67,12 +68,13 @@ public class GameTests
 					Charset.forName("utf8"));
 	
 	@RepeatedTest(value = 15)
-	public void canCompleteFullGame() throws Exception
+	public void canCompleteFullGameWhileGettingResults() throws Exception
 	{
 		Account host = new Account.Builder()
 				.withID(UUID.randomUUID())
 				.withEmail("testHost@test.pl")
 				.withUsername("TestHostAccount")
+				.withNickname("TestHostAccount")
 				.withPassword("QWERTY")
 				.withRoles(List.of(PLAYER_ROLE))
 				.build();
@@ -80,9 +82,11 @@ public class GameTests
 				.withID(UUID.randomUUID())
 				.withEmail("testPlayer@test.pl")
 				.withUsername("TestPlayerAccount")
+				.withNickname("TestPlayerAccount")
 				.withPassword("QWERTY")
 				.withRoles(List.of(PLAYER_ROLE))
 				.build();
+		int playerCount = 2;
 		
 		when(accDao.findByEmailOrUsername(host.getEmail(), host.getEmail()))
 			.thenReturn(Optional.of(host));
@@ -112,6 +116,9 @@ public class GameTests
 		when(playerAuth.getPrincipal()).thenReturn(player);
 		when(playerAuth.isAuthenticated()).thenReturn(true);
 		
+		when(accDao.findById(host.getId())).thenReturn(Optional.of(host));
+		when(accDao.findById(player.getId())).thenReturn(Optional.of(player));
+		
 		switchAccount(hostAuth, sec);
 		String gameCode = mvc.perform(post("/api/v1/lobby"))
 				.andExpect(status().isCreated())
@@ -127,6 +134,132 @@ public class GameTests
 		switchAccount(hostAuth, sec);
 		mvc.perform(post("/api/v1/lobby/" + gameCode + "/start"))
 				.andExpect(status().isCreated());
+		
+		String gameID = mapper.readTree(mvc.perform(get("/api/v1/playerinfo"))
+				.andExpect(status().isOk())
+				.andReturn()
+				.getResponse()
+				.getContentAsString())
+				.get("gameID")
+				.asText();
+		
+		int taskCount = gameServ.getTaskCount(gameCode);
+		for (int i = 0; i < taskCount; i++)
+		{
+			switchAccount(hostAuth, sec);
+			JsonNode ti1 = mapper.readTree(
+				mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("$.taskNumber", is(i)))
+					.andReturn()
+					.getResponse()
+					.getContentAsString());
+			mvc.perform(post("/api/v1/game/" + gameCode + "/tasks/answer")
+					.contentType(APPLICATION_JSON_UTF8)
+					.content(sampleAnswer(ti1)))
+				.andExpect(status().isOk());
+			
+			switchAccount(playerAuth, sec);
+			JsonNode ti2 = mapper.readTree(
+				mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("$.taskNumber", is(i)))
+					.andReturn()
+					.getResponse()
+					.getContentAsString());
+				mvc.perform(post("/api/v1/game/" + gameCode + "/tasks/answer")
+						.contentType(APPLICATION_JSON_UTF8)
+						.content(sampleAnswer(ti2)))
+					.andExpect(status().isOk());
+				
+			assertCanGetResults(gameID, playerCount, i + 1, hostAuth, playerAuth, sec);
+		}
+		switchAccount(hostAuth, sec);
+		mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.hasGameFinished", is(true)));
+		switchAccount(playerAuth, sec);
+		mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.hasGameFinished", is(true)));
+		
+		assertCanGetResults(gameID, playerCount, taskCount, hostAuth, playerAuth, sec);
+	}
+	@RepeatedTest(value = 15)
+	public void canCompleteFullGameWithoutGettingResultsMidGame() throws Exception
+	{
+		Account host = new Account.Builder()
+				.withID(UUID.randomUUID())
+				.withEmail("testHost@test.pl")
+				.withUsername("TestHostAccount")
+				.withNickname("TestHostAccount")
+				.withPassword("QWERTY")
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+		Account player = new Account.Builder()
+				.withID(UUID.randomUUID())
+				.withEmail("testPlayer@test.pl")
+				.withUsername("TestPlayerAccount")
+				.withNickname("TestPlayerAccount")
+				.withPassword("QWERTY")
+				.withRoles(List.of(PLAYER_ROLE))
+				.build();
+		int playerCount = 2;
+		
+		when(accDao.findByEmailOrUsername(host.getEmail(), host.getEmail()))
+			.thenReturn(Optional.of(host));
+		when(accDao.findByEmailOrUsername(host.getEmail(), host.getUsername()))
+			.thenReturn(Optional.of(host));
+		when(accDao.findByEmailOrUsername(host.getUsername(), host.getEmail()))
+			.thenReturn(Optional.of(host));
+		when(accDao.findByEmailOrUsername(host.getUsername(), host.getUsername()))
+			.thenReturn(Optional.of(host));
+		
+		when(accDao.findByEmailOrUsername(player.getEmail(), player.getEmail()))
+			.thenReturn(Optional.of(player));
+		when(accDao.findByEmailOrUsername(player.getEmail(), player.getUsername()))
+			.thenReturn(Optional.of(player));
+		when(accDao.findByEmailOrUsername(player.getUsername(), player.getEmail()))
+			.thenReturn(Optional.of(player));
+		when(accDao.findByEmailOrUsername(player.getUsername(), player.getUsername()))
+			.thenReturn(Optional.of(player));
+		
+		SecurityContext sec = mock(SecurityContext.class);
+		when(secConf.getContext()).thenReturn(sec);
+		
+		Authentication hostAuth = mock(Authentication.class);
+		Authentication playerAuth = mock(Authentication.class);
+		when(hostAuth.getPrincipal()).thenReturn(host);
+		when(hostAuth.isAuthenticated()).thenReturn(true);
+		when(playerAuth.getPrincipal()).thenReturn(player);
+		when(playerAuth.isAuthenticated()).thenReturn(true);
+		
+		when(accDao.findById(host.getId())).thenReturn(Optional.of(host));
+		when(accDao.findById(player.getId())).thenReturn(Optional.of(player));
+		
+		switchAccount(hostAuth, sec);
+		String gameCode = mvc.perform(post("/api/v1/lobby"))
+				.andExpect(status().isCreated())
+				.andReturn()
+				.getResponse()
+				.getContentAsString();
+		assertNotNull(gameCode);
+		
+		switchAccount(playerAuth, sec);
+		mvc.perform(post("/api/v1/lobby/join/" + gameCode))
+				.andExpect(status().isOk());
+		
+		switchAccount(hostAuth, sec);
+		mvc.perform(post("/api/v1/lobby/" + gameCode + "/start"))
+				.andExpect(status().isCreated());
+		
+		String gameID = mapper.readTree(mvc.perform(get("/api/v1/playerinfo"))
+				.andExpect(status().isOk())
+				.andReturn()
+				.getResponse()
+				.getContentAsString())
+				.get("gameID")
+				.asText();
 		
 		int taskCount = gameServ.getTaskCount(gameCode);
 		for (int i = 0; i < taskCount; i++)
@@ -165,8 +298,42 @@ public class GameTests
 		mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.hasGameFinished", is(true)));
+		
+		assertCanGetResults(gameID, playerCount, taskCount, hostAuth, playerAuth, sec);
 	}
 	
+	private void assertCanGetResults(String gameID,
+			int playerCount,
+			int taskCount,
+			Authentication hostAuth,
+			Authentication playerAuth,
+			SecurityContext sec) throws Exception
+	{
+		switchAccount(hostAuth, sec);
+		mvc.perform(get("/api/v1/scores/" + gameID + "/total"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$").isArray())
+			.andExpect(jsonPath("$", hasSize(playerCount)));
+		mvc.perform(get("/api/v1/scores/" + gameID + "/personal"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$").isArray())
+			.andExpect(jsonPath("$", hasSize(taskCount)));
+		mvc.perform(get("/api/v1/scores/" + gameID + "/total/changes"))
+			.andExpect(status().isOk());
+		
+		switchAccount(playerAuth, sec);
+		mvc.perform(get("/api/v1/scores/" + gameID + "/total"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$").isArray())
+			.andExpect(jsonPath("$", hasSize(playerCount)));
+		mvc.perform(get("/api/v1/scores/" + gameID + "/personal"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$").isArray())
+			.andExpect(jsonPath("$", hasSize(taskCount)));
+		mvc.perform(get("/api/v1/scores/" + gameID + "/total/changes"))
+			.andExpect(status().isOk());
+	}
+
 	//---Helpers---
 	
 	private void switchAccount(Authentication auth, SecurityContext sec)
