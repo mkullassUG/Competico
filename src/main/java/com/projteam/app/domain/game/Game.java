@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import com.projteam.app.domain.Account;
@@ -31,6 +32,9 @@ public class Game
 	private Map<UUID, Integer> lastResultCheckForAccount;
 	
 	private Map<UUID, Long> lastInteractions;
+	
+	private Map<UUID, Optional<Long>> taskStartTime;
+	private Map<UUID, Map<Integer, Long>> timeTakenForTasks;
 	
 	private static final long NANOS_IN_MILLI = 1000000;
 	
@@ -59,6 +63,11 @@ public class Game
 		
 		lastInteractions = syncMap();
 		players.forEach(p -> noteInteraction(p));
+		
+		taskStartTime = syncMap(players.stream()
+				.collect(Collectors.toMap(p -> p.getId(), p -> Optional.empty())));
+		timeTakenForTasks = syncMap(players.stream()
+				.collect(Collectors.toMap(p -> p.getId(), p -> syncMap())));
 	}
 	
 	public UUID getID()
@@ -69,6 +78,8 @@ public class Game
 	{
 		UUID id = player.getId();
 		noteInteraction(id);
+		if (taskStartTime.get(id).isEmpty())
+			taskStartTime.put(id, Optional.of(System.nanoTime()));
 		return taskMap.get(id).get(currentTaskNumber.get(id));
 	}
 
@@ -80,6 +91,13 @@ public class Game
 		//TODO implement bonuses for time
 		taskCompletionMap.get(playerId).put(taskNumber, completion);
 		currentTaskNumber.put(playerId, taskNumber + 1);
+		
+		timeTakenForTasks.get(playerId).put(taskNumber,
+				taskStartTime.get(playerId)
+					.map(t -> (System.nanoTime() - t) / NANOS_IN_MILLI)
+					.orElse(0l));
+		taskStartTime.put(playerId, Optional.empty());
+		
 		resultsChangeCount++;
 	}
 
@@ -116,7 +134,7 @@ public class Game
 		{
 			UUID gameResultId = UUID.randomUUID();
 			UUID playerId = player.getId();
-			Map<Integer, Double> completion = taskCompletionMap.get(playerId);
+			Map<Integer, Double> completion = new HashMap<>(taskCompletionMap.get(playerId));
 			Map<Integer, Double> difficulty = new HashMap<>();
 			int i = 0;
 			for (Task t: taskMap.get(playerId))
@@ -125,9 +143,7 @@ public class Game
 				i++;
 			}
 			//TODO implement bonuses for time
-			Map<Integer, Long> timeTaken = difficulty.keySet()
-					.stream()
-					.collect(toMap(n -> n, n -> 10000l));
+			Map<Integer, Long> timeTaken = new HashMap<>(timeTakenForTasks.get(playerId));
 			
 			//TODO include in game result
 			boolean isActive = activePlayers.contains(player);
@@ -149,11 +165,13 @@ public class Game
 			List<Task> tasks = taskMap.get(playerId);
 			Map<Integer, Double> completion = taskCompletionMap.get(playerId);
 			double score = 0;
+			
+			Map<Integer, Long> timeTaken = timeTakenForTasks.get(playerId);
 			long totalTime = 0;
 			for (int i = 0; i < currentTask; i++)
 			{
 				//TODO implement bonuses for time
-				long time = 10000;
+				long time =  timeTaken.get(i);
 				score += calculateScore(completion.get(i), tasks.get(i).getDifficulty(), time);
 				totalTime += time;
 			}
@@ -186,10 +204,8 @@ public class Game
 		var difficulty = tasks.stream()
 				.map(task -> task.getDifficulty())
 				.collect(Collectors.toList());
-		//TODO implement taken time saving
-		var timeTaken = tasks.stream()
-				.map(task -> 10000)
-				.collect(Collectors.toList());
+		
+		Map<Integer, Long> timeTaken = timeTakenForTasks.get(playerId);
 		int l = Math.min(completion.size(),
 				Math.min(difficulty.size(),
 						timeTaken.size()));
@@ -229,20 +245,20 @@ public class Game
 	{
 		return containsPlayer(acc) || containsSpectator(acc);
 	}
-	public boolean haveResultsChanged(UUID gameID, Account acc)
+	public Optional<Boolean> haveResultsChanged(UUID gameID, Account acc)
 	{
 		if (!containsPlayerOrSpectator(acc))
-			throw new IllegalArgumentException("Insufficient permissions to view this game");
+			return Optional.empty();
 		
 		UUID id = acc.getId();
 		if (lastResultCheckForAccount.containsKey(id))
 		{
 			int ret = lastResultCheckForAccount.get(id);
 			lastResultCheckForAccount.put(id, resultsChangeCount);
-			return ret != resultsChangeCount;
+			return Optional.of(ret != resultsChangeCount);
 		}
 		lastResultCheckForAccount.put(id, resultsChangeCount);
-		return true;
+		return Optional.of(true);
 	}
 	
 	public void noteInteraction(Account account)

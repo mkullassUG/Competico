@@ -4,6 +4,7 @@ import static com.projteam.app.domain.Account.LECTURER_ROLE;
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.RETURNS_DEFAULTS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,16 +29,19 @@ import com.projteam.app.dao.game.GameResultsDAO;
 import com.projteam.app.domain.Account;
 import com.projteam.app.domain.game.GameResult;
 import com.projteam.app.domain.game.GameResults;
+import com.projteam.app.domain.game.tasks.Task;
+import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 import com.projteam.app.dto.game.GameResultPersonalDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
 
-public class GameServiceTest
+public class GameServiceTests
 {
 	private @Mock AccountService accountService;
 	private @Mock LobbyService lobbyService;
 	private @Mock GameResultDAO grDAO;
 	private @Mock GameResultsDAO grsDAO;
+	private @Mock GameTaskDataService gtdService;
 	
 	private @InjectMocks GameService gameService;
 	
@@ -186,6 +190,9 @@ public class GameServiceTest
 	@MethodSource({"mockPlayerHostAndPlayer", "mockLecturerHostAndPlayer"})
 	public void canGetCurrentTaskInfo(Account host, Account player)
 	{
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
 		String gameCode = "gameCode";
 		createGameFromLobby(gameCode, host, player);
 		
@@ -195,9 +202,13 @@ public class GameServiceTest
 	@MethodSource({"mockPlayerHostAndPlayer", "mockLecturerHostAndPlayer"})
 	public void canGetCurrentTaskInfoWithAuthenticatedAccount(Account host, Account player)
 	{
-		String gameCode = "gameCode";
 		when(accountService.getAuthenticatedAccount())
 			.thenReturn(Optional.of(player));
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
+		String gameCode = "gameCode";
+		
 		createGameFromLobby(gameCode, host, player);
 		
 		assertNotNull(gameService.getCurrentTaskInfo(gameCode));
@@ -311,10 +322,14 @@ public class GameServiceTest
 	public void shouldNotGetGameForAccountIfPlayerFinished
 		(Account host, Account player)
 	{
-		String gameCode = "gameCode";
-		createGameFromLobby(gameCode, host, player);
 		when(accountService.getAuthenticatedAccount())
 			.thenReturn(Optional.of(player));
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player);
+		
 		int taskCount = gameService.getTaskCount(gameCode);
 				
 				IntStream.range(0, taskCount)
@@ -391,10 +406,14 @@ public class GameServiceTest
 	public void canGetPersonalResultsDuringGame(
 			Account host, Account player, Account otherPlayer)
 	{
-		String gameCode = "gameCode";
-		createGameFromLobby(gameCode, host, player, otherPlayer);
 		when(accountService.getAuthenticatedAccount())
 			.thenReturn(Optional.of(player));
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
 		UUID gameID = gameService.getGameID(gameCode);
 		int taskCount = gameService.getTaskCount(gameCode);
 		
@@ -421,10 +440,14 @@ public class GameServiceTest
 	public void canGetPersonalResultsDuringGameWithAuthenticatedAccount(
 			Account host, Account player, Account otherPlayer)
 	{
-		String gameCode = "gameCode";
-		createGameFromLobby(gameCode, host, player, otherPlayer);
 		when(accountService.getAuthenticatedAccount())
 			.thenReturn(Optional.of(player));
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
 		UUID gameID = gameService.getGameID(gameCode);
 		int taskCount = gameService.getTaskCount(gameCode);
 		
@@ -492,6 +515,9 @@ public class GameServiceTest
 	@MethodSource({"mockPlayerHostAndPlayer", "mockLecturerHostAndPlayer"})
 	public void canGetAnswerType(Account host, Account player)
 	{
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
 		String gameCode = "gameCode";
 		createGameFromLobby(gameCode, host, player);
 		
@@ -512,10 +538,14 @@ public class GameServiceTest
 	public void cannotGetAnswerTypeIfGameFinished(
 			Account host, Account player, Account otherPlayer)
 	{
-		String gameCode = "gameCode";
-		createGameFromLobby(gameCode, host, player, otherPlayer);
 		when(accountService.getAuthenticatedAccount())
 			.thenReturn(Optional.of(player));
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
 		int taskCount = gameService.getTaskCount(gameCode);
 		IntStream.range(0, taskCount)
 			.forEach(i ->
@@ -533,10 +563,13 @@ public class GameServiceTest
 	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
 	public void canAcceptAnswer(Account host, Account player, Account otherPlayer)
 	{
-		String gameCode = "gameCode";
-		createGameFromLobby(gameCode, host, player, otherPlayer);
 		when(accountService.getAuthenticatedAccount())
 			.thenReturn(Optional.of(player));
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
 		
 		boolean success = gameService.acceptAnswer(gameCode,
 				mock(gameService.getCurrentAnswerClass(
@@ -553,10 +586,13 @@ public class GameServiceTest
 	public void cannotAcceptAnswerIfGameDoesNotExist(
 			Account host, Account player, Account otherPlayer)
 	{
-		String gameCode = "gameCode";
-		createGameFromLobby(gameCode, host, player, otherPlayer);
 		when(accountService.getAuthenticatedAccount())
 			.thenReturn(Optional.of(player));
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
 		String wrongGameCode = gameCode + "wrong";
 		
 		boolean success = gameService.acceptAnswer(wrongGameCode,
@@ -569,15 +605,19 @@ public class GameServiceTest
 		
 		assertFalse(success);
 	}
+	
 	@ParameterizedTest
 	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
 	public void cannotAcceptAnswerIfGameFinished(
 			Account host, Account player, Account otherPlayer)
 	{
-		String gameCode = "gameCode";
-		createGameFromLobby(gameCode, host, player, otherPlayer);
 		when(accountService.getAuthenticatedAccount())
 			.thenReturn(Optional.of(player));
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
 		
 		int taskCount = gameService.getTaskCount(gameCode);
 		IntStream.range(0, taskCount)
@@ -633,10 +673,13 @@ public class GameServiceTest
 	public void returnsTrueIfResultsDidChange(
 			Account host, Account player, Account otherPlayer)
 	{
-		String gameCode = "gameCode";
-		createGameFromLobby(gameCode, host, player, otherPlayer);
 		when(accountService.getAuthenticatedAccount())
 			.thenReturn(Optional.of(player));
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
 		UUID gameID = gameService.getGameID(gameCode);
 		
 		gameService.haveResultsChanged(gameID);
@@ -1008,5 +1051,24 @@ public class GameServiceTest
 		assertTrue(gameService.createGameFromLobby(gameCode, host));
 		
 		return players.size();
+	}
+	private Task mockTask()
+	{
+		List<String> leftWords1 = List.of("data mining", "pattern identification", "quantitative modelling", "class label", "class membership", "explanatory variable", "variable", "fault-tolerant", "spurious pattern", "outlier");
+		List<String> rightWords1 = List.of("eksploracja danych", "identyfikacja wzorca", "modelowanie ilościowe", "etykieta klasy", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna");
+		Map<Integer, Integer> correctMapping1 = Map.ofEntries(
+				Map.entry(0, 0),
+				Map.entry(1, 1),
+				Map.entry(2, 2),
+				Map.entry(3, 3),
+				Map.entry(4, 4),
+				Map.entry(5, 5),
+				Map.entry(6, 6),
+				Map.entry(7, 7),
+				Map.entry(8, 8),
+				Map.entry(9, 9));
+
+		return new WordConnect(UUID.randomUUID(),
+				leftWords1, rightWords1, correctMapping1, 100);
 	}
 }

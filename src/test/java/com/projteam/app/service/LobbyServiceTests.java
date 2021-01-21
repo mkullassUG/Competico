@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
@@ -719,6 +720,20 @@ public class LobbyServiceTests
 		List<Account> players = lobbyService.getPlayers(gameCode);
 		assertTrue(players.contains(playerToStay1));
 		assertTrue(players.contains(playerToStay2));
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void shouldNotThrowWhenMarkingAsInactiveWhenGameDoesNotExist
+		(Account host, Account playerToStay1, Account playerToStay2)
+	{
+		String gameCode = lobbyService.createLobby(host);
+		lobbyService.addPlayer(gameCode, playerToStay1);
+		lobbyService.addPlayer(gameCode, playerToStay2);
+		String wrongGameCode = gameCode + "wrong";
+		
+		assertDoesNotThrow(() -> lobbyService.markInactive(wrongGameCode, host));
+		assertDoesNotThrow(() -> lobbyService.markInactive(wrongGameCode, playerToStay1));
+		assertDoesNotThrow(() -> lobbyService.markInactive(wrongGameCode, playerToStay2));
 	}
 	
 	//---Sources---

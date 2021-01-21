@@ -11,6 +11,7 @@ import com.projteam.app.domain.game.tasks.answers.SingleChoiceAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.dto.game.tasks.SingleChoiceDTO;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -47,5 +48,10 @@ public class SingleChoice implements Task
 	{
 		return new TaskInfoDTO("SingleChoice", taskNumber,
 				new SingleChoiceDTO(this));
+	}
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(incorrectAnswers);
 	}
 }

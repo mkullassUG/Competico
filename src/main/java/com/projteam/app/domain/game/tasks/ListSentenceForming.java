@@ -13,6 +13,7 @@ import com.projteam.app.domain.game.tasks.answers.ListSentenceFormingAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.dto.game.tasks.ListSentenceFormingDTO;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -76,5 +77,10 @@ public class ListSentenceForming implements Task
 	{
 		return new TaskInfoDTO("ListSentenceForming", taskNumber,
 				new ListSentenceFormingDTO(this));
+	}
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(rows);
 	}
 }
