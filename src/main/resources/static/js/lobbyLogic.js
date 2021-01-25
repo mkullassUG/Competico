@@ -12,39 +12,51 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   /*       logic variables          */
   var self = playerInfo;
   self.lobbySettings = {
-    maxPlayers: 10,
-    lobbyVisibility: "Publiczne"
+    maxPlayers: 1,
+    allowsRandomPlayers: null
+  }
+  self.lobbySettingsPlaceholder = {
+    maxPlayers: 1,
+    allowsRandomPlayers: null
   }
   self.isHost;
+  self.lobbyHost;
   //self.isLecturer; //For future implementation of lecturer
   self.debug = debug;
   self.gameStarted;
-  self.ajaxLoopTimeout;
+  //to nie musi być w self.
+  self.ajaxLobbyLoopTimeout;
   self.lobbyCode = _lobbyCode;
   self.nickname;
+  self.username;
   self.gameObject;
-
-  var lobbyTop = $("#lobbyTop");
-  var lobbyCenter = $("#lobbyCenter");
-  var lobbyBottom = $("#lobbyBottom");
-  var gameTop = $("#gameTop");
-  var gameCenter = $("#gameCenter");
-  var gameBottom = $("#gameBottom");
+  self.gameID;
+  self.possiblyJoinedFromEndGame;
 
   /*       logic functions          */
   self.lobbyInit = (playerInfo) => {
     console.log("lobbyInit");
 
     self.isHost = playerInfo.isHost; 
-    self.nickname = playerInfo.nickname; 
+    self.nickname = playerInfo.nickname;
+    self.username = playerInfo.username;
     self.gameStarted = playerInfo.gameStarted;
-    
+    self.possiblyJoinedFromEndGame = playerInfo.gameCode? false : true;
+
     if (self.gameStarted) {
+      self.gameID = playerInfo.gameID;
       self.startGame();
-      //self.gameObject = GameLogic.create(self);
       return;
     }
 
+    $("#lobbyTop").removeClass("collapse");
+    $("#lobbyCenter").removeClass("collapse");
+    $("#lobbyBottom").removeClass("collapse");
+
+    if ($(".hideBeforeLoad").length)
+      $('.hideBeforeLoad').fadeIn();
+    
+    //wysłać tylko jeśli z whoAmI wyszło że nie mam jeszcze lobby..??
     if (!self.isHost)
       ajaxSendJoin();
 
@@ -68,77 +80,25 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     //ustaw kod
     if ($("#lobbyCode").length)
       $("#lobbyCode").html("Kod: " + self.lobbyCode);
-    ajaxReceiveLobbyChange();
-    if ($(".hideBeforeLoad").length)
-      $('.hideBeforeLoad').fadeIn();
 
-    self.ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
+    /*TODO, jeśli skończyłem grę to może chce zobaczyć wyniki wszystkich!! lobby exist:false dostaje i wyświetlam tylko modala żeby wyjść!!
+    
+    */
+    ajaxReceiveLobbyChange();
+
+    //callback true-> jeśli coś się zmieniło false -> jeśli nie
+    ajaxConnectionLoop((data)=>{self.updateCheck(data)})
   }
 
   self.startGame = () => {
-
-    lobbyTop.hide();
-    lobbyCenter.hide();
-    lobbyBottom.hide();
-
-    gameTop.show();
-    gameCenter.show();
-    gameBottom.show();
-    clearTimeout(self.ajaxLoopTimeout);
-    console.log("clearTimeout(ajaxLoopTimeout);");
-
-    //TODO, zrobic lepiej, usunac lorem ipsum
+    console.log("clearTimeout(ajaxLobbyLoopTimeout);");
     $("#bigChangeDiv").removeClass("text-center").removeClass("hideBeforeLoad");
-    $("#bigChangeDiv").html(`
-    <div class="container fill">
-      <!-- game -->
-      <div class="row timer-m-custom" id="GameTop">
-        <div class="col-12">
-          <div id="gameTimer">Obecne zadanie</div>
-        </div>
-      </div>
-      <div class="row mt-3 rounded" id="GameWrapperWrapper">
-        <div class="col-12" id="GameWrapperDiv">
-          <div id="GameDivDecoration" class="m-custom my-3 p-3 rounded" style="overflow:hidden;">
-            <div class="bg-light unselectable btnShadow" id="GameDiv">
-              <h6 class="border-bottom border-gray pb-2 mb-0 text-dark"> Content: </h6>
-              <div id="taskContent">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean quis laoreet orci, et <div class="answerHolder "></div> mauris. Nam rhoncus, quam congue iaculis cursus, arcu orci cursus ante, ac scelerisque velit nibh eget urna. Fusce a iaculis elit, a aliquam sapien. Aliquam posuere tincidunt mi in pulvinar. Ut at lobortis ipsum. Aliquam erat volutpat. <div class="answerHolder "></div> velit elit, suscipit nec mi eu, dignissim ullamcorper augue. Aliquam in sodales ex, in finibus dui. Nulla blandit laoreet eros vel ornare. In dignissim mauris at nulla condimentum gravida.
-
-                Nam eu odio at ipsum condimentum pulvinar. Donec consectetur nibh dolor, gravida aliquam dui convallis non. Duis ut velit dictum, congue <div class="answerHolder "></div> nec, rutrum sem. Nam sagittis, felis a finibus condimentum, massa mauris accumsan elit, in egestas ante nisi id augue. Suspendisse laoreet odio libero, non euismod est dictum id. Donec pharetra, sapien efficitur blandit ullamcorper, velit nibh dignissim risus, placerat accumsan nibh enim ac lorem. In eu nisi arcu. Proin auctor egestas nisi vel pulvinar. Sed nec mauris eu lacus ultrices finibus et a leo. Fusce ac arcu a nisi maximus interdum vitae nec lorem.
-              </div>
-              <h6 class="border-bottom border-gray pb-2 mb-0 text-dark"> Answers: </h6>
-              <div class="pb-2 mb-0 " id="taskAnswerHolder">
-                <div class="answerHolder ">
-                  <div class="answer draggable">
-                    słowo
-                  </div>
-                </div>
-                <div class="answerHolder ">
-                  <div class="answer draggable">
-                    słowo
-                  </div>
-                </div>
-                <div class="answerHolder ">
-                  <div class="answer draggable">
-                    słowo
-                  </div>
-                </div>
-                <div class="answerHolder ">
-                  
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row mt-3 text-center button-m-custom" id="GameBottom">
-        <div class="col-12">
-          <buton class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnNextTask" data-toggle="modal" data-target="#answerModalCenter">Nastepne zadanie</buton>
-        </div>
-      </div>
-    </div>`);
-
+    $("#lobbyTop").hide();
+    $("#lobbyCenter").hide();
+    $("#lobbyBottom").hide();
+    $("#gameBottom").show();
+    $("#gameTop").show();
+    $("#gameCenter").show();
     //tutaj wywołac obiekt taska
     console.log("GameLogic.getInstance(self);");
     self.gameObject = GameLogic.getInstance(self);
@@ -179,8 +139,17 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       host: nazwa obecnego hosta lobby
     }
     */
-    if (!lobby.exists) {
+    if (!lobby.exists && self.possiblyJoinedFromEndGame === false) {
       console.warn("lobby nie znalezione!");
+      console.warn(lobby);
+      /*TODO
+        wyswietlic że Lobby zostało zakończone przez Hosta modal
+
+
+      */
+
+
+      $('#LobbyDeletedModalCenter').modal('show');
       return 0;
     }
     console.warn(lobby);
@@ -190,9 +159,10 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       console.warn("Zainicjować wyjście klienta z tego lobby");
       return 0;
     }
+    self.lobbyHost = lobby.host;
 
     if ($("#lobbyHostUsername").length)
-      $("#lobbyHostUsername").html(lobby.host.username + " " + lobby.host.nickname);
+      $("#lobbyHostUsername").html(self.lobbyHost.username + " " + self.lobbyHost.nickname);
     //------player list
     if($("#lobbyplayers > .player").length)
       $("#lobbyplayers > .player").remove();
@@ -206,19 +176,27 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     let playersLength = lobby.players.length;
     for (let i = 0; i < playersLength; i++) {
       let player = lobby.players[i];
-      let playerDiv = $(`<div class="media text-muted pt-3 player">
-            <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-            <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-              <div class="d-flex justify-content-between align-items-center w-100">
-                <strong class="text-gray-dark">`
-                  + player.username + " " + player.nickname + `</strong>
-                <a href="" class="btnKick" data-username="` + player.username + `">Usuń</a>
+      if (player.username !== self.lobbyHost.username && player.nickname !== self.lobbyHost.nickname) {
+        var specialPlayer = "",
+        specialClass = "";
+        if (self.username === player.username && self.nickname ===  player.nickname) {
+          specialPlayer = "(me)";
+          specialClass = "lobbyMe"
+        }
+        let playerDiv = $(`<div class="media text-muted pt-3 player `+specialClass+`">
+              <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                  <strong class="text-gray-dark">` + specialPlayer + ` `
+                    + player.username + `</strong>
+                  <a href="" class="btnKick" data-username="` + player.username + `">Usuń</a>
+                </div>
+                <span class="d-block text-left"><i>` + player.nickname + `</i></span>
               </div>
-              <span class="d-block">@username</span>
-            </div>
-          </div>`);
-      if ($("#lobbyplayers").length)    
-        $("#lobbyplayers").append(playerDiv);
+            </div>`);
+        if ($("#lobbyplayers").length)    
+          $("#lobbyplayers").append(playerDiv);
+      }
     }
     
     if (self.isHost){
@@ -239,24 +217,47 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     if (lobby.maxPlayers != null) {
       $("#lobbyMaxPlayers").val("Gracze " + playersLength + "\\" + lobby.maxPlayers);
     }
+
+    //------lobby settings dla hosta ustawic
+    if (self.isHost) {
+      if ( lobby.maxPlayers ) {
+        $("#inputMaxPlayers").val(lobby.maxPlayers);
+        self.lobbySettings.maxPlayers = lobby.maxPlayers;
+        self.lobbySettingsPlaceholder.maxPlayers = lobby.maxPlayers;
+      }
+
+      if (lobby.allowsRandomPlayers === true || lobby.allowsRandomPlayers === false) {
+
+        $("#allowsRandomPlayersCB").checked == lobby.allowsRandomPlayers;
+        self.lobbySettings.allowsRandomPlayers = lobby.allowsRandomPlayers;
+        self.lobbySettingsPlaceholder.allowsRandomPlayers = lobby.allowsRandomPlayers;
+      }
+    }
+
     //... pozostałe zmiany jakie mogą zajść w lobby dodac poniżej
   }
 
   self.updateCheck = (data) => {
 
+    self.ajaxLobbyLoopTimeout = setTimeout(()=>{ajaxConnectionLoop((data_)=>{self.updateCheck(data_)})},1000);
+    console.log("data.lobbyExists === false :" + (data.lobbyExists === false));
     if (data.lobbyExists === false) {
       console.log("wyjdź");
+      console.log(data);
       $('#LobbyDeletedModalCenter').modal('show');
-    } else if(data.gameStarted == true) 
-    self.startGame(); //tutaj tworzyć obiekt taska?
-    else if (data.lobbyContentChanged == true)
+    } else if (data.gameStarted == true) {
+      clearTimeout(self.ajaxLobbyLoopTimeout);
+      self.gameID = data.gameID;
+      self.startGame(); //tutaj tworzyć obiekt taska?
+    } else if (data.lobbyContentChanged == true){
       ajaxReceiveLobbyChange();
+    }
   } 
 
   self.updateLobbySettingsAsHost = () => {
     
-    self.lobbySettings.maxPlayers = $("#inputMaxPlayers").val();
-    self.lobbySettings.lobbyVisibility = $("#lobbyVisibility").val();
+    self.lobbySettings.maxPlayers = self.lobbySettingsPlaceholder.maxPlayers;
+    self.lobbySettings.allowsRandomPlayers = self.lobbySettingsPlaceholder.allowsRandomPlayers;
     //... pozostałe ustawienia które można dodać poniżej
   }
 
@@ -287,8 +288,12 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       if (self.debug)
         console.log("btnSaveSettings");
 
-      if (self.isHost == true)
+      if (self.isHost == true) {
+        self.lobbySettingsPlaceholder.maxPlayers = parseInt($("#inputMaxPlayers").val());
+        self.lobbySettingsPlaceholder.allowsRandomPlayers = $("#allowsRandomPlayersCB")[0].checked;
         sendAjaxSettingsChange();
+        
+      }
     });
   if ($("#btnEndGame").length)
     $("#btnEndGame").on("click",()=>{
@@ -304,7 +309,11 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
         console.log("btnSendLobbyDeleted");
       self.leaveLobby();
     });
-  
+  if ($("#btnSettings").length)
+    $("#btnSettings").on('click',(e) => {
+      $("#inputMaxPlayers").val(self.lobbySettings.maxPlayers);
+      $("#allowsRandomPlayersCB").checked = self.allowsRandomPlayers;
+    });
   /*     ajax http actions       */
   var sendAjaxStart = () => {
     if (self.isHost == false)
@@ -365,11 +374,13 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug){
           console.log("sendAjaxKickPlayer success");
+          console.log("/api/v1/lobby/" + self.lobbyCode + "/players");
+          console.log(send);
           console.log(data);
           console.log(textStatus);
           console.log(jqXHR);
         }
-        //self.removePlaver();
+        //chyba że w checkChanges będzie usuwać go innym a samemu będzie pisac że lobby nie istnieje... albo whoami będzie sprawdzać kiedyś tam?
         console.warn("Zaimplementować usuwanie gracza!!");
       },
       error: function(jqXHR, status, err) {
@@ -382,11 +393,9 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     if (self.isHost == false)
       return;
 
-    self.updateLobbySettingsAsHost();
-
-    var send = { ...self.lobbySettings} 
+    var send = { ...self.lobbySettingsPlaceholder} 
     if (self.debug == true)
-          console.log(send);
+      console.log(send);
 
     $.ajax({
       type     : "PUT",
@@ -395,9 +404,19 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       data     : JSON.stringify(send),
       contentType: "application/json",
       success: function(data, textStatus, jqXHR) {
-
-        if (self.debug == true)
+        /* dostaje false jeśli:
+          lobby nie istnieje
+          nie jest hostem
+          póbuje zmniejszyć maxPlayerCount poniżej ilośc graczy obecnych w lobby
+        */
+        if (self.debug == true) {
           console.log("SettingsChange success");
+          console.log(data);
+          console.log(jqXHR);
+          console.log(textStatus);
+        }
+        if (data)
+          self.updateLobbySettingsAsHost();
       },
       error: function(jqXHR, status, err) {
         if (self.debug == true)
@@ -407,8 +426,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   }
   
   /*   ajax http requests       */
-  var ajaxConnectionLoop = ( ) => {
-    
+  var ajaxConnectionLoop = ( callback ) => {
     $.ajax({
       type     : "GET",
       cache    : false,
@@ -416,12 +434,16 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       contentType: "application/json",
       success: function(data, textStatus, jqXHR) {
         if (self.debug) {
-          //console.log("connectionLoop success");
+          console.log("ajaxConnectionLoop success");
+          console.log("/api/v1/lobby/" + self.lobbyCode + "/changes");
           console.log(data);
         }
-        
-        self.ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
-        self.updateCheck(data);//true jeśli coś się zmieniło
+        /*
+          callback dla:
+             self.ajaxLobbyLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
+          lub niczego jeśli z końca gry odpalam LogicGame
+        */
+        callback(data);//true jeśli coś się zmieniło  
 
       },
       error: function(jqXHR, status, err) {
@@ -431,7 +453,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
           // console.log(status);
           // console.log(err);
         }
-        self.ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
+        callback(data);
       }
     });
   }
@@ -493,6 +515,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   
   return self;
 }
+
 LobbyLogic.getInstance = (debug = false) => {
 
   if (LobbyLogic.singleton)

@@ -14,14 +14,72 @@ const GameLogic = ( lobby, _task) => {
   var self = lobby;
   self.currentTask = _task;
   self.currentTaskVariant;
+  self.gameID; //dostaje z LobbyLogic whoami lub checkUpdateLobby
+  self.myScore;
+  self.allResults;
+  self.allPreviousResults;
+  self.GameFinished = false ;
+  self.ajaxGamePingLoopTimeout;
+  self.gameExist = true;
+  self.cy = cytoscape({
+    container: document.getElementById("cy"),
+  
+    style: [ // the stylesheet for the graph
+      {
+        selector: 'core',
+        style: {
+          'active-bg-size': 0
+        },
+        css: {
+          events: 'no'
+        }
+      },
+    
+    {
+      selector: 'node',
+      style: {
+      'background-color': '#666',
+      // 'label': 'data(id)',
+      "text-valign" : "center",
+      "text-halign" : "center",
+      'border-color': 'black',
+      "border-opacity": "1",
+      "border-width": "3px"
+      },
+      css: {
+        events: 'no'
+      }
+    },
+  
+    {
+      selector: 'edge',
+      style: {
+      'width': 3,
+      'line-color': 'black',
+      'target-arrow-color': 'black',
+      'target-arrow-shape': 'triangle',
+      'curve-style': 'bezier'
+      },
+      css: {
+        events: 'no'
+      }
+    }
+    ],
+  
+    layout: {
+    name: 'grid',
+    rows: 1
+    },
+    wheelSensitivity: 0.0
+  });
+  self.cy.boxSelectionEnabled(false);
+  self.cy.panningEnabled(false);
 
   /*       logic functions          */
   self.gameInit = (task) => {
 
-    console.log("gameInit");
     if (task.hasGameFinished ) {
       console.log("hasGameFinished");
-      console.log(task.hasGameFinished);
       console.log(task);
       self.setupEndGame(task);
       return;
@@ -29,21 +87,28 @@ const GameLogic = ( lobby, _task) => {
 
     //pytaj o taska
     ajaxReceiveGameChange();
+    
+    //losowo podczas startu gry występuje bug z modalem blokującym interfejs użytkownika, tutaj prowizorycznie się go pozbywam
+    //zauważyłem że dzieje się to tylko gdy mam przeglądarke w pomniejszonym oknie, jak mam fullscreen to jest ok
+    //ale też nie zawsze, rozszerzyłem o troche ekram, cofnąłem do tyłu i znow bug
+    if ($(".modal-backdrop")[0]) {
+      $(".modal-backdrop").remove()
+      console.warn("Usunąłem natrętnego modala!");
+    }
 
     //jeśli chcemy wywysłać info np o tym żew gracz nie ma focusa na grze...
     //ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
+    self.ajaxGamePingLoopTimeout = setTimeout(()=>{ajaxGamePing(self.lobbyCode)},10000);
   }
   
   self.gameSetupAfterChange = (game) => {
     /*game:
     {
-      -task: {
-        id: //wybiera odpowiednie id przypisane to template'u
-        [pozostałe wartości odpowiednie dla danego template'u]
-      }
-      -time: //czas rozpoczęcia gry, potrzebny tylko na starcie,
-      -hasGameFinished: true //posiada tylko jeśli gra się zakończyła i oddało się ostatnie zadanie... jeszcze do uzgodnienia z Michałem jak to będzie ogarnięte
-      -result: //wyniki graczy wyświetlane na poczekalni po zakonczeniu gry
+      game: zadania - zadania, dopuki mam jeszcze zadania
+
+      albo
+
+      hasGameFinished: true - true jeśli skończyłem gre, nia ma zadań
     }*/
     //setup task
     //$(window).off("resize");
@@ -65,7 +130,7 @@ const GameLogic = ( lobby, _task) => {
       */
       //return;
     }
-      console.log(self.currentTaskVariant.getAnswers());
+    console.log(self.currentTaskVariant.getAnswers());
     var answers = self.currentTaskVariant.getAnswers();
 
     ajaxSendAnswerAndReceiveNext(answers);
@@ -75,7 +140,7 @@ const GameLogic = ( lobby, _task) => {
 
   }
   */
- self.setupNewTask = (task) => {
+  self.setupNewTask = (task) => {
 
     //czy otrzymany task jest pusty
     if (task == null) {
@@ -98,17 +163,16 @@ const GameLogic = ( lobby, _task) => {
     if (self.debug) 
       console.log(task);
     
-    //task = taskMokTemplates[2];
     //wybieranie odpowiedniej logiki dla konkretnego template'a
     switch (task.taskName) {
       case "WordFill":
-        self.currentTaskVariant = TaskVariant0(task.task);//GameLogicVariants.logicVariant0(task);
+        self.currentTaskVariant = TaskVariant0(task.task);
         break;
       case "WordConnect":
-        self.currentTaskVariant = TaskVariant1(task.task);//GameLogicVariants.logicVariant1(task);
+        self.currentTaskVariant = TaskVariant1(task.task);
         break;
       case "ChronologicalOrder":
-        self.currentTaskVariant = TaskVariant2(task.task);//GameLogicVariants.logicVariant2(task);
+        self.currentTaskVariant = TaskVariant2(task.task);
         break;
       case "template3":
         self.currentTaskVariant = TaskVariant3(task.task);//GameLogicVariants.logicVariant3(task);
@@ -123,49 +187,90 @@ const GameLogic = ( lobby, _task) => {
           console.warn("To pole jest tylko dla jeszcze nie zaimplementowancyh tasków, w produkcji nie powinno się nigdy wykonać!");
           self.currentTaskVariant = {};
           //ListWordFill answers
-          self.currentTaskVariant.getAnswers = () => { console.log("hello ListWordFill");return {answers: [["test"]]} }
+          self.currentTaskVariant.getAnswers = () => { 
+            console.log("hello ListWordFill");
+            return {answers: [["test"]]} 
+          }
         break;
     }
+
+    //ustawianie kropeczek
+    self.buildCy(task.taskCount,task.currentTaskNumber);
+
+    $("#gameTimer").html(task.instruction);
+    if ( self.KropeczkiObserver )
+      self.KropeczkiObserver.unobserve(document.querySelector("#gameTimer"));
+    
+    self.KropeczkiObserver = new ResizeObserver(function(entries) {
+
+      self.buildCy(task.taskCount,task.currentTaskNumber);
+    });
+    
+    self.KropeczkiObserver.observe(document.querySelector("#gameTimer"));
+
   }
+
+  self.buildCy = (totalTasks, current) => {
+        
+    self.cy.elements().remove();
+
+    var cyElementWidth = document.getElementById("cy").offsetWidth;
+    var cyElementHeight = document.getElementById("cy").offsetHeight;
+    var nodeSpace = cyElementWidth/totalTasks;
+
+    var eles_group = [];
+
+    //połączenia
+    var offset = {
+        x: nodeSpace/2,
+        y: cyElementHeight/2
+    };
+
+    for (let i = 0; i < totalTasks; i++) {
+  
+      var parentKey = "node" + (i-1);
+      var currentKey = "node" + i;
+      
+      var xMove = i * nodeSpace;
+
+      //dodaj edge parent-child
+      if ( i != 0){
+        eles_group.push({ group: 'edges', data: {id: "E" + i, target: currentKey, source: parentKey} });
+      }
+      eles_group.push({group: 'nodes', data: { id: currentKey}, position: { x: offset.x + xMove, y: offset.y }});
+      //dodaj noda
+      
+
+      /*
+      .style({
+        'background-color': 'white',
+        'border-color': 'blue'
+      });
+      */
+    }
+      
+    var eles = self.cy.add(eles_group);
+
+    var nodes = self.cy.nodes();
+    nodes.ungrabify();
+    for ( let i = 0; i < nodes.length; i++) {
+
+      if ( i < current)
+        nodes[i].style( { 'background-color' : 'green', 'border-color': '#004400' });
+      else if ( i == current)
+        nodes[i].style( { 'background-color' : 'white' });
+    }
+
+  }
+
+  self.KropeczkiObserver;
 
   self.setupEndGame = (game) => {
-    console.log("setupEndGame");
-    
-    if ($("#bigChangeDiv").length) {
-      $("#bigChangeDiv").addClass("text-center").addClass("hideBeforeLoad");
-      $("#bigChangeDiv").html(`
-      <div class="row shadow-sm mt-3" id="gameEndCenter">
-        <div class="col-12">
-            <div class="lobbyDashboard">
-              <h2 class="text-white">Dziękuje za grę</h2> 
-              <div id="endGameDashboard">
 
-              </div>
-            </div>
-        </div>
-      </div>
-      <div class="row shadow-sm mt-3" id="gameEndBottom">
-        <div class="col-12">
-          <buton class="btn btn-lg btn-secondary mb-3" id="btnEndGame">Zakończ grę</buton>
-        </div>
-      </div>`);
-    }
 
-      if ($("#btnEndGame").length)
-        $("#btnEndGame").on("click",()=>{
-      if (self.debug)
-        console.log("btnEndGame");
-        
-        self.leaveLobby();
-    });
-
-    if (game.result) {
-      //jeszcze nie jestem pewien w jakiej postaci będa przesyłane wyniki obecnego i pozostałych graczy. Do uzgodnienia z Michałem
-      $("#endGameDashboard").html("Twój wynik: " + game.result); 
-    }
+    window.location.replace("/game/results/" + self.gameID);
 
   }
-
   /*       event listeners          */
   if ($("#btnSendAnswer").length)
     $("#btnSendAnswer").on("click",(e) => {
@@ -176,29 +281,7 @@ const GameLogic = ( lobby, _task) => {
     })
   
   /*     ajax http actions       */
-  
-  var sendAjaxEndGame = () => {
-
-    $.ajax({
-      type     : "POST",
-      cache    : false,
-      url      : "/api/v1/game/"+self.lobbyCode+"/finish",
-      contentType: "application/json",
-      success: function(data, textStatus, jqXHR) {
-
-        if (self.debug == true)
-          console.log("sendAjaxEndGame success");
-      },
-      error: function(jqXHR, status, err) {
-        if (self.debug == true)
-          console.log("sendAjaxEndGame error");
-      }
-    });
-  }
-  
-  /*   ajax http requests       */
   var ajaxReceiveGameChange = ( ) => {
-    self.showModal();
     $.ajax({
       type     : "GET",
       cache    : false,
@@ -207,20 +290,16 @@ const GameLogic = ( lobby, _task) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug)
           console.log("ajaxReceiveGameChange success");
-
-        self.hideModal();
         self.gameSetupAfterChange(data);
       },
       error: function(jqXHR, status, err) {
         if (self.debug) {
           console.warn("ajaxReceiveGameChange error");
         }
-        
-        self.hideModal();
       }
     });
   }
-
+  
   var ajaxSendAnswerAndReceiveNext = ( answer ) => {
     self.showModal();
     var send = answer;
@@ -248,18 +327,43 @@ const GameLogic = ( lobby, _task) => {
           console.warn(jqXHR);
           console.warn(status);
           console.warn(err);
-
         }
         
         self.hideModal();
       }
     });
   }
+  /*   ajax http requests       */
+
+  var ajaxGamePing = (lobbyCode) => {
+    $.ajax({
+      type     : "POST",
+      cache    : false,
+      url      : "/api/v1/game/"+lobbyCode+"/ping",
+      success: function(data, textStatus, jqXHR) {
+        if (self.debug) {
+          console.log("ajaxGamePing success");
+          console.log(data);
+          console.log(textStatus);
+          console.log(jqXHR);
+        }
+        self.ajaxGamePingLoopTimeout = setTimeout(()=>{ajaxGamePing(lobbyCode)},10000);
+      },
+      error: function(jqXHR, status, err) {
+        if (self.debug) {
+          console.warn("ajaxGamePing error");
+          console.warn(jqXHR);
+          console.warn(status);
+          console.warn(err);
+
+        }
+      }
+    });
+  }
 
   /*  initalization  */
-  
   self.gameInit(self.currentTask);
-  
+   
   return self;
 }
 GameLogic.getInstance = (lobby) => {
@@ -279,8 +383,8 @@ GameLogic.getInstance = (lobby) => {
           console.log("ajaxGetNextTask success");
         }
         lobby.hideModal();
-          
-          GameLogic.singleton = GameLogic(lobby, task);
+
+        GameLogic.singleton = GameLogic(lobby, task);
 
       },
       error: function(jqXHR, status, err) {
