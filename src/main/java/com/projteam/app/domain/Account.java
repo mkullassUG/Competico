@@ -1,19 +1,24 @@
 package com.projteam.app.domain;
 
+import static java.util.Collections.synchronizedList;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.projteam.app.utils.Initializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,77 +29,31 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @Entity
-public class Account implements UserDetails
+@Access(AccessType.FIELD)
+@Table(name = "Account", uniqueConstraints =
+	@UniqueConstraint(columnNames = {"email", "username"}))
+public class Account implements UserDetails, Initializable
 {
 	private @Id @Column(name = "id", unique = true) UUID id;
 	private @Column(name = "email", unique = true) String email;
 	private @Column(name = "username", unique = true) String username;
-	private @Column(name = "password") String passwordHash;
+	private @Column(name = "password") String password;
 	private @Column(name = "nickname") String nickname;
 	
-	private @Column(name = "accountEnabled") boolean accountEnabled = true;
+	private @Column(name = "accountEnabled") boolean enabled = true;
 	private @Column(name = "accountNonExpired") boolean accountNonExpired = true;
-	private @Column(name = "accountNonLocked") boolean accNonLocked = true;
-	private @Column(name = "credentialsNonExpired") boolean credNonExpired = true;
+	private @Column(name = "accountNonLocked") boolean accountNonLocked = true;
+	private @Column(name = "credentialsNonExpired") boolean credentialsNonExpired = true;
 	
-	@Column(name = "roles")
 	@ElementCollection
-	private List<String> roles = new ArrayList<>(Collections.emptyList());
+	@Column(name = "roles")
+	private List<String> roles = synchronizedList(new ArrayList<>());
 	
 	public static final String PLAYER_ROLE = "PLAYER";
 	public static final String LECTURER_ROLE = "LECTURER";
+	public static final String ACTUATOR_ADMIN = "ACTUATOR_ADMIN";
+	public static final String SWAGGER_ADMIN = "SWAGGER_ADMIN";
 	
-	public UUID getId()
-	{
-		return id;
-	}
-	public String getEmail()
-	{
-		return email;
-	}
-	public String getUsername()
-	{
-		return username;
-	}
-	@Override
-	public String getPassword()
-	{
-		return passwordHash;
-	}
-	public String getNickname()
-	{
-		return nickname;
-	}
-	public List<String> getRoles()
-	{
-		return roles;
-	}
-	
-	public void setId(UUID id)
-	{
-		this.id = id;
-	}
-	public void setEmail(String email)
-	{
-		this.email = email;
-	}
-	public void setUsername(String username)
-	{
-		this.username = username;
-	}
-	public void setPasswordHash(String passwordHash)
-	{
-		this.passwordHash = passwordHash;
-	}
-	public void setNickname(String nickname)
-	{
-		this.nickname = nickname;
-	}
-	public void setRoles(List<String> roles)
-	{
-		this.roles = roles;
-	}
-
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -105,13 +64,13 @@ public class Account implements UserDetails
 		if (getClass() != obj.getClass())
 			return false;
 		Account other = (Account) obj;
-		if (accountEnabled != other.accountEnabled)
+		if (enabled != other.enabled)
 			return false;
 		if (accountNonExpired != other.accountNonExpired)
 			return false;
-		if (accNonLocked != other.accNonLocked)
+		if (accountNonLocked != other.accountNonLocked)
 			return false;
-		if (credNonExpired != other.credNonExpired)
+		if (credentialsNonExpired != other.credentialsNonExpired)
 			return false;
 		if (email == null)
 		{
@@ -134,19 +93,15 @@ public class Account implements UserDetails
 		}
 		else if (!nickname.equals(other.nickname))
 			return false;
-		if (passwordHash == null)
+		if (password == null)
 		{
-			if (other.passwordHash != null)
+			if (other.password != null)
 				return false;
 		}
-		else if (!passwordHash.equals(other.passwordHash))
+		else if (!password.equals(other.password))
 			return false;
-		if (roles == null)
-		{
-			if (other.roles != null)
-				return false;
-		}
-		else if (!listsEqual(roles, other.roles))
+		
+		if (listsUnequal(roles, other.roles))
 			return false;
 		
 		if (username == null)
@@ -163,14 +118,14 @@ public class Account implements UserDetails
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (accountEnabled ? 1231 : 1237);
+		result = prime * result + (enabled ? 1231 : 1237);
 		result = prime * result + (accountNonExpired ? 1231 : 1237);
-		result = prime * result + (accNonLocked ? 1231 : 1237);
-		result = prime * result + (credNonExpired ? 1231 : 1237);
+		result = prime * result + (accountNonLocked ? 1231 : 1237);
+		result = prime * result + (credentialsNonExpired ? 1231 : 1237);
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());
-		result = prime * result + ((passwordHash == null) ? 0 : passwordHash.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
@@ -183,62 +138,36 @@ public class Account implements UserDetails
 				.map(role -> new SimpleGrantedAuthority(role))
 				.collect(Collectors.toList()));
 	}
-
-	@Override
-	public boolean isAccountNonExpired()
-	{
-		return accountNonExpired;
-	}
-	@Override
-	public boolean isAccountNonLocked()
-	{
-		return accNonLocked;
-	}
-	@Override
-	public boolean isCredentialsNonExpired()
-	{
-		return credNonExpired;
-	}
-	@Override
-	public boolean isEnabled()
-	{
-		return accountEnabled;
-	}
-	
-	public void setAccountEnabled(boolean accEnabled)
-	{
-		this.accountEnabled = accEnabled;
-	}
-	public void setAccountNonExpired(boolean accNonExpired)
-	{
-		this.accountNonExpired = accNonExpired;
-	}
-	public void setAccountNonLocked(boolean accNonLocked)
-	{
-		this.accNonLocked = accNonLocked;
-	}
-	public void setCredentialsNonExpired(boolean credNonExpired)
-	{
-		this.credNonExpired = credNonExpired;
-	}
 	
 	public boolean hasRole(String role)
 	{
 		return roles.contains(role);
 	}
 	
-	private <T> boolean listsEqual(List<T> l1, List<T> l2)
+	private <T> boolean listsUnequal(List<T> l1, List<T> l2)
 	{
+		if (l1 == null)
+			return l2 != null;
+		else if (l2 == null)
+			return true;
+		
 		if (l1.size() != l2.size())
-			return false;
-		Iterator<T> it1 = l1.iterator();
+			return true;
 		Iterator<T> it2 = l2.iterator();
-		while (it1.hasNext())
+		for (T elem1: l1)
 		{
-			if (!it1.next().equals(it2.next()))
-				return false;
+			T elem2 = it2.next();
+			if (elem1 == null)
+			{
+				if (elem2 != null)
+					return true;
+			}
+			else if (elem2 == null)
+				return true;
+			else if (!elem1.equals(elem2))
+				return true;
 		}
-		return true;
+		return false;
 	}
 	
 	public static class Builder
@@ -270,14 +199,14 @@ public class Account implements UserDetails
 			acc.setNickname(nickname);
 			return this;
 		}
-		public Builder withPasswordHash(String passwordHash)
+		public Builder withPassword(String password)
 		{
-			acc.setPasswordHash(passwordHash);
+			acc.setPassword(password);
 			return this;
 		}
 		public Builder enabled(boolean accEnabled)
 		{
-			acc.setAccountEnabled(accEnabled);
+			acc.setEnabled(accEnabled);
 			return this;
 		}
 		public Builder nonExpired(boolean accNonExpired)
@@ -305,5 +234,11 @@ public class Account implements UserDetails
 		{
 			return acc;
 		}
+	}
+
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(roles);
 	}
 }

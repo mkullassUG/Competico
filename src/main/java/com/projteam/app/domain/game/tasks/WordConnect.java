@@ -14,6 +14,7 @@ import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordConnectAnswer;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
 import com.projteam.app.dto.game.tasks.WordConnectDTO;
+import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ import lombok.NoArgsConstructor;
 public class WordConnect implements Task
 {
 	private @Id UUID id;
+	private String instruction;
 	private @ElementCollection @OrderColumn List<String> leftWords;
 	private @ElementCollection @OrderColumn List<String> rightWords;
 	private @ElementCollection Map<Integer, Integer> correctMapping;
@@ -59,9 +61,14 @@ public class WordConnect implements Task
 		return WordConnectAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int taskNumber)
+	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
 	{
-		return new TaskInfoDTO("WordConnect", taskNumber,
+		return new TaskInfoDTO("WordConnect", currentTaskNumber, taskCount, instruction,
 				new WordConnectDTO(this));
+	}
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(leftWords, rightWords, correctMapping);
 	}
 }

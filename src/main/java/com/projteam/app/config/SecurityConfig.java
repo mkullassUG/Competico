@@ -1,5 +1,7 @@
 package com.projteam.app.config;
 
+import static com.projteam.app.domain.Account.ACTUATOR_ADMIN;
+import static com.projteam.app.domain.Account.SWAGGER_ADMIN;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +14,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.projteam.app.service.AccountService;
@@ -42,24 +45,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		                "/api/v1/register/",
 		                "/api/v1/authenticated/")
 			.permitAll()
-
-			//TODO reenable once role storage is ready
-/*			.antMatchers("/actuator/**").hasRole("ACTUATOR_ADMIN")
+			.antMatchers("/actuator/**").hasAuthority(ACTUATOR_ADMIN)
 			.antMatchers(
 					"/swagger-ui/**",
 					"/swagger-resources/**",
 					"/webjars/**",
 					"/v2/api-docs/**",
 					"/v3/api-docs/**")
-			.hasRole("SWAGGER_ADMIN")*/
-			.antMatchers(
-					"/swagger-ui/**",
-					"/swagger-resources/**",
-					"/webjars/**",
-					"/v2/api-docs/**",
-					"/v3/api-docs/**")
-			.permitAll()
-			
+			.hasAuthority(SWAGGER_ADMIN)
 			.anyRequest().authenticated()
 			.and()
 			.logout()
@@ -70,7 +63,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 			.permitAll()
 			.and()
 			.exceptionHandling()
-			.authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login"))
+			.authenticationEntryPoint((request, response, authException) ->
+			{
+				request.getSession().invalidate();
+				response.sendRedirect("/login");
+			})
 			.and()
 			.csrf().disable(); //TODO remove and implement properly client-side
 	}

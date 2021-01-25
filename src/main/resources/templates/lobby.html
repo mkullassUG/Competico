@@ -31,7 +31,7 @@
   <body class="bg-primary">
     <!-- main content -->
     <div class="container fill text-center hideBeforeLoad" id="bigChangeDiv">
-      <div class="row  rounded" id="lobbyTop">
+      <div class="row  rounded collapse" id="lobbyTop">
         <div class="col-3">
           <buton class="btn btn-sm btn-secondary btnShadow" id="btnCopyCode">Kopiuj kod</buton>
         </div>
@@ -39,7 +39,7 @@
           <h2 id="lobbyCode" class="text-white">Kod: 123456789</h2>
         </div>
       </div>
-      <div class="row  mt-3 rounded" id="lobbyCenter">
+      <div class="row  mt-3 rounded collapse" id="lobbyCenter">
         <div class="col-2 " id="lobbySettings">
           
           <button type="button" id="btnSettings" class="btn btn-secondary collapse btnShadow" data-toggle="modal" data-target="#exampleModalCenter">
@@ -109,7 +109,7 @@
           </div>
         </div>
       </div>
-      <div class="row mt-3 rounded" id="lobbyBottom">
+      <div class="row mt-3 rounded collapse" id="lobbyBottom">
         <div class="col-3">
           <buton class="btn btn-lg btn-secondary mb-3 float-left btnShadow" id="btnLeave" data-toggle="modal" data-target="#leaveModalCenter">Wyjdź z lobby</buton>
         </div>
@@ -122,66 +122,72 @@
       <!-- game -->
       <div class="row collapse" id="gameTop">
         <div class="col-12">
-          <div id="gameTimer">Solve your task</div>
+          <div id="cy"></div>
+        </div>
+        <div class="col-12">
+          <div id="gameTimer">Obecne zadanie</div>
         </div>
       </div>
-      <div class="row  mt-3 collapse" id="gameCenter">
-        <div class="col-12">
-          <!-- Task templates -->
-          <div class="collapse" id="template0">
-            <div class="taskContext">
-              Dokończ słowa template0
+      <div class="row  mt-3 rounded collapse" id="gameCenter">
+        <div class="col-12" id="GameWrapperDiv">
+          <div class="m-custom my-3 p-3 rounded gameDivDecoration" style="overflow:hidden;">
+            <div class="bg-light unselectable btnShadow" id="GameDiv">
+              Ładowanie zadanka
             </div>
-            <div class="interactable">
-              <div class="textField">
-
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3 text-center button-m-custom collapse" id="gameBottom">
+        <div class="col-12">
+          <buton class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnNextTask" data-toggle="modal" data-target="#answerModalCenter">Nastepne zadanie</buton>
+        </div>
+      </div>
+      <!-- end game -->
+      <div class="row mt-3 collapse" id="gameEndCenter">
+        <div class="col-12">
+          <h2 class="text-white">Dziękuję za grę</h2>
+          <div id="endGameDashboard" >
+            <div class="col-12" id="endGameWrapperDiv">
+              <div class="m-custom my-3 p-3 rounded gameDivDecoration" style="overflow:hidden;">
+                <div class="bg-light unselectable btnShadow" id="endGameDiv">
+                  <table class="table table-sm">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nazwa</th>
+                        <th scope="col">Wynik</th>
+                        <th scope="col">Czas</th>
+                      </tr>
+                    </thead>
+                    <tbody id="scoreTable">
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>100</td>
+                        <td>6min 40sec</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>200</td>
+                        <td>5min 20sec</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Gracz1</td>
+                        <td colspan="2">Jeszcze nie skończył gry</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-          <div class="collapse" id="template1">
-            <div class="taskContext">
-              template1
-            </div>
-            <div class="interactable">
-
-            </div>
-          </div>
-          <div class="collapse" id="template2">
-            <div class="taskContext">
-              template2
-            </div>
-            <div class="interactable">
-
-            </div>
-          </div>
-          <div class="collapse" id="template3">
-            <div class="taskContext">
-              template3
-            </div>
-            <div class="interactable">
-
-            </div>
-          </div>
         </div>
       </div>
-      <div class="row  mt-3 collapse" id="gameEndCenter">
+      <div class="row mt-3 collapse" id="gameEndBottom">
         <div class="col-12">
-            <div class="lobbyDashboard">
-              <h2 class="text-white">Dziękuje za grę</h2> 
-              <div id="endGameDashboard">
-                (lobbyDashboard)
-              </div>
-            </div>
-        </div>
-      </div>
-      <div class="row shadow-sm mt-3 collapse" id="gameBottom">
-        <div class="col-12">
-          <buton class="btn btn-lg btn-secondary mb-3" id="btnNextTask" data-toggle="modal" data-target="#answerModalCenter">Nastepne zadanie</buton>
-        </div>
-      </div>
-      <div class="row shadow-sm mt-3 collapse" id="gameEndBottom">
-        <div class="col-12">
-          <buton class="btn btn-lg btn-secondary mb-3" id="btnEndGame">Zakończ grę</buton>
+          <buton class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnEndGame">Zakończ grę</buton>
         </div>
       </div>
     </div>
@@ -205,12 +211,12 @@
             <input type="number" class="form-control" id="inputMaxPlayers" value="10">
 
             <hr>
-            <label for="lobbyVisibility" class="col-form-label">Widoczność lobby:</label>
-            <select id="lobbyVisibility">
-              <option>Publiczne</option>
-              <option>Prywatne</option>
-              <option>Testowe</option>
-            </select>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="allowsRandomPlayersCB">
+              <label class="form-check-label" for="defaultCheck1">
+                Pozwalam na losowych graczy
+              </label>
+            </div>
             <hr>
             <h5>Pozostałe opcje</h5>
             <p>...</p>
@@ -256,7 +262,7 @@
         </div>
       </div>
     </div>
-    <!-- Modal leave lobby-->
+    <!-- Modal kick player -->
     <div class="modal fade" id="kickModalCenter" tabindex="-1" role="dialog" aria-labelledby="kickModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -273,7 +279,7 @@
         </div>
       </div>
     </div>
-    <!-- Modal leave lobby-->
+    <!-- Modal lobby not exist-->
     <div class="modal fade" id="LobbyDeletedModalCenter" tabindex="-1" role="dialog" aria-labelledby="LobbyDeletedModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -306,6 +312,7 @@
     <script src="../js/gameLogic.js"></script>
     <script src="../js/tasks.js"></script>
     <script src="../js/lobbyLogic.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.17.1/cytoscape.min.js" integrity="sha512-dR5Qb5zIoRodLJCkh0InsAi/uyP1Pd3lMAliXEdv5ol71k2qCwWFS9N18LIGH9MQuAPWu3adPyww5SK2deReog==" crossorigin="anonymous"></script>
     <script>
       var debug = LobbyLogic.getInstance(debug = true);
     </script>

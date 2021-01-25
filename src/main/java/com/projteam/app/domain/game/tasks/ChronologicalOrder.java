@@ -13,6 +13,7 @@ import com.projteam.app.domain.game.tasks.answers.ChronologicalOrderAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.dto.game.tasks.ChronologicalOrderDTO;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ import lombok.NoArgsConstructor;
 public class ChronologicalOrder implements Task
 {
 	private @Id UUID id;
+	private String instruction;
 	private @ElementCollection @OrderColumn List<String> sentences;
 	
 	private double difficulty;
@@ -59,9 +61,14 @@ public class ChronologicalOrder implements Task
 		return ChronologicalOrderAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int taskNumber)
+	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
 	{
-		return new TaskInfoDTO("ChronologicalOrder", taskNumber,
+		return new TaskInfoDTO("ChronologicalOrder", currentTaskNumber, taskCount, instruction,
 				new ChronologicalOrderDTO(sentences));
+	}
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(sentences);
 	}
 }

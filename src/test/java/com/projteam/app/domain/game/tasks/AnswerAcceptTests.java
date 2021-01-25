@@ -33,8 +33,8 @@ public class AnswerAcceptTests
 				.collect(Collectors.toList());
 		List<String> possibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
 		
-		WordFill wf = new WordFill(UUID.randomUUID(),
-				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 1);
+		WordFill wf = new WordFill(UUID.randomUUID(), "Test instruction",
+				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 100);
 		WordFillAnswer wfa = new WordFillAnswer(answers);
 		
 		assertEquals(wf.acceptAnswer(wfa), 1);
@@ -49,8 +49,8 @@ public class AnswerAcceptTests
 				.map(ans -> new WordChoice(UUID.randomUUID(), ans, List.of("qwr")))
 				.collect(Collectors.toList());
 		
-		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(),
-				new ChoiceWordFillElement(UUID.randomUUID(), text, wordChoices, false), 1);
+		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(), "Test instruction",
+				new ChoiceWordFillElement(UUID.randomUUID(), text, wordChoices, false), 100);
 		ChoiceWordFillAnswer cwfa = new ChoiceWordFillAnswer(answers);
 		
 		assertEquals(cwf.acceptAnswer(cwfa), 1);
@@ -90,7 +90,8 @@ public class AnswerAcceptTests
 					possibleAnswersList));
 		}
 		
-		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), wordFillElemList, 1);
+		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), "Test instruction",
+				wordFillElemList, 100);
 		ListWordFillAnswer lwfa = new ListWordFillAnswer(answers);
 		
 		assertEquals(lwf.acceptAnswer(lwfa), 1);
@@ -122,7 +123,8 @@ public class AnswerAcceptTests
 					true));
 		}
 		
-		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), wordFillElemList, 1);
+		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), "Test instruction",
+				wordFillElemList, 100);
 		ListChoiceWordFillAnswer lcwfa = new ListChoiceWordFillAnswer(answers);
 		
 		assertEquals(lcwf.acceptAnswer(lcwfa), 1);
@@ -139,7 +141,8 @@ public class AnswerAcceptTests
 				"ullamco laboris nisi ut",
 				"aliquip ex ea commodo consequat");
 		
-		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), text, 1);
+		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), "Test instruction",
+				text, 100);
 		ChronologicalOrderAnswer coa = new ChronologicalOrderAnswer(text);
 		
 		assertEquals(co.acceptAnswer(coa), 1);
@@ -157,7 +160,8 @@ public class AnswerAcceptTests
 				.map(textList -> new SentenceFormingElement(UUID.randomUUID(), textList))
 				.collect(Collectors.toList());
 		
-		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), wordFillElemList, 1);
+		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), "Test instruction",
+				wordFillElemList, 100);
 		ListSentenceFormingAnswer lsfa = new ListSentenceFormingAnswer(text);
 		
 		assertEquals(lsf.acceptAnswer(lsfa), 1);
@@ -170,7 +174,8 @@ public class AnswerAcceptTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed");
 		
-		SingleChoice sc = new SingleChoice(UUID.randomUUID(), content, answer, incorrectAnswers, 1);
+		SingleChoice sc = new SingleChoice(UUID.randomUUID(), "Test instruction",
+				content, answer, incorrectAnswers, 100);
 		SingleChoiceAnswer sca = new SingleChoiceAnswer(answer);
 		
 		assertEquals(sc.acceptAnswer(sca), 1);
@@ -184,8 +189,8 @@ public class AnswerAcceptTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(),
-				new MultipleChoiceElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 1);
+		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(), "Test instruction",
+				new MultipleChoiceElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 100);
 		MultipleChoiceAnswer mca = new MultipleChoiceAnswer(correctAnswers);
 		
 		assertEquals(mc.acceptAnswer(mca), 1);
@@ -202,7 +207,8 @@ public class AnswerAcceptTests
 				3, 2,
 				4, 1);
 		
-		WordConnect wc = new WordConnect(UUID.randomUUID(), leftWords, rightWords, correctMapping, 1);
+		WordConnect wc = new WordConnect(UUID.randomUUID(), "Test instruction",
+				leftWords, rightWords, correctMapping, 100);
 		WordConnectAnswer wca = new WordConnectAnswer(correctMapping);
 		
 		assertEquals(wc.acceptAnswer(wca), 1);

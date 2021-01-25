@@ -19,7 +19,7 @@ const LobbyJoinLogic = (debug = false) => {
 
     if ((data.isHost != null && data.isHost) || 
       (data.gameCode != null && data.gameCode != ""))
-      window.location = "/lobby/" + data.gameCode;
+      window.location = "/game/" + data.gameCode;
 
       /*
         TODO
@@ -31,8 +31,8 @@ const LobbyJoinLogic = (debug = false) => {
 
   var gameFound = (data) => {
 
-    if (data.gameFound)
-      window.location = "lobby/" + data.code;
+    if (data)
+      window.location = "game/" + data;
     else {
       alert("Nie znaleziono żadnych gier");
     }
@@ -45,14 +45,14 @@ const LobbyJoinLogic = (debug = false) => {
     */
     if (data.exists)
       if (!data.isFull)
-        window.location = "lobby/" + $("#inputCode")[0].value;
+        window.location = "game/" + $("#inputCode")[0].value;
       else
         alert("lobby pełne");
     else
       alert("kod nie prawidłowy");
   }
 
-  var lobbyCreated = (code) => window.location = "/lobby/" + code;
+  var lobbyCreated = (code) => window.location = "/game/" + code;
   /*Ajax*/
   var ajaxReceiveWhoAmI = () => {
 
@@ -63,9 +63,10 @@ const LobbyJoinLogic = (debug = false) => {
       url      : "/api/v1/playerinfo",
       contentType: "application/json",
       success: function(data, textStatus, jqXHR) {
-        if (debug)
+        if (debug) {
           console.log("ajaxReceiveWhoAmI success");
-
+          console.log(data);
+        }
         
         $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
         LobbyJoinInit(data);
@@ -81,6 +82,11 @@ const LobbyJoinLogic = (debug = false) => {
   
   var ajaxReceiveFoundGame = () => {
     $('.hideBeforeLoadModal').modal('show');
+    /*
+    odpowiada 404 jesli nie znjadzie lobby żadneg ow danej chwili więcwyskakuje erro w konsoli, zwraca stringa "No lobby available"
+    
+    */
+
     //var send = {}
     $.ajax({
       type     : "GET",
@@ -110,7 +116,7 @@ const LobbyJoinLogic = (debug = false) => {
           console.log(status)
           console.log(err)
         }
-
+        alert("Nie znaleziono wolnego lobby");
         $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
 
 
@@ -213,9 +219,9 @@ const LobbyJoinLogic = (debug = false) => {
       });*/
       ajaxReceiveWhoAmI();
 
-      self.gameFound = (game) => {
-        gameFound(game);
-      }
+      // self.gameFound = (game) => {
+      //   gameFound(game);
+      // }
       self.isCodeCorrect = (lobby) => {
         isCodeCorrect(lobby);
       }

@@ -3,13 +3,11 @@ package com.projteam.app.dto.game.tasks;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.projteam.app.domain.game.tasks.ListChoiceWordFill;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class ListChoiceWordFillDTO implements TaskDTO
 {
 	private List<List<String>> text;

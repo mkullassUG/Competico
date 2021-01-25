@@ -13,6 +13,7 @@ import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
 import com.projteam.app.dto.game.tasks.WordFillElementDTO;
+import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ import lombok.NoArgsConstructor;
 public class WordFill implements Task
 {
 	private @Id UUID id;
+	private String instruction;
 	private @ManyToOne WordFillElement content;
 	
 	private double difficulty;
@@ -76,9 +78,14 @@ public class WordFill implements Task
 		return WordFillAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int taskNumber)
+	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
 	{
-		return new TaskInfoDTO("WordFill", taskNumber, 
+		return new TaskInfoDTO("WordFill", currentTaskNumber, taskCount, instruction,
 				new WordFillElementDTO(content));
+	}
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(content);
 	}
 }

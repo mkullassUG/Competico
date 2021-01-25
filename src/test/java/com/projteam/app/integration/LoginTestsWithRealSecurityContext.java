@@ -44,6 +44,8 @@ public class LoginTestsWithRealSecurityContext
 	@Autowired
 	private AccountService accServ;
 	
+	private ObjectMapper mapper = new ObjectMapper();
+	
 	@BeforeEach
 	public void setUpMockMvc()
 	{
@@ -92,9 +94,9 @@ public class LoginTestsWithRealSecurityContext
 	
 	//---Helpers---
 	
-	public static String toJson(Object o) throws JsonProcessingException
+	public String toJson(Object o) throws JsonProcessingException
 	{
-		return new ObjectMapper().writeValueAsString(o);
+		return mapper.writeValueAsString(o);
 	}
 	public static List<RegistrationDTO> registrationDTO()
 	{

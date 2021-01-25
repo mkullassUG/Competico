@@ -1,17 +1,16 @@
 package com.projteam.app.domain.game;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
+import static java.util.Collections.synchronizedList;
+import static java.util.Collections.synchronizedMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import com.projteam.app.domain.Account;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
-@EqualsAndHashCode
-@ToString
 public class Lobby
 {
 	private String gameCode;
@@ -22,6 +21,10 @@ public class Lobby
 	private int changeCount;
 	private Map<UUID, Integer> playerLastChangeCounts;
 	
+	private Map<UUID, Long> lastInteractions;
+	
+	private static final long NANOS_IN_MILLI = 1000000;
+	
 	public Lobby(String gameCode, Account host)
 	{
 		this(gameCode, host, 20);
@@ -30,12 +33,16 @@ public class Lobby
 	{
 		this.gameCode = gameCode;
 		this.host = host;
-		players = new ArrayList<>();
+		players = syncList();
 		
 		this.maxPlayerCount = maxPlayerCount;
 		
 		changeCount = 0;
-		playerLastChangeCounts = new HashMap<>();
+		playerLastChangeCounts = syncMap();
+		
+		lastInteractions = syncMap();
+		
+		noteInteraction(host);
 	}
 	
 	public Account getHost()
@@ -57,18 +64,24 @@ public class Lobby
 			return false;
 		if (!canAcceptPlayer())
 			return false;
-		if (player.hasRole(PLAYER_ROLE) && players.add(player))
+		synchronized (players)
 		{
-			changeOccurred();
-			return true;
+			if (player.hasRole(PLAYER_ROLE) && players.add(player))
+			{
+				changeOccurred();
+				noteInteraction(player.getId());
+				return true;
+			}
+			return false;
 		}
-		return false;
 	}
 	public boolean removePlayer(Account player)
 	{
 		if (players.remove(player))
 		{
-			playerLastChangeCounts.remove(player.getId());
+			UUID id = player.getId();
+			playerLastChangeCounts.remove(id);
+			lastInteractions.remove(id);
 			changeOccurred();
 			return true;
 		}
@@ -76,6 +89,7 @@ public class Lobby
 	}
 	public boolean removePlayer(Account player, Account requestSource)
 	{
+		noteInteraction(requestSource.getId());
 		if (host.equals(requestSource))
 			return removePlayer(player);
 		return false;
@@ -83,6 +97,17 @@ public class Lobby
 	public int getMaximumPlayerCount()
 	{
 		return maxPlayerCount;
+	}
+	public boolean setMaximumPlayerCount(int maxPlayers, Account requestSource)
+	{
+		if (!isHost(requestSource))
+			return false;
+		if (players.size() <= maxPlayers)
+		{
+			maxPlayerCount = maxPlayers;
+			return true;
+		}
+		return false;
 	}
 	public String getGameCode()
 	{
@@ -111,6 +136,8 @@ public class Lobby
 	}
 	public boolean hasAnthingChanged(UUID accountID)
 	{
+		noteInteraction(accountID);
+		
 		if (!playerLastChangeCounts.containsKey(accountID))
 		{
 			playerLastChangeCounts.put(accountID, changeCount);
@@ -120,5 +147,65 @@ public class Lobby
 		if (ret)
 			playerLastChangeCounts.put(accountID, changeCount);
 		return ret;
+	}
+	
+	public void noteInteraction(Account account)
+	{
+		noteInteraction(account.getId());
+	}
+	private void noteInteraction(UUID accountID)
+	{
+		synchronized (players)
+		{
+			if (host.getId().equals(accountID)
+					|| players.stream()
+						.anyMatch(acc -> acc.getId().equals(accountID)))
+				lastInteractions.put(accountID, System.nanoTime());
+		}
+	}
+	
+	private <T, U> Map<T, U> syncMap()
+	{
+		return synchronizedMap(new HashMap<>());
+	}
+	private <T> List<T> syncList()
+	{
+		return synchronizedList(new ArrayList<>());
+	}
+	
+	public void removeInactivePlayers(long maxTimeSinceLastInteractionMilli)
+	{
+		synchronized (players)
+		{
+			Iterator<Account> it = players.iterator();
+			while (it.hasNext())
+			{
+				Account player = it.next();
+				if (isAccountInactive(player, maxTimeSinceLastInteractionMilli))
+				{
+					it.remove();
+					UUID id = player.getId();
+					playerLastChangeCounts.remove(id);
+					lastInteractions.remove(id);
+					changeOccurred();
+				}
+			}
+		}
+	}
+	public boolean isInactive(long maxTimeSinceLastInteractionMilli)
+	{
+		return isAccountInactive(host,maxTimeSinceLastInteractionMilli);
+	}
+	public void markInactive(Account acc)
+	{
+		synchronized (players)
+		{
+			lastInteractions.remove(acc.getId());
+		}
+	}
+	private boolean isAccountInactive(Account acc, long maxTimeSinceLastInteractionMilli)
+	{
+		long diff = System.nanoTime() - lastInteractions.getOrDefault(acc.getId(), 0l);
+		return (diff / NANOS_IN_MILLI) > maxTimeSinceLastInteractionMilli;
 	}
 }

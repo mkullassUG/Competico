@@ -52,6 +52,8 @@ public class RegisterTests
 	@Autowired
 	private AccountService accServ;
 	
+	private ObjectMapper mapper = new ObjectMapper();
+	
 	private static final MediaType APPLICATION_JSON_UTF8 =
 			new MediaType(MediaType.APPLICATION_JSON.getType(),
 					MediaType.APPLICATION_JSON.getSubtype(),
@@ -93,9 +95,9 @@ public class RegisterTests
 	
 	//---Helpers---
 	
-	public static String toJson(Object o) throws JsonProcessingException
+	public String toJson(Object o) throws JsonProcessingException
 	{
-		return new ObjectMapper().writeValueAsString(o);
+		return mapper.writeValueAsString(o);
 	}
 	public static List<RegistrationDTO> registrationDTO()
 	{

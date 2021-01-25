@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import com.projteam.app.domain.Account;
+import com.projteam.app.dto.lobby.LobbyOptionsDTO;
 import com.projteam.app.service.AccountService;
 import com.projteam.app.service.GameService;
 import com.projteam.app.service.LobbyService;
@@ -90,7 +91,7 @@ public class LobbyAPI
 			return Map.of("exists", exists);
 		return Map.of(
 				"exists", exists,
-				"isPublic", true, //TODO implement service-side
+				"allowsRandomPlayers", lobbyService.allowsRandomPlayers(gameCode),
 				"isFull", lobbyService.isLobbyFull(gameCode),
 				"maxPlayers", lobbyService.getMaximumPlayerCount(gameCode),
 				"host", Map.of(
@@ -115,15 +116,20 @@ public class LobbyAPI
 		try
 		{
 			Account player = getAuthenticatedAccount();
-			return Optional.ofNullable(lobbyService.getLobbyForPlayer(player))
+			return lobbyService.getLobbyForAccount(player)
 					.map(gameCode -> Map.<String, Object>of(
 							"username", player.getUsername(),
 							"nickname", player.getNickname(),
-							"gameCode", gameCode,
 							"isHost", lobbyService.isHost(gameCode, player),
-							"gameStarted", !lobbyService.lobbyExists(gameCode)
-							)
-					)
+							"gameStarted", false,
+							"gameCode", gameCode))
+					.or(() ->  gameService.getGameForAccount(player)
+						.map(gameCode -> Map.<String, Object>of(
+								"username", player.getUsername(),
+								"nickname", player.getNickname(),
+								"gameStarted", true,
+								"gameCode", gameCode,
+								"gameID", gameService.getGameID(gameCode))))
 					.orElseGet(() -> Map.of(
 							"username", player.getUsername(),
 							"nickname", player.getNickname()));
@@ -140,17 +146,23 @@ public class LobbyAPI
 		@ApiResponse(code = 200, message = "Whether lobby status changed since last request"),
 	})
 	@GetMapping("api/v1/lobby/{gameCode}/changes")
-	public Map<String, Boolean> lobbyStatusChanged(@PathVariable String gameCode)
+	public Map<String, Object> lobbyStatusChanged(@PathVariable String gameCode)
 	{
-		Optional<Boolean> lobbyContentChanged = lobbyService.hasAnthingChanged(gameCode,
+		Optional<Boolean> lobbyContentChanged = lobbyService.hasAnythingChanged(gameCode,
 				getAuthenticatedAccount());
 		boolean gameStarted = gameService.gameExists(gameCode);
 		
 		if (lobbyContentChanged.isEmpty() && !gameStarted)
 			return Map.of("lobbyExists", false);
-		return Map.of(
-				"lobbyContentChanged", lobbyContentChanged.orElse(false),
-				"gameStarted", gameService.gameExists(gameCode));
+		if (gameStarted)
+			return Map.of(
+					"lobbyContentChanged", lobbyContentChanged.orElse(false),
+					"gameStarted", true,
+					"gameID", gameService.getGameID(gameCode));
+		else
+			return Map.of(
+					"lobbyContentChanged", lobbyContentChanged.orElse(false),
+					"gameStarted", false);
 	}
 	
 	@ApiOperation(value = "Remove a player from the lobby", code = 200)
@@ -171,9 +183,9 @@ public class LobbyAPI
 		@ApiResponse(code = 200, message = "Whether lobby settings were updated"),
 	})
 	@PutMapping("api/v1/lobby/{gameCode}")
-	public void updateLobbySettings(@PathVariable String gameCode, @RequestBody String username)
+	public boolean updateLobbySettings(@PathVariable String gameCode, @RequestBody LobbyOptionsDTO options)
 	{
-		//TODO implement
+		return lobbyService.updateOptions(gameCode, options);
 	}
 	
 	@ApiOperation(value = "Leave lobby", code = 200)
@@ -209,17 +221,11 @@ public class LobbyAPI
     {
         return new ModelAndView("lobby-join");
     }
-	@GetMapping("/lobby/{code}")
+	@GetMapping("/game/{code}")
 	@ApiOperation(value = "Display the lobby with the given game code.")
 	public ModelAndView lobbyPage(@PathVariable("code") String code)
 	{
 		return new ModelAndView("lobby");
-	}
-	@GetMapping("/game/{code}")
-	@ApiOperation(value = "Display the game with the given game code.")
-	public ModelAndView gamePage(@PathVariable("code") String code)
-	{
-		return new ModelAndView("game");
 	}
 	
 	private Account getAuthenticatedAccount()

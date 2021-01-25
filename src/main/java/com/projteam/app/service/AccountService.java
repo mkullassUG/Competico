@@ -1,12 +1,17 @@
 package com.projteam.app.service;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
+import static com.projteam.app.domain.Account.SWAGGER_ADMIN;
+import static com.projteam.app.domain.Account.ACTUATOR_ADMIN;
 import static com.projteam.app.domain.Account.LECTURER_ROLE;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
+import java.util.stream.IntStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +29,10 @@ import com.projteam.app.dao.AccountDAO;
 import com.projteam.app.domain.Account;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.RegistrationDTO;
+import com.projteam.app.utils.Initializable;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class AccountService implements UserDetailsService
 {
@@ -44,10 +52,60 @@ public class AccountService implements UserDetailsService
 		this.passEnc = passEnc;
 		this.authManager = authManager;
 		this.secConConf = secConConf;
+		
+		initAdminAccount();
 	}
-	
+	@Transactional
+	public void initAdminAccount()
+	{
+		char[] passChars = IntStream.range(0, 255)
+				.filter(AccountService::isPasswordChar)
+				.collect(StringBuilder::new, (sb, c) -> sb.append((char) c), StringBuilder::append)
+				.toString()
+				.toCharArray();
+		
+		String password = new Random()
+				.ints(16, 0, passChars.length)
+				.map(i -> passChars[i])
+				.collect(StringBuilder::new, (sb, c) -> sb.append((char) c), StringBuilder::append)
+				.toString();
+		
+		log.info("Generated Admin password: " + password);
+		
+		Account admin = accDao.findByUsername("Admin")
+				.map(acc ->
+				{
+					acc.setPassword(password);
+					return acc;
+				})
+				.orElseGet(() -> new Account.Builder()
+						.withID(UUID.randomUUID())
+						.withEmail("mockAdminEmail@mock.pl")
+						.withUsername("Admin")
+						.withNickname("Admin")
+						.withPassword(passEnc.encode(password))
+						.withRoles(List.of(ACTUATOR_ADMIN, SWAGGER_ADMIN, LECTURER_ROLE))
+						.enabled(true)
+						.nonExpired(true)
+						.nonLocked(true)
+						.credentialsNonExpired(true)
+						.build());
+		
+		accDao.save(admin);
+	}
+	private static boolean isPasswordChar(int c)
+	{
+		return (c >= 'a' && c <= 'z')
+				|| (c >= 'A' && c <= 'Z')
+				|| (c >= '0' && c <= '9')
+				|| (c == '-') || (c == '_');
+	}
+
 	public void register(HttpServletRequest req, RegistrationDTO regDto, boolean autoAuthenticate)
 	{
+		if (containsNull(regDto))
+			throw new NullPointerException("Registration DTO contains null values: " + regDto);
+		
 		String passHash = passEnc.encode(regDto.getPassword());
 		
 		Account acc = new Account.Builder()
@@ -55,7 +113,7 @@ public class AccountService implements UserDetailsService
 				.withEmail(regDto.getEmail())
 				.withUsername(regDto.getUsername())
 				.withNickname(regDto.getUsername())
-				.withPasswordHash(passHash)
+				.withPassword(passHash)
 				.withRoles(List.of(regDto.isPlayer()?PLAYER_ROLE:LECTURER_ROLE))
 				.build();
 		acc = accDao.save(acc);
@@ -75,6 +133,10 @@ public class AccountService implements UserDetailsService
 		else
 			return false;
 	}
+	
+	/* Manual authentication, required due to lack of
+	 * Json authentication support from Spring Security
+	 * */
 	private void authenticate(HttpServletRequest req, String email, CharSequence password)
 	{
 		UsernamePasswordAuthenticationToken authReq
@@ -104,11 +166,15 @@ public class AccountService implements UserDetailsService
 	}
 	private Optional<Account> selectByEmailOrUsername(String emailOrUsername)
 	{
-		return accDao.findByEmailOrUsername(emailOrUsername, emailOrUsername);
+		return init(accDao.findByEmailOrUsername(emailOrUsername, emailOrUsername));
+	}
+	public Optional<Account> findByID(UUID id)
+	{
+		return init(accDao.findById(id));
 	}
 	public Optional<Account> findByUsername(String username)
 	{
-		return accDao.findByUsername(username);
+		return init(accDao.findByUsername(username));
 	}
 	
 	@Override
@@ -116,5 +182,19 @@ public class AccountService implements UserDetailsService
 	{
 		return selectByEmailOrUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("Invalid email or password."));
+	}
+	
+	private boolean containsNull(RegistrationDTO regDto)
+	{
+		return (regDto == null)
+				|| (regDto.getEmail() == null)
+				|| (regDto.getUsername() == null)
+				|| (regDto.getPassword() == null);
+	}
+
+	private static <T extends Initializable> Optional<T> init(Optional<T> in)
+	{
+		in.ifPresent(i -> i.initialize());
+		return in;
 	}
 }

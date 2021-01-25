@@ -1,8 +1,11 @@
 package com.projteam.app.domain.game;
 
+import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -18,25 +21,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "GameResult")
+@Table(name = "GameResults")
+@Access(AccessType.FIELD)
 public class GameResult
 {
-	private @Id UUID playerResultID;
-	private @Column(name = "playerID") UUID playerID;
+	private @Id UUID gameID;
 	
 	@ElementCollection
-	@CollectionTable(name = "completion_mapping")
-	@MapKeyColumn(name = "taskNumber")
-	@Column(name = "completion")
-	private Map<Integer, Double> completion = new HashMap<>();
-	@ElementCollection
-	@CollectionTable(name = "difficulty_mapping")
-	@MapKeyColumn(name = "taskNumber")
-	@Column(name = "difficulty")
-	private Map<Integer, Double> difficulty = new HashMap<>();
-	@ElementCollection
-	@CollectionTable(name = "timeTaken_mapping")
-	@MapKeyColumn(name = "taskNumber")
-	@Column(name = "timeTaken")
-	private Map<Integer, Long> timeTaken = new HashMap<>();
+	@CollectionTable(name = "result_mapping")
+	@MapKeyColumn(name = "playerID")
+	@Column(name = "results")
+	private Map<UUID, PlayerResult> results = synchronizedMap(new HashMap<>());
+	
+	public GameResult(UUID gameID)
+	{
+		this.gameID = gameID;
+	}
+	
+	public void addResult(PlayerResult gr)
+	{
+		results.put(gr.getPlayerID(), gr);
+	}
+	public void removeResult(UUID playerID)
+	{
+		results.remove(playerID);
+	}
 }
