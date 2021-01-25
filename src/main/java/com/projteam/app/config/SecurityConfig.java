@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.projteam.app.service.AccountService;
@@ -62,7 +63,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 			.permitAll()
 			.and()
 			.exceptionHandling()
-			.authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login"))
+			.authenticationEntryPoint((request, response, authException) ->
+			{
+				request.getSession().invalidate();
+				response.sendRedirect("/login");
+			})
 			.and()
 			.csrf().disable(); //TODO remove and implement properly client-side
 	}

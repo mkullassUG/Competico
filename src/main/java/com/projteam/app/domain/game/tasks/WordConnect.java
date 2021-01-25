@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 public class WordConnect implements Task
 {
 	private @Id UUID id;
+	private String instruction;
 	private @ElementCollection @OrderColumn List<String> leftWords;
 	private @ElementCollection @OrderColumn List<String> rightWords;
 	private @ElementCollection Map<Integer, Integer> correctMapping;
@@ -60,9 +61,9 @@ public class WordConnect implements Task
 		return WordConnectAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int taskNumber)
+	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
 	{
-		return new TaskInfoDTO("WordConnect", taskNumber,
+		return new TaskInfoDTO("WordConnect", currentTaskNumber, taskCount, instruction,
 				new WordConnectDTO(this));
 	}
 	@Override

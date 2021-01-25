@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 public class ListWordFill implements Task
 {
 	private @Id UUID id;
+	private String instruction;
 	private @ManyToMany @OrderColumn List<WordFillElement> rows;
 	
 	private double difficulty;
@@ -77,9 +78,9 @@ public class ListWordFill implements Task
 		return ListWordFillAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int taskNumber)
+	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
 	{
-		return new TaskInfoDTO("ListWordFill", taskNumber,
+		return new TaskInfoDTO("ListWordFill", currentTaskNumber, taskCount, instruction,
 				new ListWordFillDTO(this));
 	}
 	@Override

@@ -27,9 +27,9 @@ public class DTOConversionTests
 				.collect(Collectors.toList());
 		List<String> possibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
 		
-		WordFill wf = new WordFill(UUID.randomUUID(),
+		WordFill wf = new WordFill(UUID.randomUUID(), "Test instruction",
 				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 1);
-		TaskInfoDTO ti = wf.toDTO(0);
+		TaskInfoDTO ti = wf.toDTO(0, 1);
 		assertNotNull(ti);
 		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
@@ -43,9 +43,9 @@ public class DTOConversionTests
 				.map(ans -> new WordChoice(UUID.randomUUID(), ans, List.of("qwr")))
 				.collect(Collectors.toList());
 		
-		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(),
+		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(), "Test instruction",
 				new ChoiceWordFillElement(UUID.randomUUID(), text, wordChoices, false), 1);
-		TaskInfoDTO ti = cwf.toDTO(0);
+		TaskInfoDTO ti = cwf.toDTO(0, 1);
 		assertNotNull(ti);
 		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
@@ -84,8 +84,9 @@ public class DTOConversionTests
 					possibleAnswersList));
 		}
 		
-		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), wordFillElemList, 1);
-		TaskInfoDTO ti = lwf.toDTO(0);
+		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), "Test instruction",
+				wordFillElemList, 1);
+		TaskInfoDTO ti = lwf.toDTO(0, 1);
 		assertNotNull(ti);
 		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
@@ -116,8 +117,9 @@ public class DTOConversionTests
 					true));
 		}
 		
-		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), wordFillElemList, 1);
-		TaskInfoDTO ti = lcwf.toDTO(0);
+		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), "Test instruction",
+				wordFillElemList, 1);
+		TaskInfoDTO ti = lcwf.toDTO(0, 1);
 		assertNotNull(ti);
 		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
@@ -133,8 +135,9 @@ public class DTOConversionTests
 				"ullamco laboris nisi ut",
 				"aliquip ex ea commodo consequat");
 		
-		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), text, 1);
-		TaskInfoDTO ti = co.toDTO(0);
+		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), "Test instruction",
+				text, 1);
+		TaskInfoDTO ti = co.toDTO(0, 1);
 		assertNotNull(ti);
 		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
@@ -151,8 +154,9 @@ public class DTOConversionTests
 				.map(textList -> new SentenceFormingElement(UUID.randomUUID(), textList))
 				.collect(Collectors.toList());
 		
-		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), wordFillElemList, 1);
-		TaskInfoDTO ti = lsf.toDTO(0);
+		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), "Test instruction",
+				wordFillElemList, 1);
+		TaskInfoDTO ti = lsf.toDTO(0, 1);
 		assertNotNull(ti);
 		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
@@ -164,8 +168,9 @@ public class DTOConversionTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed");
 		
-		SingleChoice sc = new SingleChoice(UUID.randomUUID(), content, answer, incorrectAnswers, 1);
-		TaskInfoDTO ti = sc.toDTO(0);
+		SingleChoice sc = new SingleChoice(UUID.randomUUID(), "Test instruction",
+				content, answer, incorrectAnswers, 1);
+		TaskInfoDTO ti = sc.toDTO(0, 1);
 		assertNotNull(ti);
 		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
@@ -178,9 +183,9 @@ public class DTOConversionTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(),
+		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(), "Test instruction",
 				new MultipleChoiceElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 1);
-		TaskInfoDTO ti = mc.toDTO(0);
+		TaskInfoDTO ti = mc.toDTO(0, 1);
 		assertNotNull(ti);
 		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}
@@ -196,8 +201,9 @@ public class DTOConversionTests
 				3, 2,
 				4, 1);
 		
-		WordConnect wc = new WordConnect(UUID.randomUUID(), leftWords, rightWords, correctMapping, 1);
-		TaskInfoDTO ti = wc.toDTO(0);
+		WordConnect wc = new WordConnect(UUID.randomUUID(), "Test instruction",
+				leftWords, rightWords, correctMapping, 1);
+		TaskInfoDTO ti = wc.toDTO(0, 1);
 		assertNotNull(ti);
 		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
 	}

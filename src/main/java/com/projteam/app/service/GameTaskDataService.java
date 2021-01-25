@@ -82,26 +82,26 @@ public class GameTaskDataService
 			WordFillDAO wfDao,
 			WordFillElementDAO wfeDao)
 	{
-		List<String> text = List.of("Lorem ipsum dolor sit amet, consectetur ",
-				" elit. Quisque vestibulum, enim id fringilla sodales, libero   ipsum ",
-				" erat, id ullamcorper elit ante auctor est. Nulla facilisi. Maecenas ultricies, magna non pretium mattis, ligula risus pulvinar elit, eu mattis ",
-				" dolor nec turpis. Quisque elementum ",
-				" accumsan. Lorem ipsum dolor ",
-				" amet, consectetur adipiscing elit. In nec ",
-				" nisi, et semper nisl. Cras placerat ",
-				" orci eget congue. Duis vitae gravida odio. Etiam elit turpis, ",
-				" ac nisi et, dapibus blandit nibh. Duis eleifend metus in iaculis tincidunt.");
-		List<String> possibleAnswers = List.of("slowo1", "slowo2",
-				"slowo3", "slowo4", "slowo5",
-				"slowo6", "slowo7", "slowo8");
-		List<WordFillElement.EmptySpace> emptySpaces = possibleAnswers.stream()
-				.map(ans -> new WordFillElement.EmptySpace(ans))
-				.collect(Collectors.toList());
-		
-		WordFill wf = new WordFill(UUID.randomUUID(),
-				new WordFillElement(UUID.randomUUID(),
-						text, emptySpaces, true,
-						possibleAnswers), targetDifficulty);
+//		List<String> text = List.of("Lorem ipsum dolor sit amet, consectetur ",
+//				" elit. Quisque vestibulum, enim id fringilla sodales, libero   ipsum ",
+//				" erat, id ullamcorper elit ante auctor est. Nulla facilisi. Maecenas ultricies, magna non pretium mattis, ligula risus pulvinar elit, eu mattis ",
+//				" dolor nec turpis. Quisque elementum ",
+//				" accumsan. Lorem ipsum dolor ",
+//				" amet, consectetur adipiscing elit. In nec ",
+//				" nisi, et semper nisl. Cras placerat ",
+//				" orci eget congue. Duis vitae gravida odio. Etiam elit turpis, ",
+//				" ac nisi et, dapibus blandit nibh. Duis eleifend metus in iaculis tincidunt.");
+//		List<String> possibleAnswers = List.of("slowo1", "slowo2",
+//				"slowo3", "slowo4", "slowo5",
+//				"slowo6", "slowo7", "slowo8");
+//		List<WordFillElement.EmptySpace> emptySpaces = possibleAnswers.stream()
+//				.map(ans -> new WordFillElement.EmptySpace(ans))
+//				.collect(Collectors.toList());
+//		
+//		WordFill wf = new WordFill(UUID.randomUUID(),
+//				new WordFillElement(UUID.randomUUID(),
+//						text, emptySpaces, true,
+//						possibleAnswers), targetDifficulty);
 
 		List<String> leftWords1 = List.of("data mining", "pattern identification", "quantitative modelling", "class label", "class membership", "explanatory variable", "variable", "fault-tolerant", "spurious pattern", "outlier");
 		List<String> rightWords1 = List.of("eksploracja danych", "identyfikacja wzorca", "modelowanie ilościowe", "etykieta klasy", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna");
@@ -118,6 +118,7 @@ public class GameTaskDataService
 				Map.entry(9, 9));
 
 		WordConnect wc1 = new WordConnect(UUID.randomUUID(),
+				"Match the words with their translations:",
 				leftWords1, rightWords1, correctMapping1, targetDifficulty);
 		
 		List<String> leftWords2 = List.of("keynote", "to convey (information)", "to unveil (a theme)", "consistent", "stiff", "a knack (for sth)", "a flair", "intricate", "dazzling", "to rehearse");
@@ -135,6 +136,7 @@ public class GameTaskDataService
 				Map.entry(9, 9));
 		
 		WordConnect wc2 = new WordConnect(UUID.randomUUID(),
+				"Match the words with their translations:",
 				leftWords2, rightWords2, correctMapping2, targetDifficulty);
 		
 		List<String> leftWords3 = List.of("SMATTERING", "DESCEND", "INEVITABLE", "PROPENSITY", "APPROACH", "OVERESTIMATE", "INGRESS", "GLEAN", "DEBUNK", "SOUND", "WINDING", "IN, DEPTH", "EGRESS", "ITEM");
@@ -156,19 +158,20 @@ public class GameTaskDataService
 				Map.entry(13, 13));
 		
 		WordConnect wc3 = new WordConnect(UUID.randomUUID(),
+				"TODO: Add task instruction", //TODO add task instruction
 				leftWords3, rightWords3, correctMapping3, targetDifficulty);
 		
-		List<String> coText = List.of("Lorem ipsum dolor sit amet",
-				"consectetur adipiscing elit",
-				"sed do eiusmod tempor incididunt",
-				"ut labore et dolore magna aliqua",
-				"Ut enim ad minim veniam",
-				"quis nostrud exercitation",
-				"ullamco laboris nisi ut",
-				"aliquip ex ea commodo consequat");
-		
-		ChronologicalOrder co = new ChronologicalOrder(
-				UUID.randomUUID(), coText, targetDifficulty);
+//		List<String> coText = List.of("Lorem ipsum dolor sit amet",
+//				"consectetur adipiscing elit",
+//				"sed do eiusmod tempor incididunt",
+//				"ut labore et dolore magna aliqua",
+//				"Ut enim ad minim veniam",
+//				"quis nostrud exercitation",
+//				"ullamco laboris nisi ut",
+//				"aliquip ex ea commodo consequat");
+//		
+//		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(),
+//				coText, targetDifficulty);
 		
 		List<WordFillElement> lwfeList1 = List.of(
 				wordFillElement(List.of("I’m ", " you asked me that question."),
@@ -196,7 +199,8 @@ public class GameTaskDataService
 						true,
 						List.of("DISTRUCTIONS", "DETAIL", "TIME", "DISCUSSIONS")));
 		
-		ListWordFill lwf1 = new ListWordFill(UUID.randomUUID(), lwfeList1, targetDifficulty);
+		ListWordFill lwf1 = new ListWordFill(UUID.randomUUID(), "Complete the sentences with the best word:",
+				lwfeList1, targetDifficulty);
 		
 		List<WordFillElement> lwfeList2 = List.of(
 				wordFillElement(List.of("the act or way of leaving place: "),
@@ -244,31 +248,32 @@ public class GameTaskDataService
 						true,
 						List.of("glean", "debunk", "in-depth")));
 		
-		ListWordFill lwf2 = new ListWordFill(UUID.randomUUID(), lwfeList2, targetDifficulty);
+		ListWordFill lwf2 = new ListWordFill(UUID.randomUUID(), "Choose the word that fits the definitions:",
+				lwfeList2, targetDifficulty);
 		
-		if (wfeDao.count() == 0)
-		{
-			if (wfDao.count() == 0)
-			{
-				wfeDao.save(wf.getContent());
-				wfDao.save(wf);
-			}
-			if (lwfDao.count() == 0)
-			{
-				lwf1.getRows().forEach(wfeDao::save);
-				lwfDao.save(lwf1);
-				lwf2.getRows().forEach(wfeDao::save);
-				lwfDao.save(lwf2);
-			}
-		}
+//		if (wfeDao.count() == 0)
+//		{
+//			if (wfDao.count() == 0)
+//			{
+//				wfeDao.save(wf.getContent());
+//				wfDao.save(wf);
+//			}
+//			if (lwfDao.count() == 0)
+//			{
+//				lwf1.getRows().forEach(wfeDao::save);
+//				lwfDao.save(lwf1);
+//				lwf2.getRows().forEach(wfeDao::save);
+//				lwfDao.save(lwf2);
+//			}
+//		}
 		if (wcDao.count() == 0)
 		{
 			wcDao.save(wc1);
 			wcDao.save(wc2);
 			wcDao.save(wc3);
 		}
-		if (coDao.count() == 0)
-			coDao.save(co);
+//		if (coDao.count() == 0)
+//			coDao.save(co);
 		
 		taskDAOlist = List.of(
 				cwfDao, coDao, lcwfDao,
@@ -337,7 +342,7 @@ public class GameTaskDataService
 				Map.entry(8, 8),
 				Map.entry(9, 9));
 
-		return new WordConnect(UUID.randomUUID(),
+		return new WordConnect(UUID.randomUUID(), "Match the words with their translations:",
 				leftWords1, rightWords1, correctMapping1, targetDifficulty);
 	}
 }

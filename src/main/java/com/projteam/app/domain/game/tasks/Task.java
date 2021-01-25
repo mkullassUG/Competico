@@ -6,8 +6,9 @@ import com.projteam.app.utils.Initializable;
 
 public interface Task extends Initializable
 {
+	public String getInstruction();
 	public double getDifficulty();
 	public double acceptAnswer(TaskAnswer answer);
 	public Class<? extends TaskAnswer> getAnswerType();
-	public TaskInfoDTO toDTO(int taskNumber);
+	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount);
 }

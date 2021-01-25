@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 public class ListSentenceForming implements Task
 {
 	private @Id UUID id;
+	private String instruction;
 	private @ManyToMany @OrderColumn List<SentenceFormingElement> rows;
 
 	private double difficulty;
@@ -73,9 +74,9 @@ public class ListSentenceForming implements Task
 		return ListSentenceFormingAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int taskNumber)
+	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
 	{
-		return new TaskInfoDTO("ListSentenceForming", taskNumber,
+		return new TaskInfoDTO("ListSentenceForming", currentTaskNumber, taskCount, instruction,
 				new ListSentenceFormingDTO(this));
 	}
 	@Override

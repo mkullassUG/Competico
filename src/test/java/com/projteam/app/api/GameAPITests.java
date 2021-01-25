@@ -102,9 +102,9 @@ public class GameAPITests
 				.collect(Collectors.toList());
 		List<String> possibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
 		
-		Task task = new WordFill(UUID.randomUUID(),
+		Task task = new WordFill(UUID.randomUUID(), "Test instruction",
 				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 100);
-		TaskInfoDTO taskInfo = task.toDTO(taskNumber);
+		TaskInfoDTO taskInfo = task.toDTO(taskNumber, taskNumber * 2);
 		
 		when(gameServ.hasGameFinished(gameCode)).thenReturn(false);
 		when(gameServ.getCurrentTaskInfo(gameCode)).thenReturn(taskInfo);

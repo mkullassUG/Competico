@@ -27,8 +27,8 @@ import org.mockito.MockitoAnnotations;
 import com.projteam.app.dao.game.GameResultDAO;
 import com.projteam.app.dao.game.GameResultsDAO;
 import com.projteam.app.domain.Account;
+import com.projteam.app.domain.game.PlayerResult;
 import com.projteam.app.domain.game.GameResult;
-import com.projteam.app.domain.game.GameResults;
 import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
@@ -190,6 +190,8 @@ public class GameServiceTests
 	@MethodSource({"mockPlayerHostAndPlayer", "mockLecturerHostAndPlayer"})
 	public void canGetCurrentTaskInfo(Account host, Account player)
 	{
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(player));
 		when(gtdService.generateRandomTask(anyDouble()))
 			.thenReturn(mockTask());
 		
@@ -376,11 +378,11 @@ public class GameServiceTests
 	public void canGetGameResults(Account host)
 	{
 		UUID gameID = UUID.randomUUID();
-		GameResults grs = new GameResults(gameID);
+		GameResult grs = new GameResult(gameID);
 		mockPlayers(5).forEach(player ->
 		{
 			UUID playerID = player.getId();
-			grs.addResult(new GameResult(UUID.randomUUID(),
+			grs.addResult(new PlayerResult(UUID.randomUUID(),
 					playerID,
 					Map.of(0, Math.round(5 * Math.random()) / 5.0),
 					Map.of(0, 100.0 + (Math.random() * 10)),
@@ -475,11 +477,11 @@ public class GameServiceTests
 		List<Account> players = mockPlayers(5);
 		createGameFromLobby(gameCode, host, players.toArray(l -> new Account[l]));
 		UUID gameID = UUID.randomUUID();
-		GameResults grs = new GameResults(gameID);
+		GameResult grs = new GameResult(gameID);
 		players.forEach(player ->
 		{
 			UUID playerID = player.getId();
-			grs.addResult(new GameResult(UUID.randomUUID(),
+			grs.addResult(new PlayerResult(UUID.randomUUID(),
 					playerID,
 					Map.of(0, Math.round(5 * Math.random()) / 5.0),
 					Map.of(0, 100.0 + (Math.random() * 10)),
@@ -1068,7 +1070,7 @@ public class GameServiceTests
 				Map.entry(8, 8),
 				Map.entry(9, 9));
 
-		return new WordConnect(UUID.randomUUID(),
+		return new WordConnect(UUID.randomUUID(), "Test instruction",
 				leftWords1, rightWords1, correctMapping1, 100);
 	}
 }

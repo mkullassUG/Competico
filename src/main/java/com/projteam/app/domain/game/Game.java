@@ -127,9 +127,9 @@ public class Game
 		noteInteraction(id);
 		return taskMap.get(id).size();
 	}
-	public GameResults createGameResult()
+	public GameResult createGameResult()
 	{
-		GameResults grs = new GameResults(gameID);
+		GameResult grs = new GameResult(gameID);
 		for (Account player: originalPlayers)
 		{
 			UUID gameResultId = UUID.randomUUID();
@@ -148,7 +148,7 @@ public class Game
 			//TODO include in game result
 			boolean isActive = activePlayers.contains(player);
 			
-			GameResult gr = new GameResult(gameResultId, playerId, completion, difficulty, timeTaken);
+			PlayerResult gr = new PlayerResult(gameResultId, playerId, completion, difficulty, timeTaken);
 			grs.addResult(gr);
 		}
 		return grs;
