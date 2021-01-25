@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 public class MultipleChoice implements Task
 {
 	private @Id UUID id;
+	private String instruction;
 	private @ManyToOne MultipleChoiceElement content;
 	
 	private double difficulty;
@@ -61,9 +62,9 @@ public class MultipleChoice implements Task
 		return MultipleChoiceAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int taskNumber)
+	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
 	{
-		return new TaskInfoDTO("MultipleChoice", taskNumber,
+		return new TaskInfoDTO("MultipleChoice", currentTaskNumber, taskCount, instruction,
 				new MultipleChoiceElementDTO(content));
 	}
 	@Override

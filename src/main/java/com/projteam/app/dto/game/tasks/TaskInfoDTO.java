@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 public class TaskInfoDTO
 {
 	private String taskName;
-	public int taskNumber;
+	public int currentTaskNumber;
+	public int taskCount;
+	private String instruction;
 	public TaskDTO task;
 }

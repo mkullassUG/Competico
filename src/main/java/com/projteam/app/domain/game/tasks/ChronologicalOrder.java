@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 public class ChronologicalOrder implements Task
 {
 	private @Id UUID id;
+	private String instruction;
 	private @ElementCollection @OrderColumn List<String> sentences;
 	
 	private double difficulty;
@@ -60,9 +61,9 @@ public class ChronologicalOrder implements Task
 		return ChronologicalOrderAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int taskNumber)
+	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
 	{
-		return new TaskInfoDTO("ChronologicalOrder", taskNumber,
+		return new TaskInfoDTO("ChronologicalOrder", currentTaskNumber, taskCount, instruction,
 				new ChronologicalOrderDTO(sentences));
 	}
 	@Override

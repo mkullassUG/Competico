@@ -30,8 +30,8 @@ import com.projteam.app.dao.game.tasks.WordConnectDAO;
 import com.projteam.app.dao.game.tasks.WordFillDAO;
 import com.projteam.app.domain.Account;
 import com.projteam.app.domain.game.Game;
+import com.projteam.app.domain.game.PlayerResult;
 import com.projteam.app.domain.game.GameResult;
-import com.projteam.app.domain.game.GameResults;
 import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.dto.game.GameResultPersonalDTO;
@@ -129,7 +129,7 @@ public class GameService
 	{
 		return 
 				Optional.ofNullable(getCurrentTask(gameCode, player))
-					.map(task -> task.toDTO(getTaskNumber(gameCode, player)))
+					.map(task -> task.toDTO(getTaskNumber(gameCode, player), getTaskCount(gameCode)))
 					.orElse(null);
 	}
 	
@@ -197,8 +197,8 @@ public class GameService
 	}
 	private void saveGameScores(Game game)
 	{
-		GameResults grs = game.createGameResult();
-		for (GameResult gr: grs.getResults().values())
+		GameResult grs = game.createGameResult();
+		for (PlayerResult gr: grs.getResults().values())
 			grDAO.save(gr);
 		grsDAO.save(grs);
 	}
@@ -232,10 +232,14 @@ public class GameService
 
 	public int getTaskCount(String gameCode)
 	{
+		return getTaskCount(gameCode, getAccount());
+	}
+	public int getTaskCount(String gameCode, Account acc)
+	{
 		if (!games.containsKey(gameCode))
 			return -1;
 		Game game = games.get(gameCode);
-		return game.getTaskCount(getAccount());
+		return game.getTaskCount(acc);
 	}
 
 	public Optional<List<GameResultTotalDTO>> getResults(UUID gameID)
@@ -244,7 +248,7 @@ public class GameService
 				.map(grs ->
 				{
 					List<GameResultTotalDTO> ret = new ArrayList<>();
-					for (GameResult gr: grs.getResults().values())
+					for (PlayerResult gr: grs.getResults().values())
 					{
 						Account player = accServ.findByID(gr.getPlayerID())
 								.orElse(null);

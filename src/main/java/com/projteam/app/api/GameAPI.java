@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.projteam.app.dto.game.GameResultDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
 import com.projteam.app.service.GameService;
@@ -82,6 +84,8 @@ public class GameAPI
 	{
 		try
 		{
+			if (answer == null)
+				answer = JsonNodeFactory.instance.nullNode();
 			gameService.acceptAnswer(gameCode, answer);
 			return ResponseEntity.ok().build();
 		}
@@ -146,5 +150,12 @@ public class GameAPI
 	public void noteInteraction(@PathVariable String gameCode)
 	{
 		gameService.noteInteraction(gameCode);
+	}
+	
+	@GetMapping("/game/results/{gameID}")
+	@ApiOperation(value = "Display the results of a given game.")
+	public ModelAndView lobbyPage(@PathVariable("gameID") UUID gameID)
+	{
+		return new ModelAndView("gameResults");
 	}
 }

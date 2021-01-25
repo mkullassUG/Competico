@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 public class ChoiceWordFill implements Task
 {
 	private @Id UUID id;
+	private String instruction;
 	private @ManyToOne ChoiceWordFillElement content;
 	
 	private double difficulty;
@@ -73,9 +74,9 @@ public class ChoiceWordFill implements Task
 		return ChoiceWordFillAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int taskNumber)
+	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
 	{
-		return new TaskInfoDTO("ChoiceWordFill", taskNumber,
+		return new TaskInfoDTO("ChoiceWordFill", currentTaskNumber, taskCount, instruction,
 				new ChoiceWordFillElementDTO(content));
 	}
 	@Override

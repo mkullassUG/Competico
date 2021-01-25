@@ -3,6 +3,7 @@ package com.projteam.app.integration.game;
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -150,7 +151,8 @@ public class GameTests
 			JsonNode ti1 = mapper.readTree(
 				mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 					.andExpect(status().isOk())
-					.andExpect(jsonPath("$.taskNumber", is(i)))
+					.andExpect(jsonPath("$.currentTaskNumber", is(i)))
+					.andExpect(jsonPath("$.taskCount", is(taskCount)))
 					.andReturn()
 					.getResponse()
 					.getContentAsString());
@@ -163,7 +165,8 @@ public class GameTests
 			JsonNode ti2 = mapper.readTree(
 				mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 					.andExpect(status().isOk())
-					.andExpect(jsonPath("$.taskNumber", is(i)))
+					.andExpect(jsonPath("$.currentTaskNumber", is(i)))
+					.andExpect(jsonPath("$.taskCount", is(taskCount)))
 					.andReturn()
 					.getResponse()
 					.getContentAsString());
@@ -174,6 +177,9 @@ public class GameTests
 				
 			assertCanGetResults(gameID, playerCount, i + 1, hostAuth, playerAuth, sec);
 		}
+		
+		assertFalse(gameServ.gameExists(gameCode));
+		
 		switchAccount(hostAuth, sec);
 		mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 			.andExpect(status().isOk())
@@ -268,7 +274,8 @@ public class GameTests
 			JsonNode ti1 = mapper.readTree(
 				mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 					.andExpect(status().isOk())
-					.andExpect(jsonPath("$.taskNumber", is(i)))
+					.andExpect(jsonPath("$.currentTaskNumber", is(i)))
+					.andExpect(jsonPath("$.taskCount", is(taskCount)))
 					.andReturn()
 					.getResponse()
 					.getContentAsString());
@@ -279,17 +286,21 @@ public class GameTests
 			
 			switchAccount(playerAuth, sec);
 			JsonNode ti2 = mapper.readTree(
-					mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
-						.andExpect(status().isOk())
-						.andExpect(jsonPath("$.taskNumber", is(i)))
-						.andReturn()
-						.getResponse()
-						.getContentAsString());
-				mvc.perform(post("/api/v1/game/" + gameCode + "/tasks/answer")
-						.contentType(APPLICATION_JSON_UTF8)
-						.content(sampleAnswer(ti2)))
-					.andExpect(status().isOk());
+				mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("$.currentTaskNumber", is(i)))
+					.andExpect(jsonPath("$.taskCount", is(taskCount)))
+					.andReturn()
+					.getResponse()
+					.getContentAsString());
+			mvc.perform(post("/api/v1/game/" + gameCode + "/tasks/answer")
+					.contentType(APPLICATION_JSON_UTF8)
+					.content(sampleAnswer(ti2)))
+				.andExpect(status().isOk());
 		}
+		
+		assertFalse(gameServ.gameExists(gameCode));
+		
 		switchAccount(hostAuth, sec);
 		mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 			.andExpect(status().isOk())
