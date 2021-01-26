@@ -44,7 +44,7 @@ public class LoginTestsWithRealSecurityContext
 	@Autowired
 	private AccountService accServ;
 	
-	private ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = new ObjectMapper();
 	
 	@BeforeEach
 	public void setUpMockMvc()

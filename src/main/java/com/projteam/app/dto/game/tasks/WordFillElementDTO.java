@@ -1,6 +1,7 @@
 package com.projteam.app.dto.game.tasks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import com.projteam.app.domain.game.tasks.WordFillElement;
 import lombok.Data;
@@ -20,6 +21,12 @@ public class WordFillElementDTO implements TaskDTO
 		text = new ArrayList<>(elem.getText());
 		emptySpaceCount = elem.getEmptySpaces().size();
 		startWithText = elem.isStartWithText();
-		possibleAnswers = elem.getPossibleAnswers();
+		possibleAnswers = shuffle(elem.getPossibleAnswers());
+	}
+	private static <T> List<T> shuffle(List<T> list)
+	{
+		List<T> ret = new ArrayList<>(list);
+		Collections.shuffle(ret);
+		return ret;
 	}
 }

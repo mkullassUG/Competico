@@ -45,7 +45,7 @@ public class SingleChoice implements Task
 		return SingleChoiceAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
+	public TaskInfoDTO prepareTaskInfo(int currentTaskNumber, int taskCount)
 	{
 		return new TaskInfoDTO("SingleChoice", currentTaskNumber, taskCount, instruction,
 				new SingleChoiceDTO(this));

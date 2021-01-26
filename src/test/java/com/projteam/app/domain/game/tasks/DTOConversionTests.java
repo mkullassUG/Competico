@@ -16,6 +16,8 @@ import com.projteam.app.dto.game.tasks.TaskInfoDTO;
 
 public class DTOConversionTests
 {
+	private ObjectMapper mapper = new ObjectMapper();
+	
 	@Test
 	void wordFillConvertsToDTO()
 	{
@@ -29,9 +31,9 @@ public class DTOConversionTests
 		
 		WordFill wf = new WordFill(UUID.randomUUID(), "Test instruction",
 				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 1);
-		TaskInfoDTO ti = wf.toDTO(0, 1);
+		TaskInfoDTO ti = wf.prepareTaskInfo(0, 1);
 		assertNotNull(ti);
-		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
+		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
 	void choiceWordFillConvertsToDTO()
@@ -45,9 +47,9 @@ public class DTOConversionTests
 		
 		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(), "Test instruction",
 				new ChoiceWordFillElement(UUID.randomUUID(), text, wordChoices, false), 1);
-		TaskInfoDTO ti = cwf.toDTO(0, 1);
+		TaskInfoDTO ti = cwf.prepareTaskInfo(0, 1);
 		assertNotNull(ti);
-		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
+		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
 	void listWordFillConvertsToDTO()
@@ -86,9 +88,9 @@ public class DTOConversionTests
 		
 		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), "Test instruction",
 				wordFillElemList, 1);
-		TaskInfoDTO ti = lwf.toDTO(0, 1);
+		TaskInfoDTO ti = lwf.prepareTaskInfo(0, 1);
 		assertNotNull(ti);
-		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
+		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
 	void listChoiceWordFillConvertsToDTO()
@@ -119,9 +121,9 @@ public class DTOConversionTests
 		
 		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), "Test instruction",
 				wordFillElemList, 1);
-		TaskInfoDTO ti = lcwf.toDTO(0, 1);
+		TaskInfoDTO ti = lcwf.prepareTaskInfo(0, 1);
 		assertNotNull(ti);
-		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
+		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
 	void chronologicalOrderConvertsToDTO()
@@ -137,9 +139,9 @@ public class DTOConversionTests
 		
 		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), "Test instruction",
 				text, 1);
-		TaskInfoDTO ti = co.toDTO(0, 1);
+		TaskInfoDTO ti = co.prepareTaskInfo(0, 1);
 		assertNotNull(ti);
-		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
+		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
 	void listSentenceFormingConvertsToDTO()
@@ -156,9 +158,9 @@ public class DTOConversionTests
 		
 		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), "Test instruction",
 				wordFillElemList, 1);
-		TaskInfoDTO ti = lsf.toDTO(0, 1);
+		TaskInfoDTO ti = lsf.prepareTaskInfo(0, 1);
 		assertNotNull(ti);
-		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
+		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
 	void singleChoiceConvertsToDTO()
@@ -170,9 +172,9 @@ public class DTOConversionTests
 		
 		SingleChoice sc = new SingleChoice(UUID.randomUUID(), "Test instruction",
 				content, answer, incorrectAnswers, 1);
-		TaskInfoDTO ti = sc.toDTO(0, 1);
+		TaskInfoDTO ti = sc.prepareTaskInfo(0, 1);
 		assertNotNull(ti);
-		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
+		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
 	void multipleChoiceConvertsToDTO()
@@ -185,9 +187,9 @@ public class DTOConversionTests
 		
 		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(), "Test instruction",
 				new MultipleChoiceElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 1);
-		TaskInfoDTO ti = mc.toDTO(0, 1);
+		TaskInfoDTO ti = mc.prepareTaskInfo(0, 1);
 		assertNotNull(ti);
-		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
+		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
 	void wordConnectConvertsToDTO()
@@ -203,8 +205,8 @@ public class DTOConversionTests
 		
 		WordConnect wc = new WordConnect(UUID.randomUUID(), "Test instruction",
 				leftWords, rightWords, correctMapping, 1);
-		TaskInfoDTO ti = wc.toDTO(0, 1);
+		TaskInfoDTO ti = wc.prepareTaskInfo(0, 1);
 		assertNotNull(ti);
-		assertDoesNotThrow(() -> new ObjectMapper().valueToTree(ti));
+		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 }

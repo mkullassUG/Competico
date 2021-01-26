@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.projteam.app.dao.game.PlayerResultDAO;
 import com.projteam.app.dao.game.GameResultDAO;
 import com.projteam.app.dao.game.tasks.ChoiceWordFillDAO;
@@ -56,9 +57,11 @@ public class GameService
 	private static final long MAX_TIME_SINCE_LAST_INTERACTION_MILLI = 120000;
 	private static final int HISTORY_PAGE_SIZE = 30;
 	
+	private final ObjectMapper mapper = new ObjectMapper();
+	
 	@Autowired
 	public GameService(AccountService accServ, LobbyService lobbyServ,
-			PlayerResultDAO grDAO, GameResultDAO grsDAO,
+			PlayerResultDAO prDAO, GameResultDAO grDAO,
 			GameTaskDataService gtdServ,
 			
 			ChoiceWordFillDAO cwfDao,
@@ -73,8 +76,8 @@ public class GameService
 	{
 		this.accServ = accServ;
 		this.lobbyServ = lobbyServ;
-		this.prDAO = grDAO;
-		this.grDAO = grsDAO;
+		this.prDAO = prDAO;
+		this.grDAO = grDAO;
 		
 		this.gtdServ = gtdServ;
 		
@@ -132,7 +135,7 @@ public class GameService
 	{
 		return 
 				Optional.ofNullable(getCurrentTask(gameCode, player))
-					.map(task -> task.toDTO(getTaskNumber(gameCode, player), getTaskCount(gameCode)))
+					.map(task -> task.prepareTaskInfo(getTaskNumber(gameCode, player), getTaskCount(gameCode)))
 					.orElse(null);
 	}
 	
@@ -200,10 +203,10 @@ public class GameService
 	}
 	private void saveGameScores(Game game)
 	{
-		GameResult grs = game.createGameResult();
-		for (PlayerResult gr: grs.getResults().values())
-			prDAO.save(gr);
-		grDAO.save(grs);
+		GameResult gr = game.createGameResult();
+		for (PlayerResult pr: gr.getResults().values())
+			prDAO.save(pr);
+		grDAO.save(gr);
 	}
 
 	private Account getAccount()
@@ -214,7 +217,11 @@ public class GameService
 
 	private TaskAnswer convertRawAnswer(String gameCode, JsonNode answer) throws JsonProcessingException
 	{
-		return new ObjectMapper().treeToValue(answer, getCurrentTask(gameCode).getAnswerType());
+		if (answer == null)
+			return mapper.treeToValue(
+					JsonNodeFactory.instance.nullNode(),
+					getCurrentTask(gameCode).getAnswerType());
+		return mapper.treeToValue(answer, getCurrentTask(gameCode).getAnswerType());
 	}
 	public void acceptAnswer(String gameCode, JsonNode answer) throws JsonProcessingException
 	{
@@ -248,16 +255,16 @@ public class GameService
 	public Optional<List<GameResultTotalDTO>> getResults(UUID gameID)
 	{
 		return grDAO.findById(gameID)
-				.map(grs ->
+				.map(gr ->
 				{
 					List<GameResultTotalDTO> ret = new ArrayList<>();
-					for (PlayerResult gr: grs.getResults().values())
+					for (PlayerResult pr: gr.getResults().values())
 					{
-						Account player = accServ.findByID(gr.getPlayerID())
+						Account player = accServ.findByID(pr.getPlayerID())
 								.orElse(null);
-						var completion = gr.getCompletion();
-						var difficulty = gr.getDifficulty();
-						var timeTaken = gr.getTimeTaken();
+						var completion = pr.getCompletion();
+						var difficulty = pr.getDifficulty();
+						var timeTaken = pr.getTimeTaken();
 						int l = Math.min(completion.size(),
 								Math.min(difficulty.size(),
 										timeTaken.size()));
@@ -304,19 +311,19 @@ public class GameService
 				.map(game -> game.getPersonalResults(player));
 		if (ret.isEmpty())
 			return grDAO.findById(gameID)
-					.map(grs ->
+					.map(gr ->
 					{
-						return grs.getResults()
+						return gr.getResults()
 							.values()
 							.stream()
-							.filter(gr -> gr.getPlayerID().equals(player.getId()))
+							.filter(pr -> pr.getPlayerID().equals(player.getId()))
 							.findFirst()
-							.map(gr ->
+							.map(pr ->
 							{
 								List<GameResultPersonalDTO> retList = new ArrayList<>();
-								var completion = gr.getCompletion();
-								var difficulty = gr.getDifficulty();
-								var timeTaken = gr.getTimeTaken();
+								var completion = pr.getCompletion();
+								var difficulty = pr.getDifficulty();
+								var timeTaken = pr.getTimeTaken();
 								int l = Math.min(completion.size(),
 										Math.min(difficulty.size(),
 												timeTaken.size()));
@@ -364,6 +371,17 @@ public class GameService
 				.findAny();
 	}
 	
+	public Page<UUID> getHistory(int page)
+	{
+		return getHistory(page, getAccount());
+	}
+	public Page<UUID> getHistory(int page, Account player)
+	{
+		return grDAO.findAllByResults_PlayerID(player.getId(),
+				PageRequest.of(page, HISTORY_PAGE_SIZE))
+				.map(gr -> gr.getGameID());
+	}
+	
 	public void noteInteraction(String gameCode)
 	{
 		noteInteraction(gameCode, getAccount());
@@ -408,16 +426,5 @@ public class GameService
 	private <T, U> Map<T, U> syncMap()
 	{
 		return synchronizedMap(new HashMap<>());
-	}
-
-	public Page<UUID> getHistory(int page)
-	{
-		return getHistory(page, getAccount());
-	}
-	public Page<UUID> getHistory(int page, Account player)
-	{
-		return grDAO.findAllByResults_PlayerID(player.getId(),
-				PageRequest.of(page, HISTORY_PAGE_SIZE))
-				.map(gr -> gr.getGameID());
 	}
 }

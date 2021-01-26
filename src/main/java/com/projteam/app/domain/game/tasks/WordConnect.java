@@ -61,7 +61,7 @@ public class WordConnect implements Task
 		return WordConnectAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
+	public TaskInfoDTO prepareTaskInfo(int currentTaskNumber, int taskCount)
 	{
 		return new TaskInfoDTO("WordConnect", currentTaskNumber, taskCount, instruction,
 				new WordConnectDTO(this));

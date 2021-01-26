@@ -26,11 +26,9 @@ import com.projteam.app.dao.game.tasks.SingleChoiceDAO;
 import com.projteam.app.dao.game.tasks.WordConnectDAO;
 import com.projteam.app.dao.game.tasks.WordFillDAO;
 import com.projteam.app.dao.game.tasks.WordFillElementDAO;
-import com.projteam.app.domain.game.tasks.ChronologicalOrder;
 import com.projteam.app.domain.game.tasks.ListWordFill;
 import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.domain.game.tasks.WordConnect;
-import com.projteam.app.domain.game.tasks.WordFill;
 import com.projteam.app.domain.game.tasks.WordFillElement;
 import com.projteam.app.domain.game.tasks.WordFillElement.EmptySpace;
 

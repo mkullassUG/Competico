@@ -38,9 +38,9 @@ public class GameResult
 		this.gameID = gameID;
 	}
 	
-	public void addResult(PlayerResult gr)
+	public void addResult(PlayerResult pr)
 	{
-		results.put(gr.getPlayerID(), gr);
+		results.put(pr.getPlayerID(), pr);
 	}
 	public void removeResult(UUID playerID)
 	{

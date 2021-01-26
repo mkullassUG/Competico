@@ -62,7 +62,7 @@ public class MultipleChoice implements Task
 		return MultipleChoiceAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
+	public TaskInfoDTO prepareTaskInfo(int currentTaskNumber, int taskCount)
 	{
 		return new TaskInfoDTO("MultipleChoice", currentTaskNumber, taskCount, instruction,
 				new MultipleChoiceElementDTO(content));

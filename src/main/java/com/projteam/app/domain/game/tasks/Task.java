@@ -10,5 +10,5 @@ public interface Task extends Initializable
 	public double getDifficulty();
 	public double acceptAnswer(TaskAnswer answer);
 	public Class<? extends TaskAnswer> getAnswerType();
-	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount);
+	public TaskInfoDTO prepareTaskInfo(int currentTaskNumber, int taskCount);
 }
