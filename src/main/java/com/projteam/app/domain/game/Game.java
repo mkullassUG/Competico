@@ -88,7 +88,7 @@ public class Game
 		UUID playerId = player.getId();
 		noteInteraction(playerId);
 		Integer taskNumber = currentTaskNumber.get(playerId);
-		//TODO implement bonuses for time
+		
 		taskCompletionMap.get(playerId).put(taskNumber, completion);
 		currentTaskNumber.put(playerId, taskNumber + 1);
 		
@@ -129,7 +129,7 @@ public class Game
 	}
 	public GameResult createGameResult()
 	{
-		GameResult grs = new GameResult(gameID);
+		GameResult gr = new GameResult(gameID);
 		for (Account player: originalPlayers)
 		{
 			UUID gameResultId = UUID.randomUUID();
@@ -142,16 +142,15 @@ public class Game
 				difficulty.put(i, t.getDifficulty());
 				i++;
 			}
-			//TODO implement bonuses for time
 			Map<Integer, Long> timeTaken = new HashMap<>(timeTakenForTasks.get(playerId));
 			
 			//TODO include in game result
 			boolean isActive = activePlayers.contains(player);
 			
-			PlayerResult gr = new PlayerResult(gameResultId, playerId, completion, difficulty, timeTaken);
-			grs.addResult(gr);
+			PlayerResult pr = new PlayerResult(gameResultId, playerId, completion, difficulty, timeTaken);
+			gr.addResult(pr);
 		}
-		return grs;
+		return gr;
 	}
 
 	public List<GameResultTotalDuringGameDTO> getCurrentResults()
@@ -170,7 +169,6 @@ public class Game
 			long totalTime = 0;
 			for (int i = 0; i < currentTask; i++)
 			{
-				//TODO implement bonuses for time
 				long time =  timeTaken.get(i);
 				score += calculateScore(completion.get(i), tasks.get(i).getDifficulty(), time);
 				totalTime += time;
@@ -225,10 +223,17 @@ public class Game
 
 	public static double calculateScore(double completion, double difficulty, long timeTaken)
 	{
-		//TODO implement bonuses for time
-		return completion * difficulty;
+		return (1 + timeBonus(timeTaken)) * completion * difficulty;
 	}
-	
+	private static double timeBonus(long time)
+	{
+		return limit(1 - ((time - 1000) / 59000.0), 0, 1);
+	}
+	private static double limit(double x, double min, double max)
+	{
+		return Math.max(Math.min(x, max), min);
+	}
+
 	public boolean containsPlayer(Account acc)
 	{
 		return originalPlayers.contains(acc);

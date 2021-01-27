@@ -490,7 +490,7 @@ public class AnswerNullTests
 				leftWords, rightWords, correctMapping, 1);
 		WordConnectAnswer wca = new WordConnectAnswer(correctMapping.entrySet()
 				.stream()
-				.collect(HashMap::new, (m, e) -> m.put(e.getKey(), null), HashMap::putAll));
+				.collect(HashMap::new, (m, e) -> m.put(leftWords.get(e.getKey()), null), HashMap::putAll));
 		
 		assertEquals(wc.acceptAnswer(wca), 0);
 	}

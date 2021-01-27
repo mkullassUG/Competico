@@ -52,7 +52,7 @@ public class RegisterTests
 	@Autowired
 	private AccountService accServ;
 	
-	private ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = new ObjectMapper();
 	
 	private static final MediaType APPLICATION_JSON_UTF8 =
 			new MediaType(MediaType.APPLICATION_JSON.getType(),

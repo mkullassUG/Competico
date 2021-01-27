@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
@@ -233,9 +232,9 @@ public class AnswerWrongDataTests
 				leftWords, rightWords, correctMapping, 1);
 		WordConnectAnswer wca = new WordConnectAnswer(correctMapping.entrySet()
 				.stream()
-				.collect(Collectors.toMap(Entry::getKey, e ->
-					(e.getValue() >= correctMapping.size())?
-						0:(e.getValue() + 1))));
+				.collect(Collectors.toMap(e -> leftWords.get(e.getKey()), e ->
+					((e.getValue() + 1) >= correctMapping.size())?
+							rightWords.get(0):rightWords.get(e.getValue() + 1))));
 		
 		assertEquals(wc.acceptAnswer(wca), 0);
 	}

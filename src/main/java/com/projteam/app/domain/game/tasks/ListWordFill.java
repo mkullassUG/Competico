@@ -78,7 +78,7 @@ public class ListWordFill implements Task
 		return ListWordFillAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
+	public TaskInfoDTO prepareTaskInfo(int currentTaskNumber, int taskCount)
 	{
 		return new TaskInfoDTO("ListWordFill", currentTaskNumber, taskCount, instruction,
 				new ListWordFillDTO(this));

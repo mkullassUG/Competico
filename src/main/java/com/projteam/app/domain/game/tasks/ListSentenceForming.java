@@ -74,7 +74,7 @@ public class ListSentenceForming implements Task
 		return ListSentenceFormingAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
+	public TaskInfoDTO prepareTaskInfo(int currentTaskNumber, int taskCount)
 	{
 		return new TaskInfoDTO("ListSentenceForming", currentTaskNumber, taskCount, instruction,
 				new ListSentenceFormingDTO(this));

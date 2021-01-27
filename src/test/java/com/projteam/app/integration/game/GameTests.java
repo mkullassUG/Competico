@@ -52,7 +52,7 @@ public class GameTests
 	@Autowired
 	private MockMvc mvc;
 	
-	private ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = new ObjectMapper();
 	
 	@MockBean
 	private AccountDAO accDao;

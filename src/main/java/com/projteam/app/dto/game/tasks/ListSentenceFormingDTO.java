@@ -1,5 +1,7 @@
 package com.projteam.app.dto.game.tasks;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.projteam.app.domain.game.tasks.ListSentenceForming;
@@ -15,7 +17,13 @@ public class ListSentenceFormingDTO implements TaskDTO
 	public ListSentenceFormingDTO(ListSentenceForming task)
 	{
 		words = task.getRows().stream()
-			.map(row -> row.getWords())
+			.map(row -> shuffle(row.getWords()))
 			.collect(Collectors.toList());
+	}
+	private static <T> List<T> shuffle(List<T> list)
+	{
+		List<T> ret = new ArrayList<>(list);
+		Collections.shuffle(ret);
+		return ret;
 	}
 }

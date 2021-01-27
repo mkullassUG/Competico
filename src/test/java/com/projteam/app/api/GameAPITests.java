@@ -3,6 +3,7 @@ package com.projteam.app.api;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -12,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -26,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -53,7 +56,7 @@ public class GameAPITests
 	@MockBean
 	private GameService gameServ;
 	
-	private ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = new ObjectMapper();
 	
 	private static final MediaType APPLICATION_JSON_UTF8 =
 			new MediaType(MediaType.APPLICATION_JSON.getType(),
@@ -104,7 +107,7 @@ public class GameAPITests
 		
 		Task task = new WordFill(UUID.randomUUID(), "Test instruction",
 				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 100);
-		TaskInfoDTO taskInfo = task.toDTO(taskNumber, taskNumber * 2);
+		TaskInfoDTO taskInfo = task.prepareTaskInfo(taskNumber, taskNumber * 2);
 		
 		when(gameServ.hasGameFinished(gameCode)).thenReturn(false);
 		when(gameServ.getCurrentTaskInfo(gameCode)).thenReturn(taskInfo);
@@ -287,5 +290,50 @@ public class GameAPITests
 		
 		verify(gameServ, times(1)).haveResultsChanged(gameID);
 		verifyNoMoreInteractions(gameServ);
+	}
+	
+	@Test
+	public void shouldNoteInteractionSuccessfully() throws Exception
+	{
+		String gameCode = "gameCode";
+		
+		mvc.perform(post("/api/v1/game/" + gameCode + "/ping"))
+			.andExpect(status().isOk());
+		
+		verify(gameServ).noteInteraction(gameCode);
+	}
+	@ParameterizedTest
+	@ValueSource(ints = {-5, -1, 0, 1, 2, 5, 25, 100, 9999})
+	public void shouldGetGameHistorySuccessfully(int page) throws Exception
+	{
+		when(gameServ.getHistory(anyInt()))
+			.thenReturn(new PageImpl<>(List.of()));
+		if (page < 1)
+		{
+			mvc.perform(get("/api/v1/game/history/" + page))
+				.andExpect(redirectedUrl("api/v1/game/history/1"));
+		}
+		else
+		{
+			mvc.perform(get("/api/v1/game/history/" + page))
+				.andExpect(status().isOk());
+			
+			verify(gameServ).getHistory(page - 1);
+		}
+	}
+	
+	@Test
+	public void shouldGetGameResultsView() throws Exception
+	{
+		UUID gameID = UUID.randomUUID();
+		mvc.perform(get("/game/results/" + gameID))
+			.andExpect(status().isOk());
+	}
+	@ParameterizedTest
+	@ValueSource(ints = {1, 2, 5, 25, 100, 9999})
+	public void shouldGetGameHistoryView(int page) throws Exception
+	{
+		mvc.perform(get("/game/history/" + page))
+			.andExpect(status().isOk());
 	}
 }

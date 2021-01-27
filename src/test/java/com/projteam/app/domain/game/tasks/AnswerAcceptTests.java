@@ -209,7 +209,12 @@ public class AnswerAcceptTests
 		
 		WordConnect wc = new WordConnect(UUID.randomUUID(), "Test instruction",
 				leftWords, rightWords, correctMapping, 100);
-		WordConnectAnswer wca = new WordConnectAnswer(correctMapping);
+		WordConnectAnswer wca = new WordConnectAnswer(correctMapping
+				.entrySet()
+				.stream()
+				.collect(Collectors.toMap(
+						e -> leftWords.get(e.getKey()),
+						e -> rightWords.get(e.getValue()))));
 		
 		assertEquals(wc.acceptAnswer(wca), 1);
 	}
