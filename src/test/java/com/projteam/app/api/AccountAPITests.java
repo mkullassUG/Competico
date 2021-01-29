@@ -50,6 +50,8 @@ public class AccountAPITests
 					Charset.forName("utf8"));
 	private static final String LOGIN_REDIRECT_URL = "/dashboard";
 	
+	private final ObjectMapper mapper = new ObjectMapper();
+	
 	@Test
 	public void contextLoads() throws Exception
 	{
@@ -199,8 +201,8 @@ public class AccountAPITests
 	
 	//---Helpers---
 	
-	public static String toJson(Object o) throws JsonProcessingException
+	public String toJson(Object o) throws JsonProcessingException
 	{
-		return new ObjectMapper().writeValueAsString(o);
+		return mapper.writeValueAsString(o);
 	}
 }

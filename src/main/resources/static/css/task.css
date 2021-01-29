@@ -23,7 +23,7 @@ body {
 #gameTimer{
   text-align: center;
   color:white;
-  font-size:40px;
+  font-size:30px;
 }
 
 #lobbyCenter {
@@ -354,18 +354,48 @@ svg.fs-connector-hover path {
   fill: gray;
   stroke-width: 3;
 } 
+.rightSideC{
+  width:50%;
+  display: inline-block;
+  float: right;
+}
+.leftSideC {
+  width:50%;
+  display: inline-block;
+  float: left;
+}
+.rightLineC{
+  display: block;
+  min-height: 10%;
+  float: right;
+  width: 100%;
+}
+.leftLineC {
+  display: block;
+  min-height: 10%;
+  float: left;
+  width: 100%;
+}
+.containerC {
+  /*test*/
+}
 
 .word {
   border: 1px solid black;
   display: inline-block;
-  width: 30%;
+  width: 65%;
+  border: 2px solid blue;
+  border-radius: 20%;
+  text-align: center;
 }
 
 .definition {
-  border: 1px solid black;
+  border: 2px solid blue;
+  border-radius: 20%;
   display: inline-block;
   float: right;
-  width: 45%;
+  width: 80%;
+  min-height: 10%;
 }
 
 /*css template'a od chronological orderu*/

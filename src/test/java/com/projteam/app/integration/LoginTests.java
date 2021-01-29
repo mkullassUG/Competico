@@ -52,6 +52,8 @@ public class LoginTests
 	@Autowired
 	private AccountService accServ;
 	
+	private final ObjectMapper mapper = new ObjectMapper();
+	
 	@BeforeAll
 	public void initAccounts()
 	{
@@ -97,9 +99,9 @@ public class LoginTests
 	
 	//---Helpers---
 	
-	public static String toJson(Object o) throws JsonProcessingException
+	public String toJson(Object o) throws JsonProcessingException
 	{
-		return new ObjectMapper().writeValueAsString(o);
+		return mapper.writeValueAsString(o);
 	}
 	public static List<RegistrationDTO> registrationDTO()
 	{

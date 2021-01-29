@@ -4,7 +4,9 @@ import static com.projteam.app.domain.Account.LECTURER_ROLE;
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.RETURNS_DEFAULTS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,8 +26,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import com.projteam.app.dao.game.PlayerResultDAO;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.projteam.app.dao.game.GameResultDAO;
-import com.projteam.app.dao.game.GameResultsDAO;
 import com.projteam.app.domain.Account;
 import com.projteam.app.domain.game.PlayerResult;
 import com.projteam.app.domain.game.GameResult;
@@ -39,8 +44,8 @@ public class GameServiceTests
 {
 	private @Mock AccountService accountService;
 	private @Mock LobbyService lobbyService;
+	private @Mock PlayerResultDAO prDAO;
 	private @Mock GameResultDAO grDAO;
-	private @Mock GameResultsDAO grsDAO;
 	private @Mock GameTaskDataService gtdService;
 	
 	private @InjectMocks GameService gameService;
@@ -378,18 +383,18 @@ public class GameServiceTests
 	public void canGetGameResults(Account host)
 	{
 		UUID gameID = UUID.randomUUID();
-		GameResult grs = new GameResult(gameID);
+		GameResult gr = new GameResult(gameID);
 		mockPlayers(5).forEach(player ->
 		{
 			UUID playerID = player.getId();
-			grs.addResult(new PlayerResult(UUID.randomUUID(),
+			gr.addResult(new PlayerResult(UUID.randomUUID(),
 					playerID,
 					Map.of(0, Math.round(5 * Math.random()) / 5.0),
 					Map.of(0, 100.0 + (Math.random() * 10)),
 					Map.of(0, 5000l + ((long) (Math.random() * 10000)))));
 			when(accountService.findByID(playerID)).thenReturn(Optional.of(player));
 		});
-		when(grsDAO.findById(gameID)).thenReturn(Optional.of(grs));
+		when(grDAO.findById(gameID)).thenReturn(Optional.of(gr));
 		
 		assertTrue(gameService.getResults(gameID).isPresent());
 	}
@@ -398,7 +403,7 @@ public class GameServiceTests
 	public void cannotGetGameResultsIfGameHistoryDoesNotExist(Account host, Account player)
 	{
 		UUID gameID = UUID.randomUUID();
-		when(grsDAO.findById(gameID)).thenReturn(Optional.empty());
+		when(grDAO.findById(gameID)).thenReturn(Optional.empty());
 		
 		assertTrue(gameService.getResults(gameID).isEmpty());
 	}
@@ -477,18 +482,18 @@ public class GameServiceTests
 		List<Account> players = mockPlayers(5);
 		createGameFromLobby(gameCode, host, players.toArray(l -> new Account[l]));
 		UUID gameID = UUID.randomUUID();
-		GameResult grs = new GameResult(gameID);
+		GameResult gr = new GameResult(gameID);
 		players.forEach(player ->
 		{
 			UUID playerID = player.getId();
-			grs.addResult(new PlayerResult(UUID.randomUUID(),
+			gr.addResult(new PlayerResult(UUID.randomUUID(),
 					playerID,
 					Map.of(0, Math.round(5 * Math.random()) / 5.0),
 					Map.of(0, 100.0 + (Math.random() * 10)),
 					Map.of(0, 5000l + ((long) (Math.random() * 10000)))));
 			when(accountService.findByID(playerID)).thenReturn(Optional.of(player));
 		});
-		when(grsDAO.findById(gameID)).thenReturn(Optional.of(grs));
+		when(grDAO.findById(gameID)).thenReturn(Optional.of(gr));
 		
 		players.forEach(player ->
 		{
@@ -508,7 +513,7 @@ public class GameServiceTests
 		String gameCode = "gameCode";
 		createGameFromLobby(gameCode, host, player);
 		UUID gameID = UUID.randomUUID();
-		when(grsDAO.findById(gameID)).thenReturn(Optional.empty());
+		when(grDAO.findById(gameID)).thenReturn(Optional.empty());
 		
 		assertTrue(gameService.getPersonalResults(gameID, player).isEmpty());
 	}
@@ -636,6 +641,22 @@ public class GameServiceTests
 				mock(WordFillAnswer.class));
 		
 		assertFalse(success);
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void cannotAcceptNullAnswer(
+			Account host, Account player, Account otherPlayer)
+	{
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(player));
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		
+		assertThrows(NullPointerException.class,
+				() -> gameService.acceptAnswer(gameCode, (JsonNode) null));
 	}
 	
 	@ParameterizedTest
@@ -931,6 +952,37 @@ public class GameServiceTests
 		assertDoesNotThrow(() -> gameService.markInactive(wrongGameCode, host));
 		assertDoesNotThrow(() -> gameService.markInactive(wrongGameCode, player));
 		assertDoesNotThrow(() -> gameService.markInactive(wrongGameCode, otherPlayer));
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockPlayerHost")
+	public void shouldGetGameHistory(Account player)
+	{
+		UUID gameID = UUID.randomUUID();
+		when(grDAO.findAllByResults_PlayerID(eq(player.getId()), any()))
+			.thenReturn(new PageImpl<>(List.of(new GameResult(gameID))));
+		
+		Page<Map<String, String>> res = gameService.getHistory(1, player);
+		
+		assertEquals(res.getNumberOfElements(), 1);
+		assertEquals(res.getTotalElements(), 1);
+		assertEquals(res.getContent().get(0).get("id"), gameID.toString());
+	}
+	@ParameterizedTest
+	@MethodSource("mockPlayerHost")
+	public void shouldGetGameHistoryWithAuthenticatedAccount(Account player)
+	{
+		UUID gameID = UUID.randomUUID();
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(player));
+		when(grDAO.findAllByResults_PlayerID(eq(player.getId()), any()))
+			.thenReturn(new PageImpl<>(List.of(new GameResult(gameID))));
+		
+		Page<Map<String, String>> res = gameService.getHistory(1);
+		
+		assertEquals(res.getNumberOfElements(), 1);
+		assertEquals(res.getTotalElements(), 1);
+		assertEquals(res.getContent().get(0).get("id"), gameID.toString());
 	}
 	
 	//---Sources---

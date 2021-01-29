@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.projteam.app.dto.game.GameResultDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
 import com.projteam.app.service.GameService;
@@ -84,8 +84,6 @@ public class GameAPI
 	{
 		try
 		{
-			if (answer == null)
-				answer = JsonNodeFactory.instance.nullNode();
 			gameService.acceptAnswer(gameCode, answer);
 			return ResponseEntity.ok().build();
 		}
@@ -152,10 +150,29 @@ public class GameAPI
 		gameService.noteInteraction(gameCode);
 	}
 	
+	@ApiOperation(value = "Notify the server that the user is still in a game", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Server notified successfully")
+	})
+	@GetMapping("api/v1/game/history/{page}")
+	public Object getGameHistory(@PathVariable int page)
+	{
+		if (page < 1)
+			return new RedirectView("api/v1/game/history/1");
+		return gameService.getHistory(page - 1);
+	}
+	
 	@GetMapping("/game/results/{gameID}")
 	@ApiOperation(value = "Display the results of a given game.")
 	public ModelAndView lobbyPage(@PathVariable("gameID") UUID gameID)
 	{
 		return new ModelAndView("gameResults");
+	}
+	@GetMapping("/game/history/{page}")
+	@ApiOperation(value = "Display the results of a given game.")
+	public ModelAndView gameHistory()
+	{
+		return new ModelAndView("gameHistory");
 	}
 }

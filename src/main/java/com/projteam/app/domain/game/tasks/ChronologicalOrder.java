@@ -61,7 +61,7 @@ public class ChronologicalOrder implements Task
 		return ChronologicalOrderAnswer.class;
 	}
 	@Override
-	public TaskInfoDTO toDTO(int currentTaskNumber, int taskCount)
+	public TaskInfoDTO prepareTaskInfo(int currentTaskNumber, int taskCount)
 	{
 		return new TaskInfoDTO("ChronologicalOrder", currentTaskNumber, taskCount, instruction,
 				new ChronologicalOrderDTO(sentences));

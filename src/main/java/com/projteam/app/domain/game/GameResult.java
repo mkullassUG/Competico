@@ -1,6 +1,7 @@
 package com.projteam.app.domain.game;
 
 import static java.util.Collections.synchronizedMap;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -33,14 +34,21 @@ public class GameResult
 	@Column(name = "results")
 	private Map<UUID, PlayerResult> results = synchronizedMap(new HashMap<>());
 	
+	private Date date;
+	
 	public GameResult(UUID gameID)
+	{
+		this.gameID = gameID;
+		date = new Date();
+	}
+	public GameResult(UUID gameID, Date date)
 	{
 		this.gameID = gameID;
 	}
 	
-	public void addResult(PlayerResult gr)
+	public void addResult(PlayerResult pr)
 	{
-		results.put(gr.getPlayerID(), gr);
+		results.put(pr.getPlayerID(), pr);
 	}
 	public void removeResult(UUID playerID)
 	{

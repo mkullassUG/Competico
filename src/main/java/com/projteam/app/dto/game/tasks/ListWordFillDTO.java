@@ -1,5 +1,7 @@
 package com.projteam.app.dto.game.tasks;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.projteam.app.domain.game.tasks.ListWordFill;
@@ -27,10 +29,16 @@ public class ListWordFillDTO implements TaskDTO
 			.map(row -> row.getEmptySpaceCount())
 			.collect(Collectors.toList());
 		possibleAnswers = rows.stream()
-			.map(row -> row.getPossibleAnswers())
+			.map(row -> shuffle(row.getPossibleAnswers()))
 			.collect(Collectors.toList());
 		startWithText = rows.stream()
 			.map(row -> row.isStartWithText())
 			.collect(Collectors.toList());
+	}
+	private static <T> List<T> shuffle(List<T> list)
+	{
+		List<T> ret = new ArrayList<>(list);
+		Collections.shuffle(ret);
+		return ret;
 	}
 }

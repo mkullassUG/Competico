@@ -121,12 +121,12 @@ public class AnswerGettersSettersTests
 	@Test
 	public void wordConnectAnswerDataTests()
 	{
-		Map<Integer, Integer> answerMapping = Map.of(
-				0, 3,
-				1, 0,
-				2, 4,
-				3, 2,
-				4, 1);
+		Map<String, String> answerMapping = Map.of(
+				"Lorem", "ipsum",
+				"dolor", "sit",
+				"amet", "consectetur",
+				"adipiscing", "elit",
+				"sed", "do");
 		WordConnectAnswer wca = new WordConnectAnswer(Map.of());
 		wca.setAnswerMapping(answerMapping);
 		assertEquals(wca.getAnswerMapping(), answerMapping);
