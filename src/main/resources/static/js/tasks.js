@@ -3,7 +3,7 @@ const taskMokTemplates = [
       taskNumber: 0,
       taskName: `WordFill`,
       text: ["Lorem ipsum dolor sit amet, consectetur "," elit. Quisque vestibulum, enim id fringilla sodales, libero   ipsum "," erat, id ullamcorper elit ante auctor est. Nulla facilisi. Maecenas ultricies, magna non pretium mattis, ligula risus pulvinar elit, eu mattis "," dolor nec turpis. Quisque elementum "," accumsan. Lorem ipsum dolor "," amet, consectetur adipiscing elit. In nec "," nisi, et semper nisl. Cras placerat "," orci eget congue. Duis vitae gravida odio. Etiam elit turpis, "," ac nisi et, dapibus blandit nibh. Duis eleifend metus in iaculis tincidunt."],
-      startsWithText: true,
+      startWithText: true,
       emptySpaceCount: 8,
       possibleAnswers: ["slowo1","slowo2","slowo3","slowo4","slowo5","slowo6","slowo7","slowo8"]
     },
@@ -88,7 +88,7 @@ const TaskVariant0 = (taskData) => {
         }
         var taskContentReady = "";
         var howManyBlanksFound = 0;
-        if (taskData.startsWithText) {
+        if (taskData.startWithText) {
           for (let i = 0; i < self.textField.length; i++) {
             taskContentReady += self.textField[i] + ((howManyBlanksFound>=self.emptySpaceCount)?"":`<div class="answerHolderWrapper"><div class="droppableAnswerHolder" data-answer="">_</div></div>`);
             howManyBlanksFound++;
@@ -220,7 +220,7 @@ const TaskVariant0 = (taskData) => {
 
     return self;
 }
-//WordConnect (nie działa na mobilnym)
+//WordConnect (nie działa na mobilnym?)
 const TaskVariant1 = (taskData) => {
   var self = TaskVariant(taskData);
 
@@ -235,19 +235,22 @@ const TaskVariant1 = (taskData) => {
     self.words = taskData.leftWords;
     self.definitions = taskData.rightWords;
 
-    var taskContentReady= ""
+    var taskContentReady= $(`<div class="containerC">`);
+    var taskContentLeft = $(`<div class="leftSideC">`);
+    var taskContentRight = $(`<div class="rightSideC">`);
     for (let i = 0; i < self.words.length; i++) {
       var word = self.words[i];
       var definition = self.definitions[i];
-      taskContentReady += `<div class="line" ><div class="word" data-order="`+i+`">`;
-      taskContentReady += word;
-      taskContentReady += `</div><div class="definition" data-order="`+i+`">`;
-      taskContentReady += definition;
-      taskContentReady += `</div></div>`;
+      
+      taskContentLeft.append(`<div class="leftLineC"><div class="word" data-order="`+i+`">` + word+ `</div></div>`);
+
+      taskContentRight.append(`</div><div class="rightLineC"><div class="definition" data-order="`+i+`">` + definition + `</div></div>`);
     }
+    taskContentReady.append(taskContentLeft);
+    taskContentReady.append(taskContentRight);
 
     $("#GameDiv").html(`<h6 class="border-bottom border-gray pb-2 mb-0 text-dark"> Content: </h6>
-    <div id="taskContent">`+ taskContentReady +`</div>
+    <div id="taskContent">`+ taskContentReady.html() +`</div>
     `);
     var wordDivs = $(".word"),
     definitionDivs = $(".definition");
@@ -297,32 +300,40 @@ const TaskVariant1 = (taskData) => {
       }
     }
 
-    var anEndpointDestination = {
-      endpoint: "Dot",
-      isSource: false,
-      isTarget: true,
-      maxConnections: -1,
-      connectorStyle: {
-          dashstyle: "2 4"
-      },
-      anchor: [0, 1, -1, 0]
-    };
-    var anEndpointSource = {
-      endpoint: "Rectangle",
-      isSource: true,
-      isTarget: false,
-      maxConnections: -1,
-      anchor: [1, 0, 1, 0]
-    };
+    var colorPicker = (iteration) => {
+      if ( iteration % 9 == 0) return "purple";
+      else if ( iteration % 9 == 0) return "gold";
+      else if ( iteration % 8 == 0) return "cyan";
+      else if ( iteration % 7 == 0) return "lime";
+      else if ( iteration % 6 == 0) return "orange";
+      else if ( iteration % 5 == 0) return "black";
+      else if ( iteration % 4 == 0) return "pink";
+      else if ( iteration % 3 == 0) return "yellow";
+      else if ( iteration % 2 == 0) return "green";
+      else if ( iteration % 1 == 0) return "blue";
+      else return "red";
+    }
+    var anEndpointDestination;
+    var anEndpointSource;
 
     for (let i = 0; i < wordDivs.length; i++) {
       var wordDiv = $(wordDivs[i]);
+      anEndpointSource = {
+        endpoint: "Rectangle",
+        paintStyle:{fillStyle:"blue",radius:7,lineWidth:3},
+        hoverPaintStyle:{fillStyle:"darkblue",radius:7,lineWidth:3},
+        isSource: true,
+        isTarget: false,
+        maxConnections: 1,
+        anchor: [0, 0, 0, 0, 10, 0],
+        connectorStyle: {strokeStyle: colorPicker(i), lineWidth: 4},
+        connectorHoverStyle: {lineWidth: 6},
+        // connector : ["Bezier", { curviness: 30 }],
+        connector: "Bezier",
+      };
       self.endpointSources.push(
         instance.addEndpoint(
-          wordDiv, {
-          connectorStyle: {strokeStyle: "blue", lineWidth: 1},
-          connectorHoverStyle: {lineWidth: 2},
-          },
+          wordDiv, 
           anEndpointSource,
         )
       )
@@ -330,12 +341,26 @@ const TaskVariant1 = (taskData) => {
     }
     for (let i = 0; i < definitionDivs.length; i++) {
       var definitionDiv = $(definitionDivs[i]);
+      anEndpointDestination = {
+        endpoint: "Dot",
+        paintStyle:{strokeStyle:"blue",fillStyle:"transparent",radius:7,lineWidth:3},
+        hoverPaintStyle:{strokeStyle:"blue",fillStyle:"blue",radius:7,lineWidth:3},  
+        isSource: false,
+        isTarget: true,
+        maxConnections: 1,
+        connectorStyle: {
+            dashstyle: "2 4"
+        },
+        anchor: [0, 0, 0, 0, -10, 0],
+        connectorStyle: {strokeStyle: colorPicker(i), lineWidth: 4},
+        connectorHoverStyle: {lineWidth: 6},
+        // connector : ["Bezier", { curviness: 30 }],
+        connector: "Bezier",
+        
+      };
       self.endpointDestinations.push(
         instance.addEndpoint(
-          definitionDiv, {
-              connectorStyle: {strokeStyle: "blue", lineWidth: 1},
-              connectorHoverStyle: {lineWidth: 2},
-          },
+          definitionDiv, 
           anEndpointDestination,
         )
       )
@@ -408,9 +433,12 @@ const TaskVariant1 = (taskData) => {
 
     for (let i = 0; i < keys.length; i++) {
       var key = keys[i];
-      var sourceIndex = parseInt($(self.connections[key].info.source[0]).data("order"));
-      var targetIndex = parseInt($(self.connections[key].info.target[0]).data("order"));
-      answers[sourceIndex] = targetIndex;
+      // var sourceIndex = parseInt($(self.connections[key].info.source[0]).data("order"));
+      // var targetIndex = parseInt($(self.connections[key].info.target[0]).data("order"));
+
+      var sourceText = $(self.connections[key].info.source[0]).text();
+      var targetText = $(self.connections[key].info.target[0]).text();
+      answers[sourceText] = targetText;
     }
     //TODO, zrobić mapę słowo index -> defincija index
     return  {"answerMapping": answers};
@@ -556,7 +584,7 @@ const TaskVariant = (taskData) => {
   var self = taskData;//czy tu nie będzie porblemu, że nadpisuje i nie użyje ponownei taska
 
   self.taskVariantInit = (taskData) => {
-    self.taskNumber = taskData.taskNumber;
+    self.currentTaskNumber = taskData.currentTaskNumber;
     if (resize_ob)
       resize_ob.unobserve(document.querySelector("#GameDiv"));
   }
@@ -655,7 +683,7 @@ const TaskVariant = (taskData) => {
 //         });*/
 //         var taskContentReady = "";
 //         var howManyBlanksFound = 0;
-//         if (taskData.startsWithText) {
+//         if (taskData.startWithText) {
 //           for (let i = 0; i < self.textField.length; i++) {
 //             taskContentReady += self.textField[i] + ((howManyBlanksFound>=self.emptySpaceCount)?"":`<div class="answerHolderWrapper"><div class="droppableAnswerHolder" data-answer="">_</div></div>`);
 //             howManyBlanksFound++;
