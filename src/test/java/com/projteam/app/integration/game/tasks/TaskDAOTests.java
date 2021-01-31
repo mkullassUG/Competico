@@ -25,7 +25,7 @@ import com.projteam.app.dao.game.tasks.SingleChoiceDAO;
 import com.projteam.app.dao.game.tasks.WordConnectDAO;
 import com.projteam.app.dao.game.tasks.WordFillDAO;
 import com.projteam.app.dao.game.tasks.WordFillElementDAO;
-import com.projteam.app.dao.game.tasks.ChoiceWordFillElementWordChoice;
+import com.projteam.app.dao.game.tasks.ChoiceWordFillElementWordChoiceDAO;
 import com.projteam.app.domain.game.tasks.ChoiceWordFill;
 import com.projteam.app.domain.game.tasks.ChoiceWordFillElement;
 import com.projteam.app.domain.game.tasks.ChronologicalOrder;
@@ -51,7 +51,7 @@ public class TaskDAOTests
 	private @Autowired ListWordFillDAO lwfDAO;
 	private @Autowired ChoiceWordFillDAO cwfDAO;
 	private @Autowired ChoiceWordFillElementDAO cwfeDAO;
-	private @Autowired ChoiceWordFillElementWordChoice cfwewcDAO;
+	private @Autowired ChoiceWordFillElementWordChoiceDAO cfwewcDAO;
 	private @Autowired ListChoiceWordFillDAO lcwfDAO;
 	private @Autowired SingleChoiceDAO scDAO;
 	private @Autowired MultipleChoiceDAO mcDAO;

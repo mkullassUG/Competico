@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@Api(value = "GameAPI", tags = "The main API managing games")
+@Api(value = "GameAPI", tags = "API managing games and their results")
 public class GameAPI
 {
 	private GameService gameService;

@@ -27,22 +27,29 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.service.AccountService;
+import com.projteam.app.service.GameService;
+import com.projteam.app.service.GameTaskDataService;
+import com.projteam.app.service.LobbyService;
 
 @SpringBootTest
+@ContextConfiguration(name = "API-tests")
 @AutoConfigureMockMvc(addFilters = false)
 public class AccountAPITests
 {
 	@Autowired
 	private MockMvc mvc;
 	
-	@MockBean
-	private AccountService accServ;
+	private @MockBean AccountService accountService;
+	private @MockBean LobbyService lobbyService;
+	private @MockBean GameService gameService;
+	private @MockBean GameTaskDataService gtdService;
 	
 	private static final MediaType APPLICATION_JSON_UTF8 =
 			new MediaType(MediaType.APPLICATION_JSON.getType(),
@@ -67,15 +74,15 @@ public class AccountAPITests
 				.content(toJson(mockRegDto)))
 			.andExpect(status().isCreated());
 		
-		verify(accServ, times(1)).register(any(), eq(mockRegDto), anyBoolean());
-		verifyNoMoreInteractions(accServ);
+		verify(accountService, times(1)).register(any(), eq(mockRegDto), anyBoolean());
+		verifyNoMoreInteractions(accountService);
 	}
 	@ParameterizedTest
 	@MethodSource("mockRegistrationData")
 	public void shouldReturnBadRequestWhenUserAlreadyRegistered(RegistrationDTO mockRegDto) throws Exception
 	{
 		doThrow(new IllegalStateException("Account with provided data already exists"))
-			.when(accServ)
+			.when(accountService)
 			.register(any(), eq(mockRegDto), eq(true));
 		
 		mvc.perform(post("/api/v1/register")
@@ -83,15 +90,15 @@ public class AccountAPITests
 				.content(toJson(mockRegDto)))
 			.andExpect(status().isBadRequest());
 		
-		verify(accServ, times(1)).register(any(), eq(mockRegDto), anyBoolean());
-		verifyNoMoreInteractions(accServ);
+		verify(accountService, times(1)).register(any(), eq(mockRegDto), anyBoolean());
+		verifyNoMoreInteractions(accountService);
 	}
 	
 	@ParameterizedTest
 	@MethodSource("mockLoginData")
 	public void shouldLoginSuccessfully(LoginDTO mockLoginDto) throws Exception
 	{
-		when(accServ.login(any(), eq(mockLoginDto)))
+		when(accountService.login(any(), eq(mockLoginDto)))
 			.thenReturn(true);
 		
 		mvc.perform(post("/api/v1/login")
@@ -99,14 +106,14 @@ public class AccountAPITests
 				.content(toJson(mockLoginDto)))
 			.andExpect(status().isOk());
 		
-		verify(accServ, times(1)).login(any(), eq(mockLoginDto));
-		verifyNoMoreInteractions(accServ);
+		verify(accountService, times(1)).login(any(), eq(mockLoginDto));
+		verifyNoMoreInteractions(accountService);
 	}
 	@ParameterizedTest
 	@MethodSource("mockLoginData")
 	public void shouldReturnBadRequestWhenUserDoesNotExist(LoginDTO mockLoginDto) throws Exception
 	{
-		when(accServ.login(any(), eq(mockLoginDto)))
+		when(accountService.login(any(), eq(mockLoginDto)))
 			.thenReturn(false);
 		
 		mvc.perform(post("/api/v1/login")
@@ -114,15 +121,15 @@ public class AccountAPITests
 				.content(toJson(mockLoginDto)))
 			.andExpect(status().isBadRequest());
 		
-		verify(accServ, times(1)).login(any(), eq(mockLoginDto));
-		verifyNoMoreInteractions(accServ);
+		verify(accountService, times(1)).login(any(), eq(mockLoginDto));
+		verifyNoMoreInteractions(accountService);
 	}
 	
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
 	public void shouldReturnCheckIfUserIsAuthenticated(boolean isAuthenticated) throws Exception
 	{
-		when(accServ.isAuthenticated()).thenReturn(isAuthenticated);
+		when(accountService.isAuthenticated()).thenReturn(isAuthenticated);
 		
 		mvc.perform(get("/api/v1/authenticated")
 				.contentType(APPLICATION_JSON_UTF8)
@@ -134,7 +141,7 @@ public class AccountAPITests
 	@Test
 	public void shouldRedirectFromRegisterWhenAlreadyLoggedIn() throws Exception
 	{
-		when(accServ.isAuthenticated())
+		when(accountService.isAuthenticated())
 			.thenReturn(true);
 		
 		mvc.perform(get("/register"))
@@ -143,7 +150,7 @@ public class AccountAPITests
 	@Test
 	public void shouldRedirectFromLoginWhenAlreadyLoggedIn() throws Exception
 	{
-		when(accServ.isAuthenticated())
+		when(accountService.isAuthenticated())
 			.thenReturn(true);
 		
 		mvc.perform(get("/login"))
@@ -152,7 +159,7 @@ public class AccountAPITests
 	@Test
 	public void shouldDisplayRegisterPageWhenAlreadyLoggedIn() throws Exception
 	{
-		when(accServ.isAuthenticated())
+		when(accountService.isAuthenticated())
 			.thenReturn(false);
 		
 		mvc.perform(get("/register"))
@@ -161,7 +168,7 @@ public class AccountAPITests
 	@Test
 	public void shouldDisplayLoginPageWhenAlreadyLoggedIn() throws Exception
 	{
-		when(accServ.isAuthenticated())
+		when(accountService.isAuthenticated())
 			.thenReturn(false);
 		
 		mvc.perform(get("/login"))

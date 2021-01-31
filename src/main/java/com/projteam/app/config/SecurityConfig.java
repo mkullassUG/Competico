@@ -2,6 +2,7 @@ package com.projteam.app.config;
 
 import static com.projteam.app.domain.Account.ACTUATOR_ADMIN;
 import static com.projteam.app.domain.Account.SWAGGER_ADMIN;
+import static com.projteam.app.domain.Account.TASK_DATA_ADMIN;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -52,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 					"/v2/api-docs/**",
 					"/v3/api-docs/**")
 			.hasAuthority(SWAGGER_ADMIN)
+			.antMatchers("/api/v1/tasks/**").hasAuthority(TASK_DATA_ADMIN)
 			.anyRequest().authenticated()
 			.and()
 			.logout()

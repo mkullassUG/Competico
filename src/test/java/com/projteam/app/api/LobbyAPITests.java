@@ -26,6 +26,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,18 +34,21 @@ import com.projteam.app.domain.Account;
 import com.projteam.app.dto.lobby.LobbyOptionsDTO;
 import com.projteam.app.service.AccountService;
 import com.projteam.app.service.GameService;
+import com.projteam.app.service.GameTaskDataService;
 import com.projteam.app.service.LobbyService;
 
 @SpringBootTest
+@ContextConfiguration(name = "API-tests")
 @AutoConfigureMockMvc(addFilters = false)
 public class LobbyAPITests
 {
 	@Autowired
 	private MockMvc mvc;
 	
+	private @MockBean AccountService accountService;
 	private @MockBean LobbyService lobbyService;
 	private @MockBean GameService gameService;
-	private @MockBean AccountService accountService;
+	private @MockBean GameTaskDataService gtdService;
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	

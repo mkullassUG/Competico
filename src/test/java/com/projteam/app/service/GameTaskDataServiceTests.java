@@ -1,50 +1,47 @@
 package com.projteam.app.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.projteam.app.dao.game.tasks.ChoiceWordFillDAO;
-import com.projteam.app.dao.game.tasks.ChoiceWordFillElementDAO;
-import com.projteam.app.dao.game.tasks.ChoiceWordFillElementWordChoice;
-import com.projteam.app.dao.game.tasks.ChronologicalOrderDAO;
-import com.projteam.app.dao.game.tasks.ListChoiceWordFillDAO;
-import com.projteam.app.dao.game.tasks.ListSentenceFormingDAO;
-import com.projteam.app.dao.game.tasks.ListWordFillDAO;
-import com.projteam.app.dao.game.tasks.MultipleChoiceDAO;
-import com.projteam.app.dao.game.tasks.MultipleChoiceElementDAO;
-import com.projteam.app.dao.game.tasks.SentenceFormingElementDAO;
-import com.projteam.app.dao.game.tasks.SingleChoiceDAO;
-import com.projteam.app.dao.game.tasks.WordConnectDAO;
-import com.projteam.app.dao.game.tasks.WordFillDAO;
-import com.projteam.app.dao.game.tasks.WordFillElementDAO;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.projteam.app.service.game.tasks.ChoiceWordFillService;
+import com.projteam.app.service.game.tasks.ChronologicalOrderService;
+import com.projteam.app.service.game.tasks.ListChoiceWordFillService;
+import com.projteam.app.service.game.tasks.ListSentenceFormingService;
+import com.projteam.app.service.game.tasks.ListWordFillService;
+import com.projteam.app.service.game.tasks.MultipleChoiceService;
+import com.projteam.app.service.game.tasks.SingleChoiceService;
+import com.projteam.app.service.game.tasks.WordConnectService;
+import com.projteam.app.service.game.tasks.WordFillService;
 
 class GameTaskDataServiceTests
 {
-	private @Mock ChoiceWordFillDAO cwfDao;
-	private @Mock ChoiceWordFillElementDAO cwfeDao;
-	private @Mock ChoiceWordFillElementWordChoice cwfewcDao;
-	private @Mock ChronologicalOrderDAO coDao;
-	private @Mock ListChoiceWordFillDAO lcwfDao;
-	private @Mock ListSentenceFormingDAO lsfDao;
-	private @Mock ListWordFillDAO lwfDao;
-	private @Mock MultipleChoiceDAO mcDao;
-	private @Mock MultipleChoiceElementDAO mceDao;
-	private @Mock SentenceFormingElementDAO sfeDao;
-	private @Mock SingleChoiceDAO scDao;
-	private @Mock WordConnectDAO wcDao;
-	private @Mock WordFillDAO wfDao;
-	private @Mock WordFillElementDAO wfeDao;
+	private @Mock ChoiceWordFillService cwfServ;
+	private @Mock ChronologicalOrderService coServ;
+	private @Mock ListChoiceWordFillService lcwfServ;
+	private @Mock ListSentenceFormingService lsfServ;
+	private @Mock ListWordFillService lwfServ;
+	private @Mock MultipleChoiceService mcServ;
+	private @Mock SingleChoiceService scServ;
+	private @Mock WordConnectService wcServ;
+	private @Mock WordFillService wfServ;
 	
-	private @InjectMocks GameTaskDataService gtdServ;
+	private GameTaskDataService gtdServ;
 	
 	@BeforeEach
 	public void setup()
 	{
 		MockitoAnnotations.initMocks(this);
+		
+		gtdServ = new GameTaskDataService(List.of(
+					cwfServ, coServ, lcwfServ,
+					lsfServ, lwfServ, mcServ,
+					scServ, wcServ, wfServ));
 	}
 	
 	@ParameterizedTest
@@ -52,5 +49,12 @@ class GameTaskDataServiceTests
 	public void canCreateDefaultTask(int targetDifficulty)
 	{
 		assertNotNull(gtdServ.defaultTask(targetDifficulty));
+	}
+	@Test
+	public void canGetAllTasksAsJson()
+	{
+		JsonNode res = gtdServ.getAllTasksAsJson();
+		assertNotNull(res);
+		assertTrue(res.isArray());
 	}
 }

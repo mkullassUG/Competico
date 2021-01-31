@@ -30,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -44,17 +45,23 @@ import com.projteam.app.dto.game.GameResultPersonalDTO;
 import com.projteam.app.dto.game.GameResultTotalDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.service.AccountService;
 import com.projteam.app.service.GameService;
+import com.projteam.app.service.GameTaskDataService;
+import com.projteam.app.service.LobbyService;
 
 @SpringBootTest
+@ContextConfiguration(name = "API-tests")
 @AutoConfigureMockMvc(addFilters = false)
 public class GameAPITests
 {
 	@Autowired
 	private MockMvc mvc;
 	
-	@MockBean
-	private GameService gameServ;
+	private @MockBean AccountService accountService;
+	private @MockBean LobbyService lobbyService;
+	private @MockBean GameService gameService;
+	private @MockBean GameTaskDataService gtdService;
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	
@@ -68,14 +75,14 @@ public class GameAPITests
 	{
 		String gameCode = "gameCode";
 		
-		when(gameServ.createGameFromLobby(gameCode)).thenReturn(true);
+		when(gameService.createGameFromLobby(gameCode)).thenReturn(true);
 		
 		mvc.perform(post("/api/v1/lobby/" + gameCode + "/start"))
 			.andExpect(status().isCreated())
 			.andExpect(content().string("" + true));
 		
-		verify(gameServ, times(1)).createGameFromLobby(gameCode);
-		verifyNoMoreInteractions(gameServ);
+		verify(gameService, times(1)).createGameFromLobby(gameCode);
+		verifyNoMoreInteractions(gameService);
 	}
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
@@ -83,14 +90,14 @@ public class GameAPITests
 	{
 		String gameCode = "gameCode";
 		
-		when(gameServ.gameExists(gameCode)).thenReturn(gameExists);
+		when(gameService.gameExists(gameCode)).thenReturn(gameExists);
 		
 		mvc.perform(get("/api/v1/game/" + gameCode))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.exists", is(gameExists)));
 		
-		verify(gameServ, times(1)).gameExists(gameCode);
-		verifyNoMoreInteractions(gameServ);
+		verify(gameService, times(1)).gameExists(gameCode);
+		verifyNoMoreInteractions(gameService);
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 3, 4, 5, 10, 15, 20})
@@ -109,8 +116,8 @@ public class GameAPITests
 				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 100);
 		TaskInfoDTO taskInfo = task.prepareTaskInfo(taskNumber, taskNumber * 2);
 		
-		when(gameServ.hasGameFinished(gameCode)).thenReturn(false);
-		when(gameServ.getCurrentTaskInfo(gameCode)).thenReturn(taskInfo);
+		when(gameService.hasGameFinished(gameCode)).thenReturn(false);
+		when(gameService.getCurrentTaskInfo(gameCode)).thenReturn(taskInfo);
 		
 		String res = mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 			.andExpect(status().isOk())
@@ -120,23 +127,23 @@ public class GameAPITests
 		
 		assertEquals(mapper.readTree(res), mapper.valueToTree(taskInfo));
 		
-		verify(gameServ, times(1)).hasGameFinished(gameCode);
-		verify(gameServ, times(1)).getCurrentTaskInfo(gameCode);
-		verifyNoMoreInteractions(gameServ);
+		verify(gameService, times(1)).hasGameFinished(gameCode);
+		verify(gameService, times(1)).getCurrentTaskInfo(gameCode);
+		verifyNoMoreInteractions(gameService);
 	}
 	@Test
 	public void shouldNotGetCurrentTaskWhenGameFinished() throws Exception
 	{
 		String gameCode = "gameCode";
 		
-		when(gameServ.hasGameFinished(gameCode)).thenReturn(true);
+		when(gameService.hasGameFinished(gameCode)).thenReturn(true);
 		
 		mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.hasGameFinished", is(true)));
 		
-		verify(gameServ, times(1)).hasGameFinished(gameCode);
-		verifyNoMoreInteractions(gameServ);
+		verify(gameService, times(1)).hasGameFinished(gameCode);
+		verifyNoMoreInteractions(gameService);
 	}
 	@Test
 	public void shouldAcceptAnswer() throws Exception
@@ -152,9 +159,9 @@ public class GameAPITests
 						.toString()))
 			.andExpect(status().isOk());
 		
-		verify(gameServ, times(1)).acceptAnswer(eq(gameCode), 
+		verify(gameService, times(1)).acceptAnswer(eq(gameCode), 
 				(JsonNode) eq(mapper.valueToTree(answer)));
-		verifyNoMoreInteractions(gameServ);
+		verifyNoMoreInteractions(gameService);
 	}
 	@Test
 	public void shouldDiscardMaformedAnswer() throws Exception
@@ -162,7 +169,7 @@ public class GameAPITests
 		String gameCode = "gameCode";
 		
 		Mockito.doThrow(JsonProcessingException.class)
-			.when(gameServ)
+			.when(gameService)
 			.acceptAnswer(eq(gameCode), (JsonNode) any());
 		
 		mvc.perform(post("/api/v1/game/" + gameCode + "/tasks/answer")
@@ -170,8 +177,8 @@ public class GameAPITests
 				.content("{}"))
 			.andExpect(status().isBadRequest());
 		
-		verify(gameServ, times(1)).acceptAnswer(eq(gameCode), (JsonNode) any());
-		verifyNoMoreInteractions(gameServ);
+		verify(gameService, times(1)).acceptAnswer(eq(gameCode), (JsonNode) any());
+		verifyNoMoreInteractions(gameService);
 	}
 	@Test
 	public void shouldGetResultsDuringGame() throws Exception
@@ -184,7 +191,7 @@ public class GameAPITests
 				"mockUsername2", "mockNickname2", 1000, 7658, false, false);
 		Class<GameResultTotalDuringGameDTO> grClass = GameResultTotalDuringGameDTO.class;
 		
-		when(gameServ.getCurrentResults(gameID)).thenReturn(Optional.of(List.of(grt1, grt2)));
+		when(gameService.getCurrentResults(gameID)).thenReturn(Optional.of(List.of(grt1, grt2)));
 		
 		String res = mvc.perform(get("/api/v1/scores/" + gameID + "/total"))
 			.andExpect(status().isOk())
@@ -208,8 +215,8 @@ public class GameAPITests
 				"mockUsername2", "mockNickname2", 1075, 9000);
 		Class<GameResultTotalDTO> grClass = GameResultTotalDTO.class;
 		
-		when(gameServ.getCurrentResults(gameID)).thenReturn(Optional.empty());
-		when(gameServ.getResults(gameID)).thenReturn(Optional.of(List.of(grt1, grt2)));
+		when(gameService.getCurrentResults(gameID)).thenReturn(Optional.empty());
+		when(gameService.getResults(gameID)).thenReturn(Optional.of(List.of(grt1, grt2)));
 		
 		String res = mvc.perform(get("/api/v1/scores/" + gameID + "/total"))
 			.andExpect(status().isOk())
@@ -231,7 +238,7 @@ public class GameAPITests
 		GameResultPersonalDTO grp2 = new GameResultPersonalDTO(0.75, 22123, 175);
 		Class<GameResultPersonalDTO> grClass = GameResultPersonalDTO.class;
 		
-		when(gameServ.getPersonalResults(gameID)).thenReturn(Optional.of(List.of(grp1, grp2)));
+		when(gameService.getPersonalResults(gameID)).thenReturn(Optional.of(List.of(grp1, grp2)));
 		
 		String res = mvc.perform(get("/api/v1/scores/" + gameID + "/personal"))
 			.andExpect(status().isOk())
@@ -250,28 +257,28 @@ public class GameAPITests
 	{
 		UUID gameID = UUID.randomUUID();
 		
-		when(gameServ.haveResultsChanged(gameID)).thenReturn(Optional.of(resultsChanged));
+		when(gameService.haveResultsChanged(gameID)).thenReturn(Optional.of(resultsChanged));
 		
 		mvc.perform(get("/api/v1/scores/" + gameID + "/total/changes"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.haveResultsChanged", is(resultsChanged)));
 		
-		verify(gameServ, times(1)).haveResultsChanged(gameID);
-		verifyNoMoreInteractions(gameServ);
+		verify(gameService, times(1)).haveResultsChanged(gameID);
+		verifyNoMoreInteractions(gameService);
 	}
 	@Test
 	public void shouldReturnEmptyIfGameNotExists() throws Exception
 	{
 		UUID gameID = UUID.randomUUID();
 		
-		when(gameServ.haveResultsChanged(gameID)).thenReturn(Optional.empty());
+		when(gameService.haveResultsChanged(gameID)).thenReturn(Optional.empty());
 		
 		mvc.perform(get("/api/v1/scores/" + gameID + "/total/changes"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.gameExists", is(false)));
 		
-		verify(gameServ, times(1)).haveResultsChanged(gameID);
-		verifyNoMoreInteractions(gameServ);
+		verify(gameService, times(1)).haveResultsChanged(gameID);
+		verifyNoMoreInteractions(gameService);
 	}
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
@@ -280,7 +287,7 @@ public class GameAPITests
 		UUID gameID = UUID.randomUUID();
 		String msg = "Insufficient permissions to view this game";
 		
-		when(gameServ.haveResultsChanged(gameID))
+		when(gameService.haveResultsChanged(gameID))
 			.thenThrow(new IllegalArgumentException(
 					msg));
 		
@@ -288,8 +295,8 @@ public class GameAPITests
 			.andExpect(status().isBadRequest())
 			.andExpect(content().string(msg));
 		
-		verify(gameServ, times(1)).haveResultsChanged(gameID);
-		verifyNoMoreInteractions(gameServ);
+		verify(gameService, times(1)).haveResultsChanged(gameID);
+		verifyNoMoreInteractions(gameService);
 	}
 	
 	@Test
@@ -300,13 +307,13 @@ public class GameAPITests
 		mvc.perform(post("/api/v1/game/" + gameCode + "/ping"))
 			.andExpect(status().isOk());
 		
-		verify(gameServ).noteInteraction(gameCode);
+		verify(gameService).noteInteraction(gameCode);
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {-5, -1, 0, 1, 2, 5, 25, 100, 9999})
 	public void shouldGetGameHistorySuccessfully(int page) throws Exception
 	{
-		when(gameServ.getHistory(anyInt()))
+		when(gameService.getHistory(anyInt()))
 			.thenReturn(new PageImpl<>(List.of()));
 		if (page < 1)
 		{
@@ -318,7 +325,7 @@ public class GameAPITests
 			mvc.perform(get("/api/v1/game/history/" + page))
 				.andExpect(status().isOk());
 			
-			verify(gameServ).getHistory(page - 1);
+			verify(gameService).getHistory(page - 1);
 		}
 	}
 	

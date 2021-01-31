@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@Api(value = "LobbyAPI", tags = "The main API managing lobbies before the game starts")
+@Api(value = "LobbyAPI", tags = "API managing lobbies before the game starts")
 public class LobbyAPI
 {
 	private LobbyService lobbyService;

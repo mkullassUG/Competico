@@ -4,5 +4,5 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.projteam.app.domain.game.tasks.ChoiceWordFillElement;
 
-public interface ChoiceWordFillElementWordChoice extends JpaRepository<ChoiceWordFillElement.WordChoice, UUID>
+public interface ChoiceWordFillElementWordChoiceDAO extends JpaRepository<ChoiceWordFillElement.WordChoice, UUID>
 {}

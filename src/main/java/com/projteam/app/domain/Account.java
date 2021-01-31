@@ -53,6 +53,7 @@ public class Account implements UserDetails, Initializable
 	public static final String LECTURER_ROLE = "LECTURER";
 	public static final String ACTUATOR_ADMIN = "ACTUATOR_ADMIN";
 	public static final String SWAGGER_ADMIN = "SWAGGER_ADMIN";
+	public static final String TASK_DATA_ADMIN = "TASK_DATA_ADMIN";
 	
 	@Override
 	public boolean equals(Object obj)
