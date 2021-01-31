@@ -2,7 +2,6 @@ package com.projteam.app.service;
 
 import static com.projteam.app.domain.Account.LECTURER_ROLE;
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;

@@ -1,6 +1,6 @@
 package com.projteam.app.domain.game.tasks;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.util.ArrayList;
 import java.util.Iterator;
