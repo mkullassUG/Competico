@@ -30,6 +30,7 @@ import com.projteam.app.domain.game.tasks.WordFill;
 import com.projteam.app.domain.game.tasks.WordFillElement;
 import com.projteam.app.domain.game.tasks.ChoiceWordFillElement.WordChoice;
 import com.projteam.app.domain.game.tasks.WordFillElement.EmptySpace;
+import com.projteam.app.service.game.GameTaskDataService;
 import com.projteam.app.service.game.tasks.ChoiceWordFillService;
 import com.projteam.app.service.game.tasks.ChronologicalOrderService;
 import com.projteam.app.service.game.tasks.ListChoiceWordFillService;

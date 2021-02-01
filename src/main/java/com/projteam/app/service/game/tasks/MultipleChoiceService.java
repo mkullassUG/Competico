@@ -26,12 +26,14 @@ public class MultipleChoiceService implements TaskService
 	}
 	
 	@Override
+	@Transactional
 	public boolean genericExistsById(Task task)
 	{
 		ensureApplicable(task);
 		return mcDao.existsById(((MultipleChoice) task).getId());
 	}
 	@Override
+	@Transactional
 	public long count()
 	{
 		return mcDao.count();
@@ -62,6 +64,7 @@ public class MultipleChoiceService implements TaskService
 				.collect(Collectors.toList());
 	}
 	@Override
+	@Transactional
 	public void genericSave(Task task)
 	{
 		ensureApplicable(task);

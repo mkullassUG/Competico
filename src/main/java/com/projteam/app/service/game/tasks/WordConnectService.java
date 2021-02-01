@@ -22,12 +22,14 @@ public class WordConnectService implements TaskService
 	}
 
 	@Override
+	@Transactional
 	public boolean genericExistsById(Task task)
 	{
 		ensureApplicable(task);
 		return wcDao.existsById(((WordConnect) task).getId());
 	}
 	@Override
+	@Transactional
 	public long count()
 	{
 		return wcDao.count();
@@ -58,6 +60,7 @@ public class WordConnectService implements TaskService
 				.collect(Collectors.toList());
 	}
 	@Override
+	@Transactional
 	public void genericSave(Task task)
 	{
 		ensureApplicable(task);

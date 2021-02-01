@@ -160,23 +160,27 @@ public class AccountService implements UserDetailsService
 			return null;
 		return auth;
 	}
+	@Transactional
 	public boolean isAuthenticated()
 	{
 		return getAuthentication() != null;
 	}
+	@Transactional
 	public Optional<Account> getAuthenticatedAccount()
 	{
-		return Optional.ofNullable(getAuthentication())
-				.map(auth -> (Account) auth.getPrincipal());
+		return init(Optional.ofNullable(getAuthentication())
+				.map(auth -> (Account) auth.getPrincipal()));
 	}
 	private Optional<Account> selectByEmailOrUsername(String emailOrUsername)
 	{
 		return init(accDao.findByEmailOrUsername(emailOrUsername, emailOrUsername));
 	}
+	@Transactional
 	public Optional<Account> findByID(UUID id)
 	{
 		return init(accDao.findById(id));
 	}
+	@Transactional
 	public Optional<Account> findByUsername(String username)
 	{
 		return init(accDao.findByUsername(username));

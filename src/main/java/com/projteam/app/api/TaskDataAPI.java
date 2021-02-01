@@ -5,8 +5,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.projteam.app.service.GameTaskDataService;
+import com.projteam.app.service.game.GameTaskDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -39,5 +40,12 @@ public class TaskDataAPI
 				.header("Content-Disposition",
 						"attachment; filename=\"" + filename + "\"")
 				.body(ret);
+	}
+	
+	@GetMapping("/tasks/import/global")
+	@ApiOperation(value = "Display a list of task data templates for global import")
+	public ModelAndView gameHistory()
+	{
+		return new ModelAndView("taskImportList");
 	}
 }

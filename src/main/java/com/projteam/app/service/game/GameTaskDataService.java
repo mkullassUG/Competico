@@ -1,4 +1,4 @@
-package com.projteam.app.service;
+package com.projteam.app.service.game;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,6 +45,7 @@ public class GameTaskDataService
                 .withCreatorVisibility(Visibility.NONE));
 	}
 	
+	@Transactional
 	@EventListener(ContextRefreshedEvent.class)
 	public void initTaskDataFromJSON() throws IOException, ClassNotFoundException
 	{

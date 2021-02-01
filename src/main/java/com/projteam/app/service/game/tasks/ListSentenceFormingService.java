@@ -26,12 +26,14 @@ public class ListSentenceFormingService implements TaskService
 	}
 	
 	@Override
+	@Transactional
 	public boolean genericExistsById(Task task)
 	{
 		ensureApplicable(task);
 		return lsfDao.existsById(((ListSentenceForming) task).getId());
 	}
 	@Override
+	@Transactional
 	public long count()
 	{
 		return lsfDao.count();
@@ -62,6 +64,7 @@ public class ListSentenceFormingService implements TaskService
 				.collect(Collectors.toList());
 	}
 	@Override
+	@Transactional
 	public void genericSave(Task task)
 	{
 		ensureApplicable(task);

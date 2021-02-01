@@ -46,9 +46,9 @@ import com.projteam.app.dto.game.GameResultTotalDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
 import com.projteam.app.service.AccountService;
-import com.projteam.app.service.GameService;
-import com.projteam.app.service.GameTaskDataService;
-import com.projteam.app.service.LobbyService;
+import com.projteam.app.service.game.GameService;
+import com.projteam.app.service.game.GameTaskDataService;
+import com.projteam.app.service.game.LobbyService;
 
 @SpringBootTest
 @ContextConfiguration(name = "API-tests")

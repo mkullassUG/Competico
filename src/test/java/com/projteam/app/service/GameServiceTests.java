@@ -38,6 +38,10 @@ import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 import com.projteam.app.dto.game.GameResultPersonalDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
+import com.projteam.app.service.game.GameService;
+import com.projteam.app.service.game.GameTaskDataService;
+import com.projteam.app.service.game.LobbyService;
+import com.projteam.app.service.game.PlayerDataService;
 
 public class GameServiceTests
 {
@@ -46,6 +50,7 @@ public class GameServiceTests
 	private @Mock PlayerResultDAO prDAO;
 	private @Mock GameResultDAO grDAO;
 	private @Mock GameTaskDataService gtdService;
+	private @Mock PlayerDataService pdService;
 	
 	private @InjectMocks GameService gameService;
 	

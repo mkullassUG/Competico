@@ -18,7 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.projteam.app.dto.game.GameResultDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
-import com.projteam.app.service.GameService;
+import com.projteam.app.service.game.GameService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -161,6 +161,19 @@ public class GameAPI
 		if (page < 1)
 			return new RedirectView("api/v1/game/history/1");
 		return gameService.getHistory(page - 1);
+	}
+	
+	@ApiOperation(value = "Notify the server that the user is still in a game", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Server notified successfully")
+	})
+	@GetMapping("api/v1/player/rating")
+	public Object getRating()
+	{
+		return gameService.getRating()
+				.map(rating -> Map.<String, Object>of("rating", rating))
+				.orElse(Map.of("isPlayer", false));
 	}
 	
 	@GetMapping("/game/results/{gameID}")

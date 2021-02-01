@@ -1,4 +1,4 @@
-package com.projteam.app.service;
+package com.projteam.app.service.game;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static java.util.Collections.synchronizedMap;
@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,64 +25,51 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.projteam.app.dao.game.PlayerResultDAO;
 import com.projteam.app.dao.game.GameResultDAO;
-import com.projteam.app.dao.game.tasks.ChoiceWordFillDAO;
-import com.projteam.app.dao.game.tasks.ChronologicalOrderDAO;
-import com.projteam.app.dao.game.tasks.ListChoiceWordFillDAO;
-import com.projteam.app.dao.game.tasks.ListSentenceFormingDAO;
-import com.projteam.app.dao.game.tasks.ListWordFillDAO;
-import com.projteam.app.dao.game.tasks.MultipleChoiceDAO;
-import com.projteam.app.dao.game.tasks.SingleChoiceDAO;
-import com.projteam.app.dao.game.tasks.WordConnectDAO;
-import com.projteam.app.dao.game.tasks.WordFillDAO;
 import com.projteam.app.domain.Account;
 import com.projteam.app.domain.game.Game;
 import com.projteam.app.domain.game.PlayerResult;
 import com.projteam.app.domain.game.GameResult;
+import com.projteam.app.domain.game.PlayerData;
 import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.dto.game.GameResultPersonalDTO;
 import com.projteam.app.dto.game.GameResultTotalDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
 import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.service.AccountService;
 
 @Service
 public class GameService
 {
 	private AccountService accServ;
 	private LobbyService lobbyServ;
+	private GameTaskDataService gtdServ;
+	private PlayerDataService pdServ;
 	private PlayerResultDAO prDAO;
 	private GameResultDAO grDAO;
-	
-	private GameTaskDataService gtdServ;
 	
 	private Map<String, Game> games;
 	
 	private static final long MAX_TIME_SINCE_LAST_INTERACTION_MILLI = 120000;
 	private static final int HISTORY_PAGE_SIZE = 30;
+	private static final int GAME_VALUE = 32;
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	
 	@Autowired
-	public GameService(AccountService accServ, LobbyService lobbyServ,
-			PlayerResultDAO prDAO, GameResultDAO grDAO,
+	public GameService(AccountService accServ,
+			LobbyService lobbyServ,
 			GameTaskDataService gtdServ,
-			
-			ChoiceWordFillDAO cwfDao,
-			ChronologicalOrderDAO coDao,
-			ListChoiceWordFillDAO lcwfDao,
-			ListSentenceFormingDAO lsfDao,
-			ListWordFillDAO lwfDao,
-			MultipleChoiceDAO mcDao,
-			SingleChoiceDAO scDao,
-			WordConnectDAO wcDao,
-			WordFillDAO wfDao)
+			PlayerDataService pdServ,
+			PlayerResultDAO prDAO,
+			GameResultDAO grDAO)
 	{
 		this.accServ = accServ;
 		this.lobbyServ = lobbyServ;
+		this.gtdServ = gtdServ;
+		this.pdServ = pdServ;
 		this.prDAO = prDAO;
 		this.grDAO = grDAO;
-		
-		this.gtdServ = gtdServ;
 		
 		games = syncMap();
 	}
@@ -165,6 +153,7 @@ public class GameService
 		return games.get(gameCode).hasGameFinishedFor(player);
 	}
 	
+	@Transactional
 	public boolean acceptAnswer(String gameCode, TaskAnswer answer)
 	{
 		return acceptAnswer(gameCode, answer, getAccount());
@@ -199,16 +188,64 @@ public class GameService
 	{
 		if (game.hasGameFinished())
 		{
-			saveGameScores(game);
+			GameResult gr = game.createGameResult();
+			for (PlayerResult pr: gr.getResults().values())
+				prDAO.save(pr);
+			grDAO.save(gr);
+			
+			try
+			{
+				Map<UUID, GameResultTotalDuringGameDTO> scores =
+						game.getCurrentResultsWithIDs();
+				List<PlayerData> playerDataList = new ArrayList<>(
+						scores.entrySet()
+							.stream()
+							.sorted((r1, r2) -> -Long.compare(
+									r1.getValue().getTotalScore(),
+									r2.getValue().getTotalScore()))
+							.map(sc -> pdServ.getPlayerData(accServ
+									.findByID(sc.getKey())
+									.orElse(null)))
+							.filter(Optional::isPresent)
+							.map(pd -> pd.orElse(null))
+							.collect(Collectors.toList()));
+				int l = playerDataList.size();
+				int lm = l - 1;
+				for (int i = 0; i < l; i++)
+				{
+					//TODO implement balancing based on total completion
+					PlayerData current = playerDataList.get(i);
+					if (i > 0)
+					{
+						PlayerData higher = playerDataList.get(i - 1);
+						int currRating = current.getRating();
+						int higherRating = higher.getRating();
+						
+						double expected = 1 / (1 + Math.pow(10, (higherRating - currRating) / 400.0));
+						current.setRating((int) Math.round(
+								currRating + (GAME_VALUE * (0 - expected))));
+					}
+					if (i < lm)
+					{
+						PlayerData lower = playerDataList.get(i + 1);
+						int currRating = current.getRating();
+						int lowerRating = lower.getRating();
+						
+						double expected = 1 / (1 + Math.pow(10, (lowerRating - currRating) / 400.0));
+						current.setRating((int) Math.round(
+								currRating + (GAME_VALUE * (1 - expected))));
+					}
+				}
+				playerDataList.forEach(pd -> pdServ.savePlayerData(pd));
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				throw e;
+			}
+			
 			games.remove(gameCode);
 		}
-	}
-	private void saveGameScores(Game game)
-	{
-		GameResult gr = game.createGameResult();
-		for (PlayerResult pr: gr.getResults().values())
-			prDAO.save(pr);
-		grDAO.save(gr);
 	}
 
 	private Account getAccount()
@@ -254,6 +291,7 @@ public class GameService
 		return game.getTaskCount(acc);
 	}
 
+	@Transactional
 	public Optional<List<GameResultTotalDTO>> getResults(UUID gameID)
 	{
 		return grDAO.findById(gameID)
@@ -300,10 +338,12 @@ public class GameService
 			.findFirst()
 			.map(game -> game.getCurrentResults());
 	}
+	@Transactional
 	public Optional<List<GameResultPersonalDTO>> getPersonalResults(UUID gameID)
 	{
 		return getPersonalResults(gameID, getAccount());
 	}
+	@Transactional
 	public Optional<List<GameResultPersonalDTO>> getPersonalResults(UUID gameID, Account player)
 	{
 		Optional<List<GameResultPersonalDTO>> ret = games.values()
@@ -372,11 +412,12 @@ public class GameService
 				.map(e -> e.getKey())
 				.findAny();
 	}
-	
+	@Transactional
 	public Page<Map<String, String>> getHistory(int page)
 	{
 		return getHistory(page, getAccount());
 	}
+	@Transactional
 	public Page<Map<String, String>> getHistory(int page, Account player)
 	{
 		return grDAO.findAllByResults_PlayerID(player.getId(),
@@ -384,6 +425,15 @@ public class GameService
 				.map(gr -> Map.of(
 						"id", gr.getGameID().toString(),
 						"date", gr.getDate().toString()));
+	}
+	public Optional<Integer> getRating()
+	{
+		return getRating(getAccount());
+	}
+	public Optional<Integer> getRating(Account player)
+	{
+		return pdServ.getPlayerData(player)
+				.map(pd -> pd.getRating());
 	}
 	
 	public void noteInteraction(String gameCode)

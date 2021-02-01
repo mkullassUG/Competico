@@ -33,9 +33,9 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.domain.Account;
 import com.projteam.app.dto.lobby.LobbyOptionsDTO;
 import com.projteam.app.service.AccountService;
-import com.projteam.app.service.GameService;
-import com.projteam.app.service.GameTaskDataService;
-import com.projteam.app.service.LobbyService;
+import com.projteam.app.service.game.GameService;
+import com.projteam.app.service.game.GameTaskDataService;
+import com.projteam.app.service.game.LobbyService;
 
 @SpringBootTest
 @ContextConfiguration(name = "API-tests")

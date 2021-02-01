@@ -12,9 +12,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.projteam.app.service.AccountService;
-import com.projteam.app.service.GameService;
-import com.projteam.app.service.GameTaskDataService;
-import com.projteam.app.service.LobbyService;
+import com.projteam.app.service.game.GameService;
+import com.projteam.app.service.game.GameTaskDataService;
+import com.projteam.app.service.game.LobbyService;
 
 @SpringBootTest
 @ContextConfiguration(name = "API-tests")

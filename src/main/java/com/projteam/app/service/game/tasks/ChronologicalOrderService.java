@@ -22,12 +22,14 @@ public class ChronologicalOrderService implements TaskService
 	}
 
 	@Override
+	@Transactional
 	public boolean genericExistsById(Task task)
 	{
 		ensureApplicable(task);
 		return coDao.existsById(((ChronologicalOrder) task).getId());
 	}
 	@Override
+	@Transactional
 	public long count()
 	{
 		return coDao.count();
@@ -58,6 +60,7 @@ public class ChronologicalOrderService implements TaskService
 				.collect(Collectors.toList());
 	}
 	@Override
+	@Transactional
 	public void genericSave(Task task)
 	{
 		ensureApplicable(task);

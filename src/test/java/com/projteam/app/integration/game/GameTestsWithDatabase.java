@@ -15,11 +15,13 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,9 +36,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.config.SecurityContextConfig;
 import com.projteam.app.dao.AccountDAO;
-import com.projteam.app.dao.game.PlayerDataDAO;
 import com.projteam.app.domain.Account;
-import com.projteam.app.domain.game.PlayerData;
 import com.projteam.app.dto.game.tasks.ChoiceWordFillElementDTO;
 import com.projteam.app.dto.game.tasks.ChronologicalOrderDTO;
 import com.projteam.app.dto.game.tasks.ListChoiceWordFillDTO;
@@ -45,35 +45,40 @@ import com.projteam.app.dto.game.tasks.MultipleChoiceElementDTO;
 import com.projteam.app.dto.game.tasks.SingleChoiceDTO;
 import com.projteam.app.dto.game.tasks.WordConnectDTO;
 import com.projteam.app.dto.game.tasks.WordFillElementDTO;
+import com.projteam.app.service.AccountService;
 import com.projteam.app.service.game.GameService;
-import com.projteam.app.service.game.PlayerDataService;
 
 @SpringBootTest
+@TestInstance(Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc(addFilters = false)
-public class GameTests
+public class GameTestsWithDatabase
 {
 	@Autowired
 	private MockMvc mvc;
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	
-	private @MockBean AccountDAO accDao;
-	private @MockBean PlayerDataDAO pdDao;
-	
 	private @MockBean SecurityContextConfig secConf;
 	
-	@Autowired
-	private GameService gameServ;
+	private @Autowired AccountDAO accDao;
+	private @Autowired AccountService accServ;
+	private @Autowired GameService gameServ;
+	
+	private Account host;
+	private Account player;
+	private int playerCount;
+	
+	private String currentUsername;
 	
 	private static final MediaType APPLICATION_JSON_UTF8 =
 			new MediaType(MediaType.APPLICATION_JSON.getType(),
 					MediaType.APPLICATION_JSON.getSubtype(),
 					Charset.forName("utf8"));
 	
-	@RepeatedTest(value = 15)
-	public void canCompleteFullGameWhileGettingResults() throws Exception
+	@BeforeAll
+	public void initAccounts()
 	{
-		Account host = new Account.Builder()
+		host = new Account.Builder()
 				.withID(UUID.randomUUID())
 				.withEmail("testHost@test.pl")
 				.withUsername("TestHostAccount")
@@ -81,7 +86,7 @@ public class GameTests
 				.withPassword("QWERTY")
 				.withRoles(List.of(PLAYER_ROLE))
 				.build();
-		Account player = new Account.Builder()
+		player = new Account.Builder()
 				.withID(UUID.randomUUID())
 				.withEmail("testPlayer@test.pl")
 				.withUsername("TestPlayerAccount")
@@ -89,47 +94,31 @@ public class GameTests
 				.withPassword("QWERTY")
 				.withRoles(List.of(PLAYER_ROLE))
 				.build();
-		PlayerData pdHost = new PlayerData(UUID.randomUUID(),
-				host, PlayerDataService.DEFAULT_RATING);
-		PlayerData pdPlayer = new PlayerData(UUID.randomUUID(),
-				host, PlayerDataService.DEFAULT_RATING);
-		int playerCount = 2;
+		playerCount = 2;
 		
-		when(accDao.findByEmailOrUsername(host.getEmail(), host.getEmail()))
-			.thenReturn(Optional.of(host));
-		when(accDao.findByEmailOrUsername(host.getEmail(), host.getUsername()))
-			.thenReturn(Optional.of(host));
-		when(accDao.findByEmailOrUsername(host.getUsername(), host.getEmail()))
-			.thenReturn(Optional.of(host));
-		when(accDao.findByEmailOrUsername(host.getUsername(), host.getUsername()))
-			.thenReturn(Optional.of(host));
+		currentUsername = host.getUsername();
 		
-		when(accDao.findByEmailOrUsername(player.getEmail(), player.getEmail()))
-			.thenReturn(Optional.of(player));
-		when(accDao.findByEmailOrUsername(player.getEmail(), player.getUsername()))
-			.thenReturn(Optional.of(player));
-		when(accDao.findByEmailOrUsername(player.getUsername(), player.getEmail()))
-			.thenReturn(Optional.of(player));
-		when(accDao.findByEmailOrUsername(player.getUsername(), player.getUsername()))
-			.thenReturn(Optional.of(player));
-		
-		when(pdDao.findByAccount_id(host.getId())).thenReturn(Optional.of(pdHost));
-		when(pdDao.findByAccount_id(player.getId())).thenReturn(Optional.of(pdPlayer));
-		
+		host = accDao.save(host);
+		player = accDao.save(player);
+	}
+	
+	@RepeatedTest(value = 15)
+	public void canCompleteFullGameWhileGettingResults() throws Exception
+	{	
 		SecurityContext sec = mock(SecurityContext.class);
 		when(secConf.getContext()).thenReturn(sec);
 		
-		Authentication hostAuth = mock(Authentication.class);
-		Authentication playerAuth = mock(Authentication.class);
-		when(hostAuth.getPrincipal()).thenReturn(host);
-		when(hostAuth.isAuthenticated()).thenReturn(true);
-		when(playerAuth.getPrincipal()).thenReturn(player);
-		when(playerAuth.isAuthenticated()).thenReturn(true);
+		Authentication auth = mock(Authentication.class);
+		when(auth.isAuthenticated()).thenReturn(true);
+		when(auth.getPrincipal()).thenAnswer(arg ->
+			accServ.loadUserByUsername(currentUsername));
 		
-		when(accDao.findById(host.getId())).thenReturn(Optional.of(host));
-		when(accDao.findById(player.getId())).thenReturn(Optional.of(player));
+		when(sec.getAuthentication()).thenReturn(auth);
 		
-		switchAccount(hostAuth, sec);
+		String hostUsername = host.getUsername();
+		String playerUsername = player.getUsername();
+		
+		currentUsername = hostUsername;
 		String gameCode = mvc.perform(post("/api/v1/lobby"))
 				.andExpect(status().isCreated())
 				.andReturn()
@@ -137,11 +126,11 @@ public class GameTests
 				.getContentAsString();
 		assertNotNull(gameCode);
 		
-		switchAccount(playerAuth, sec);
+		currentUsername = playerUsername;
 		mvc.perform(post("/api/v1/lobby/join/" + gameCode))
 				.andExpect(status().isOk());
 		
-		switchAccount(hostAuth, sec);
+		currentUsername = hostUsername;
 		mvc.perform(post("/api/v1/lobby/" + gameCode + "/start"))
 				.andExpect(status().isCreated());
 		
@@ -156,7 +145,7 @@ public class GameTests
 		int taskCount = gameServ.getTaskCount(gameCode);
 		for (int i = 0; i < taskCount; i++)
 		{
-			switchAccount(hostAuth, sec);
+			currentUsername = hostUsername;
 			JsonNode ti1 = mapper.readTree(
 				mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 					.andExpect(status().isOk())
@@ -170,7 +159,7 @@ public class GameTests
 					.content(sampleAnswer(ti1)))
 				.andExpect(status().isOk());
 			
-			switchAccount(playerAuth, sec);
+			currentUsername = playerUsername;
 			JsonNode ti2 = mapper.readTree(
 				mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 					.andExpect(status().isOk())
@@ -184,70 +173,34 @@ public class GameTests
 						.content(sampleAnswer(ti2)))
 					.andExpect(status().isOk());
 				
-			assertCanGetResults(gameID, playerCount, i + 1, hostAuth, playerAuth, sec);
+			assertCanGetResults(gameID, playerCount, i + 1, hostUsername, playerUsername, sec);
 		}
 		
 		assertFalse(gameServ.gameExists(gameCode));
 		
-		switchAccount(hostAuth, sec);
+		currentUsername = hostUsername;
 		mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.hasGameFinished", is(true)));
-		switchAccount(playerAuth, sec);
+		currentUsername = playerUsername;
 		mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.hasGameFinished", is(true)));
 		
-		assertCanGetResults(gameID, playerCount, taskCount, hostAuth, playerAuth, sec);
+		assertCanGetResults(gameID, playerCount, taskCount, hostUsername, playerUsername, sec);
 	}
 	@RepeatedTest(value = 15)
 	public void canCompleteFullGameWithoutGettingResultsMidGame() throws Exception
 	{
-		Account host = new Account.Builder()
-				.withID(UUID.randomUUID())
-				.withEmail("testHost@test.pl")
-				.withUsername("TestHostAccount")
-				.withNickname("TestHostAccount")
-				.withPassword("QWERTY")
-				.withRoles(List.of(PLAYER_ROLE))
-				.build();
-		Account player = new Account.Builder()
-				.withID(UUID.randomUUID())
-				.withEmail("testPlayer@test.pl")
-				.withUsername("TestPlayerAccount")
-				.withNickname("TestPlayerAccount")
-				.withPassword("QWERTY")
-				.withRoles(List.of(PLAYER_ROLE))
-				.build();
-		PlayerData pdHost = new PlayerData(UUID.randomUUID(),
-				host, PlayerDataService.DEFAULT_RATING);
-		PlayerData pdPlayer = new PlayerData(UUID.randomUUID(),
-				host, PlayerDataService.DEFAULT_RATING);
-		int playerCount = 2;
-		
-		when(accDao.findByEmailOrUsername(host.getEmail(), host.getEmail()))
-			.thenReturn(Optional.of(host));
-		when(accDao.findByEmailOrUsername(host.getEmail(), host.getUsername()))
-			.thenReturn(Optional.of(host));
-		when(accDao.findByEmailOrUsername(host.getUsername(), host.getEmail()))
-			.thenReturn(Optional.of(host));
-		when(accDao.findByEmailOrUsername(host.getUsername(), host.getUsername()))
-			.thenReturn(Optional.of(host));
-		
-		when(accDao.findByEmailOrUsername(player.getEmail(), player.getEmail()))
-			.thenReturn(Optional.of(player));
-		when(accDao.findByEmailOrUsername(player.getEmail(), player.getUsername()))
-			.thenReturn(Optional.of(player));
-		when(accDao.findByEmailOrUsername(player.getUsername(), player.getEmail()))
-			.thenReturn(Optional.of(player));
-		when(accDao.findByEmailOrUsername(player.getUsername(), player.getUsername()))
-			.thenReturn(Optional.of(player));
-
-		when(pdDao.findByAccount_id(host.getId())).thenReturn(Optional.of(pdHost));
-		when(pdDao.findByAccount_id(player.getId())).thenReturn(Optional.of(pdPlayer));
-		
 		SecurityContext sec = mock(SecurityContext.class);
 		when(secConf.getContext()).thenReturn(sec);
+		
+		Authentication auth = mock(Authentication.class);
+		when(auth.isAuthenticated()).thenReturn(true);
+		when(auth.getPrincipal()).thenAnswer(arg ->
+			accServ.loadUserByUsername(currentUsername));
+		
+		when(sec.getAuthentication()).thenReturn(auth);
 		
 		Authentication hostAuth = mock(Authentication.class);
 		Authentication playerAuth = mock(Authentication.class);
@@ -256,10 +209,10 @@ public class GameTests
 		when(playerAuth.getPrincipal()).thenReturn(player);
 		when(playerAuth.isAuthenticated()).thenReturn(true);
 		
-		when(accDao.findById(host.getId())).thenReturn(Optional.of(host));
-		when(accDao.findById(player.getId())).thenReturn(Optional.of(player));
+		String hostUsername = host.getUsername();
+		String playerUsername = player.getUsername();
 		
-		switchAccount(hostAuth, sec);
+		currentUsername = hostUsername;
 		String gameCode = mvc.perform(post("/api/v1/lobby"))
 				.andExpect(status().isCreated())
 				.andReturn()
@@ -267,11 +220,11 @@ public class GameTests
 				.getContentAsString();
 		assertNotNull(gameCode);
 		
-		switchAccount(playerAuth, sec);
+		currentUsername = playerUsername;
 		mvc.perform(post("/api/v1/lobby/join/" + gameCode))
 				.andExpect(status().isOk());
 		
-		switchAccount(hostAuth, sec);
+		currentUsername = hostUsername;
 		mvc.perform(post("/api/v1/lobby/" + gameCode + "/start"))
 				.andExpect(status().isCreated());
 		
@@ -286,7 +239,7 @@ public class GameTests
 		int taskCount = gameServ.getTaskCount(gameCode);
 		for (int i = 0; i < taskCount; i++)
 		{
-			switchAccount(hostAuth, sec);
+			currentUsername = hostUsername;
 			JsonNode ti1 = mapper.readTree(
 				mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 					.andExpect(status().isOk())
@@ -300,7 +253,7 @@ public class GameTests
 					.content(sampleAnswer(ti1)))
 				.andExpect(status().isOk());
 			
-			switchAccount(playerAuth, sec);
+			currentUsername = playerUsername;
 			JsonNode ti2 = mapper.readTree(
 				mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 					.andExpect(status().isOk())
@@ -317,26 +270,26 @@ public class GameTests
 		
 		assertFalse(gameServ.gameExists(gameCode));
 		
-		switchAccount(hostAuth, sec);
+		currentUsername = hostUsername;
 		mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.hasGameFinished", is(true)));
-		switchAccount(playerAuth, sec);
+		currentUsername = playerUsername;
 		mvc.perform(get("/api/v1/game/" + gameCode + "/tasks/current"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.hasGameFinished", is(true)));
 		
-		assertCanGetResults(gameID, playerCount, taskCount, hostAuth, playerAuth, sec);
+		assertCanGetResults(gameID, playerCount, taskCount, hostUsername, playerUsername, sec);
 	}
 	
 	private void assertCanGetResults(String gameID,
 			int playerCount,
 			int taskCount,
-			Authentication hostAuth,
-			Authentication playerAuth,
+			String hostUsername,
+			String playerUsername,
 			SecurityContext sec) throws Exception
 	{
-		switchAccount(hostAuth, sec);
+		currentUsername = hostUsername;
 		mvc.perform(get("/api/v1/scores/" + gameID + "/total"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$").isArray())
@@ -348,7 +301,7 @@ public class GameTests
 		mvc.perform(get("/api/v1/scores/" + gameID + "/total/changes"))
 			.andExpect(status().isOk());
 		
-		switchAccount(playerAuth, sec);
+		currentUsername = playerUsername;
 		mvc.perform(get("/api/v1/scores/" + gameID + "/total"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$").isArray())
@@ -363,10 +316,6 @@ public class GameTests
 
 	//---Helpers---
 	
-	private void switchAccount(Authentication auth, SecurityContext sec)
-	{
-		when(sec.getAuthentication()).thenReturn(auth);
-	}
 	private String sampleAnswer(JsonNode taskInfo) throws JsonMappingException, JsonProcessingException
 	{
 		switch (taskInfo.get("taskName").asText())

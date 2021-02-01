@@ -1,6 +1,5 @@
 package com.projteam.app.domain;
 
-import static java.util.Collections.synchronizedList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -47,7 +46,7 @@ public class Account implements UserDetails, Initializable
 	
 	@ElementCollection
 	@Column(name = "roles")
-	private List<String> roles = synchronizedList(new ArrayList<>());
+	private List<String> roles;
 	
 	public static final String PLAYER_ROLE = "PLAYER";
 	public static final String LECTURER_ROLE = "LECTURER";

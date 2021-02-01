@@ -22,12 +22,14 @@ public class SingleChoiceService implements TaskService
 	}
 	
 	@Override
+	@Transactional
 	public boolean genericExistsById(Task task)
 	{
 		ensureApplicable(task);
 		return scDao.existsById(((SingleChoice) task).getId());
 	}
 	@Override
+	@Transactional
 	public long count()
 	{
 		return scDao.count();
@@ -58,6 +60,7 @@ public class SingleChoiceService implements TaskService
 				.collect(Collectors.toList());
 	}
 	@Override
+	@Transactional
 	public void genericSave(Task task)
 	{
 		ensureApplicable(task);

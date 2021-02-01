@@ -31,12 +31,14 @@ public class ChoiceWordFillService implements TaskService
 	}
 
 	@Override
+	@Transactional
 	public boolean genericExistsById(Task task)
 	{
 		ensureApplicable(task);
 		return cwfDao.existsById(((ChoiceWordFill) task).getId());
 	}
 	@Override
+	@Transactional
 	public long count()
 	{
 		return cwfDao.count();
@@ -67,6 +69,7 @@ public class ChoiceWordFillService implements TaskService
 				.collect(Collectors.toList());
 	}
 	@Override
+	@Transactional
 	public void genericSave(Task task)
 	{
 		ensureApplicable(task);

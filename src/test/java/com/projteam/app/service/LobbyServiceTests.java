@@ -28,6 +28,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import com.projteam.app.domain.Account;
 import com.projteam.app.dto.lobby.LobbyOptionsDTO;
+import com.projteam.app.service.game.LobbyService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LobbyServiceTests
