@@ -1,5 +1,6 @@
 package com.projteam.app.api;
 
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,6 +87,24 @@ public class AccountAPI
 	public boolean isAuthenticated()
 	{
 		return accServ.isAuthenticated();
+	}
+	
+	@GetMapping("api/v1/account/info")
+	@ApiOperation(value = "Get information the current account", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Information the current account")
+	})
+	public Object getAccountInfo()
+	{
+		return accServ.getAuthenticatedAccount()
+				.map(acc -> Map.of(
+						"authenticated", true,
+						"email", acc.getEmail(),
+						"username", acc.getUsername(),
+						"nickname", acc.getNickname(),
+						"roles", acc.getRoles()))
+				.orElseGet(() -> Map.of("authenticated", false));
 	}
 
 	@GetMapping("register")

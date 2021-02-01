@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -45,7 +46,6 @@ public class GameTaskDataService
 	}
 	
 	@EventListener(ContextRefreshedEvent.class)
-	@Transactional
 	public void initTaskDataFromJSON() throws IOException, ClassNotFoundException
 	{
 		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(
@@ -54,27 +54,34 @@ public class GameTaskDataService
 		for (Resource res: resolver.getResources("classpath:tasks/*.json"))
 		{
 			JsonNode tree = mapperByField.readTree(res.getInputStream());
-			L0: for (JsonNode taskInfo: tree)
+			for (JsonNode taskInfo: tree)
 			{
 				String taskClassName = taskInfo.get("taskName").textValue();
 				JsonNode taskContent = taskInfo.get("taskContent");
 				Class<?> taskClass = Class.forName(taskClassName);
-				Task task = (Task) mapperByField.treeToValue(taskContent, taskClass);
 				
-				for (TaskService ts: taskServices)
-				{
-					if (ts.canAccept(task))
-					{
-						if (!ts.genericExistsById(task))
-							ts.genericSave(task);
-						continue L0;
-					}
-				}
-				
-				throw new IllegalStateException("Cannot save task type "
-						+ taskClassName + ", no applicable service.");
+				saveTask((Task) mapperByField.treeToValue(taskContent, taskClass));
 			}
 		}
+	}
+	@Transactional
+	public void saveTask(Task task)
+	{
+		for (TaskService ts: taskServices)
+		{
+			if (ts.canAccept(task))
+			{
+				if (!ts.genericExistsById(task))
+					ts.genericSave(task);
+				return;
+			}
+		}
+		
+		throw new IllegalStateException("Cannot save task type "
+				+ Optional.ofNullable(task)
+					.map(t -> t.getClass().getTypeName())
+					.orElse(null)
+				+ ", no applicable service.");
 	}
 	
 	@Transactional

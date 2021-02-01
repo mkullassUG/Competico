@@ -1,5 +1,9 @@
 package com.projteam.app.api;
 
+import static com.projteam.app.domain.Account.PLAYER_ROLE;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -12,11 +16,15 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -31,6 +39,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import com.projteam.app.domain.Account;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.service.AccountService;
@@ -63,6 +72,49 @@ public class AccountAPITests
 	public void contextLoads() throws Exception
 	{
 		assertNotNull(mvc);
+	}
+	
+	@Test
+	public void shouldReturnAccountInfo() throws Exception
+	{
+		UUID id = UUID.randomUUID();
+		String email = "testAcc@test.pl";
+		String username = "TestAccount";
+		String nickname = "TestAccount";
+		String password = "QWERTY";
+		List<String> roles = List.of(PLAYER_ROLE);
+		
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(new Account.Builder()
+					.withID(id)
+					.withEmail(email)
+					.withUsername(username)
+					.withNickname(nickname)
+					.withPassword(password)
+					.withRoles(roles)
+					.build()));
+		
+		mvc.perform(get("/api/v1/account/info"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.authenticated", is(true)))
+			.andExpect(jsonPath("$.email", is(email)))
+			.andExpect(jsonPath("$.username", is(username)))
+			.andExpect(jsonPath("$.nickname", is(nickname)))
+			.andExpect(jsonPath("$.roles", hasSize(roles.size())))
+			.andExpect(jsonPath("$.roles", containsInAnyOrder(roles.stream()
+					.map(item -> is(item))
+					.collect(Collectors.toList()))));
+	}
+	
+	@Test
+	public void shouldNotReturnAccountInfoWhenNotAuthenticated() throws Exception
+	{
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.empty());
+		
+		mvc.perform(get("/api/v1/account/info"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.authenticated", is(false)));
 	}
 	
 	@ParameterizedTest
