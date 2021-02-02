@@ -1,8 +1,18 @@
 [ {
-  "taskName" : "com.projteam.app.domain.game.tasks.ListChoiceWordFill",
+  "taskName" : "ChronologicalOrder",
+  "taskContent" : {
+    "id" : "f10298c5-7e1f-4961-ab07-1fe9410bb433",
+    "instruction" : "Put the phrases in order:",
+    "tags" : [ ],
+    "sentences" : [ "Try to understand the problem and define the purpose of the program.", "Once you have analysed the problem, define the successive logical steps of the program.", "Write the instructions in a high-level language of your choice.", "Once the code is written, test it to detect bugs or errors.", "Debug and fix errors in your code.", "Finally, review the program’s documentation." ],
+    "difficulty" : 100.0
+  }
+}, {
+  "taskName" : "ListChoiceWordFill",
   "taskContent" : {
     "id" : "a40c7426-5662-42ec-a48d-7362d5809208",
     "instruction" : "Choose the best word to complete the sentences:",
+    "tags" : [ ],
     "rows" : [ {
       "id" : "5cd63097-ffbe-4817-827b-749f113c5d65",
       "text" : [ "Would you mind waiting ", " Ms Bright gets back?" ],
@@ -79,10 +89,11 @@
     "difficulty" : 100.0
   }
 }, {
-  "taskName" : "com.projteam.app.domain.game.tasks.ListWordFill",
+  "taskName" : "ListWordFill",
   "taskContent" : {
     "id" : "0be75481-5a7d-4703-979f-70afcdae5846",
     "instruction" : "Complete the sentences with the best word:",
+    "tags" : [ ],
     "rows" : [ {
       "id" : "58f293d5-cc76-429d-a5de-2ae27924cfc8",
       "text" : [ "I’m ", " you asked me that question." ],
@@ -135,10 +146,11 @@
     "difficulty" : 100.0
   }
 }, {
-  "taskName" : "com.projteam.app.domain.game.tasks.ListWordFill",
+  "taskName" : "ListWordFill",
   "taskContent" : {
     "id" : "0d9d9f22-e612-450a-b26b-8ba923d10d54",
     "instruction" : "Choose the word that fits the definitions:",
+    "tags" : [ ],
     "rows" : [ {
       "id" : "c6965e28-b444-4f9e-ae02-b82e6a8d044a",
       "text" : [ "the act or way of leaving place: " ],
@@ -231,10 +243,11 @@
     "difficulty" : 100.0
   }
 }, {
-  "taskName" : "com.projteam.app.domain.game.tasks.WordConnect",
+  "taskName" : "WordConnect",
   "taskContent" : {
     "id" : "00cb1efa-d388-4647-a5ec-080755b11712",
     "instruction" : "Match the words with their translations:",
+    "tags" : [ ],
     "leftWords" : [ "data mining", "pattern identification", "quantitative modelling", "class label", "class membership", "explanatory variable", "variable", "fault-tolerant", "spurious pattern", "outlier" ],
     "rightWords" : [ "eksploracja danych", "identyfikacja wzorca", "modelowanie ilościowe", "etykieta klasy", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna" ],
     "correctMapping" : {
@@ -252,10 +265,11 @@
     "difficulty" : 100.0
   }
 }, {
-  "taskName" : "com.projteam.app.domain.game.tasks.WordConnect",
+  "taskName" : "WordConnect",
   "taskContent" : {
     "id" : "2d210a77-329e-41c9-9fe2-ef7b0dd6918a",
     "instruction" : "Match the words with their translations:",
+    "tags" : [ ],
     "leftWords" : [ "keynote", "to convey (information)", "to unveil (a theme)", "consistent", "stiff", "a knack (for sth)", "a flair", "intricate", "dazzling", "to rehearse" ],
     "rightWords" : [ "myśl przewodnia, główny motyw", "przekazywać/dostarczać (informacje)", "odkryć, ujawnić, odsłonić", "spójny, zgodny, konsekwentny", "sztywny, zdrętwiały", "talent, zręczność", "klasa, dar", "zawiły, misterny", "olśniewający", "próbować, przygotowywać się" ],
     "correctMapping" : {
@@ -273,10 +287,11 @@
     "difficulty" : 100.0
   }
 }, {
-  "taskName" : "com.projteam.app.domain.game.tasks.WordConnect",
+  "taskName" : "WordConnect",
   "taskContent" : {
     "id" : "c2d2d1c9-cde0-4774-aa19-4d12d99cf060",
     "instruction" : "Match the words with their synonyms:",
+    "tags" : [ ],
     "leftWords" : [ "SMATTERING", "DESCEND", "INEVITABLE", "PROPENSITY", "APPROACH", "OVERESTIMATE", "INGRESS" ],
     "rightWords" : [ "bit, small amount", "go down, fall, drop", "bound to happen, predestined, unavoidable", "tendency, inclination", "attitude, method, way, manner", "overvalue, overstate, amplify", "entry, entrance" ],
     "correctMapping" : {
@@ -291,10 +306,11 @@
     "difficulty" : 100.0
   }
 }, {
-  "taskName" : "com.projteam.app.domain.game.tasks.WordConnect",
+  "taskName" : "WordConnect",
   "taskContent" : {
     "id" : "146933ca-563d-44ac-9aab-9305389e081a",
     "instruction" : "Match the words with their synonyms:",
+    "tags" : [ ],
     "leftWords" : [ "GLEAN", "DEBUNK", "SOUND", "WINDING", "IN, DEPTH", "EGRESS", "ITEM" ],
     "rightWords" : [ "obtain, gather", "invalidate, discredit", "healthy, toned, in good shape", "full of twists and turns, zigzagging", "thoroughly, extensively", "exit, way out", "thing, article, object" ],
     "correctMapping" : {
@@ -309,18 +325,11 @@
     "difficulty" : 100.0
   }
 }, {
-  "taskName" : "com.projteam.app.domain.game.tasks.ChronologicalOrder",
-  "taskContent" : {
-    "id" : "f10298c5-7e1f-4961-ab07-1fe9410bb433",
-    "instruction" : "Put the phrases in order:",
-    "sentences" : [ "Try to understand the problem and define the purpose of the program.", "Once you have analysed the problem, define the successive logical steps of the program.", "Write the instructions in a high-level language of your choice.", "Once the code is written, test it to detect bugs or errors.", "Debug and fix errors in your code.", "Finally, review the program’s documentation." ],
-    "difficulty" : 100.0
-  }
-}, {
-  "taskName" : "com.projteam.app.domain.game.tasks.WordFill",
+  "taskName" : "WordFill",
   "taskContent" : {
     "id" : "4e8f1bec-07ad-4a2e-a0d6-bf225ca91aa1",
     "instruction" : "Complete the text with the missing words:",
+    "tags" : [ ],
     "content" : {
       "id" : "5b3c7a43-c0e6-41bc-8de2-27fcb2a10c0a",
       "text" : [ "I’m sorry to have to tell you that there has been some ", " in the project and we won’t be able to ", " our original ", " on July 30th for completing the ", " of the new software. Pedro’s absence for three weeks caused a bit of a ", ", and there were more delays when we realised that there was still some", " in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month." ],

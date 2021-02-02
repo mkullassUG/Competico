@@ -112,7 +112,7 @@ public class GameAPITests
 				.collect(Collectors.toList());
 		List<String> possibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
 		
-		Task task = new WordFill(UUID.randomUUID(), "Test instruction",
+		Task task = new WordFill(UUID.randomUUID(), "Test instruction", List.of(),
 				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 100);
 		TaskInfoDTO taskInfo = task.prepareTaskInfo(taskNumber, taskNumber * 2);
 		

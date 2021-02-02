@@ -25,6 +25,7 @@ public class SingleChoice implements Task
 {
 	private @Id UUID id;
 	private String instruction;
+	private @ElementCollection List<String> tags;
 	private String content;
 	private String answer;
 	private @ElementCollection List<String> incorrectAnswers;

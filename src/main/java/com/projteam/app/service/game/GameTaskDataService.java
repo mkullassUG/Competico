@@ -3,6 +3,7 @@ package com.projteam.app.service.game;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,21 +21,43 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.projteam.app.domain.Account;
+import com.projteam.app.domain.game.tasks.ChoiceWordFill;
+import com.projteam.app.domain.game.tasks.ChronologicalOrder;
+import com.projteam.app.domain.game.tasks.ListChoiceWordFill;
+import com.projteam.app.domain.game.tasks.ListSentenceForming;
+import com.projteam.app.domain.game.tasks.ListWordFill;
+import com.projteam.app.domain.game.tasks.MultipleChoice;
+import com.projteam.app.domain.game.tasks.SingleChoice;
 import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.domain.game.tasks.WordConnect;
+import com.projteam.app.domain.game.tasks.WordFill;
+import com.projteam.app.service.AccountService;
 import com.projteam.app.service.game.tasks.TaskService;
 
 @Service
 public class GameTaskDataService
 {
 	private List<TaskService> taskServices;
+	private AccountService accountService;
+	
+	private Map<UUID, List<Task>> globalImportedTasks;
+	
+	private Map<String, Class<? extends Task>> taskNameToClass;
+	private Map<String, String> taskClassNameToName;
 	
 	private final ObjectMapper mapperByField;
 	
 	@Autowired
-	public GameTaskDataService(List<TaskService> taskServiceList)
+	public GameTaskDataService(List<TaskService> taskServiceList,
+			AccountService accServ)
 	{
 		taskServices = new ArrayList<>(taskServiceList);
+		accountService = accServ;
+		
+		globalImportedTasks = new HashMap<>();
+		
+		initTaskNameMaps();
 		
 		mapperByField = new ObjectMapper();
 		mapperByField.setVisibility(mapperByField.getSerializationConfig()
@@ -56,13 +79,7 @@ public class GameTaskDataService
 		{
 			JsonNode tree = mapperByField.readTree(res.getInputStream());
 			for (JsonNode taskInfo: tree)
-			{
-				String taskClassName = taskInfo.get("taskName").textValue();
-				JsonNode taskContent = taskInfo.get("taskContent");
-				Class<?> taskClass = Class.forName(taskClassName);
-				
-				saveTask((Task) mapperByField.treeToValue(taskContent, taskClass));
-			}
+				saveTask(readTask(taskInfo));
 		}
 	}
 	@Transactional
@@ -80,7 +97,7 @@ public class GameTaskDataService
 		
 		throw new IllegalStateException("Cannot save task type "
 				+ Optional.ofNullable(task)
-					.map(t -> t.getClass().getTypeName())
+					.map(t -> t.getClass().getName())
 					.orElse(null)
 				+ ", no applicable service.");
 	}
@@ -119,7 +136,8 @@ public class GameTaskDataService
 				Map.entry(8, 8),
 				Map.entry(9, 9));
 
-		return new WordConnect(UUID.randomUUID(), "Match the words with their translations:",
+		return new WordConnect(UUID.randomUUID(),
+				"Match the words with their translations:", List.of(),
 				leftWords1, rightWords1, correctMapping1, targetDifficulty);
 	}
 
@@ -131,12 +149,85 @@ public class GameTaskDataService
 		for (TaskService taskServ: taskServices)
 			ret.addAll(taskServ.genericFindAll());
 		
-		return mapperByField.valueToTree(ret
+		return taskListToJson(ret);
+	}
+	
+	public void importGlobalTask(JsonNode task) throws IOException, ClassNotFoundException
+	{
+		importGlobalTask(task, getAccount());
+	}
+	public void importGlobalTask(JsonNode task, Account acc) throws IOException, ClassNotFoundException
+	{
+		UUID id = acc.getId();
+		globalImportedTasks.computeIfAbsent(id, k -> new ArrayList<>());
+		globalImportedTasks.get(id).add(readTask(task));
+	}
+	public int getImportedGlobalTaskCount()
+	{
+		return getImportedGlobalTaskCount(getAccount());
+	}
+	public int getImportedGlobalTaskCount(Account account)
+	{
+		return Optional.ofNullable(globalImportedTasks.get(account.getId()))
+				.map(l -> l.size())
+				.orElse(0);
+	}
+	public JsonNode getImportedGlobalTasksAsJson()
+	{
+		return getImportedGlobalTasksAsJson(getAccount());
+	}
+	public JsonNode getImportedGlobalTasksAsJson(Account account)
+	{
+		return taskListToJson(
+				Optional.ofNullable(globalImportedTasks.get(account.getId()))
+					.orElseGet(() -> new ArrayList<>()));
+	}
+	
+	private JsonNode taskListToJson(List<Task> tasks)
+	{
+		return mapperByField.valueToTree(tasks
 				.stream()
 				.map(t -> Map.of(
-						"taskName", t.getClass(),
+						"taskName", taskClassNameToName.get(t.getClass().getName()),
 						"taskContent", t
 						))
 				.collect(Collectors.toList()));
+	}
+	private Task readTask(JsonNode task) throws IOException, ClassNotFoundException
+	{
+		String taskName = task.get("taskName").textValue();
+		JsonNode taskContent = task.get("taskContent");
+		Class<? extends Task> taskClass = taskNameToClass.get(taskName);
+		if (taskClass == null)
+			throw new ClassNotFoundException("Could not find an applicable task definition");
+		
+		return mapperByField.treeToValue(taskContent, taskClass);
+	}
+
+	private void initTaskNameMaps()
+	{
+		taskNameToClass = new HashMap<>();
+		taskClassNameToName = new HashMap<>();
+		
+		addTaskNameMapping("WordFill", WordFill.class);
+		addTaskNameMapping("ListWordFill", ListWordFill.class);
+		addTaskNameMapping("ChoiceWordFill", ChoiceWordFill.class);
+		addTaskNameMapping("ListChoiceWordFill", ListChoiceWordFill.class);
+		addTaskNameMapping("ListSentenceForming", ListSentenceForming.class);
+		addTaskNameMapping("SingleChoice", SingleChoice.class);
+		addTaskNameMapping("MultipleChoice", MultipleChoice.class);
+		addTaskNameMapping("WordConnect", WordConnect.class);
+		addTaskNameMapping("ChronologicalOrder", ChronologicalOrder.class);
+	}
+	private void addTaskNameMapping(String taskName, Class<? extends Task> taskClass)
+	{
+		taskNameToClass.put(taskName, taskClass);
+		taskClassNameToName.put(taskClass.getName(), taskName);
+	}
+
+	private Account getAccount()
+	{
+		return accountService.getAuthenticatedAccount()
+				.orElseThrow(() -> new IllegalArgumentException("Not authenticated."));
 	}
 }

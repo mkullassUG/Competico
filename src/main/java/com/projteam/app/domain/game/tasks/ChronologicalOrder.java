@@ -27,6 +27,7 @@ public class ChronologicalOrder implements Task
 {
 	private @Id UUID id;
 	private String instruction;
+	private @ElementCollection List<String> tags;
 	private @ElementCollection @OrderColumn List<String> sentences;
 	
 	private double difficulty;

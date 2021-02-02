@@ -29,6 +29,7 @@ public class WordConnect implements Task
 {
 	private @Id UUID id;
 	private String instruction;
+	private @ElementCollection List<String> tags;
 	private @ElementCollection @OrderColumn List<String> leftWords;
 	private @ElementCollection @OrderColumn List<String> rightWords;
 	private @ElementCollection Map<Integer, Integer> correctMapping;

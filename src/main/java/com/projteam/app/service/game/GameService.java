@@ -193,56 +193,48 @@ public class GameService
 				prDAO.save(pr);
 			grDAO.save(gr);
 			
-			try
+			Map<UUID, GameResultTotalDuringGameDTO> scores =
+					game.getCurrentResultsWithIDs();
+			List<PlayerData> playerDataList = new ArrayList<>(
+					scores.entrySet()
+						.stream()
+						.sorted((r1, r2) -> -Long.compare(
+								r1.getValue().getTotalScore(),
+								r2.getValue().getTotalScore()))
+						.map(sc -> pdServ.getPlayerData(accServ
+								.findByID(sc.getKey())
+								.orElse(null)))
+						.filter(Optional::isPresent)
+						.map(pd -> pd.orElse(null))
+						.collect(Collectors.toList()));
+			int l = playerDataList.size();
+			int lm = l - 1;
+			for (int i = 0; i < l; i++)
 			{
-				Map<UUID, GameResultTotalDuringGameDTO> scores =
-						game.getCurrentResultsWithIDs();
-				List<PlayerData> playerDataList = new ArrayList<>(
-						scores.entrySet()
-							.stream()
-							.sorted((r1, r2) -> -Long.compare(
-									r1.getValue().getTotalScore(),
-									r2.getValue().getTotalScore()))
-							.map(sc -> pdServ.getPlayerData(accServ
-									.findByID(sc.getKey())
-									.orElse(null)))
-							.filter(Optional::isPresent)
-							.map(pd -> pd.orElse(null))
-							.collect(Collectors.toList()));
-				int l = playerDataList.size();
-				int lm = l - 1;
-				for (int i = 0; i < l; i++)
+				//TODO implement balancing based on total completion
+				PlayerData current = playerDataList.get(i);
+				if (i > 0)
 				{
-					//TODO implement balancing based on total completion
-					PlayerData current = playerDataList.get(i);
-					if (i > 0)
-					{
-						PlayerData higher = playerDataList.get(i - 1);
-						int currRating = current.getRating();
-						int higherRating = higher.getRating();
-						
-						double expected = 1 / (1 + Math.pow(10, (higherRating - currRating) / 400.0));
-						current.setRating((int) Math.round(
-								currRating + (GAME_VALUE * (0 - expected))));
-					}
-					if (i < lm)
-					{
-						PlayerData lower = playerDataList.get(i + 1);
-						int currRating = current.getRating();
-						int lowerRating = lower.getRating();
-						
-						double expected = 1 / (1 + Math.pow(10, (lowerRating - currRating) / 400.0));
-						current.setRating((int) Math.round(
-								currRating + (GAME_VALUE * (1 - expected))));
-					}
+					PlayerData higher = playerDataList.get(i - 1);
+					int currRating = current.getRating();
+					int higherRating = higher.getRating();
+					
+					double expected = 1 / (1 + Math.pow(10, (higherRating - currRating) / 400.0));
+					current.setRating((int) Math.round(
+							currRating + (GAME_VALUE * (0 - expected))));
 				}
-				playerDataList.forEach(pd -> pdServ.savePlayerData(pd));
+				if (i < lm)
+				{
+					PlayerData lower = playerDataList.get(i + 1);
+					int currRating = current.getRating();
+					int lowerRating = lower.getRating();
+					
+					double expected = 1 / (1 + Math.pow(10, (lowerRating - currRating) / 400.0));
+					current.setRating((int) Math.round(
+							currRating + (GAME_VALUE * (1 - expected))));
+				}
 			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				throw e;
-			}
+			playerDataList.forEach(pd -> pdServ.savePlayerData(pd));
 			
 			games.remove(gameCode);
 		}

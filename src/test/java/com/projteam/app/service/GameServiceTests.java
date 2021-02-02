@@ -1126,7 +1126,8 @@ public class GameServiceTests
 				Map.entry(8, 8),
 				Map.entry(9, 9));
 
-		return new WordConnect(UUID.randomUUID(), "Test instruction",
+		return new WordConnect(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				leftWords1, rightWords1, correctMapping1, 100);
 	}
 }

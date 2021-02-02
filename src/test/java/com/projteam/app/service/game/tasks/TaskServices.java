@@ -672,7 +672,8 @@ public class TaskServices
 				.collect(Collectors.toList());
 		List<String> wfPossibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
 		
-		return new WordFill(UUID.randomUUID(), "Test instruction",
+		return new WordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				new WordFillElement(UUID.randomUUID(),
 						wfText, wfEmptySpaces, false, wfPossibleAnswers), 100);
 	}
@@ -685,7 +686,8 @@ public class TaskServices
 				.map(ans -> new WordChoice(UUID.randomUUID(), ans, List.of("qwr")))
 				.collect(Collectors.toList());
 		
-		return new ChoiceWordFill(UUID.randomUUID(), "Test instruction",
+		return new ChoiceWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				new ChoiceWordFillElement(UUID.randomUUID(),
 						cwfText, wordChoices, false), 100);
 	}
@@ -723,7 +725,8 @@ public class TaskServices
 					possibleAnswersList));
 		}
 		
-		return new ListWordFill(UUID.randomUUID(), "Test instruction",
+		return new ListWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				lwfWordFillElemList, 100);
 	}
 	public static ListChoiceWordFill mockListChoiceWordFill()
@@ -752,7 +755,8 @@ public class TaskServices
 					true));
 		}
 		
-		return new ListChoiceWordFill(UUID.randomUUID(), "Test instruction",
+		return new ListChoiceWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				lcwfWordFillElemList, 100);
 	}
 	public static ChronologicalOrder mockChronologicalOrder()
@@ -766,7 +770,8 @@ public class TaskServices
 				"ullamco laboris nisi ut",
 				"aliquip ex ea commodo consequat");
 		
-		return new ChronologicalOrder(UUID.randomUUID(), "Test instruction",
+		return new ChronologicalOrder(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				coText, 100);
 	}
 	public static ListSentenceForming mockListSentenceForming()
@@ -781,7 +786,8 @@ public class TaskServices
 				.map(textList -> new SentenceFormingElement(UUID.randomUUID(), textList))
 				.collect(Collectors.toList());
 		
-		return new ListSentenceForming(UUID.randomUUID(), "Test instruction",
+		return new ListSentenceForming(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				lsfWordFillElemList, 100);
 	}
 	public static SingleChoice mockSingleChoice()
@@ -791,7 +797,8 @@ public class TaskServices
 		List<String> scIncorrectAnswers = List.of(
 				"adipiscing", "elit", "sed");
 		
-		return new SingleChoice(UUID.randomUUID(), "Test instruction",
+		return new SingleChoice(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				scContent, scAnswer, scIncorrectAnswers, 100);
 	}
 	public static MultipleChoice mockMultipleChoice()
@@ -802,7 +809,8 @@ public class TaskServices
 		List<String> mcIncorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		return new MultipleChoice(UUID.randomUUID(), "Test instruction",
+		return new MultipleChoice(UUID.randomUUID(), 
+				"Test instruction", List.of(),
 				new MultipleChoiceElement(UUID.randomUUID(),
 						mcContent, mcCorrectAnswers, mcIncorrectAnswers), 100);
 	}
@@ -817,7 +825,8 @@ public class TaskServices
 				3, 2,
 				4, 1);
 		
-		return new WordConnect(UUID.randomUUID(), "Test instruction",
+		return new WordConnect(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				wcLeftWords, wcRightWords, wcCorrectMapping, 100);
 	}
 }

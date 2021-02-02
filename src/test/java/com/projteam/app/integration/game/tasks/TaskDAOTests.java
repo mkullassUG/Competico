@@ -73,8 +73,10 @@ public class TaskDAOTests
 				.collect(Collectors.toList());
 		List<String> possibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
 		
-		WordFill wf = new WordFill(UUID.randomUUID(), "Test instruction",
-				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 1);
+		WordFill wf = new WordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
+				new WordFillElement(UUID.randomUUID(),
+						text, emptySpaces, false, possibleAnswers), 1);
 		
 		wfeDAO.saveAndFlush(wf.getContent());
 		wfeDAO.flush();
@@ -97,8 +99,10 @@ public class TaskDAOTests
 				.map(ans -> new WordChoice(UUID.randomUUID(), ans, List.of("qwr")))
 				.collect(Collectors.toList());
 		
-		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(), "Test instruction",
-				new ChoiceWordFillElement(UUID.randomUUID(), text, wordChoices, false), 1);
+		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
+				new ChoiceWordFillElement(UUID.randomUUID(),
+						text, wordChoices, false), 1);
 		
 		cfwewcDAO.saveAll(cwf.getContent().getWordChoices());
 		cfwewcDAO.flush();
@@ -148,7 +152,8 @@ public class TaskDAOTests
 					possibleAnswersList));
 		}
 		
-		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), "Test instruction",
+		ListWordFill lwf = new ListWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				wordFillElemList, 1);
 		
 		wfeDAO.saveAll(lwf.getRows());
@@ -189,7 +194,8 @@ public class TaskDAOTests
 					true));
 		}
 		
-		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), "Test instruction",
+		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				wordFillElemList, 1);
 		
 		cfwewcDAO.saveAll(lcwf.getRows()
@@ -220,7 +226,8 @@ public class TaskDAOTests
 				"ullamco laboris nisi ut",
 				"aliquip ex ea commodo consequat");
 		
-		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), "Test instruction",
+		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				text, 1);
 		
 		ChronologicalOrder co2 = coDAO.saveAndFlush(co);
@@ -245,7 +252,8 @@ public class TaskDAOTests
 				.map(textList -> new SentenceFormingElement(UUID.randomUUID(), textList))
 				.collect(Collectors.toList());
 		
-		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), "Test instruction",
+		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				wordFillElemList, 1);
 		
 		sfeDAO.saveAll(lsf.getRows());
@@ -267,7 +275,8 @@ public class TaskDAOTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed");
 		
-		SingleChoice sc = new SingleChoice(UUID.randomUUID(), "Test instruction",
+		SingleChoice sc = new SingleChoice(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				content, answer, incorrectAnswers, 1);
 		
 		SingleChoice sc2 = scDAO.saveAndFlush(sc);
@@ -288,8 +297,10 @@ public class TaskDAOTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(), "Test instruction",
-				new MultipleChoiceElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 1);
+		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(),
+				"Test instruction", List.of(),
+				new MultipleChoiceElement(UUID.randomUUID(),
+						content, correctAnswers, incorrectAnswers), 1);
 		
 		mceDAO.save(mc.getContent());
 		mceDAO.flush();
@@ -314,7 +325,8 @@ public class TaskDAOTests
 				3, 2,
 				4, 1);
 		
-		WordConnect wc = new WordConnect(UUID.randomUUID(), "Test instruction",
+		WordConnect wc = new WordConnect(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				leftWords, rightWords, correctMapping, 1);
 		
 		WordConnect wc2 = wcDAO.saveAndFlush(wc);
