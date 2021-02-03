@@ -1,0 +1,196 @@
+
+
+/*  dropdown menu   */
+@media (min-width: 992px){
+	.dropdown-menu .dropdown-toggle:after{
+		border-top: .3em solid transparent;
+	    border-right: 0;
+	    border-bottom: .3em solid transparent;
+	    border-left: .3em solid;
+	}
+	.dropdown-menu .dropdown-menu{
+		margin-left:0; margin-right: 0;
+	}
+	.dropdown-menu li{
+		position: relative;
+	}
+	.nav-item .submenu{ 
+		display: none;
+		position: absolute;
+		left:100%; top:-7px;
+	}
+	.nav-item .submenu-left{ 
+		right:100%; left:auto;
+	}
+	.dropdown-menu > li:hover{ background-color: #f1f1f1 }
+	.dropdown-menu > li:hover > .submenu{
+		display: block;
+	}
+}
+
+#wordFillDiv, #chronologicalOrderDiv,#wordConnectDiv{
+	border-radius: 90px;
+	overflow: hidden;
+	padding: 30px;
+	transform: translate(-30px);
+	width: calc(100% + 60px);
+	line-height: 2;
+}
+.variantNavbar {
+	display: flex; 
+	align-items: center; 
+	justify-content: center; 
+	text-align: center;
+}
+
+.taskTextTextarea {
+	overflow-y: hidden;
+}
+/*Form-label-group extension*/
+.form-label-group {
+	position: relative;
+	margin-bottom: 1rem;
+}
+  
+.form-label-group input,
+.form-label-group label,
+.form-label-group textarea {
+	min-height: 3.125rem;
+	padding: .75rem;
+	color: black!important;
+}
+
+.form-label-group label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+	width: 100%;
+	margin-bottom: 0; /* Override default `<label>` margin */
+	line-height: 1.5;
+	color: #495057;
+	pointer-events: none;
+	cursor: text; /* Match the input under the label */
+	border: 1px solid transparent;
+	border-radius: .25rem;
+	transition: all .1s ease-in-out;
+}
+
+
+.form-label-group textarea::-webkit-textarea-placeholder {
+	color: transparent;
+}
+  
+.form-label-group textarea::-moz-placeholder {
+	color: transparent;
+}
+  
+.form-label-group textarea:-ms-textarea-placeholder {
+	color: transparent;
+}
+  
+.form-label-group textarea::-ms-textarea-placeholder {
+	color: transparent;
+}
+  
+.form-label-group textarea::placeholder {
+	color: transparent;
+}
+  
+.form-label-group textarea:not(:-moz-placeholder-shown) {
+	padding-top: 1.25rem;
+	padding-bottom: .25rem;
+}
+  
+.form-label-group textarea:not(:-ms-textarea-placeholder) {
+	padding-top: 1.25rem;
+	padding-bottom: .25rem;
+}
+  
+.form-label-group textarea:not(:placeholder-shown) {
+	padding-top: 1.25rem;
+	padding-bottom: .25rem;
+}
+  
+.form-label-group textarea:not(:-moz-placeholder-shown) ~ label {
+	padding-top: .25rem;
+	padding-bottom: .25rem;
+	font-size: 12px;
+	color: #777;
+}
+  
+.form-label-group textarea:not(:-ms-textarea-placeholder) ~ label {
+	padding-top: .25rem;
+	padding-bottom: .25rem;
+	font-size: 12px;
+	color: #777;
+}
+
+.form-label-group textarea:not(:placeholder-shown) ~ label {
+	padding-top: .25rem;
+	padding-bottom: .25rem;
+	font-size: 12px;
+	color: #777;
+}
+
+
+
+/*	collapse side-panel	*/
+
+/* The sidepanel menu */
+.sidepanel {
+	height: 100%; /* Specify a height */
+	width: 0; /* 0 width - change this with JavaScript */
+	position: fixed; /* Stay in place */
+	z-index:1032; /* Stay on top *//*bo position fixed navbarem zaslania*/
+	top: 0;
+	left: 0;
+	background-color: #111; /* Black*/
+	overflow-x: auto; 
+	/* Disable horizontal scroll */
+	padding-top: 60px; /* Place content 60px from the top */
+	transition: 0.5s; /* 0.5 second transition effect to slide in the sidepanel */
+}
+  
+  /* The sidepanel links */
+.openbtn {
+	position:absolute;
+	z-index:1031; /*bo position fixed navbarem zaslania*/
+}
+
+.sidepanel > a {
+	padding: 8px 8px 8px 32px;
+	text-decoration: none;
+	font-size: 25px;
+	color: #818181;
+	display: block;
+	transition: 0.3s;
+}
+  
+  /* When you mouse over the navigation links, change their color */
+.sidepanel > a:hover {
+	color: #f1f1f1;
+}
+  
+  /* Position and style the close button (top right corner) */
+.sidepanel .closebtn {
+	position: absolute;
+	top: 0;
+	right: 25px;
+	font-size: 36px;
+	margin-left: 50px;
+}
+  
+  /* Style the button that is used to open the sidepanel */
+.openbtn {
+	font-size: 20px;
+	cursor: pointer;
+	background-color: #111;
+	color: white;
+	padding: 10px 15px;
+	border: none;
+}
+  
+.openbtn:hover {
+	background-color: #444;
+}

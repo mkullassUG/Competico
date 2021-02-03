@@ -32,4 +32,9 @@ public interface Initializable
 			}
 		}
 	}
+	public static <T extends Initializable> T init(T obj)
+	{
+		obj.initialize();
+		return obj;
+	}
 }

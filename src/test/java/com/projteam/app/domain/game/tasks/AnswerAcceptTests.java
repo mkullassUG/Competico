@@ -33,7 +33,8 @@ public class AnswerAcceptTests
 				.collect(Collectors.toList());
 		List<String> possibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
 		
-		WordFill wf = new WordFill(UUID.randomUUID(), "Test instruction",
+		WordFill wf = new WordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 100);
 		WordFillAnswer wfa = new WordFillAnswer(answers);
 		
@@ -49,7 +50,8 @@ public class AnswerAcceptTests
 				.map(ans -> new WordChoice(UUID.randomUUID(), ans, List.of("qwr")))
 				.collect(Collectors.toList());
 		
-		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(), "Test instruction",
+		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(), 
+				"Test instruction", List.of(),
 				new ChoiceWordFillElement(UUID.randomUUID(), text, wordChoices, false), 100);
 		ChoiceWordFillAnswer cwfa = new ChoiceWordFillAnswer(answers);
 		
@@ -90,7 +92,8 @@ public class AnswerAcceptTests
 					possibleAnswersList));
 		}
 		
-		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), "Test instruction",
+		ListWordFill lwf = new ListWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				wordFillElemList, 100);
 		ListWordFillAnswer lwfa = new ListWordFillAnswer(answers);
 		
@@ -123,7 +126,8 @@ public class AnswerAcceptTests
 					true));
 		}
 		
-		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), "Test instruction",
+		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				wordFillElemList, 100);
 		ListChoiceWordFillAnswer lcwfa = new ListChoiceWordFillAnswer(answers);
 		
@@ -141,7 +145,8 @@ public class AnswerAcceptTests
 				"ullamco laboris nisi ut",
 				"aliquip ex ea commodo consequat");
 		
-		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), "Test instruction",
+		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				text, 100);
 		ChronologicalOrderAnswer coa = new ChronologicalOrderAnswer(text);
 		
@@ -160,7 +165,8 @@ public class AnswerAcceptTests
 				.map(textList -> new SentenceFormingElement(UUID.randomUUID(), textList))
 				.collect(Collectors.toList());
 		
-		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), "Test instruction",
+		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				wordFillElemList, 100);
 		ListSentenceFormingAnswer lsfa = new ListSentenceFormingAnswer(text);
 		
@@ -174,7 +180,8 @@ public class AnswerAcceptTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed");
 		
-		SingleChoice sc = new SingleChoice(UUID.randomUUID(), "Test instruction",
+		SingleChoice sc = new SingleChoice(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				content, answer, incorrectAnswers, 100);
 		SingleChoiceAnswer sca = new SingleChoiceAnswer(answer);
 		
@@ -189,7 +196,8 @@ public class AnswerAcceptTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(), "Test instruction",
+		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				new MultipleChoiceElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 100);
 		MultipleChoiceAnswer mca = new MultipleChoiceAnswer(correctAnswers);
 		
@@ -207,9 +215,15 @@ public class AnswerAcceptTests
 				3, 2,
 				4, 1);
 		
-		WordConnect wc = new WordConnect(UUID.randomUUID(), "Test instruction",
+		WordConnect wc = new WordConnect(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				leftWords, rightWords, correctMapping, 100);
-		WordConnectAnswer wca = new WordConnectAnswer(correctMapping);
+		WordConnectAnswer wca = new WordConnectAnswer(correctMapping
+				.entrySet()
+				.stream()
+				.collect(Collectors.toMap(
+						e -> leftWords.get(e.getKey()),
+						e -> rightWords.get(e.getValue()))));
 		
 		assertEquals(wc.acceptAnswer(wca), 1);
 	}

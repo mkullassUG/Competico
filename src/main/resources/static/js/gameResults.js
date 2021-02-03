@@ -74,7 +74,6 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
             else if ( currentTask.completion >= 0.25)
                 completionStyle = "orangeTask";
 
-
             newTr = $('<tr class="'+ completionStyle +'">');
     
             newTdCount = $("<td>");
@@ -83,14 +82,13 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
             newTdScore = $("<td>");
             newTdScore.append("<strong>" + parseFloat((currentTask.completion*100).toFixed(1)) + "%</strong>");
 
-            newTdBonus = $("<td>");
-            newTdBonus.append('x'+currentTask.difficulty/100);
-
-
             newTdTime = $("<td>");
             newTdTime.append((currentTask.timeTaken/1000) + " sec");
+
+            newTdBonus = $("<td>");
+            newTdBonus.append('x'+currentTask.difficulty/100);
     
-            newTr.append(newTdCount).append(newTdScore).append(newTdBonus).append(newTdTime);
+            newTr.append(newTdCount).append(newTdScore).append(newTdTime).append(newTdBonus);
             personalScoreTable.append(newTr);
         }
     }

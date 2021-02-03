@@ -1,152 +1,169 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Artur, Michał">
-    <meta name="generator" content="Jekyll v4.1.1">
-    <title>Dashboard</title>
-    <link rel="icon" href="assets/myIcons/icon.svg">
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/offcanvas/">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Artur, Michał">
+  <meta name="generator" content="Jekyll v4.1.1">
+  <title>Dashboard</title>
+  <link rel="icon" href="assets/myIcons/icon.svg">
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/offcanvas/">
 
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <link href="css/dashboard.css" rel="stylesheet">
-  </head>
-  <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-      <div class="container-xl">
-        <a class="navbar-brand" href="/">
-          <img src="assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
-        </a>
-        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
-          <ul class="navbar-nav w-100">
-            <li class="nav-item ml-lg-auto">
-              <a class="nav-link" href="/">Strona Domowa</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="lobby">Gra</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#">Wsparcie</a>
-            </li>
-            <li class="nav-item active">
-              <a class="nav-link" href="dashboard">Rankingi</a>
-            </li>
-            <li class="nav-item mr-auto">
-              <a class="nav-link disabled" href="#">Profil</a>
-            </li>
-          </ul>
-          <a class="nav-link mr-r pl-0 logOutButton" href="/logout">Wyloguj</a>
-        </div>
+  <!-- Custom styles for this template -->
+  <link href="/css/dashboard.css" rel="stylesheet">
+  <link href="/css/global.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top fixed-top">
+    <div class="container-xl">
+      <a class="navbar-brand" href="/">
+        <img src="assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link active" href="/">Strona Domowa</a>
+          </li>
+          <li class="nav-item collapse" id="gameHyperlink">
+            <a class="nav-link" href="/lobby">Gra</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#" id="helpHyperlink">Wsparcie</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register" id="registerHyperlink">Rejestracja</a>
+          </li>
+          <li class="nav-item" id="loginHyperlink">
+            <a class="nav-link mr-auto" href="/login" >Zaloguj</a>
+          </li>
+          <li class="nav-item collapse" id="dashboardHyperlink">
+            <a class="nav-link" href="/dashboard" >Rankingi</a>
+          </li>
+          <li class="nav-item collapse" id="swaggerHyperlink">
+            <a class="nav-link " href="/swagger-ui/">Swagger</a>
+          </li>
+          <li class="nav-item collapse" id="taskDataHyperlink">
+            <a class="nav-link " href="/tasks/import/global/taskcreator">Task creator</a>
+          </li>
+          <li class="nav-item collapse" id="actuatorHyperlink">
+            <a class="nav-link " href="/actuator">Actuator</a>
+          </li>
+          <li class="nav-item mr-auto collapse" id="profileHyperlink">
+            <a class="nav-link disabled" href="#">Profil</a>
+          </li>
+        </ul>
+        <a class="nav-link mr-r pl-0 collapse" id="logOutButton" href="/logout">Wyloguj</a>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <div class="nav-scroller bg-white shadow-sm">
-      <nav class="nav nav-underline">
-        <a class="nav-link active" href="#">Rankingi</a>
-        <a class="nav-link active" href="/game/history/1">Historia gier</a>
-        <a class="nav-link disabled" href="#">
-          Znajomi
-          <span class="badge badge-pill bg-light align-text-bottom">27</span>
-        </a>
-        <a class="nav-link disabled" href="#">Eksploruj</a>
-        <a class="nav-link disabled" href="#">Sugestie</a>
-      </nav>
+  <div class="nav-scroller bg-white shadow-sm">
+    <nav class="nav nav-underline">
+      <a class="nav-link active" href="#">Rankingi</a>
+      <a class="nav-link active" href="/game/history/1">Historia gier</a>
+      <a class="nav-link disabled" href="#">
+        Znajomi
+        <span class="badge badge-pill bg-light align-text-bottom">27</span>
+      </a>
+      <a class="nav-link disabled" href="#">Eksploruj</a>
+      <a class="nav-link disabled" href="#">Sugestie</a>
+    </nav>
+  </div>
+
+  <main role="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-primary rounded shadow-sm">
+      <img class="mr-3" src="assets/myIcons/iconfinder_law_iconsArtboard_1_copy_5_2393033.svg" alt="" width="48" height="48">
+      <div class="lh-100">
+        <h6 class="mb-0 text-white lh-100" id="currentUser">Kacper</h6>
+        <small>ostatnio grano: 0 dni temu</small>
+      </div>
     </div>
 
-    <main role="main" class="container">
-      <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-primary rounded shadow-sm">
-        <img class="mr-3" src="assets/myIcons/iconfinder_law_iconsArtboard_1_copy_5_2393033.svg" alt="" width="48" height="48">
-        <div class="lh-100">
-          <h6 class="mb-0 text-white lh-100">@username</h6>
-          <small>ostatnio grano: x dni temu</small>
-        </div>
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+      <h6 class="border-bottom border-gray pb-2 mb-0">Najlepsi gracze:</h6>
+      <div class="media text-muted pt-3">
+        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#FFD700"/><text x="50%" y="50%" fill="#FFD700" dy=".3em">32x32</text></svg>
+        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+          <strong class="d-block text-gray-dark">Marek</strong>
+          pierwsze miejsce
+          <small class="d-block">ostatnio grano: 9 dni temu</small>
+        </p>
+        
       </div>
+      <div class="media text-muted pt-3">
+        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#C0C0C0"/><text x="50%" y="50%" fill="#C0C0C0" dy=".3em">32x32</text></svg>
+        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+          <strong class="d-block text-gray-dark">Agata</strong>
+          drugie miejsce
+          <small class="d-block">ostatnio grano: 21 dni temu</small>
+        </p>
+      </div>
+      <div class="media text-muted pt-3">
+        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#b08d57"/><text x="50%" y="50%" fill="#b08d57" dy=".3em">32x32</text></svg>
+        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+          <strong class="d-block text-gray-dark">Krzysztof</strong>
+          trzecie miejsce
+          <small class="d-block">ostatnio grano: 7 dni temu</small>
+        </p>
+      </div>
+    </div>
 
-      <div class="my-3 p-3 bg-white rounded shadow-sm">
-        <h6 class="border-bottom border-gray pb-2 mb-0">Najlepsi gracze:</h6>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#FFD700"/><text x="50%" y="50%" fill="#FFD700" dy=".3em">32x32</text></svg>
-          <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <strong class="d-block text-gray-dark">@username</strong>
-            pierwsze miejsce
-            <small class="d-block">ostatnio grano: x dni temu</small>
-          </p>
-          
-        </div>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#C0C0C0"/><text x="50%" y="50%" fill="#C0C0C0" dy=".3em">32x32</text></svg>
-          <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <strong class="d-block text-gray-dark">@username</strong>
-            drugie miejsce
-            <small class="d-block">ostatnio grano: x dni temu</small>
-          </p>
-        </div>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#b08d57"/><text x="50%" y="50%" fill="#b08d57" dy=".3em">32x32</text></svg>
-          <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <strong class="d-block text-gray-dark">@username</strong>
-            trzecie miejsce
-            <small class="d-block">ostatnio grano: x dni temu</small>
-          </p>
+    <!-- <div class="my-3 p-3 bg-white rounded shadow-sm">
+      <h6 class="border-bottom border-gray pb-2 mb-0">Pozostali</h6>
+      <div class="media text-muted pt-3">
+        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+        <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <strong class="text-gray-dark">Full Name</strong>
+            <a href="#">Profil</a>
+          </div>
+          <span class="d-block">Jan</span>
         </div>
       </div>
-
-      <div class="my-3 p-3 bg-white rounded shadow-sm">
-        <h6 class="border-bottom border-gray pb-2 mb-0">Suggestions</h6>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-          <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <div class="d-flex justify-content-between align-items-center w-100">
-              <strong class="text-gray-dark">Full Name</strong>
-              <a href="#">Profile</a>
-            </div>
-            <span class="d-block">@username</span>
+      <div class="media text-muted pt-3">
+        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+        <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <strong class="text-gray-dark">Full Name</strong>
+            <a href="#">Profil</a>
           </div>
+          <span class="d-block">Kamil</span>
         </div>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-          <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <div class="d-flex justify-content-between align-items-center w-100">
-              <strong class="text-gray-dark">Full Name</strong>
-              <a href="#">Profile</a>
-            </div>
-            <span class="d-block">@username</span>
-          </div>
-        </div>
-        <div class="media text-muted pt-3">
-          <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-          <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <div class="d-flex justify-content-between align-items-center w-100">
-              <strong class="text-gray-dark">Full Name</strong>
-              <a href="#">Profile</a>
-            </div>
-            <span class="d-block">@username</span>
-          </div>
-        </div>
-        <small class="d-block text-right mt-3">
-          <a href="#">All suggestions</a>
-        </small>
       </div>
-    </main>
-  <script src="js/jquery/jquery-3.5.1.min.js"></script>
-  <script src="js/bootstrap/popper.min.js"></script>
-  <script src="js/bootstrap/bootstrap.min.js"></script>
+      <div class="media text-muted pt-3">
+        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+        <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <strong class="text-gray-dark">Full Name</strong>
+            <a href="#">Profil</a>
+          </div>
+          <span class="d-block">Zosia</span>
+        </div>
+      </div>
+      <small class="d-block text-right mt-3">
+        <a href="#">All suggestions</a> 
+      </small> -->
+    </div>
+  </main>
+  <script src="/js/jquery/jquery-3.5.1.min.js"></script>
+  <script src="/js/bootstrap/popper.min.js"></script>
+  <script src="/js/bootstrap/bootstrap.min.js"></script>
   <script>
     window.jQuery || document.write('<script src="assets/js/vendor/jquery.slim.min.js"><\/script>')
   </script>
-  <script src="js/bootstrap/bootstrap.bundle.min.js"></script>
-  <script src="js/dashboard.js"></script>
+  <script src="/js/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script src="/js/navbar.js"></script>
   <script>
     var debug = DashboardLogic.getInstance(debug = true);
   </script>
-  </body>
+</body>
 </html>

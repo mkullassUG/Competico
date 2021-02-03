@@ -1,6 +1,10 @@
 package com.projteam.app.api;
 
-import static org.junit.Assert.assertNotNull;
+import static com.projteam.app.domain.Account.PLAYER_ROLE;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
@@ -12,11 +16,15 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -27,22 +35,30 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import com.projteam.app.domain.Account;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.service.AccountService;
+import com.projteam.app.service.game.GameService;
+import com.projteam.app.service.game.GameTaskDataService;
+import com.projteam.app.service.game.LobbyService;
 
 @SpringBootTest
+@ContextConfiguration(name = "API-tests")
 @AutoConfigureMockMvc(addFilters = false)
 public class AccountAPITests
 {
 	@Autowired
 	private MockMvc mvc;
 	
-	@MockBean
-	private AccountService accServ;
+	private @MockBean AccountService accountService;
+	private @MockBean LobbyService lobbyService;
+	private @MockBean GameService gameService;
+	private @MockBean GameTaskDataService gtdService;
 	
 	private static final MediaType APPLICATION_JSON_UTF8 =
 			new MediaType(MediaType.APPLICATION_JSON.getType(),
@@ -58,6 +74,49 @@ public class AccountAPITests
 		assertNotNull(mvc);
 	}
 	
+	@Test
+	public void shouldReturnAccountInfo() throws Exception
+	{
+		UUID id = UUID.randomUUID();
+		String email = "testAcc@test.pl";
+		String username = "TestAccount";
+		String nickname = "TestAccount";
+		String password = "QWERTY";
+		List<String> roles = List.of(PLAYER_ROLE);
+		
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(new Account.Builder()
+					.withID(id)
+					.withEmail(email)
+					.withUsername(username)
+					.withNickname(nickname)
+					.withPassword(password)
+					.withRoles(roles)
+					.build()));
+		
+		mvc.perform(get("/api/v1/account/info"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.authenticated", is(true)))
+			.andExpect(jsonPath("$.email", is(email)))
+			.andExpect(jsonPath("$.username", is(username)))
+			.andExpect(jsonPath("$.nickname", is(nickname)))
+			.andExpect(jsonPath("$.roles", hasSize(roles.size())))
+			.andExpect(jsonPath("$.roles", containsInAnyOrder(roles.stream()
+					.map(item -> is(item))
+					.collect(Collectors.toList()))));
+	}
+	
+	@Test
+	public void shouldNotReturnAccountInfoWhenNotAuthenticated() throws Exception
+	{
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.empty());
+		
+		mvc.perform(get("/api/v1/account/info"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.authenticated", is(false)));
+	}
+	
 	@ParameterizedTest
 	@MethodSource("mockRegistrationData")
 	public void shouldRegisterSuccessfully(RegistrationDTO mockRegDto) throws Exception
@@ -67,15 +126,15 @@ public class AccountAPITests
 				.content(toJson(mockRegDto)))
 			.andExpect(status().isCreated());
 		
-		verify(accServ, times(1)).register(any(), eq(mockRegDto), anyBoolean());
-		verifyNoMoreInteractions(accServ);
+		verify(accountService, times(1)).register(any(), eq(mockRegDto), anyBoolean());
+		verifyNoMoreInteractions(accountService);
 	}
 	@ParameterizedTest
 	@MethodSource("mockRegistrationData")
 	public void shouldReturnBadRequestWhenUserAlreadyRegistered(RegistrationDTO mockRegDto) throws Exception
 	{
 		doThrow(new IllegalStateException("Account with provided data already exists"))
-			.when(accServ)
+			.when(accountService)
 			.register(any(), eq(mockRegDto), eq(true));
 		
 		mvc.perform(post("/api/v1/register")
@@ -83,15 +142,15 @@ public class AccountAPITests
 				.content(toJson(mockRegDto)))
 			.andExpect(status().isBadRequest());
 		
-		verify(accServ, times(1)).register(any(), eq(mockRegDto), anyBoolean());
-		verifyNoMoreInteractions(accServ);
+		verify(accountService, times(1)).register(any(), eq(mockRegDto), anyBoolean());
+		verifyNoMoreInteractions(accountService);
 	}
 	
 	@ParameterizedTest
 	@MethodSource("mockLoginData")
 	public void shouldLoginSuccessfully(LoginDTO mockLoginDto) throws Exception
 	{
-		when(accServ.login(any(), eq(mockLoginDto)))
+		when(accountService.login(any(), eq(mockLoginDto)))
 			.thenReturn(true);
 		
 		mvc.perform(post("/api/v1/login")
@@ -99,14 +158,14 @@ public class AccountAPITests
 				.content(toJson(mockLoginDto)))
 			.andExpect(status().isOk());
 		
-		verify(accServ, times(1)).login(any(), eq(mockLoginDto));
-		verifyNoMoreInteractions(accServ);
+		verify(accountService, times(1)).login(any(), eq(mockLoginDto));
+		verifyNoMoreInteractions(accountService);
 	}
 	@ParameterizedTest
 	@MethodSource("mockLoginData")
 	public void shouldReturnBadRequestWhenUserDoesNotExist(LoginDTO mockLoginDto) throws Exception
 	{
-		when(accServ.login(any(), eq(mockLoginDto)))
+		when(accountService.login(any(), eq(mockLoginDto)))
 			.thenReturn(false);
 		
 		mvc.perform(post("/api/v1/login")
@@ -114,15 +173,15 @@ public class AccountAPITests
 				.content(toJson(mockLoginDto)))
 			.andExpect(status().isBadRequest());
 		
-		verify(accServ, times(1)).login(any(), eq(mockLoginDto));
-		verifyNoMoreInteractions(accServ);
+		verify(accountService, times(1)).login(any(), eq(mockLoginDto));
+		verifyNoMoreInteractions(accountService);
 	}
 	
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
 	public void shouldReturnCheckIfUserIsAuthenticated(boolean isAuthenticated) throws Exception
 	{
-		when(accServ.isAuthenticated()).thenReturn(isAuthenticated);
+		when(accountService.isAuthenticated()).thenReturn(isAuthenticated);
 		
 		mvc.perform(get("/api/v1/authenticated")
 				.contentType(APPLICATION_JSON_UTF8)
@@ -134,7 +193,7 @@ public class AccountAPITests
 	@Test
 	public void shouldRedirectFromRegisterWhenAlreadyLoggedIn() throws Exception
 	{
-		when(accServ.isAuthenticated())
+		when(accountService.isAuthenticated())
 			.thenReturn(true);
 		
 		mvc.perform(get("/register"))
@@ -143,7 +202,7 @@ public class AccountAPITests
 	@Test
 	public void shouldRedirectFromLoginWhenAlreadyLoggedIn() throws Exception
 	{
-		when(accServ.isAuthenticated())
+		when(accountService.isAuthenticated())
 			.thenReturn(true);
 		
 		mvc.perform(get("/login"))
@@ -152,7 +211,7 @@ public class AccountAPITests
 	@Test
 	public void shouldDisplayRegisterPageWhenAlreadyLoggedIn() throws Exception
 	{
-		when(accServ.isAuthenticated())
+		when(accountService.isAuthenticated())
 			.thenReturn(false);
 		
 		mvc.perform(get("/register"))
@@ -161,7 +220,7 @@ public class AccountAPITests
 	@Test
 	public void shouldDisplayLoginPageWhenAlreadyLoggedIn() throws Exception
 	{
-		when(accServ.isAuthenticated())
+		when(accountService.isAuthenticated())
 			.thenReturn(false);
 		
 		mvc.perform(get("/login"))

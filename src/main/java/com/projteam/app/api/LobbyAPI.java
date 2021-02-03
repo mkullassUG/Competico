@@ -17,15 +17,15 @@ import org.springframework.web.servlet.ModelAndView;
 import com.projteam.app.domain.Account;
 import com.projteam.app.dto.lobby.LobbyOptionsDTO;
 import com.projteam.app.service.AccountService;
-import com.projteam.app.service.GameService;
-import com.projteam.app.service.LobbyService;
+import com.projteam.app.service.game.GameService;
+import com.projteam.app.service.game.LobbyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@Api(value = "LobbyAPI", tags = "The main API managing lobbies before the game starts")
+@Api(value = "LobbyAPI", tags = "API managing lobbies before the game starts")
 public class LobbyAPI
 {
 	private LobbyService lobbyService;

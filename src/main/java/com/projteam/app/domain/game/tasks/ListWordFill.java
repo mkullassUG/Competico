@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -28,6 +29,7 @@ public class ListWordFill implements Task
 {
 	private @Id UUID id;
 	private String instruction;
+	private @ElementCollection List<String> tags;
 	private @ManyToMany @OrderColumn List<WordFillElement> rows;
 	
 	private double difficulty;

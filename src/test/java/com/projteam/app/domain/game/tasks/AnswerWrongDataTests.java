@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,8 @@ public class AnswerWrongDataTests
 				.collect(Collectors.toList());
 		List<String> possibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
 		
-		WordFill wf = new WordFill(UUID.randomUUID(), "Test instruction",
+		WordFill wf = new WordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				new WordFillElement(UUID.randomUUID(), text, emptySpaces, false, possibleAnswers), 1);
 		WordFillAnswer wfa = new WordFillAnswer(answers.stream()
 				.map(a -> a + "wrong")
@@ -52,7 +52,8 @@ public class AnswerWrongDataTests
 				.map(ans -> new WordChoice(UUID.randomUUID(), ans, List.of("qwr")))
 				.collect(Collectors.toList());
 		
-		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(), "Test instruction",
+		ChoiceWordFill cwf = new ChoiceWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				new ChoiceWordFillElement(UUID.randomUUID(), text, wordChoices, false), 1);
 		ChoiceWordFillAnswer cwfa = new ChoiceWordFillAnswer(answers.stream()
 				.map(a -> a + "wrong")
@@ -95,7 +96,8 @@ public class AnswerWrongDataTests
 					possibleAnswersList));
 		}
 		
-		ListWordFill lwf = new ListWordFill(UUID.randomUUID(), "Test instruction",
+		ListWordFill lwf = new ListWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				wordFillElemList, 1);
 		ListWordFillAnswer lwfa = new ListWordFillAnswer(answers.stream()
 				.map(aList -> aList.stream()
@@ -132,7 +134,8 @@ public class AnswerWrongDataTests
 					true));
 		}
 		
-		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(), "Test instruction",
+		ListChoiceWordFill lcwf = new ListChoiceWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				wordFillElemList, 1);
 		ListChoiceWordFillAnswer lcwfa = new ListChoiceWordFillAnswer(answers.stream()
 				.map(aList -> aList.stream()
@@ -154,7 +157,8 @@ public class AnswerWrongDataTests
 				"ullamco laboris nisi ut",
 				"aliquip ex ea commodo consequat");
 		
-		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(), "Test instruction",
+		ChronologicalOrder co = new ChronologicalOrder(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				text, 1);
 		ChronologicalOrderAnswer coa = new ChronologicalOrderAnswer(text.stream()
 				.map(a -> a + "wrong")
@@ -175,7 +179,8 @@ public class AnswerWrongDataTests
 				.map(textList -> new SentenceFormingElement(UUID.randomUUID(), textList))
 				.collect(Collectors.toList());
 		
-		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(), "Test instruction",
+		ListSentenceForming lsf = new ListSentenceForming(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				wordFillElemList, 1);
 		ListSentenceFormingAnswer lsfa = new ListSentenceFormingAnswer(text.stream()
 				.map(aList -> aList.stream()
@@ -193,7 +198,8 @@ public class AnswerWrongDataTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed");
 		
-		SingleChoice sc = new SingleChoice(UUID.randomUUID(), "Test instruction",
+		SingleChoice sc = new SingleChoice(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				content, answer, incorrectAnswers, 1);
 		SingleChoiceAnswer sca = new SingleChoiceAnswer(answer + "wrong");
 		
@@ -208,7 +214,8 @@ public class AnswerWrongDataTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(), "Test instruction",
+		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				new MultipleChoiceElement(UUID.randomUUID(),
 						content, correctAnswers, incorrectAnswers), 1);
 		MultipleChoiceAnswer mca = new MultipleChoiceAnswer(correctAnswers.stream()
@@ -229,13 +236,14 @@ public class AnswerWrongDataTests
 				3, 2,
 				4, 1);
 		
-		WordConnect wc = new WordConnect(UUID.randomUUID(), "Test instruction",
+		WordConnect wc = new WordConnect(UUID.randomUUID(),
+				"Test instruction", List.of(),
 				leftWords, rightWords, correctMapping, 1);
 		WordConnectAnswer wca = new WordConnectAnswer(correctMapping.entrySet()
 				.stream()
-				.collect(Collectors.toMap(Entry::getKey, e ->
-					(e.getValue() >= correctMapping.size())?
-						0:(e.getValue() + 1))));
+				.collect(Collectors.toMap(e -> leftWords.get(e.getKey()), e ->
+					((e.getValue() + 1) >= correctMapping.size())?
+							rightWords.get(0):rightWords.get(e.getValue() + 1))));
 		
 		assertEquals(wc.acceptAnswer(wca), 0);
 	}

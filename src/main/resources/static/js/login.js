@@ -18,18 +18,13 @@ $(document).ready(function(){
             contentType: "application/json",
 
             success: function(data, textStatus, jqXHR) {
-            //called when successful
-            window.location.href = "dashboard";
-            
+                location.replace("dashboard");
             },
-
             error: function(jqXHR, status, err) {
-            //called when there is an error
-
-            //TODO error message on screen
-            //"Jak będziesz to później implementował, znany error ma kod 400 i opis pod responseText"
-            console.warn("status: " + jqXHR.status  + ": " + err );
+                $(".invalid-feedback").show();
+                console.log(data)
             }
         });
     });
+    NavbarLogic.getInstance();
 });

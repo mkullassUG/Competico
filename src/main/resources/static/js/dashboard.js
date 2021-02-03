@@ -6,19 +6,41 @@ $(function () {
   })
 })
 
-const DashboardLogic = (playerInfo_) => {
+const DashboardLogic = (accountInfo_) => {
 
   /*       logic variables          */
-  var self = playerInfo_;
+  var self = accountInfo_;
   self.nickname;
   self.username;
-
+  self.email;
+  self.roles;
+  self.authenticated;
   /*       logic functions          */
-  self.dashboardInit = (playerInfo) => {
+  self.dashboardInit = (accountInfo) => {
     console.log("dashboardInit");
- 
-    self.nickname = playerInfo.nickname;
-    self.username = playerInfo.username;
+    
+    self.roles = accountInfo.roles?accountInfo.roles:[];
+
+    $("#currentUser").html(self.nickname + " <small>" + self.username + "</small>")
+
+    //navbar preparation
+    NavbarLogic.singleton = NavbarLogic(accountInfo, debug);
+
+    // if ( self.roles.includes("SWAGGER_ADMIN"))
+    //   $("#swaggerHyperlink").show();
+    // if ( self.roles.includes("TASK_DATA_ADMIN"))
+    //     $("#taskDataHyperlink").show();
+    // if ( self.roles.includes("ACTUATOR_ADMIN"))
+    //     $("#actuatorHyperlink").show();
+
+    // if ( self.authenticated ) {
+    //     $("#registerHyperlink").hide();
+    //     $("#loginHyperlink").hide();
+    //     $("#profileHyperlink").show();
+    //     $("#dashboardHyperlink").show();
+    //     $("#logOutButton").show();
+    //     $("#gameHyperlink").show();
+    // }
   }
 
   /*       event listeners          */
@@ -28,7 +50,7 @@ const DashboardLogic = (playerInfo_) => {
   /*   ajax http requests       */
 
   /*  initalization  */
-  self.dashboardInit(playerInfo_);
+  self.dashboardInit(accountInfo_);
   
   return self;
 }
@@ -38,29 +60,33 @@ DashboardLogic.getInstance = (debug = false) => {
   if (DashboardLogic.singleton)
     return DashboardLogic.singleton;
 
-  var ajaxReceiveWhoAmI = ( ) => {
+  var ajaxReceiveAccountInfo = ( ) => {
     $.ajax({
       type     : "GET",
       cache    : false,
-      url      : "/api/v1/playerinfo",
+      url      : "/api/v1/account/info",
+      // url      : "/api/v1/playerinfo",
       contentType: "application/json",
-      success: function(playerInfo, textStatus, jqXHR) {
+      success: function(accountInfo, textStatus, jqXHR) {
         if (debug){
-          console.log("ajaxReceiveWhoAmI success");
-          console.log(playerInfo);
+          console.log("ajaxReceiveAccountInfo success");
+          console.log(accountInfo);
           console.log(textStatus);
           console.log(jqXHR);
         }
-        DashboardLogic.singleton = DashboardLogic(playerInfo, debug);
+        if (typeof accountInfo == 'string') //nie zalogowany
+          DashboardLogic.singleton = DashboardLogic({}, debug);
+        else //zalogowany
+          DashboardLogic.singleton = DashboardLogic(accountInfo, debug);
         console.log("DashboardLogic");
       },
       error: function(jqXHR, status, err) {
         if (debug){
-          console.warn("ajaxReceiveWhoAmI error");
+          console.warn("ajaxReceiveAccountInfo error");
         }
       }
     });
   }
   
-  ajaxReceiveWhoAmI();
+  ajaxReceiveAccountInfo();
 }

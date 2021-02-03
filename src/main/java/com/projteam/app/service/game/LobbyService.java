@@ -1,4 +1,4 @@
-package com.projteam.app.service;
+package com.projteam.app.service.game;
 
 import static java.util.Collections.synchronizedMap;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.projteam.app.domain.Account;
 import com.projteam.app.domain.game.Lobby;
 import com.projteam.app.dto.lobby.LobbyOptionsDTO;
+import com.projteam.app.service.AccountService;
 
 @Service
 public class LobbyService

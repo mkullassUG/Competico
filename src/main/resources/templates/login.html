@@ -11,34 +11,18 @@
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/sign-in/">
 
     <!-- Bootstrap core CSS -->
-<link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/global.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="css/signin.css" rel="stylesheet">
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top fixed-top">
       <div class="container-xl">
         <a class="navbar-brand" href="/">
           <img src="assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
         </a>
-        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
       
@@ -47,16 +31,35 @@
             <li class="nav-item">
               <a class="nav-link" href="/">Strona Domowa</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#">Wsparcie</a>
+            <li class="nav-item collapse" id="gameHyperlink">
+              <a class="nav-link" href="/lobby">Gra</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="register">Rejestracja</a>
+              <a class="nav-link disabled" href="#" id="helpHyperlink">Wsparcie</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="login">Zaloguj</a>
+              <a class="nav-link" href="/register" id="registerHyperlink">Rejestracja</a>
+            </li>
+            <li class="nav-item active" id="loginHyperlink">
+              <a class="nav-link mr-auto active" href="/login" >Zaloguj</a>
+            </li>
+            <li class="nav-item collapse" id="dashboardHyperlink">
+              <a class="nav-link" href="/dashboard" >Rankingi</a>
+            </li>
+            <li class="nav-item collapse" id="swaggerHyperlink">
+              <a class="nav-link " href="/swagger-ui/">Swagger</a>
+            </li>
+            <li class="nav-item collapse" id="taskDataHyperlink">
+              <a class="nav-link " href="/tasks/import/global/taskcreator">Task creator</a>
+            </li>
+            <li class="nav-item collapse" id="actuatorHyperlink">
+              <a class="nav-link " href="/actuator">Actuator</a>
+            </li>
+            <li class="nav-item mr-auto collapse" id="profileHyperlink">
+              <a class="nav-link disabled" href="#">Profil</a>
             </li>
           </ul>
+          <a class="nav-link mr-r pl-0 collapse" id="logOutButton" href="/logout">Wyloguj</a>
         </div>
       </div>
     </nav>
@@ -65,15 +68,18 @@
         <img class="mb-4" src="assets/myIcons/icon.svg" alt="" width="72" height="72">
         <h1 class="h3 mb-3 font-weight-normal">Zaloguj się</h1>
         <label for="inputEmail" class="sr-only">Adres email</label>
-        <input type="text" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <input type="text" id="inputEmail" class="form-control" placeholder="Adres email lub nazwa konta" required autofocus>
         <label for="inputPassword" class="sr-only">Hasło</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Hasło" required>
         <div class="checkbox mb-3">
           <label>
             <input type="checkbox" value="remember-me"> Zapamiętaj mnie
           </label>
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Zaloguj się</button>
+        <div class="invalid-feedback">
+          Niepoprawna nazwa konta lub hasło.
+        </div>
         <p class="mt-5 mb-3 text-muted">&copy; 2020-2020</p>
       </form>
     </div>
@@ -88,4 +94,5 @@
 <script src="js/bootstrap/popper.min.js"></script>
 <script src="js/bootstrap/bootstrap.min.js"></script>
 
-<script src="js/login.js">/*qazwsx!Q2*/</script>
+<script src="js/navbar.js"></script>
+<script src="js/login.js"></script>

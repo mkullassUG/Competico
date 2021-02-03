@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -27,6 +28,7 @@ public class ChoiceWordFill implements Task
 {
 	private @Id UUID id;
 	private String instruction;
+	private @ElementCollection List<String> tags;
 	private @ManyToOne ChoiceWordFillElement content;
 	
 	private double difficulty;

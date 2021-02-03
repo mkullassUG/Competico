@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.1.1">
+    <title>TaskCreator</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/cover/">
+    <link rel="icon" href="/assets/myIcons/icon.svg">
+    <!-- Bootstrap core CSS -->
+    <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap/font-awesome.min.css">
+    <!-- Custom styles for this template -->
+    
+    <link href="/js/jquery/jquery-plugins/jquery-ui.min.css" rel="stylesheet">
+    <link href="/css/lobby.css" rel="stylesheet"> 
+    <link href="/css/task.css" rel="stylesheet"> 
+    <link href="/css/taskCreator.css" rel="stylesheet"> 
+    <!-- register bo chce form-label-group -->
+    <!-- <link href="/css/register.css" rel="stylesheet">  -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="/js/jquery/jquery-plugins/jquery-ui.min.js"></script>
+    <script src="/js/jquery/jquery-plugins/jquery-ui-touch-punch.min.js"></script>
+    <script src="/js/jquery/jquery-plugins/jquery-simulate.js"></script>
+    <script src="/js/jsPlumb/jsPlumb.js"></script>
+
+    
+  </head>
+
+  <body class="bg-primary">
+    <!-- main content -->
+    <button class="openbtn" onclick="openNav()">&#9776; Pozostałe zadania</button>
+    <nav class="navbar navbar-dark variantNavbar fixed-top">
+      <div  id="main_nav">
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  Wybór wariantu  </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#"> Wypełnianie luk w tekście &raquo </a>
+                <ul class="submenu dropdown-menu">
+                  <li><a class="dropdown-item" href="#WordFIll" id="btnWordFIll"> Jeden wielozdaniowy tekst, jedna pula odpowiedzi</a></li>
+                  <li><a class="dropdown-item disabled" href="#"> Jeden wielozdaniowy tekst, wybór słowa dla każdej luki </a></li>
+                  <li><a class="dropdown-item disabled" href="#"> Oddzielne zdania ułożone w wierszach, jedna pula odpowiedzi na wiersz </a></li>
+                  <li><a class="dropdown-item disabled" href="#"> Oddzielne zdania ułożone w wierszach, wybór słowa dla każdej luki</a></li>
+                </ul>
+              </li>
+              <li><a class="dropdown-item" href="#WordConnect" id="btnWordConnect"> Łączenie słów i zwrotów z dwóch kolumn </a></li>
+              <li><a class="dropdown-item" href="#ChronologicalOrder" id="btnChronologicalOrder"> Układanie zdań w porządek chronologiczny </a></li>
+              <li><a class="dropdown-item disabled" href="#"> Układanie zdań z podanych wyrazów </a></li>
+              <li><a class="dropdown-item disabled" href="#">  Wybór odpowiedzi (pytanie zamknięte) &raquo</a>
+                <ul class="submenu dropdown-menu">
+                  <li><a class="dropdown-item disabled" href="#"> Pojedyncza poprawna odpowiedź</a></li>
+                  <li><a class="dropdown-item disabled" href="#"> Wiele poprawnych odpowiedzi </a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div id="mySidepanel" class="sidepanel">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="#">pozostałe zadania</a>
+      
+    </div>
+    <div class="container fill text-center" id="bigChangeDiv">
+      <!-- game -->
+      <div class="row" id="Top">
+        <div class="col-12">
+        </div>
+        <div class="col-12">
+          <div id="gameTimer">
+            <h2>Tworzenie zadań</h2>
+            
+          </div>
+        </div>
+      </div>
+      <div class="row  mt-3 rounded" id="Center">
+        <div class="col-12" id="GameWrapperDiv">
+          <div class="m-custom my-3 p-3 rounded gameDivDecoration" style="overflow:hidden;">
+            <!-- WordFill -->
+            <div class="bg-light btnShadow" id="wordFillDiv">
+              <div class="12">
+                <div class="form-label-group">
+                  <textarea class="form-control taskTagTextarea"  id="wordFillDivTaskTags" placeholder="cos" rows="1"></textarea>
+                  <label for="wordFillDivTaskTags">Tagi</label>
+                </div>
+                <div class="form-label-group">
+                  <textarea class="form-control taskInstructionTextarea"  id="wordFillDivTaskInstruction" placeholder="cos">Complete the text with the missing words:</textarea>
+                  <label for="wordFillDivTaskInstruction">Instrukcja</label>
+                </div>
+                
+              </div>
+              <div class="form-label-group">
+                <textarea class="form-control taskTextTextarea"  id="wordFillDivTaskText" placeholder="cos" rows="4" contenteditable="true" >I’m sorry to have to tell you that there has been some {[slippage]} in the project and we won’t be able to {[stick to]} our original {[deadline]} on July 30th for completing the {[rollout]} of the new software. Pedro’s absence for three weeks caused a bit of a {[bottleneck]}, and there were more delays when we realised that there was still some {[dirty data]} in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month.</textarea>
+                <label for="wordFillDivTaskText">Treść</label>
+              </div>
+              <div class="form-label-group">
+                <textarea class="form-control incorrectWords"  id="wordFillDivIncorrectWords" placeholder="cos" rows="1" contenteditable="true" >within, scope</textarea>
+                <label for="wordFillDivIncorrectWords">Dodatkowe, niepoprawne odpowiedzi</label>
+              </div>
+              <div class="form-inline">
+                <button class="btn btn-primary btn-sm">wstaw nadmiar słów</button>
+                <button class="btn btn-primary btn-sm">wstaw słowo</button>
+                <div class="form-group mx-sm-3 mb-2">
+                  <label for="inputDificulty" class="sr-only">Difficulty</label>
+                  <input type="number" class="form-control disabled" id="inputDificulty" placeholder="difficulty" value="100">
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                  <label for="inputFontSize" class="sr-only">Font size</label>
+                  <input type="number" class="form-control disabled" id="inputFontSize" placeholder="Font size" value="16">
+                </div>
+              </div>
+            </div>
+            <!-- ChronologicalOrder -->
+            <div class="bg-light btnShadow collapse" id="chronologicalOrderDiv">
+              <div class="12">
+                <div class="form-group green-border-focus">
+                  <label for="chronologicalOrderDivTaskTags">Colorful border on :focus state</label>
+                  <textarea class="form-control taskTagTextarea"  id="chronologicalOrderDivTaskTags" rows="1" placeholder="Tagi"></textarea>
+                </div>
+                <button>wstaw słowo</button>
+              </div>
+              <div class="form-group blue-border-focus">
+                <label for="chronologicalOrderDivTaskText">Colorful border on :focus state</label>
+                <textarea class="form-control taskTextTextarea"  id="chronologicalOrderDivTaskText" rows="3" placeholder="Tekst wraz z blankami"></textarea>
+              </div>
+              <button>wstaw nadmiar słów</button>
+            </div>
+            <!-- WordConnect -->
+            <div class="bg-light btnShadow collapse" id="wordConnectDiv">
+              <div class="12">
+                <div class="form-group green-border-focus">
+                  <label for="wordConnectDivTaskTag">Colorful border on :focus state</label>
+                  <textarea class="form-control taskTagTextarea"  id="wordConnectDivTaskTag" rows="1" placeholder="Tagi"></textarea>
+                </div>
+                <button>wstaw słowo</button>
+              </div>
+              <div class="form-group blue-border-focus">
+                <label for="wordConnectDivTaskText">Colorful border on :focus state</label>
+                <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskText" rows="3" placeholder="Tekst wraz z blankami"></textarea>
+              </div>
+              <button>wstaw nadmiar słów</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3 text-center button-m-custom" id="Bottom">
+        <div class="col-12">
+          <buton class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnDemoTask" data-toggle="modal" data-target="#demoTaskModalCenter">Podgląd w grze</buton>
+          <buton class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnSaveTask" data-toggle="modal" data-target="#saveTaskModalCenter">Zapisz zadanie</buton>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal save task-->
+    <div class="modal fade" id="saveTaskModalCenter" tabindex="-1" role="dialog" aria-labelledby="saveTaskModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="saveTaskModalLongTitle">Czy napewno przesłać rozwiązanie?</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnSendSaveTask">Prześlij</button>
+          </div>
+        </div>
+      </div>
+    </div>
+   
+   
+    <!-- loading modal -->
+    <div class="hideBeforeLoadModal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+      <div class="modal-dialog modal-sm">
+          <div class="modal-content" style="width: 48px">
+              <span class="fa fa-spinner fa-spin fa-3x"></span>
+          </div>
+      </div>
+    </div>
+    
+    <!-- <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script> -->
+    <script src="/js/bootstrap/popper.min.js"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/js/taskCreator.js"></script>
+    <script src="/js/tasks.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.17.1/cytoscape.min.js" integrity="sha512-dR5Qb5zIoRodLJCkh0InsAi/uyP1Pd3lMAliXEdv5ol71k2qCwWFS9N18LIGH9MQuAPWu3adPyww5SK2deReog==" crossorigin="anonymous"></script>
+    <script>
+      var debug = TaskCreatorLogic.getInstance(debug = true);
+    </script>
+  </body>
+</html>

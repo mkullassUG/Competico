@@ -2,6 +2,7 @@ package com.projteam.app.domain.game.tasks;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Map.Entry;
 import java.util.UUID;
 import javax.persistence.Access;
@@ -28,6 +29,7 @@ public class WordConnect implements Task
 {
 	private @Id UUID id;
 	private String instruction;
+	private @ElementCollection List<String> tags;
 	private @ElementCollection @OrderColumn List<String> leftWords;
 	private @ElementCollection @OrderColumn List<String> rightWords;
 	private @ElementCollection Map<Integer, Integer> correctMapping;
@@ -40,16 +42,23 @@ public class WordConnect implements Task
 		if (!(answer instanceof WordConnectAnswer))
 			throw new IllegalArgumentException("Invalid answer type: " + answer.getClass().getTypeName());
 		
-		Map<Integer, Integer> answerMapping = ((WordConnectAnswer) answer).getAnswerMapping();
+		Map<String, String> answerMapping = ((WordConnectAnswer) answer).getAnswerMapping();
 		
 		if (answerMapping == null)
 			return 0;
 		
 		long score = 0;
 		
-		for (Entry<Integer, Integer> e: correctMapping.entrySet())
+		for (Entry<String, String> e: answerMapping.entrySet())
 		{
-			if (answerMapping.get(e.getKey()) == e.getValue())
+			Integer leftIndex = Optional.ofNullable(e.getKey())
+					.map(s -> leftWords.indexOf(s))
+					.orElse(-1);
+			Integer rightIndex = Optional.ofNullable(e.getValue())
+					.map(s -> rightWords.indexOf(s))
+					.orElse(-1);
+			if (correctMapping.containsKey(leftIndex)
+					&& (correctMapping.get(leftIndex) == rightIndex))
 				score++;
 		}
 		

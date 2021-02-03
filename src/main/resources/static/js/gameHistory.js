@@ -24,21 +24,22 @@ const GameHistoryLogic = (playerInfo_, pageNumber_, debug_) => {
         if ( data == null)
             return;
 
-        var personalScoreTable = $("#personalScoreTable");
-        personalScoreTable.html("");
+        var gameTable = $("#gameTable");
+        gameTable.html("");
         var newTr, newTdCount, newTdScore;
         for (let i = 0; i < data.content.length; i++) {
-            var gameID = data.content[i];
+            var gameID = data.content[i].id;
+             var gameDate = data.content[i].date;
             newTr = $('<tr>');
 
             newTdCount = $("<td>");
             newTdCount.append(i+1);
 
             newTdScore = $("<td>");
-            newTdScore.append('<a href="/game/results/' + gameID + '">Moja gra numer ' + (i+1) + '%</a>');
+            newTdScore.append('<a href="/game/results/' + gameID + '">Gra rozegrana ' + gameDate + '</a>');
 
             newTr.append(newTdCount).append(newTdScore);
-            personalScoreTable.append(newTr);
+            gameTable.append(newTr);
         }
     }
 
@@ -47,9 +48,7 @@ const GameHistoryLogic = (playerInfo_, pageNumber_, debug_) => {
       $("#gameHistory").on("click",(e) => {
 
         /*TODO:
-
             nawigacja po stronach historii
-        
         */
 
         if (self.debug == true)

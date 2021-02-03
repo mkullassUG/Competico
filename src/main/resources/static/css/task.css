@@ -1,173 +1,3 @@
-html,
-body {
-  height: 100%;
-  
-  background-color: #f5f5f5;
-  /* color: #fff; */
-  box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
-}
-
-.unselectable {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-.ui-icon {
-  filter: invert(0%) sepia(90%) saturate(6554%) hue-rotate(575deg) brightness(119%) contrast(141%);
-}
-
-#gameTimer{
-  text-align: center;
-  color:white;
-  font-size:40px;
-}
-
-#lobbyCenter {
-  overflow: hidden;
-}
-#lobbySettings {
-  box-shadow: none !important;
-  margin: auto;
-  height: 20%;
-  margin-top: 50px;
-  margin-bottom: -50px;
-}
-#GameDiv, #endGameDiv {
-  border-radius: 90px;
-  overflow: hidden;
-  padding: 30px;
-  transform: translate(-30px);
-  width: calc(100% + 60px);
-  line-height: 2;
-}
-.endGameDashboard {
-  /* margin-top: 100px; */
-}
-.gameDivDecoration {
-  overflow: hidden;
-}
-#lobbyMainHost {
-  height: 20%;
-}
-#GameWrapperDiv  {
-  margin-top: -100px;
-}
-
-#lobbyCenter, #gameCenter, #gameEndCenter {
-  height: 70%;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  line-height: 60px;
-  z-index: 0!important;
-}
-#inputCode {
-  max-width: 225px;
-  margin: auto;
-}
-nav {
-	z-index:2;
-	
-}
-.iconbig {
-  height: 30px;
-}
-
-.container {
-  /* display: -ms-flexbox;
-  display: flex;
-  -ms-flex-align: center; */
-  align-items: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  z-index: 1;
-  text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
-}
-h2 {
-  
-  text-shadow: 0 0.3rem 0.1rem rgba(0, 0, 0, .5);
-}
-.fill {
-  top: 40px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  width: auto;
-  height: auto;
-}
-
-.form-signin {
-  width: 100%;
-  max-width: 330px;
-  padding: 15px;
-  margin: auto;
-}
-.form-signin .checkbox {
-  font-weight: 400;
-}
-.form-signin .form-control {
-  position: relative;
-  box-sizing: border-box;
-  height: auto;
-  padding: 10px;
-  font-size: 16px;
-}
-.form-signin .form-control:focus {
-  z-index: 2;
-}
-.form-signin input[type="email"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-/*loading modal*/
-.bd-example-modal-lg .modal-dialog{
-  display: table;
-  position: relative;
-  margin: 0 auto;
-  top: calc(50% - 24px);
-}
-
-.bd-example-modal-lg .modal-dialog .modal-content{
-  background-color: transparent;
-  border: none;
-}
-
-.hideBeforeLoad {
-  display: none;
-  z-index: 2!important; /*just cuz container div contains this class*/
-}
-.hideBeforeLoadModal {
-  height: 100%;
-}
-/*other*/
-.bd-placeholder-img {
-  font-size: 1.125rem;
-  text-anchor: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-@media (min-width: 768px) {
-  .bd-placeholder-img-lg {
-    font-size: 3.5rem;
-  }
-}
-
 /*answers template0*/
 .answer {
   background-color: rgb(255, 255, 255);
@@ -354,22 +184,78 @@ svg.fs-connector-hover path {
   fill: gray;
   stroke-width: 3;
 } 
+.rightSideC{
+  width:50%;
+  display: inline-block;
+  float: right;
+}
+.leftSideC {
+  width:50%;
+  display: inline-block;
+  float: left;
+}
+.rightLineC{
+  display: block;
+  min-height: 10%;
+  float: right;
+  width: 100%;
+}
+.leftLineC {
+  display: block;
+  min-height: 10%;
+  float: left;
+  width: 100%;
+}
 
 .word {
   border: 1px solid black;
   display: inline-block;
-  width: 30%;
+  width: 65%;
+  border: 2px solid blue;
+  border-radius: 20%;
+  text-align: center;
 }
 
 .definition {
-  border: 1px solid black;
+  border: 2px solid blue;
+  border-radius: 20%;
   display: inline-block;
   float: right;
-  width: 45%;
+  width: 80%;
+  min-height: 10%;
 }
 
 /*css template'a od chronological orderu*/
+
+.ui-icon {
+  filter: invert(0%) sepia(90%) saturate(6554%) hue-rotate(575deg) brightness(119%) contrast(141%);
+}
+
+.ui-icon-right {
+  margin: auto!important;
+  position: absolute!important;
+  top: 0; bottom: 0; right: 0;
+}
+.ui-icon-left {
+  margin: auto!important;
+  position: absolute!important;
+  top: 0; bottom: 0; left: 0;
+}
+
 .ui-state-default.ui-sortable-handle {
+  border: 2px solid blue;
+  border-radius: 20%;
+  margin-top: 1px;
+  margin-bottom: 1px;
+
+  position: relative;
+
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-right: 15px;
+  padding-left: 15px;
+
   cursor: move; /* fallback if grab cursor is unsupported */
   cursor: grab;
   cursor: -moz-grab;
@@ -387,3 +273,6 @@ svg.fs-connector-hover path {
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
 }
+
+
+/*other global.css*/

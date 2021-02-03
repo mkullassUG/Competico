@@ -34,7 +34,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.config.SecurityContextConfig;
 import com.projteam.app.dao.AccountDAO;
+import com.projteam.app.dao.game.PlayerDataDAO;
 import com.projteam.app.domain.Account;
+import com.projteam.app.domain.game.PlayerData;
 import com.projteam.app.dto.game.tasks.ChoiceWordFillElementDTO;
 import com.projteam.app.dto.game.tasks.ChronologicalOrderDTO;
 import com.projteam.app.dto.game.tasks.ListChoiceWordFillDTO;
@@ -43,7 +45,8 @@ import com.projteam.app.dto.game.tasks.MultipleChoiceElementDTO;
 import com.projteam.app.dto.game.tasks.SingleChoiceDTO;
 import com.projteam.app.dto.game.tasks.WordConnectDTO;
 import com.projteam.app.dto.game.tasks.WordFillElementDTO;
-import com.projteam.app.service.GameService;
+import com.projteam.app.service.game.GameService;
+import com.projteam.app.service.game.PlayerDataService;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -54,11 +57,10 @@ public class GameTests
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	
-	@MockBean
-	private AccountDAO accDao;
+	private @MockBean AccountDAO accDao;
+	private @MockBean PlayerDataDAO pdDao;
 	
-	@MockBean
-	private SecurityContextConfig secConf;
+	private @MockBean SecurityContextConfig secConf;
 	
 	@Autowired
 	private GameService gameServ;
@@ -87,6 +89,10 @@ public class GameTests
 				.withPassword("QWERTY")
 				.withRoles(List.of(PLAYER_ROLE))
 				.build();
+		PlayerData pdHost = new PlayerData(UUID.randomUUID(),
+				host, PlayerDataService.DEFAULT_RATING);
+		PlayerData pdPlayer = new PlayerData(UUID.randomUUID(),
+				host, PlayerDataService.DEFAULT_RATING);
 		int playerCount = 2;
 		
 		when(accDao.findByEmailOrUsername(host.getEmail(), host.getEmail()))
@@ -106,6 +112,9 @@ public class GameTests
 			.thenReturn(Optional.of(player));
 		when(accDao.findByEmailOrUsername(player.getUsername(), player.getUsername()))
 			.thenReturn(Optional.of(player));
+		
+		when(pdDao.findByAccount_id(host.getId())).thenReturn(Optional.of(pdHost));
+		when(pdDao.findByAccount_id(player.getId())).thenReturn(Optional.of(pdPlayer));
 		
 		SecurityContext sec = mock(SecurityContext.class);
 		when(secConf.getContext()).thenReturn(sec);
@@ -210,6 +219,10 @@ public class GameTests
 				.withPassword("QWERTY")
 				.withRoles(List.of(PLAYER_ROLE))
 				.build();
+		PlayerData pdHost = new PlayerData(UUID.randomUUID(),
+				host, PlayerDataService.DEFAULT_RATING);
+		PlayerData pdPlayer = new PlayerData(UUID.randomUUID(),
+				host, PlayerDataService.DEFAULT_RATING);
 		int playerCount = 2;
 		
 		when(accDao.findByEmailOrUsername(host.getEmail(), host.getEmail()))
@@ -229,6 +242,9 @@ public class GameTests
 			.thenReturn(Optional.of(player));
 		when(accDao.findByEmailOrUsername(player.getUsername(), player.getUsername()))
 			.thenReturn(Optional.of(player));
+
+		when(pdDao.findByAccount_id(host.getId())).thenReturn(Optional.of(pdHost));
+		when(pdDao.findByAccount_id(player.getId())).thenReturn(Optional.of(pdPlayer));
 		
 		SecurityContext sec = mock(SecurityContext.class);
 		when(secConf.getContext()).thenReturn(sec);

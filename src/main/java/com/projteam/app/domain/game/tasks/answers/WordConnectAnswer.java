@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class WordConnectAnswer implements TaskAnswer
 {
-	private Map<Integer, Integer> answerMapping;
+	private Map<String, String> answerMapping;
 }

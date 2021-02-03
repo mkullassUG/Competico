@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -12,220 +12,219 @@
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
     <!-- Custom styles for this template -->
     <link href="css/profile.css" rel="stylesheet">
-  </head>
-    <body>
-        <div class="container">
-            <div class="main-body">
+    <link href="/css/global.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="main-body">
+            
+            <!-- Breadcrumb -->
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top fixed-top">
+                <div class="container-xl">
+                  <a class="navbar-brand" href="/">
+                    <img src="assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
+                  </a>
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
                 
-                <!-- Breadcrumb -->
-                <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-                    <div class="container-xl">
-                        <a class="navbar-brand" href="/">
-                        <img src="assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
-                        </a>
-                        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                        </button>
-                    
-                        <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
-                        <ul class="navbar-nav w-100">
-                            <li class="nav-item ml-lg-auto">
-                                <a class="nav-link" href="/">Strona Domowa</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="lobby">Gra</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link disabled" href="#">Wsparcie</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="dashboard">Rankingi</a>
-                            </li>
-                            <li class="nav-item active mr-auto">
-                                <a class="nav-link" href="profile">Profil</a>
-                              </li>
-                        </ul>
-                        <a class="nav-link mr-r pl-0 logOutButton" href="/logout">Wyloguj</a>
+                  <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
+                    <ul class="navbar-nav">
+                      <li class="nav-item">
+                        <a class="nav-link" href="/">Strona Domowa</a>
+                      </li>
+                      <li class="nav-item collapse" id="gameHyperlink">
+                        <a class="nav-link" href="/lobby">Gra</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link disabled" href="#" id="helpHyperlink">Wsparcie</a>
+                      </li>
+                      <li class="nav-item ">
+                        <a class="nav-link " href="/register" id="registerHyperlink">Rejestracja</a>
+                      </li>
+                      <li class="nav-item " id="loginHyperlink">
+                        <a class="nav-link mr-auto " href="/login" >Zaloguj</a>
+                      </li>
+                      <li class="nav-item collapse" id="dashboardHyperlink">
+                        <a class="nav-link" href="/dashboard" >Rankingi</a>
+                      </li>
+                      <li class="nav-item collapse" id="swaggerHyperlink">
+                        <a class="nav-link " href="/swagger-ui/">Swagger</a>
+                      </li>
+                      <li class="nav-item collapse" id="taskDataHyperlink">
+                        <a class="nav-link " href="/tasks/import/global/taskcreator">Task creator</a>
+                      </li>
+                      <li class="nav-item collapse" id="actuatorHyperlink">
+                        <a class="nav-link " href="/actuator">Actuator</a>
+                      </li>
+                      <li class="nav-item mr-auto collapse active" id="profileHyperlink">
+                        <a class="nav-link disabled active" href="#">Profil</a>
+                      </li>
+                    </ul>
+                    <a class="nav-link mr-r pl-0 collapse" id="logOutButton" href="/logout">Wyloguj</a>
+                  </div>
+                </div>
+              </nav>
+            <!-- /Breadcrumb -->
+            <div class="container row gutters-sm fill m-auto">
+                <div class="col-md-4 mb-3">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                        <div class="mt-3">
+                        <h4>John Doe</h4>
+                        <p class="text-secondary mb-1">Full Stack Developer</p>
+                        <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
+                        <button class="btn btn-primary">Follow</button>
+                        <button class="btn btn-outline-primary">Message</button>
                         </div>
                     </div>
-                    </nav>
-                <!-- /Breadcrumb -->
-                <div class="container row gutters-sm fill m-auto">
-                    <div class="col-md-4 mb-3">
-                    <div class="card shadow-lg">
+                    </div>
+                </div>
+                <div class="card mt-3 shadow-lg">
+                    <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe mr-2 icon-inline"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Website</h6>
+                        <span class="text-secondary">https://bootdey.com</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github mr-2 icon-inline"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>Github</h6>
+                        <span class="text-secondary">bootdey</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter mr-2 icon-inline text-info"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>Twitter</h6>
+                        <span class="text-secondary">@bootdey</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram mr-2 icon-inline text-danger"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>Instagram</h6>
+                        <span class="text-secondary">bootdey</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                        <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-facebook mr-2 icon-inline text-primary"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>Facebook</h6>
+                        <span class="text-secondary">bootdey</span>
+                    </li>
+                    </ul>
+                </div>
+                </div>
+                <div class="col-md-8">
+                <div class="card mb-3 shadow-lg">
+                    <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                        <h6 class="mb-0">Full Name</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                        Kenneth Valdez
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                        <h6 class="mb-0">Email</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                        fip@jukmuh.al
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                        <h6 class="mb-0">Phone</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                        (239) 816-9029
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                        <h6 class="mb-0">Mobile</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                        (320) 380-4539
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                        <h6 class="mb-0">Address</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                        Bay Area, San Francisco, CA
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="row gutters-sm">
+                    <div class="col-sm-6 mb-3">
+                    <div class="card h-100 shadow-lg">
                         <div class="card-body">
-                        <div class="d-flex flex-column align-items-center text-center">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
-                            <div class="mt-3">
-                            <h4>John Doe</h4>
-                            <p class="text-secondary mb-1">Full Stack Developer</p>
-                            <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
-                            <button class="btn btn-primary">Follow</button>
-                            <button class="btn btn-outline-primary">Message</button>
-                            </div>
+                        <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
+                        <small>Web Design</small>
+                        <div class="progress mb-3" style="height: 5px">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small>Website Markup</small>
+                        <div class="progress mb-3" style="height: 5px">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small>One Page</small>
+                        <div class="progress mb-3" style="height: 5px">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small>Mobile Template</small>
+                        <div class="progress mb-3" style="height: 5px">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small>Backend API</small>
+                        <div class="progress mb-3" style="height: 5px">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                         </div>
                     </div>
-                    <div class="card mt-3 shadow-lg">
-                        <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                            <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe mr-2 icon-inline"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>Website</h6>
-                            <span class="text-secondary">https://bootdey.com</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                            <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github mr-2 icon-inline"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>Github</h6>
-                            <span class="text-secondary">bootdey</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                            <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter mr-2 icon-inline text-info"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>Twitter</h6>
-                            <span class="text-secondary">@bootdey</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                            <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram mr-2 icon-inline text-danger"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>Instagram</h6>
-                            <span class="text-secondary">bootdey</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                            <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-facebook mr-2 icon-inline text-primary"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>Facebook</h6>
-                            <span class="text-secondary">bootdey</span>
-                        </li>
-                        </ul>
                     </div>
-                    </div>
-                    <div class="col-md-8">
-                    <div class="card mb-3 shadow-lg">
+                    <div class="col-sm-6 mb-3">
+                    <div class="card h-100 shadow-lg">
                         <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-3">
-                            <h6 class="mb-0">Full Name</h6>
-                            </div>
-                            <div class="col-sm-9 text-secondary">
-                            Kenneth Valdez
-                            </div>
+                        <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
+                        <small>Web Design</small>
+                        <div class="progress mb-3" style="height: 5px">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                            <h6 class="mb-0">Email</h6>
-                            </div>
-                            <div class="col-sm-9 text-secondary">
-                            fip@jukmuh.al
-                            </div>
+                        <small>Website Markup</small>
+                        <div class="progress mb-3" style="height: 5px">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                            <h6 class="mb-0">Phone</h6>
-                            </div>
-                            <div class="col-sm-9 text-secondary">
-                            (239) 816-9029
-                            </div>
+                        <small>One Page</small>
+                        <div class="progress mb-3" style="height: 5px">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                            <h6 class="mb-0">Mobile</h6>
-                            </div>
-                            <div class="col-sm-9 text-secondary">
-                            (320) 380-4539
-                            </div>
+                        <small>Mobile Template</small>
+                        <div class="progress mb-3" style="height: 5px">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                            <h6 class="mb-0">Address</h6>
-                            </div>
-                            <div class="col-sm-9 text-secondary">
-                            Bay Area, San Francisco, CA
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="row gutters-sm">
-                        <div class="col-sm-6 mb-3">
-                        <div class="card h-100 shadow-lg">
-                            <div class="card-body">
-                            <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
-                            <small>Web Design</small>
-                            <div class="progress mb-3" style="height: 5px">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <small>Website Markup</small>
-                            <div class="progress mb-3" style="height: 5px">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <small>One Page</small>
-                            <div class="progress mb-3" style="height: 5px">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <small>Mobile Template</small>
-                            <div class="progress mb-3" style="height: 5px">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <small>Backend API</small>
-                            <div class="progress mb-3" style="height: 5px">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                        <div class="col-sm-6 mb-3">
-                        <div class="card h-100 shadow-lg">
-                            <div class="card-body">
-                            <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
-                            <small>Web Design</small>
-                            <div class="progress mb-3" style="height: 5px">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <small>Website Markup</small>
-                            <div class="progress mb-3" style="height: 5px">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <small>One Page</small>
-                            <div class="progress mb-3" style="height: 5px">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <small>Mobile Template</small>
-                            <div class="progress mb-3" style="height: 5px">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <small>Backend API</small>
-                            <div class="progress mb-3" style="height: 5px">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            </div>
+                        <small>Backend API</small>
+                        <div class="progress mb-3" style="height: 5px">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                         </div>
                     </div>
                     </div>
                 </div>
+                </div>
             </div>
         </div>
-        <script src="js/jquery/jquery-3.5.1.min.js"></script>
-        <script src="js/bootstrap/popper.min.js"></script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script>
-        window.jQuery || document.write('<script src="assets/js/vendor/jquery.slim.min.js"><\/script>')
-        </script>
-        <script src="js/bootstrap/bootstrap.bundle.min.js"></script>
-        <script src="js/dashboard.js"></script>
-    </body>
+    </div>
+    <script src="js/jquery/jquery-3.5.1.min.js"></script>
+    <script src="js/bootstrap/popper.min.js"></script>
+    <script src="js/bootstrap/bootstrap.min.js"></script>
+    <script>
+    window.jQuery || document.write('<script src="assets/js/vendor/jquery.slim.min.js"><\/script>')
+    </script>
+    <script src="js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
 </html>

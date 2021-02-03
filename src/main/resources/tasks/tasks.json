@@ -1,0 +1,354 @@
+[ {
+  "taskName" : "ChronologicalOrder",
+  "taskContent" : {
+    "id" : "f10298c5-7e1f-4961-ab07-1fe9410bb433",
+    "instruction" : "Put the phrases in order:",
+    "tags" : [ ],
+    "sentences" : [ "Try to understand the problem and define the purpose of the program.", "Once you have analysed the problem, define the successive logical steps of the program.", "Write the instructions in a high-level language of your choice.", "Once the code is written, test it to detect bugs or errors.", "Debug and fix errors in your code.", "Finally, review the program’s documentation." ],
+    "difficulty" : 100.0
+  }
+}, {
+  "taskName" : "ListChoiceWordFill",
+  "taskContent" : {
+    "id" : "a40c7426-5662-42ec-a48d-7362d5809208",
+    "instruction" : "Choose the best word to complete the sentences:",
+    "tags" : [ ],
+    "rows" : [ {
+      "id" : "5cd63097-ffbe-4817-827b-749f113c5d65",
+      "text" : [ "Would you mind waiting ", " Ms Bright gets back?" ],
+      "wordChoices" : [ {
+        "id" : "7c88ee56-ef0a-4aa7-9c12-358c07cec370",
+        "correctAnswer" : "until",
+        "inncorrectAnswers" : [ "by" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "455b4c97-cba9-4f3c-91ef-f97bebaa2ba7",
+      "text" : [ "By the way, could you remind everyone that our next meeting will be ", " Tuesday at 11:10?" ],
+      "wordChoices" : [ {
+        "id" : "2d9e419d-5d4a-4049-8019-891b027b0fe0",
+        "correctAnswer" : "on",
+        "inncorrectAnswers" : [ "in" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "5ee886c1-67ef-4943-ae42-408edd0c167e",
+      "text" : [ "I need this report ", " 6:30 tomorrow at the latest." ],
+      "wordChoices" : [ {
+        "id" : "2cf31bc9-f3a2-4462-a063-11d33764df14",
+        "correctAnswer" : "by",
+        "inncorrectAnswers" : [ "in" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "18560f9c-84d0-4311-bfec-6537dec42626",
+      "text" : [ "What did you do ", " the weekend?" ],
+      "wordChoices" : [ {
+        "id" : "c8d00301-1704-4b2e-9be2-8f89d215902d",
+        "correctAnswer" : "at",
+        "inncorrectAnswers" : [ "on" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "b717980d-59ac-498e-b72b-91d8c416f188",
+      "text" : [ "Harry has ", " decided which university he wants to go." ],
+      "wordChoices" : [ {
+        "id" : "08aaea02-a95f-4a31-a976-b8b72bf468bf",
+        "correctAnswer" : "already",
+        "inncorrectAnswers" : [ "before" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "cd821236-0e5f-42d9-b207-a1f13f00dec4",
+      "text" : [ "Luckily, we landed exactly ", ", so we were able to catch our connecting flight." ],
+      "wordChoices" : [ {
+        "id" : "8882f1c1-f084-4106-a4ac-7aba25bbe5ee",
+        "correctAnswer" : "on time",
+        "inncorrectAnswers" : [ "in time" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "dd252be4-efa0-425d-9ffd-7754be488db3",
+      "text" : [ " I got used to the new interface, it didn’t feel awkward anymore." ],
+      "wordChoices" : [ {
+        "id" : "fb6dc4b9-f1ba-4d6d-bea7-e6ae884410d0",
+        "correctAnswer" : "Once",
+        "inncorrectAnswers" : [ "One day" ]
+      } ],
+      "startWithText" : false
+    }, {
+      "id" : "4865d732-0ae6-47f6-a572-ff904a22e7bc",
+      "text" : [ "He’s been trying to solve this problem ", " three hours." ],
+      "wordChoices" : [ {
+        "id" : "b26d8da3-064c-4eab-8ecf-21966011ba86",
+        "correctAnswer" : "for",
+        "inncorrectAnswers" : [ "since" ]
+      } ],
+      "startWithText" : false
+    } ],
+    "difficulty" : 100.0
+  }
+}, {
+  "taskName" : "ListWordFill",
+  "taskContent" : {
+    "id" : "0be75481-5a7d-4703-979f-70afcdae5846",
+    "instruction" : "Complete the sentences with the best word:",
+    "tags" : [ ],
+    "rows" : [ {
+      "id" : "58f293d5-cc76-429d-a5de-2ae27924cfc8",
+      "text" : [ "I’m ", " you asked me that question." ],
+      "emptySpaces" : [ {
+        "answer" : "GLAD"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "GLAD", "SORRY", "REGRET", "INTERESTED" ]
+    }, {
+      "id" : "8c802a14-ba6b-4122-818f-738e2782cc9b",
+      "text" : [ "I’m afraid I can’t say it at the ", " of my head." ],
+      "emptySpaces" : [ {
+        "answer" : "GLAD"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "TIP", "END", "TOP", "BACK" ]
+    }, {
+      "id" : "06f4e807-f467-46d3-ab6a-bec51ea2bfd9",
+      "text" : [ "As I’ve ", " before in my presentation, …" ],
+      "emptySpaces" : [ {
+        "answer" : "MENTIONED"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "SPOKEN", "MENTIONED", "SEEN", "TALKED" ]
+    }, {
+      "id" : "2438f4e5-9e2a-4493-9de3-b072b786fcb4",
+      "text" : [ "Do you mind if we deal ", " it later?" ],
+      "emptySpaces" : [ {
+        "answer" : "WITH"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "ON", "WITHOUT", "WITH", "FROM" ]
+    }, {
+      "id" : "27e6b745-68ab-4a4b-9b9f-64f8bb0fa167",
+      "text" : [ "In fact, it goes ", " to what I was saying earlier, …" ],
+      "emptySpaces" : [ {
+        "answer" : "BACK"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "BACK", "ON", "IN", "UP" ]
+    }, {
+      "id" : "34d0cb83-fbb3-4ae5-b712-362d0a0803c6",
+      "text" : [ "I don’t want to go into too much ", " at this stage." ],
+      "emptySpaces" : [ {
+        "answer" : "DETAIL"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "DISTRUCTIONS", "DETAIL", "TIME", "DISCUSSIONS" ]
+    } ],
+    "difficulty" : 100.0
+  }
+}, {
+  "taskName" : "ListWordFill",
+  "taskContent" : {
+    "id" : "0d9d9f22-e612-450a-b26b-8ba923d10d54",
+    "instruction" : "Choose the word that fits the definitions:",
+    "tags" : [ ],
+    "rows" : [ {
+      "id" : "c6965e28-b444-4f9e-ae02-b82e6a8d044a",
+      "text" : [ "the act or way of leaving place: " ],
+      "emptySpaces" : [ {
+        "answer" : "egress"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "descend", "sound", "egress" ]
+    }, {
+      "id" : "0f0c8529-358a-4385-b961-3948f4053251",
+      "text" : [ "a tendency to behave in a particular way: " ],
+      "emptySpaces" : [ {
+        "answer" : "propensity"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "smattering", "propensity", "glean" ]
+    }, {
+      "id" : "a358ebfd-278f-4906-9bb1-97d208043caf",
+      "text" : [ "a very small amount or number: " ],
+      "emptySpaces" : [ {
+        "answer" : "smattering"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "glean", "ingress", "smattering" ]
+    }, {
+      "id" : "3c95ed9c-8f5b-45ce-bf88-58bb11fee3f7",
+      "text" : [ "come down: " ],
+      "emptySpaces" : [ {
+        "answer" : "descend"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "descend", "in-depth", "winding" ]
+    }, {
+      "id" : "33c7cc61-fde1-44c4-a4aa-06465e63f365",
+      "text" : [ "done carefully and in great detail: " ],
+      "emptySpaces" : [ {
+        "answer" : "in-depth"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "in-depth", "ingress", "debunk" ]
+    }, {
+      "id" : "4ddbfc7c-7470-404b-91c4-59c51b6a7bb5",
+      "text" : [ "healthy; in good condition: " ],
+      "emptySpaces" : [ {
+        "answer" : "sound"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "glean", "winding", "sound" ]
+    }, {
+      "id" : "ecadf24c-bef9-4a3a-a01a-e3a5292d203e",
+      "text" : [ "a lot of something; big amount: " ],
+      "emptySpaces" : [ {
+        "answer" : "sheer number"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "propensity", "sheer number", "egress" ]
+    }, {
+      "id" : "12932a82-a94c-4742-bb5a-f46716645381",
+      "text" : [ "repeatedly turns in different directions: " ],
+      "emptySpaces" : [ {
+        "answer" : "winding"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "debunk", "winding", "smattering" ]
+    }, {
+      "id" : "9c413eb2-8672-4485-893c-5ebce437cf89",
+      "text" : [ "the act of entering something: " ],
+      "emptySpaces" : [ {
+        "answer" : "ingress"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "ingress", "egress", "propensity" ]
+    }, {
+      "id" : "d72d760d-23dd-4c58-bedd-7fc6576ffee0",
+      "text" : [ "to collect information in small amounts and often with difficulty: " ],
+      "emptySpaces" : [ {
+        "answer" : "glean"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "glean", "smattering", "debunk" ]
+    }, {
+      "id" : "24b6263d-9932-4799-aa39-0e432d161219",
+      "text" : [ "to show that something is not true: " ],
+      "emptySpaces" : [ {
+        "answer" : "debunk"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "glean", "debunk", "in-depth" ]
+    } ],
+    "difficulty" : 100.0
+  }
+}, {
+  "taskName" : "WordConnect",
+  "taskContent" : {
+    "id" : "00cb1efa-d388-4647-a5ec-080755b11712",
+    "instruction" : "Match the words with their translations:",
+    "tags" : [ ],
+    "leftWords" : [ "data mining", "pattern identification", "quantitative modelling", "class label", "class membership", "explanatory variable", "variable", "fault-tolerant", "spurious pattern", "outlier" ],
+    "rightWords" : [ "eksploracja danych", "identyfikacja wzorca", "modelowanie ilościowe", "etykieta klasy", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7,
+      "8" : 8,
+      "9" : 9
+    },
+    "difficulty" : 100.0
+  }
+}, {
+  "taskName" : "WordConnect",
+  "taskContent" : {
+    "id" : "2d210a77-329e-41c9-9fe2-ef7b0dd6918a",
+    "instruction" : "Match the words with their translations:",
+    "tags" : [ ],
+    "leftWords" : [ "keynote", "to convey (information)", "to unveil (a theme)", "consistent", "stiff", "a knack (for sth)", "a flair", "intricate", "dazzling", "to rehearse" ],
+    "rightWords" : [ "myśl przewodnia, główny motyw", "przekazywać/dostarczać (informacje)", "odkryć, ujawnić, odsłonić", "spójny, zgodny, konsekwentny", "sztywny, zdrętwiały", "talent, zręczność", "klasa, dar", "zawiły, misterny", "olśniewający", "próbować, przygotowywać się" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7,
+      "8" : 8,
+      "9" : 9
+    },
+    "difficulty" : 100.0
+  }
+}, {
+  "taskName" : "WordConnect",
+  "taskContent" : {
+    "id" : "c2d2d1c9-cde0-4774-aa19-4d12d99cf060",
+    "instruction" : "Match the words with their synonyms:",
+    "tags" : [ ],
+    "leftWords" : [ "SMATTERING", "DESCEND", "INEVITABLE", "PROPENSITY", "APPROACH", "OVERESTIMATE", "INGRESS" ],
+    "rightWords" : [ "bit, small amount", "go down, fall, drop", "bound to happen, predestined, unavoidable", "tendency, inclination", "attitude, method, way, manner", "overvalue, overstate, amplify", "entry, entrance" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6
+    },
+    "difficulty" : 100.0
+  }
+}, {
+  "taskName" : "WordConnect",
+  "taskContent" : {
+    "id" : "146933ca-563d-44ac-9aab-9305389e081a",
+    "instruction" : "Match the words with their synonyms:",
+    "tags" : [ ],
+    "leftWords" : [ "GLEAN", "DEBUNK", "SOUND", "WINDING", "IN, DEPTH", "EGRESS", "ITEM" ],
+    "rightWords" : [ "obtain, gather", "invalidate, discredit", "healthy, toned, in good shape", "full of twists and turns, zigzagging", "thoroughly, extensively", "exit, way out", "thing, article, object" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6
+    },
+    "difficulty" : 100.0
+  }
+}, {
+  "taskName" : "WordFill",
+  "taskContent" : {
+    "id" : "4e8f1bec-07ad-4a2e-a0d6-bf225ca91aa1",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ ],
+    "content" : {
+      "id" : "5b3c7a43-c0e6-41bc-8de2-27fcb2a10c0a",
+      "text" : [ "I’m sorry to have to tell you that there has been some ", " in the project and we won’t be able to ", " our original ", " on July 30th for completing the ", " of the new software. Pedro’s absence for three weeks caused a bit of a ", ", and there were more delays when we realised that there was still some", " in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month." ],
+      "emptySpaces" : [ {
+        "answer" : "slippage"
+      }, {
+        "answer" : "stick to"
+      }, {
+        "answer" : "deadline"
+      }, {
+        "answer" : "rollout"
+      }, {
+        "answer" : "bottleneck"
+      }, {
+        "answer" : "dirty data"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "bottleneck", "deadline", "dirty data", "migrate", "rollout", "slippage", "stick to", "within", "scope" ]
+    },
+    "difficulty" : 100.0
+  }
+} ]
