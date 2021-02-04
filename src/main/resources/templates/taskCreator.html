@@ -51,7 +51,7 @@
               <li><a class="dropdown-item" href="#WordConnect" id="btnWordConnect"> Łączenie słów i zwrotów z dwóch kolumn </a></li>
               <li><a class="dropdown-item" href="#ChronologicalOrder" id="btnChronologicalOrder"> Układanie zdań w porządek chronologiczny </a></li>
               <li><a class="dropdown-item disabled" href="#"> Układanie zdań z podanych wyrazów </a></li>
-              <li><a class="dropdown-item disabled" href="#">  Wybór odpowiedzi (pytanie zamknięte) &raquo</a>
+              <li><a class="dropdown-item" href="#">  Wybór odpowiedzi (pytanie zamknięte) &raquo</a>
                 <ul class="submenu dropdown-menu">
                   <li><a class="dropdown-item disabled" href="#"> Pojedyncza poprawna odpowiedź</a></li>
                   <li><a class="dropdown-item disabled" href="#"> Wiele poprawnych odpowiedzi </a></li>
@@ -81,9 +81,9 @@
       </div>
       <div class="row  mt-3 rounded" id="Center">
         <div class="col-12" id="GameWrapperDiv">
-          <div class="m-custom my-3 p-3 rounded gameDivDecoration" style="overflow:hidden;">
+          <div class="m-custom my-3 p-3 rounded gameDivDecoration" style="overflow:hidden;" id="taskHolder">
             <!-- WordFill -->
-            <div class="bg-light btnShadow" id="wordFillDiv">
+            <div class="bg-light btnShadow stuck" id="WordFillDiv">
               <div class="12">
                 <div class="form-label-group">
                   <textarea class="form-control taskTagTextarea"  id="wordFillDivTaskTags" placeholder="cos" rows="1"></textarea>
@@ -117,22 +117,58 @@
               </div>
             </div>
             <!-- ChronologicalOrder -->
-            <div class="bg-light btnShadow collapse" id="chronologicalOrderDiv">
+            <div class="bg-light btnShadow collapse stuck" id="ChronologicalOrderDiv">
               <div class="12">
-                <div class="form-group green-border-focus">
-                  <label for="chronologicalOrderDivTaskTags">Colorful border on :focus state</label>
-                  <textarea class="form-control taskTagTextarea"  id="chronologicalOrderDivTaskTags" rows="1" placeholder="Tagi"></textarea>
+                <div class="form-label-group">
+                  <textarea class="form-control taskTagTextarea"  id="chronologicalOrderDivTaskTags" placeholder="cos" rows="1"></textarea>
+                  <label for="chronologicalOrderDivTaskTags">Tagi</label>
                 </div>
-                <button>wstaw słowo</button>
+                <div class="form-label-group">
+                  <textarea class="form-control taskInstructionTextarea"  id="chronologicalOrderDivTaskInstruction" placeholder="cos">Put the phrases in order:</textarea>
+                  <label for="chronologicalOrderDivTaskInstruction">Instrukcja</label>
+                </div>
               </div>
-              <div class="form-group blue-border-focus">
-                <label for="chronologicalOrderDivTaskText">Colorful border on :focus state</label>
-                <textarea class="form-control taskTextTextarea"  id="chronologicalOrderDivTaskText" rows="3" placeholder="Tekst wraz z blankami"></textarea>
+              <div id="chronologicalOrderSentences">
+                <div class="form-group blue-border-focus">
+                  <label for="chronologicalOrderDivTaskText1">1</label>
+                  <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="chronologicalOrderDivTaskText1" rows="2" placeholder="Wstaw zdanie nr 1">Try to understand the problem and define the purpose of the program.</textarea>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+                
+                <div class="form-group blue-border-focus">
+                  <label for="chronologicalOrderDivTaskText2">2</label>
+                  <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="chronologicalOrderDivTaskText2" rows="2" placeholder="Wstaw zdanie nr 2">Once you have analysed the problem, define the successive logical steps of the program.</textarea>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+
+                <div class="form-group blue-border-focus">
+                  <label for="chronologicalOrderDivTaskText3">3</label>
+                  <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="chronologicalOrderDivTaskText3" rows="2" placeholder="Wstaw zdanie nr 3">Write the instructions in a high-level language of your choice.</textarea>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+
+                <div class="form-group blue-border-focus">
+                  <label for="chronologicalOrderDivTaskText4">4</label>
+                  <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="chronologicalOrderDivTaskText4" rows="2" placeholder="Wstaw zdanie nr 4">Once the code is written, test it to detect bugs or errors.</textarea>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+
+                <div class="form-group blue-border-focus">
+                  <label for="chronologicalOrderDivTaskText5">5</label>
+                  <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="chronologicalOrderDivTaskText5" rows="2" placeholder="Wstaw zdanie nr 5">Debug and fix errors in your code.</textarea>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+
+                <div class="form-group blue-border-focus">
+                  <label for="chronologicalOrderDivTaskText6">6</label>
+                  <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="chronologicalOrderDivTaskText6" rows="2" placeholder="Wstaw zdanie nr 6">Finally, review the program’s documentation.</textarea>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
               </div>
-              <button>wstaw nadmiar słów</button>
+              <button class="btn btn-primary btn-sm">+</button>
             </div>
             <!-- WordConnect -->
-            <div class="bg-light btnShadow collapse" id="wordConnectDiv">
+            <div class="bg-light btnShadow collapse stuck" id="WordConnectDiv">
               <div class="12">
                 <div class="form-group green-border-focus">
                   <label for="wordConnectDivTaskTag">Colorful border on :focus state</label>
@@ -190,8 +226,9 @@
     <script src="js/bootstrap.min.js"></script> -->
     <script src="/js/bootstrap/popper.min.js"></script>
     <script src="/js/bootstrap/bootstrap.min.js"></script>
-    <script src="/js/taskCreator.js"></script>
+    <script src="/js/taskCreators.js"></script>
     <script src="/js/tasks.js"></script>
+    <script src="/js/taskCreatorLogic.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.17.1/cytoscape.min.js" integrity="sha512-dR5Qb5zIoRodLJCkh0InsAi/uyP1Pd3lMAliXEdv5ol71k2qCwWFS9N18LIGH9MQuAPWu3adPyww5SK2deReog==" crossorigin="anonymous"></script>
     <script>
       var debug = TaskCreatorLogic.getInstance(debug = true);

@@ -1,4 +1,18 @@
+/*task creator content div stays in one place andadds scroll when too big*/
+.stuck {
+	position: fixed;
+	top: 200px;
+	left: 30%;
+	bottom: 200px;
+	width: 50%!important;
+	overflow-y: scroll!important;
+}
 
+#Bottom {
+	position: fixed;
+	bottom: 10%;
+	width: 100%;
+}
 
 /*  dropdown menu   */
 @media (min-width: 992px){
@@ -28,7 +42,7 @@
 	}
 }
 
-#wordFillDiv, #chronologicalOrderDiv,#wordConnectDiv{
+#WordFillDiv, #ChronologicalOrderDiv,#WordConnectDiv{
 	border-radius: 90px;
 	overflow: hidden;
 	padding: 30px;

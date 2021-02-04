@@ -9,23 +9,8 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
     self.taskCreatorInit = () => {
         /* TODO
         przygotuj start strony
-         */
-    }
-
-    self.checkIfTaskReady = () => {
-        /*TODO:
-        sprawdzaj czy obecny wariant przeszedł wymogi zgodności do importu
         */
-    }
-
-    self.prepareTaskJsonFile = () => {
-        /*TODO:
-        spakuj gotowe zadanie do pliku*/
-    }
-
-    self.setupDemoFromCurrent = () => {
-        /*TODO:
-        podgląd stworzonego zadania jako gry*/
+       self.changeVariant("WordFIll");
     }
 
     self.changeVariant = (variantString) => {
@@ -45,12 +30,16 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
         //sprawdzanie
         switch (variantString) {
             case "WordFIll":
+                self.currentVarian = WordFillCreator();
                 break;
             case "ChronologicalOrder":
+                self.currentVarian = ChronologicalOrderCreator();
                 break;
             case "WordConnect":
+                self.currentVarian = WordConnectCreator();
                 break;
            default:
+               console.warn("TODO, to nie powinno się wydarzyć!")
                break;
         }
 
@@ -59,20 +48,20 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
     /*       event listeners          */
     if ($("#btnChronologicalOrder").length)
         $("#btnChronologicalOrder").on("click",()=>{
-        if (self.debug)
-            console.log("btnChronologicalOrder");
+            if (self.debug)
+                console.log("btnChronologicalOrder");
             self.changeVariant("ChronologicalOrder");
         });
     if ($("#btnWordFIll").length)
         $("#btnWordFIll").on("click",()=>{
-        if (self.debug)
-            console.log("btnWordFIll");
+            if (self.debug)
+                console.log("btnWordFIll");
             self.changeVariant("WordFIll");
         });
     if ($("#btnWordConnect").length)
         $("#btnWordConnect").on("click",()=>{
-        if (self.debug)
-            console.log("btnWordConnect");
+            if (self.debug)
+                console.log("btnWordConnect");
             self.changeVariant("WordConnect");
         });
         
@@ -123,33 +112,46 @@ TaskCreatorLogic.getInstance = (debug) => {
 var observe;
 if (window.attachEvent) {
     observe = function (element, event, handler) {
-        element.attachEvent('on'+event, handler);
+        element.attachEvent('on'+event, handler(element));
     };
 }
 else {
     observe = function (element, event, handler) {
-        element.addEventListener(event, handler, false);
+        element.addEventListener(event, handler(element), false);
     };
 }
 function textareaAutoscroll () {
-    var text = document.getElementById('wordFillDivTaskText');
-    function resize () {
-        text.style.height = 'auto';
-        text.style.height = text.scrollHeight+'px';
+    //var text = document.getElementById('wordFillDivTaskText');
+    var allText = $(document).find(".taskTextTextarea");
+    
+    //currying concept https://en.wikipedia.org/wiki/Currying
+    var resize = function(text) {
+        return function curried_func(e) {
+            text.style.height = 'auto';
+            text.style.height = text.scrollHeight+'px';
+        }
     }
-    /* 0-timeout to get the already changed text */
-    function delayedResize () {
-        window.setTimeout(resize, 0);
-    }
-    observe(text, 'change',  resize);
-    observe(text, 'cut',     delayedResize);
-    observe(text, 'paste',   delayedResize);
-    observe(text, 'drop',    delayedResize);
-    observe(text, 'keydown', delayedResize);
 
-    text.focus();
-    text.select();
-    resize();
+    var delayedresize = function(text) {
+        return function curried_func(e) {
+            window.setTimeout(resize(text), 0);
+        }
+    }
+    for ( let i = 0; i < allText.length; i++) {
+        var text = allText[i];
+        
+        /* 0-timeout to get the already changed text */
+        
+        observe(text, 'change',  resize);
+        observe(text, 'cut',     delayedresize);
+        observe(text, 'paste',   delayedresize);
+        observe(text, 'drop',    delayedresize);
+        observe(text, 'keydown', delayedresize);
+    
+        text.focus();
+        text.select();
+        resize(text);
+    }
 }
 $(document).ready(function(){
     textareaAutoscroll();
@@ -157,22 +159,36 @@ $(document).ready(function(){
 
 
 /*  dropdown menu   */
+/*TODO przerobić tak żeby działało jak ja chce przy dynamicznie zmieniającym się ekranie*/
+// Prevent closing from click inside dropdown
 $(document).on('click', '.dropdown-menu', function (e) {
     e.stopPropagation();
 });
   
-  // make it as accordion for smaller screens
-if ($(window).width() < 992) {
-    $('.dropdown-menu a').click(function(e){
+// make it as accordion for smaller screens
+$('.dropdown-menu a').click(function(e){
+
+    if ($(window).width() < 930) { //jak okno jest mniejsze to rozwiń wewnątrz
         e.preventDefault();
-            if($(this).next('.submenu').length){
-                $(this).next('.submenu').toggle();
-            }
-            $('.dropdown').on('hide.bs.dropdown', function () {
+
+        if($(this).next('.submenu').length){
+            $(this).next('.submenu').toggle();
+        }
+        //.one żeby nie zapętlało się niepotrzebnie
+        $('.dropdown').one('hide.bs.dropdown', function (e) {
             $(this).find('.submenu').hide();
         })
-    });
-}
+    } else { //jak okno jest większe to rozwiń na zewnątrz
+        if($(this).next('.submenu').length){
+            $(this).next('.submenu').toggle();
+        }
+
+        $('.dropdown').one('hide.bs.dropdown', function (e) {
+            $(this).find('.submenu').hide();
+        })
+    }
+});
+
 
 /* collapse side-panel*/
 /* Set the width of the sidebar to 250px (show it) */
