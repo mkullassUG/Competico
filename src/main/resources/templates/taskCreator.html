@@ -40,7 +40,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  Wybór wariantu  </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#"> Wypełnianie luk w tekście &raquo </a>
+              <li><a class="dropdown-item"> Wypełnianie luk w tekście &raquo </a>
                 <ul class="submenu dropdown-menu">
                   <li><a class="dropdown-item" href="#WordFIll" id="btnWordFIll"> Jeden wielozdaniowy tekst, jedna pula odpowiedzi</a></li>
                   <li><a class="dropdown-item disabled" href="#"> Jeden wielozdaniowy tekst, wybór słowa dla każdej luki </a></li>
@@ -51,7 +51,7 @@
               <li><a class="dropdown-item" href="#WordConnect" id="btnWordConnect"> Łączenie słów i zwrotów z dwóch kolumn </a></li>
               <li><a class="dropdown-item" href="#ChronologicalOrder" id="btnChronologicalOrder"> Układanie zdań w porządek chronologiczny </a></li>
               <li><a class="dropdown-item disabled" href="#"> Układanie zdań z podanych wyrazów </a></li>
-              <li><a class="dropdown-item" href="#">  Wybór odpowiedzi (pytanie zamknięte) &raquo</a>
+              <li><a class="dropdown-item disabled" >  Wybór odpowiedzi (pytanie zamknięte) &raquo</a>
                 <ul class="submenu dropdown-menu">
                   <li><a class="dropdown-item disabled" href="#"> Pojedyncza poprawna odpowiedź</a></li>
                   <li><a class="dropdown-item disabled" href="#"> Wiele poprawnych odpowiedzi </a></li>
@@ -93,27 +93,29 @@
                   <textarea class="form-control taskInstructionTextarea"  id="wordFillDivTaskInstruction" placeholder="cos">Complete the text with the missing words:</textarea>
                   <label for="wordFillDivTaskInstruction">Instrukcja</label>
                 </div>
-                
+                <div class="form-inline">
+                  <div class="form-group mx-sm-3 mb-2">
+                    <label for="wordFillDificulty">Difficulty: </label>
+                    <input type="number" class="form-control" id="wordFillDificulty" placeholder="difficulty" value="100">
+                  </div>
+                  <div class="form-group mx-sm-3 mb-2">
+                    <label for="wordFillFontSize">Font size: </label>
+                    <input type="number" class="form-control" id="wordFillFontSize" placeholder="Font size" value="16" readonly>
+                  </div>
+                  <button class="m-1 btn btn-primary btn-sm" id="wordFillAddWord">wstaw brakujące słowo</button>
+                  <button class="m-1 btn btn-primary btn-sm"id="wordFillAddIncorrectWord">wstaw nadmiar słów</button>
+                  <div class="invalid-feedback" id="invalidWordFillAddWord">
+                    Nie zgadza się umiejscowienie tagów {[]}.
+                  </div>
+                </div>
               </div>
               <div class="form-label-group">
-                <textarea class="form-control taskTextTextarea"  id="wordFillDivTaskText" placeholder="cos" rows="4" contenteditable="true" >I’m sorry to have to tell you that there has been some {[slippage]} in the project and we won’t be able to {[stick to]} our original {[deadline]} on July 30th for completing the {[rollout]} of the new software. Pedro’s absence for three weeks caused a bit of a {[bottleneck]}, and there were more delays when we realised that there was still some {[dirty data]} in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month.</textarea>
+                <textarea class="form-control taskTextTextarea"  id="wordFillDivTaskText" placeholder="cos" rows="4" >I’m sorry to have to tell you that there has been some {[slippage]} in the project and we won’t be able to {[stick to]} our original {[deadline]} on July 30th for completing the {[rollout]} of the new software. Pedro’s absence for three weeks caused a bit of a {[bottleneck]}, and there were more delays when we realised that there was still some {[dirty data]} in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month.</textarea>
                 <label for="wordFillDivTaskText">Treść</label>
               </div>
               <div class="form-label-group">
-                <textarea class="form-control incorrectWords"  id="wordFillDivIncorrectWords" placeholder="cos" rows="1" contenteditable="true" >within, scope</textarea>
+                <textarea class="form-control incorrectWords"  id="wordFillDivIncorrectWords" placeholder="cos" rows="1" >word1, word2</textarea>
                 <label for="wordFillDivIncorrectWords">Dodatkowe, niepoprawne odpowiedzi</label>
-              </div>
-              <div class="form-inline">
-                <button class="btn btn-primary btn-sm">wstaw nadmiar słów</button>
-                <button class="btn btn-primary btn-sm">wstaw słowo</button>
-                <div class="form-group mx-sm-3 mb-2">
-                  <label for="inputDificulty" class="sr-only">Difficulty</label>
-                  <input type="number" class="form-control disabled" id="inputDificulty" placeholder="difficulty" value="100">
-                </div>
-                <div class="form-group mx-sm-3 mb-2">
-                  <label for="inputFontSize" class="sr-only">Font size</label>
-                  <input type="number" class="form-control disabled" id="inputFontSize" placeholder="Font size" value="16">
-                </div>
               </div>
             </div>
             <!-- ChronologicalOrder -->
@@ -127,6 +129,18 @@
                   <textarea class="form-control taskInstructionTextarea"  id="chronologicalOrderDivTaskInstruction" placeholder="cos">Put the phrases in order:</textarea>
                   <label for="chronologicalOrderDivTaskInstruction">Instrukcja</label>
                 </div>
+
+                <div class="form-inline">
+                  <div class="form-group mx-sm-3 mb-2">
+                    <label for="chronologicalOrderDificulty">Difficulty: </label>
+                    <input type="number" class="form-control" id="chronologicalOrderDificulty" placeholder="difficulty" value="100">
+                  </div>
+                  <div class="form-group mx-sm-3 mb-2">
+                    <label for="chronologicalOrderFontSize">Font size: </label>
+                    <input type="number" class="form-control" id="chronologicalOrderFontSize" placeholder="Font size" value="16" readonly>
+                  </div>
+                </div>
+
               </div>
               <div id="chronologicalOrderSentences">
                 <div class="form-group blue-border-focus">
@@ -165,22 +179,157 @@
                   <button class="d-inline-block btn btn-danger btn-sm">-</button>
                 </div>
               </div>
-              <button class="btn btn-primary btn-sm">+</button>
+              <button class="btn btn-primary btn-sm" id="chronologicalOrderAddSentence">+</button>
+              <div class="invalid-feedback" id="invalidConnectAddSentence">
+                Najpierw uzupełnij puste pola w istniejących miejscach.
+              </div>
             </div>
             <!-- WordConnect -->
             <div class="bg-light btnShadow collapse stuck" id="WordConnectDiv">
               <div class="12">
-                <div class="form-group green-border-focus">
-                  <label for="wordConnectDivTaskTag">Colorful border on :focus state</label>
-                  <textarea class="form-control taskTagTextarea"  id="wordConnectDivTaskTag" rows="1" placeholder="Tagi"></textarea>
+                <div class="form-label-group">
+                  <textarea class="form-control taskTagTextarea"  id="wordConnectDivTaskTags" placeholder="cos" rows="1"></textarea>
+                  <label for="wordConnectDivTaskTags">Tagi</label>
                 </div>
-                <button>wstaw słowo</button>
+                <div class="form-label-group">
+                  <textarea class="form-control taskInstructionTextarea"  id="wordConnectDivTaskInstruction" placeholder="cos">Put the phrases in order:</textarea>
+                  <label for="wordConnectDivTaskInstruction">Instrukcja</label>
+                </div>
+
+                <div class="form-inline">
+                  <div class="form-group mx-sm-3 mb-2">
+                    <label for="wordConnectDificulty">Difficulty: </label>
+                    <input type="number" class="form-control" id="wordConnectDificulty" placeholder="difficulty" value="100">
+                  </div>
+                  <div class="form-group mx-sm-3 mb-2">
+                    <label for="wordConnectFontSize">Font size: </label>
+                    <input type="number" class="form-control" id="wordConnectFontSize" placeholder="Font size" value="16" readonly>
+                  </div>
+                </div>
               </div>
-              <div class="form-group blue-border-focus">
-                <label for="wordConnectDivTaskText">Colorful border on :focus state</label>
-                <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskText" rows="3" placeholder="Tekst wraz z blankami"></textarea>
+              <div id="wordConnectConnections">
+                
+                <div class="form-group blue-border-focus">
+                  <hr class="border border-primary">
+                  <div class="w-75 COC d-inline-block">
+                    <label for="wordConnectDivTaskWord1">Słowo:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskWord1" rows="2" placeholder="Wstaw słowo nr 1:">data mining</textarea>
+
+                    <label for="wordConnectDivTaskDefinition1">Definicja:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskDefinition1" rows="2" placeholder="Wstaw definicje nr 1:">eksploracja danych</textarea>
+                  </div>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+                <div class="form-group blue-border-focus">
+                  <hr class="border border-primary">
+                  <div class="w-75 COC d-inline-block">
+                    <label for="wordConnectDivTaskWord2">Słowo:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskWord2" rows="2" placeholder="Wstaw słowo nr 2:">pattern identification</textarea>
+
+                    <label for="wordConnectDivTaskDefinition2">Definicja:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskDefinition2" rows="2" placeholder="Wstaw definicje nr 2:">identyfikacja wzorca</textarea>
+                  </div>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+                <div class="form-group blue-border-focus">
+                  <hr class="border border-primary">
+                  <div class="w-75 COC d-inline-block">
+                    <label for="wordConnectDivTaskWord3">Słowo:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskWord3" rows="2" placeholder="Wstaw słowo nr 3:">quantitative modelling</textarea>
+
+                    <label for="wordConnectDivTaskDefinition3">Definicja:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskDefinition3" rows="2" placeholder="Wstaw definicje nr 3:">modelowanie ilościowe</textarea>
+                  </div>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+                <div class="form-group blue-border-focus">
+                  <hr class="border border-primary">
+                  <div class="w-75 COC d-inline-block">
+                    <label for="wordConnectDivTaskWord4">Słowo:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskWord4" rows="2" placeholder="Wstaw słowo nr 4:">class label</textarea>
+
+                    <label for="wordConnectDivTaskDefinition4">Definicja:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskDefinition4" rows="2" placeholder="Wstaw definicje nr 4:">etykieta klasy</textarea>
+                  </div>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+                <div class="form-group blue-border-focus">
+                  <hr class="border border-primary">
+                  <div class="w-75 COC d-inline-block">
+                    <label for="wordConnectDivTaskWord5">Słowo:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskWord5" rows="2" placeholder="Wstaw słowo nr 5:">class membership</textarea>
+
+                    <label for="wordConnectDivTaskDefinition5">Definicja:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskDefinition5" rows="2" placeholder="Wstaw definicje nr 5:">przynależność do klasy</textarea>
+                  </div>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+                <div class="form-group blue-border-focus">
+                  <hr class="border border-primary">
+                  <div class="w-75 COC d-inline-block">
+                    <label for="wordConnectDivTaskWord6">Słowo:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskWord6" rows="2" placeholder="Wstaw słowo nr 6:">explanatory variable</textarea>
+
+                    <label for="wordConnectDivTaskDefinition6">Definicja:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskDefinition6" rows="2" placeholder="Wstaw definicje nr 6:">zmienna objaśniająca</textarea>
+                  </div>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+
+                <div class="form-group blue-border-focus">
+                  <hr class="border border-primary">
+                  <div class="w-75 COC d-inline-block">
+                    <label for="wordConnectDivTaskWord7">Słowo:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskWord7" rows="2" placeholder="Wstaw słowo nr 7:">variable</textarea>
+
+                    <label for="wordConnectDivTaskDefinition7">Definicja:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskDefinition7" rows="2" placeholder="Wstaw definicje nr 7:">zmienna</textarea>
+                  </div>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+
+                <div class="form-group blue-border-focus">
+                  <hr class="border border-primary">
+                  <div class="w-75 COC d-inline-block">
+                    <label for="wordConnectDivTaskWord8">Słowo:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskWord8" rows="2" placeholder="Wstaw słowo nr 8:">fault-tolerant</textarea>
+
+                    <label for="wordConnectDivTaskDefinition8">Definicja:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskDefinition8" rows="2" placeholder="Wstaw definicje nr 8:">odporny na błędy</textarea>
+                  </div>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+
+                <div class="form-group blue-border-focus">
+                  <hr class="border border-primary">
+                  <div class="w-75 COC d-inline-block">
+                    <label for="wordConnectDivTaskWord9">Słowo:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskWord9" rows="2" placeholder="Wstaw słowo nr 9:">spurious pattern</textarea>
+
+                    <label for="wordConnectDivTaskDefinition9">Definicja:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskDefinition9" rows="2" placeholder="Wstaw definicje nr 9:">fałszywy wzorzec</textarea>
+                  </div>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+
+                <div class="form-group blue-border-focus">
+                  <hr class="border border-primary">
+                  <div class="w-75 COC d-inline-block">
+                    <label for="wordConnectDivTaskWord10">Słowo:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskWord10" rows="2" placeholder="Wstaw słowo nr 10:">outlier</textarea>
+
+                    <label for="wordConnectDivTaskDefinition10">Definicja:</label>
+                    <textarea class="form-control taskTextTextarea"  id="wordConnectDivTaskDefinition10" rows="2" placeholder="Wstaw definicje nr 10:">wartość skrajna</textarea>
+                  </div>
+                  <button class="d-inline-block btn btn-danger btn-sm">-</button>
+                </div>
+
               </div>
-              <button>wstaw nadmiar słów</button>
+              <hr class="border border-primary">
+              <button class="btn btn-primary btn-sm" id="wordConnectAddConnection">+</button>
+              <div class="invalid-feedback" id="invalidConnectAddConnection">
+                Najpierw uzupełnij puste pola w istniejących miejscach.
+              </div>
             </div>
           </div>
         </div>

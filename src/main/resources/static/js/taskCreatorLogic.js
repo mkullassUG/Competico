@@ -1,16 +1,20 @@
 const TaskCreatorLogic = (playerInfo_, debug) => {
     var self = {};
+    /*       logic variables          */
     self.playerInfo = playerInfo_;
     self.debug = debug;
     self.currentVariant;
-    /*       logic variables          */
 
     /*       logic functions          */
     self.taskCreatorInit = () => {
         /* TODO
         przygotuj start strony
         */
-       self.changeVariant("WordFIll");
+        var urlVariant =  window.location.hash.substr(1);
+        if ( urlVariant.length != "")
+            self.changeVariant(urlVariant);
+        else
+            self.changeVariant("WordFIll");
     }
 
     self.changeVariant = (variantString) => {
@@ -30,13 +34,74 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
         //sprawdzanie
         switch (variantString) {
             case "WordFIll":
-                self.currentVarian = WordFillCreator();
+                self.currentVariant = WordFillCreator();
+                self.currentVariant.loadTaskFrom({
+                    "taskName" : "WordFill",
+                    "taskContent" : {
+                      "id" : "4e8f1bec-07ad-4a2e-a0d6-bf225ca91aa1",
+                      "instruction" : "Complete the text with the missing words:",
+                      "tags" : [ ],
+                      "content" : {
+                        "id" : "5b3c7a43-c0e6-41bc-8de2-27fcb2a10c0a",
+                        "text" : [ "I’m sorry to have to tell you that there has been some ", " in the project and we won’t be able to ", " our original ", " on July 30th for completing the ", " of the new software. Pedro’s absence for three weeks caused a bit of a ", ", and there were more delays when we realised that there was still some ", " in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month." ],
+                        "emptySpaces" : [ {
+                          "answer" : "slippage"
+                        }, {
+                          "answer" : "stick to"
+                        }, {
+                          "answer" : "deadline"
+                        }, {
+                          "answer" : "rollout"
+                        }, {
+                          "answer" : "bottleneck"
+                        }, {
+                          "answer" : "dirty data"
+                        } ],
+                        "startWithText" : true,
+                        "possibleAnswers" : [ "bottleneck", "deadline", "dirty data", "migrate", "rollout", "slippage", "stick to", "within", "scope" ]
+                      },
+                      "difficulty" : 100.0
+                    }
+                  });
                 break;
             case "ChronologicalOrder":
-                self.currentVarian = ChronologicalOrderCreator();
+                self.currentVariant = ChronologicalOrderCreator();
+                self.currentVariant.loadTaskFrom({
+                    "taskName" : "ChronologicalOrder",
+                    "taskContent" : {
+                      "id" : "f10298c5-7e1f-4961-ab07-1fe9410bb433",
+                      "instruction" : "Put the phrases in order:",
+                      "tags" : [ ],
+                      "sentences" : [ "Try to understand the problem and define the purpose of the program.", "Once you have analysed the problem, define the successive logical steps of the program.", "Write the instructions in a high-level language of your choice.", "Once the code is written, test it to detect bugs or errors.", "Debug and fix errors in your code.", "Finally, review the program’s documentation." ],
+                      "difficulty" : 100.0
+                    }
+                  });
                 break;
             case "WordConnect":
-                self.currentVarian = WordConnectCreator();
+                self.currentVariant = WordConnectCreator();
+                self.currentVariant.loadTaskFrom({
+                    "taskName" : "WordConnect",
+                    "taskContent" : {
+                      "id" : "00cb1efa-d388-4647-a5ec-080755b11712",
+                      "instruction" : "Match the words with their translations:",
+                      "tags" : [ ],
+                      "leftWords" : [ "data mining", "pattern identification", "quantitative modelling", "class label", "class membership", "explanatory variable", "variable", "fault-tolerant", "spurious pattern", "outlier" ],
+                      "rightWords" : [ "eksploracja danych", "identyfikacja wzorca", "modelowanie ilościowe", "etykieta klasy", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna" ],
+                      "correctMapping" : {
+                        "0" : 0,
+                        "1" : 1,
+                        "2" : 2,
+                        "3" : 3,
+                        "4" : 4,
+                        "5" : 5,
+                        "6" : 6,
+                        "7" : 7,
+                        "8" : 8,
+                        "9" : 9
+                      },
+                      "difficulty" : 100.0
+                    }
+                  });
                 break;
            default:
                console.warn("TODO, to nie powinno się wydarzyć!")
@@ -108,7 +173,7 @@ TaskCreatorLogic.getInstance = (debug) => {
     return TaskCreatorLogic.singleton;
 }
 
-/* textarea wtf it is blurry fix*/
+/* textarea wtf it is blurry (no scroll) fix*/
 var observe;
 if (window.attachEvent) {
     observe = function (element, event, handler) {
@@ -143,6 +208,7 @@ function textareaAutoscroll () {
         /* 0-timeout to get the already changed text */
         
         observe(text, 'change',  resize);
+        observe(text, 'focus',  resize);
         observe(text, 'cut',     delayedresize);
         observe(text, 'paste',   delayedresize);
         observe(text, 'drop',    delayedresize);

@@ -1,5 +1,5 @@
-/*task creator content div stays in one place andadds scroll when too big*/
-.stuck {
+
+.stuck { /*task creator content div stays in one place and adds scroll when too big*/
 	position: fixed;
 	top: 200px;
 	left: 30%;
@@ -12,7 +12,9 @@
 	position: fixed;
 	bottom: 10%;
 	width: 100%;
+	left: 3%;
 }
+
 
 /*  dropdown menu   */
 @media (min-width: 992px){
@@ -57,8 +59,9 @@
 	text-align: center;
 }
 
-.taskTextTextarea {
+.taskTextTextarea  {
 	overflow-y: hidden;
+	vertical-align: middle;
 }
 /*Form-label-group extension*/
 .form-label-group {
