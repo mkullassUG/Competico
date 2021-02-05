@@ -36,13 +36,19 @@ const TaskCreator = (data_) =>{
     }
 
     self.prepareTaskJsonFile = () => {
+        
         /*TODO:
         spakuj gotowe zadanie do pliku*/
+        return {};
     }
 
     self.setupDemoFromCurrent = () => {
         /*TODO:
         podgląd stworzonego zadania jako gry*/
+    }
+
+    self.sendTaskVariant = (ajaxCallback) => {
+
     }
 
     self.setupDemoFromCurrent = () => {
@@ -90,6 +96,8 @@ const TaskCreator = (data_) =>{
 
 /*TODO
 będę musiał przerabiać textarea na content editable żeby miec możliwosć wstawiania html dla bardziej intuicyjnego edytowania treści taska
+
+ALE contenteditable jest przestarzałe (a input level 2 jest jeszcze nie używany wszędzie?)
 */
 const WordFillCreator = (data_ = {}) => {
 
@@ -163,10 +171,114 @@ const WordFillCreator = (data_ = {}) => {
 
     var prepareTaskJsonFileSuper = self.prepareTaskJsonFile;
     self.prepareTaskJsonFile = () => {
-        prepareTaskJsonFileSuper();
-        /*TODO:
-        spakuj gotowe zadanie do pliku
-        */
+        var task = prepareTaskJsonFileSuper();
+        /*{
+            "taskName" : "WordFill",
+            "taskContent" : {
+                "id" : "4e8f1bec-07ad-4a2e-a0d6-bf225ca91aa1",
+                "instruction" : "Complete the text with the missing words:",
+                "tags" : [ ],
+                "content" : {
+                "id" : "5b3c7a43-c0e6-41bc-8de2-27fcb2a10c0a",
+                "text" : [ "I’m sorry to have to tell you that there has been some ", " in the project and we won’t be able to ", " our original ", " on July 30th for completing the ", " of the new software. Pedro’s absence for three weeks caused a bit of a ", ", and there were more delays when we realised that there was still some ", " in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month." ],
+                "emptySpaces" : [ {
+                    "answer" : "slippage"
+                }, {
+                    "answer" : "stick to"
+                }, {
+                    "answer" : "deadline"
+                }, {
+                    "answer" : "rollout"
+                }, {
+                    "answer" : "bottleneck"
+                }, {
+                    "answer" : "dirty data"
+                } ],
+                "startWithText" : true,
+                "possibleAnswers" : [ "bottleneck", "deadline", "dirty data", "migrate", "rollout", "slippage", "stick to", "within", "scope" ]
+                },
+                "difficulty" : 100.0
+            }
+        }*/
+
+
+        //czy można pobrać difficulty
+        if ($("#wordFillDificulty").length) {
+            self.taskContent.difficulty = $("#wordFillDificulty").val();
+        }
+        //czy można pograc tagi
+        if ($("#wordFillDivTaskTags").length) {
+            var tagsString = $("#wordFillDivTaskTags").val();
+            var tags = tagsString.split(",")
+                .map(t=> t.trim())
+                .filter(t => t!="");
+            self.taskContent.tags = [];
+            for (let i = 0; i < tags.length; i++) {
+                self.taskContent.tags.push(tags[i]);
+            }
+        }
+        //czy można pobrać instrukcje
+        if ( $("#wordFillDivTaskInstruction").length ) {
+            self.taskContent.instruction = $("#wordFillDivTaskInstruction").val().trim();
+        }   
+        
+        //czy można pobrać zdania
+        if ( $("#wordFillDivTaskText").length ) {
+            /*
+                self.taskContent.content.text = [];
+                self.taskContent.content.emptySpaces = [];
+                self.taskContent.content.startWithText;
+                self.taskContent.content.possibleAnswers = [];
+            */
+            self.taskContent.content.text = [];
+            self.taskContent.content.emptySpaces = [];
+            self.taskContent.content.startWithText;
+            self.taskContent.content.possibleAnswers = [];
+
+            var textString = $("#wordFillDivTaskText").val();
+            var tagsWithWords = textString.match(/\{\[[^]+?\]\}/g);
+            var correctWords = tagsWithWords.map(w=> w.replace("{[",'').replace("]}",''));
+
+            //get emptySpaces
+            for (let i = 0; i < correctWords.length; i++) {
+                var correctWord = correctWords[i];
+                
+                var word = correctWord.trim()
+                if (word == "") //Jakoś poinformować o tym?
+                    continue;
+
+                    self.taskContent.content.emptySpaces.push({
+                        'answer':word
+                    });
+            }
+            
+            //get possibleAnswers
+            var inCorrectWordsString = $("#wordFillDivIncorrectWords").val();
+            var inCorrectWords = inCorrectWordsString.split(",")
+                .map(t=> t.trim())
+                .filter(t => t!="");
+            self.taskContent.content.possibleAnswers = [...correctWords, ...inCorrectWords];
+            
+            //get text
+            //build regex 
+            var regexString = `\\{\\[`+correctWords[0]+ "\\]\\}";
+            for ( let i = 1; i < correctWords.length; i++) {
+                regexString += "|\\{\\[" +correctWords[i] + "\\]\\}";
+            }
+            regexString += "";
+            regexString = new RegExp(regexString, "g");
+            var text = textString.split(regexString);
+            
+            //get starts with text
+            self.taskContent.content.startWithText = text[0] != "";
+            self.taskContent.content.text = [...(text).filter(t=>t!="")]
+
+        }
+
+        task.taskName = self.taskName;
+        task.taskContent = self.taskContent;
+
+        return task;
     }
 
     var setupDemoFromCurrentSuper = self.setupDemoFromCurrent;
@@ -174,6 +286,17 @@ const WordFillCreator = (data_ = {}) => {
         setupDemoFromCurrentSuper();
         /*TODO:
         podgląd stworzonego zadania jako gry*/
+    }
+
+    var sendTaskVariantSuper = self.sendTaskVariant;
+    self.sendTaskVariant = (ajaxCallback) => {
+        sendTaskVariantSuper();
+        var preparedTask = self.prepareTaskJsonFile();
+
+        ajaxCallback(
+            preparedTask,
+            (data)=>{console.log("sent")}
+        );
     }
 
     var loadTaskFromSuper = self.loadTaskFrom;
@@ -359,10 +482,61 @@ const ChronologicalOrderCreator = (data_ = {}) => {
 
     var prepareTaskJsonFileSuper = self.prepareTaskJsonFile;
     self.prepareTaskJsonFile = () => {
-        prepareTaskJsonFileSuper();
-        /*TODO:
-        spakuj gotowe zadanie do pliku
-        */
+        var task = prepareTaskJsonFileSuper();
+        /*{
+            "taskName" : "ChronologicalOrder",
+            "taskContent" : {
+                "id" : "f10298c5-7e1f-4961-ab07-1fe9410bb433",
+                "instruction" : "Put the phrases in order:",
+                "tags" : [ ],
+                "sentences" : [ "Try to understand the problem and define the purpose of the program.", 
+                    "Once you have analysed the problem, define the successive logical steps of the program.", 
+                    "Write the instructions in a high-level language of your choice.", 
+                    "Once the code is written, test it to detect bugs or errors.", 
+                    "Debug and fix errors in your code.", 
+                    "Finally, review the program’s documentation." ],
+                "difficulty" : 100.0
+            }
+        }*/
+
+        //czy można pobrać difficulty
+        if ($("#chronologicalOrderDificulty").length) {
+            self.taskContent.difficulty = $("#chronologicalOrderDificulty").val();
+        }
+        //czy można pograc tagi
+        if ($("#chronologicalOrderDivTaskTags").length) {
+            var tagsString = $("#chronologicalOrderDivTaskTags").val();
+            var tags = tagsString.split(",")
+                .map(t=> t.trim())
+                .filter(t => t!="");
+            self.taskContent.tags = [];
+            for (let i = 0; i < tags.length; i++) {
+                self.taskContent.tags.push(tags[i]);
+            }
+        }
+        //czy można pobrać instrukcje
+        if ( $("#chronologicalOrderDivTaskInstruction").length ) {
+            self.taskContent.instruction = $("#chronologicalOrderDivTaskInstruction").val().trim();
+        }   
+        
+        //czy można pobrać zdania
+        if ( $("#chronologicalOrderSentences").length ) {
+            self.taskContent.sentences = [];
+            var sentenceTextareas = $("#chronologicalOrderSentences").find(".taskTextTextarea");
+            for (let i = 0; i < sentenceTextareas.length; i++) {
+                var sentenceTextarea = $(sentenceTextareas[i]);
+                var sentence = sentenceTextarea.val().trim()
+                if (sentence == "") //Jakoś poinformować o tym?
+                    continue;
+
+                self.taskContent.sentences.push(sentence);
+            }
+        }
+
+        task.taskName = self.taskName;
+        task.taskContent = self.taskContent;
+
+        return task;
     }
 
     var setupDemoFromCurrentSuper = self.setupDemoFromCurrent;
@@ -370,6 +544,17 @@ const ChronologicalOrderCreator = (data_ = {}) => {
         setupDemoFromCurrentSuper();
         /*TODO:
         podgląd stworzonego zadania jako gry*/
+    }
+
+    var sendTaskVariantSuper = self.sendTaskVariant;
+    self.sendTaskVariant = (ajaxCallback) => {
+
+        var preparedTask = self.prepareTaskJsonFile();
+
+        ajaxCallback(
+            preparedTask,
+            (data)=>{console.log("sent")}
+        );
     }
 
     var loadTaskFromSuper = self.loadTaskFrom;
@@ -410,7 +595,6 @@ const ChronologicalOrderCreator = (data_ = {}) => {
         /*TODO ustawiam czcionkę*/
     }
 
-    /*TODO dodawanie kolejnego zdania*/
     self.addNewSentence = () => {
         
         /*czy są warunki do zrobienia nowego połączenia*/
@@ -511,10 +695,81 @@ const WordConnectCreator = (data_ = {}) => {
 
     var prepareTaskJsonFileSuper = self.prepareTaskJsonFile;
     self.prepareTaskJsonFile = () => {
-        prepareTaskJsonFileSuper();
-        /*TODO:
-        spakuj gotowe zadanie do pliku
-        */
+        var task = prepareTaskJsonFileSuper();
+        /*{
+            "taskName" : "WordConnect",
+            "taskContent" : {
+                "id" : "2d210a77-329e-41c9-9fe2-ef7b0dd6918a",
+                "instruction" : "Match the words with their translations:",
+                "tags" : [ ],
+                "leftWords" : [ "keynote", "to convey (information)", "to unveil (a theme)", "consistent", "stiff", "a knack (for sth)", "a flair", "intricate", "dazzling", "to rehearse" ],
+                "rightWords" : [ "myśl przewodnia, główny motyw", "przekazywać/dostarczać (informacje)", "odkryć, ujawnić, odsłonić", "spójny, zgodny, konsekwentny", "sztywny, zdrętwiały", "talent, zręczność", "klasa, dar", "zawiły, misterny", "olśniewający", "próbować, przygotowywać się" ],
+                "correctMapping" : {
+                "0" : 0,
+                "1" : 1,
+                "2" : 2,
+                "3" : 3,
+                "4" : 4,
+                "5" : 5,
+                "6" : 6,
+                "7" : 7,
+                "8" : 8,
+                "9" : 9
+                },
+                "difficulty" : 100.0
+            }
+        }*/
+        
+        //czy można pobrać difficulty
+        if ($("#wordConnectDificulty").length) {
+            self.taskContent.difficulty = $("#wordConnectDificulty").val();
+        }
+        //czy można pograc tagi
+        if ($("#wordConnectDivTaskTags").length) {
+            var tagsString = $("#wordConnectDivTaskTags").val();
+            var tags = tagsString.split(",")
+                .map(t=> t.trim())
+                .filter(t => t!="");
+            self.taskContent.tags = [];
+            for (let i = 0; i < tags.length; i++) {
+                self.taskContent.tags.push(tags[i]);
+            }
+        }
+        //czy można pobrać instrukcje
+        if ( $("#wordConnectDivTaskInstruction").length ) {
+            self.taskContent.instruction = $("#wordConnectDivTaskInstruction").val().trim();
+        }   
+        
+        //czy można pobrać zdania
+        if ( $("#wordConnectConnections").length ) {
+            self.taskContent.leftWords = [];
+            self.taskContent.rightWords = [];
+            self.taskContent.correctMapping = {}
+            var sentenceTextareas = $("#wordConnectConnections").find(".taskTextTextarea");
+            var cmCounter = 0;
+            for (let i = 0; i < sentenceTextareas.length; i+=2) {
+
+                var leftTextarea = $(sentenceTextareas[i]);
+                var rightTextarea = $(sentenceTextareas[i+1]);
+
+                var leftWord = leftTextarea.val().trim()
+                var rightWord = rightTextarea.val().trim()
+
+                if (leftWord == "" || rightWord == "") //Jakoś poinformować o tym?
+                    continue;
+
+                self.taskContent.leftWords.push(leftWord);
+                self.taskContent.rightWords.push(rightWord);
+
+                self.taskContent.correctMapping[cmCounter] = cmCounter;
+                cmCounter++
+            }
+        }
+
+        task.taskName = self.taskName;
+        task.taskContent = self.taskContent;
+
+        return task;
     }
 
     var setupDemoFromCurrentSuper = self.setupDemoFromCurrent;
@@ -522,6 +777,17 @@ const WordConnectCreator = (data_ = {}) => {
         setupDemoFromCurrentSuper();
         /*TODO:
         podgląd stworzonego zadania jako gry*/
+    }
+
+    var sendTaskVariantSuper = self.sendTaskVariant;
+    self.sendTaskVariant = (ajaxCallback) => {
+
+        var preparedTask = self.prepareTaskJsonFile();
+
+        ajaxCallback(
+            preparedTask,
+            (data)=>{console.log("sent")}
+        );
     }
 
     var loadTaskFromSuper = self.loadTaskFrom;
@@ -565,10 +831,8 @@ const WordConnectCreator = (data_ = {}) => {
         /*TODO ustawiam czcionkę*/
     }
 
-    /*TODO dodawanie kolejnego połączenia*/
     self.addNewConnection = () => {
         
-
         /*czy są warunki do zrobienia nowego połączenia*/
         var doMakeNewConnection = () => {
             

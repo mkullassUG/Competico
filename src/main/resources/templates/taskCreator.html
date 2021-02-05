@@ -65,6 +65,8 @@
     <div id="mySidepanel" class="sidepanel">
       <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
       <a href="#">pozostałe zadania</a>
+      <a href="#" id="btnDownloadJsonAllTasks">pobierz wszystkie zadania</a>
+      <a href="#" id="btnDownloadJsonImportedTasks">pobierz importowane zadania</a>
       
     </div>
     <div class="container fill text-center" id="bigChangeDiv">
@@ -336,7 +338,7 @@
       </div>
       <div class="row mt-3 text-center button-m-custom" id="Bottom">
         <div class="col-12">
-          <buton class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnDemoTask" data-toggle="modal" data-target="#demoTaskModalCenter">Podgląd w grze</buton>
+          <buton class="btn btn-lg btn-secondary mb-3 btnShadow disabled" id="btnDemoTask" data-toggle="modal" data-target="#demoTaskModalCenter">Podgląd w grze</buton>
           <buton class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnSaveTask" data-toggle="modal" data-target="#saveTaskModalCenter">Zapisz zadanie</buton>
         </div>
       </div>
@@ -347,7 +349,7 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title" id="saveTaskModalLongTitle">Czy napewno przesłać rozwiązanie?</h4>
+            <h4 class="modal-title" id="saveTaskModalLongTitle">Czy napewno przesłać zadanie?</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>

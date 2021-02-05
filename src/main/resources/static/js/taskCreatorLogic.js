@@ -110,6 +110,22 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
 
     }
 
+    self.downloadAllTasks = () => {
+        self.ajaxGetAllTasks();
+    }
+
+    self.downloadImportedTasks = () => {
+        self.ajaxGetImportedTasks();
+    }
+
+    self.sendTask = () => {
+        /*TODO*/
+        if (!self.currentVariant) 
+            return false;
+        
+        self.currentVariant.sendTaskVariant(self.sendAjaxTask);
+    }
+
     /*       event listeners          */
     if ($("#btnChronologicalOrder").length)
         $("#btnChronologicalOrder").on("click",()=>{
@@ -129,7 +145,161 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
                 console.log("btnWordConnect");
             self.changeVariant("WordConnect");
         });
-        
+    if ($("#btnDownloadJsonAllTasks").length)
+        $("#btnDownloadJsonAllTasks").on("click",()=>{
+            if (self.debug)
+                console.log("btnDownloadJsonAllTasks");
+            self.downloadAllTasks();
+        });
+    if ($("#btnDownloadJsonImportedTasks").length)
+        $("#btnDownloadJsonImportedTasks").on("click",()=>{
+            if (self.debug)
+                console.log("btnDownloadJsonImportedTasks");
+            self.downloadAllTasks();
+        });   
+    if ($("#btnSendSaveTask").length)
+        $("#btnSendSaveTask").on("click",()=>{
+            if (self.debug)
+                console.log("btnSendSaveTask");
+            self.sendTask();
+        });
+    /* Ajax requests*/
+    self.ajaxGetAllTasks = () => {
+        /*pobiera taski 
+        /api/v1/tasks/all/json/file*/
+        // $.ajax({
+        //     type     : "GET",
+        //     cache    : false,
+        //     url      : "/api/v1/tasks/all/json/file",
+        //     contentType: "application/json",
+        //     success: function(data, textStatus, jqXHR) {
+        //         if (self.debug) {
+        //             console.log("ajaxGetAllTasks success");
+        //             console.log(data);
+        //         }
+
+
+        //     },
+        //     error: function(jqXHR, status, err) {
+        //         if (self.debug) {
+        //         console.warn("ajaxGetAllTasks error");
+        //         console.warn(jqXHR);
+        //         console.warn(status);
+        //         console.warn(err);
+        //         }
+        //     }
+        // });
+
+        fetch('/api/v1/tasks/all/json/file')
+            .then(resp => resp.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                // the filename you want
+                a.download = 'tasksFile.json';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                alert('your file has downloaded!'); // or you know, something with better UX...
+            })
+            .catch(() => alert('oh no!'));
+    }
+
+    self.ajaxGetImportedTasks = () => {
+        /*/api/v1/tasks/imported/json GET - lista wszystkich wprowadzonych zadań*/
+        // $.ajax({
+        //     type     : "GET",
+        //     cache    : false,
+        //     url      : "/api/v1/tasks/imported/json/file",
+        //     contentType: "application/json",
+        //     success: function(data, textStatus, jqXHR) {
+        //         if (self.debug) {
+        //             console.log("ajaxGetImportedTasks success");
+        //             console.log(data);
+        //         }
+        //     },
+        //     error: function(jqXHR, status, err) {
+        //         if (self.debug) {
+        //         console.warn("ajaxGetImportedTasks error");
+        //         console.warn(jqXHR);
+        //         console.warn(status);
+        //         console.warn(err);
+        //         }
+        //     }
+        // });
+
+        fetch('/api/v1/tasks/imported/json/file')
+            .then(resp => resp.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                // the filename you want
+                a.download = 'importedTasksFile.json';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                alert('your file has downloaded!'); // or you know, something with better UX...
+            })
+            .catch(() => alert('oh no!'));
+    }
+    
+    self.ajaxGetNumberOfTasks = (callback) =>{
+        /*/api/v1/tasks/imported/count GET - liczba wszystkich wprowadzonych zadań*/
+        $.ajax({
+            type     : "GET",
+            cache    : false,
+            url      : "/api/v1/tasks/imported/count",
+            contentType: "application/json",
+            success: function(data, textStatus, jqXHR) {
+                if (self.debug) {
+                    console.log("ajaxGetNumberOfTasks success");
+                    console.log(data);
+                }
+                callback(data)
+            },
+            error: function(jqXHR, status, err) {
+                if (self.debug) {
+                console.warn("ajaxGetNumberOfTasks error");
+                console.warn(jqXHR);
+                console.warn(status);
+                console.warn(err);
+                }
+            }
+        });
+    }
+    /*     ajax http actions       */
+    self.sendAjaxTask = (task, callback) => {
+        /* /api/v1/tasks/imported POST - dodanie nowego zadania przez JSON */
+        var send = task;
+        console.log(send);
+        $.ajax({
+            type     : "POST",
+            cache    : false,
+            url      : "/api/v1/tasks/imported",
+            contentType: "application/json",
+            data     : send,
+            success: function(data, textStatus, jqXHR) {
+                if (self.debug) {
+                    console.log("sendAjaxTask success");
+                    console.log(data);
+                }
+                callback(data)
+            },
+            error: function(jqXHR, status, err) {
+                if (self.debug) {
+                console.warn("sendAjaxTask error");
+                console.warn(jqXHR);
+                console.warn(status);
+                console.warn(err);
+                }
+            }
+        });
+    }
+
     /*  initalization  */
     self.taskCreatorInit();
      
@@ -173,7 +343,11 @@ TaskCreatorLogic.getInstance = (debug) => {
     return TaskCreatorLogic.singleton;
 }
 
-/* textarea wtf it is blurry (no scroll) fix*/
+/* textarea wtf it is blurry (no scroll) fix
+nie działa w wordfill bo są inne textarea
+
+WGL to tekst na całej stronei robi się wtedy blurry
+*/
 var observe;
 if (window.attachEvent) {
     observe = function (element, event, handler) {
