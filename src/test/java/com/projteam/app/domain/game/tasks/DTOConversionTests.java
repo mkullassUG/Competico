@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.domain.game.tasks.ChoiceWordFillElement.WordChoice;
 import com.projteam.app.domain.game.tasks.WordFillElement.EmptySpace;
-import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
 
 public class DTOConversionTests
 {

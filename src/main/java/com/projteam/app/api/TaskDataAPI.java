@@ -1,6 +1,7 @@
 package com.projteam.app.api;
 
 import java.io.IOException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.projteam.app.dto.game.tasks.create.TaskDTO;
 import com.projteam.app.service.game.GameTaskDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +23,8 @@ public class TaskDataAPI
 {
 	private GameTaskDataService gtdService;
 	
+	private final ObjectMapper mapper = new ObjectMapper();
+	
 	@Autowired
 	public TaskDataAPI(GameTaskDataService gtdService)
 	{
@@ -28,9 +33,9 @@ public class TaskDataAPI
 	
 	@GetMapping("/api/v1/tasks/all/json")
 	@ApiOperation(value = "Return a list of all tasks in JSON", code = 200)
-	public JsonNode getTasksAsJson()
+	public List<TaskDTO> getTasks()
 	{
-		return gtdService.getAllTasksAsJson();
+		return gtdService.getAllTasks();
 	}
 	@GetMapping(value = "/api/v1/tasks/all/json/file",
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -38,7 +43,7 @@ public class TaskDataAPI
 	public Object getTasksAsJsonFile()
 	{
 		String filename = "tasks.json";
-		byte[] ret = getTasksAsJson().toPrettyString().getBytes();
+		byte[] ret = mapper.valueToTree(gtdService.getAllTasks()).toPrettyString().getBytes();
 		return ResponseEntity.ok()
 				.header("Content-Disposition",
 						"attachment; filename=\"" + filename + "\"")
@@ -53,9 +58,9 @@ public class TaskDataAPI
 	}
 	@GetMapping("/api/v1/tasks/imported/json")
 	@ApiOperation(value = "Return a list of all imported tasks in JSON", code = 200)
-	public JsonNode getImportedTasksAsJson()
+	public List<TaskDTO> getImportedTasksAsJson()
 	{
-		return gtdService.getImportedGlobalTasksAsJson();
+		return gtdService.getImportedGlobalTasks();
 	}
 	@GetMapping(value = "/api/v1/tasks/imported/json/file",
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -63,7 +68,8 @@ public class TaskDataAPI
 	public Object getImportedTasksAsJsonFile()
 	{
 		String filename = "tasks.json";
-		byte[] ret = getTasksAsJson().toPrettyString().getBytes();
+		byte[] ret = gtdService.getImportedGlobalTasksAsJson()
+				.toPrettyString().getBytes();
 		return ResponseEntity.ok()
 				.header("Content-Disposition",
 						"attachment; filename=\"" + filename + "\"")

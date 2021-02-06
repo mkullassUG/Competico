@@ -3,6 +3,7 @@ package com.projteam.app.api;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.projteam.app.service.AccountService;
 import com.projteam.app.service.game.GameService;
 import com.projteam.app.service.game.GameTaskDataService;
@@ -32,8 +32,7 @@ class TaskDataAPITests
 	@Test
 	public void canGetTasksAsJson() throws Exception
 	{
-		when(gtdService.getAllTasksAsJson()).thenReturn(
-				JsonNodeFactory.instance.arrayNode());
+		when(gtdService.getAllTasks()).thenReturn(List.of());
 		
 		mvc.perform(get("/api/v1/tasks/all/json"))
 			.andExpect(status().isOk());
@@ -41,8 +40,7 @@ class TaskDataAPITests
 	@Test
 	public void canGetTasksAsJsonFile() throws Exception
 	{
-		when(gtdService.getAllTasksAsJson()).thenReturn(
-				JsonNodeFactory.instance.arrayNode());
+		when(gtdService.getAllTasks()).thenReturn(List.of());
 		
 		mvc.perform(get("/api/v1/tasks/all/json/file"))
 			.andExpect(status().isOk());

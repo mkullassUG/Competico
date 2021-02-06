@@ -1,5 +1,10 @@
 package com.projteam.app.service;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,7 +19,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import com.fasterxml.jackson.databind.JsonNode;
+import org.mockito.Spy;
 import com.projteam.app.domain.game.tasks.ChoiceWordFill;
 import com.projteam.app.domain.game.tasks.ChoiceWordFillElement;
 import com.projteam.app.domain.game.tasks.ChronologicalOrder;
@@ -30,6 +35,17 @@ import com.projteam.app.domain.game.tasks.WordFill;
 import com.projteam.app.domain.game.tasks.WordFillElement;
 import com.projteam.app.domain.game.tasks.ChoiceWordFillElement.WordChoice;
 import com.projteam.app.domain.game.tasks.WordFillElement.EmptySpace;
+import com.projteam.app.dto.game.tasks.create.TaskDTO;
+import com.projteam.app.mapper.game.tasks.TaskMapper;
+import com.projteam.app.mapper.game.tasks.create.ChoiceWordFillMapper;
+import com.projteam.app.mapper.game.tasks.create.ChronologicalOrderMapper;
+import com.projteam.app.mapper.game.tasks.create.ListChoiceWordFillMapper;
+import com.projteam.app.mapper.game.tasks.create.ListSentenceFormingMapper;
+import com.projteam.app.mapper.game.tasks.create.ListWordFillMapper;
+import com.projteam.app.mapper.game.tasks.create.MultipleChoiceMapper;
+import com.projteam.app.mapper.game.tasks.create.SingleChoiceMapper;
+import com.projteam.app.mapper.game.tasks.create.WordConnectMapper;
+import com.projteam.app.mapper.game.tasks.create.WordFillMapper;
 import com.projteam.app.service.game.GameTaskDataService;
 import com.projteam.app.service.game.tasks.ChoiceWordFillService;
 import com.projteam.app.service.game.tasks.ChronologicalOrderService;
@@ -55,6 +71,18 @@ class GameTaskDataServiceTests
 	
 	private @Mock AccountService aServ;
 	
+	private @Spy ChoiceWordFillMapper cwfMapper;
+	private @Spy ChronologicalOrderMapper coMapper;
+	private @Spy ListChoiceWordFillMapper lcwfMapper;
+	private @Spy ListSentenceFormingMapper lsfMapper;
+	private @Spy ListWordFillMapper lwfMapper;
+	private @Spy MultipleChoiceMapper mcMapper;
+	private @Spy SingleChoiceMapper scMapper;
+	private @Spy WordConnectMapper wcMapper;
+	private @Spy WordFillMapper wfMapper;
+	
+	private TaskMapper taskMapper;
+	
 	private GameTaskDataService gtdServ;
 	
 	@BeforeEach
@@ -62,11 +90,16 @@ class GameTaskDataServiceTests
 	{
 		MockitoAnnotations.initMocks(this);
 		
+		taskMapper = new TaskMapper(List.of(
+				cwfMapper, coMapper, lcwfMapper,
+				lsfMapper, lwfMapper, mcMapper,
+				scMapper, wcMapper, wfMapper));
+		
 		gtdServ = new GameTaskDataService(List.of(
 					cwfServ, coServ, lcwfServ,
 					lsfServ, lwfServ, mcServ,
 					scServ, wcServ, wfServ),
-				aServ);
+				aServ, taskMapper);
 	}
 	
 	@ParameterizedTest
@@ -97,9 +130,12 @@ class GameTaskDataServiceTests
 		Mockito.when(wfServ.genericFindAll())
 			.thenReturn(List.of(mockWordFill()));
 		
-		JsonNode res = gtdServ.getAllTasksAsJson();
+		int mockedTaskCount = 9;
+		
+		List<TaskDTO> res = gtdServ.getAllTasks();
 		assertNotNull(res);
-		assertTrue(res.isArray());
+		assertThat(res.size(), greaterThanOrEqualTo(mockedTaskCount));
+		assertThat(res, not(hasItem(nullValue())));
 	}
 	@Test
 	public void shouldThrowWhenNoServiceCanAcceptTask()

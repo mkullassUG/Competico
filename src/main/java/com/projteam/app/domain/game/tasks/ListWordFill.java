@@ -13,8 +13,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OrderColumn;
 import com.projteam.app.domain.game.tasks.answers.ListWordFillAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
-import com.projteam.app.dto.game.tasks.ListWordFillDTO;
-import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.show.ListWordFillDTO;
+import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
 import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,7 +33,7 @@ public class ListWordFill implements Task
 	private @ManyToMany @OrderColumn List<WordFillElement> rows;
 	
 	private double difficulty;
-
+	
 	@Override
 	public double acceptAnswer(TaskAnswer answer)
 	{

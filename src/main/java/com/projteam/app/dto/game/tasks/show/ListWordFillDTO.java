@@ -1,4 +1,4 @@
-package com.projteam.app.dto.game.tasks;
+package com.projteam.app.dto.game.tasks.show;
 
 import java.util.ArrayList;
 import java.util.Collections;
