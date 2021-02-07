@@ -1,4 +1,4 @@
-package com.projteam.app.mapper.game.tasks.create;
+package com.projteam.app.service.game.tasks.mappers.create;
 
 import java.util.UUID;
 import org.springframework.stereotype.Service;

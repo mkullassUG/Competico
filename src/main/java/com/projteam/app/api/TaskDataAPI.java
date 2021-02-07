@@ -2,6 +2,8 @@ package com.projteam.app.api;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +35,9 @@ public class TaskDataAPI
 	
 	@GetMapping("/api/v1/tasks/all/json")
 	@ApiOperation(value = "Return a list of all tasks in JSON", code = 200)
-	public List<TaskDTO> getTasks()
+	public List<Map<String, ?>> getTasks()
 	{
-		return gtdService.getAllTasks();
+		return taskDTOsWithName(gtdService.getAllTasks());
 	}
 	@GetMapping(value = "/api/v1/tasks/all/json/file",
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -43,7 +45,11 @@ public class TaskDataAPI
 	public Object getTasksAsJsonFile()
 	{
 		String filename = "tasks.json";
-		byte[] ret = mapper.valueToTree(gtdService.getAllTasks()).toPrettyString().getBytes();
+		byte[] ret = mapper.valueToTree(
+				taskDTOsWithName(
+						gtdService.getAllTasks()))
+				.toPrettyString()
+				.getBytes();
 		return ResponseEntity.ok()
 				.header("Content-Disposition",
 						"attachment; filename=\"" + filename + "\"")
@@ -58,9 +64,9 @@ public class TaskDataAPI
 	}
 	@GetMapping("/api/v1/tasks/imported/json")
 	@ApiOperation(value = "Return a list of all imported tasks in JSON", code = 200)
-	public List<TaskDTO> getImportedTasksAsJson()
+	public List<Map<String, ?>> getImportedTasks()
 	{
-		return gtdService.getImportedGlobalTasks();
+		return taskDTOsWithName(gtdService.getImportedGlobalTasks());
 	}
 	@GetMapping(value = "/api/v1/tasks/imported/json/file",
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -68,8 +74,11 @@ public class TaskDataAPI
 	public Object getImportedTasksAsJsonFile()
 	{
 		String filename = "tasks.json";
-		byte[] ret = gtdService.getImportedGlobalTasksAsJson()
-				.toPrettyString().getBytes();
+		byte[] ret = mapper.valueToTree(
+				taskDTOsWithName(
+						gtdService.getImportedGlobalTasks()))
+					.toPrettyString()
+					.getBytes();
 		return ResponseEntity.ok()
 				.header("Content-Disposition",
 						"attachment; filename=\"" + filename + "\"")
@@ -84,8 +93,18 @@ public class TaskDataAPI
 	
 	@GetMapping("/tasks/import/global")
 	@ApiOperation(value = "Display a list of task data templates for global import")
-	public ModelAndView gameHistory()
+	public ModelAndView taskImportList()
 	{
-		return new ModelAndView("taskImportList");
+		return new ModelAndView("taskcreator");
+	}
+	
+	private List<Map<String, ?>> taskDTOsWithName(List<TaskDTO> dtoList)
+	{
+		return dtoList.stream()
+			.map(t -> Map.of(
+					"taskName", gtdService.getTaskDtoName(t),
+					"taskContent", t
+					))
+			.collect(Collectors.toList());
 	}
 }

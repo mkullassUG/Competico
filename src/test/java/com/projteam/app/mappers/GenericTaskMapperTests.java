@@ -1,8 +1,9 @@
-package com.projteam.app.mapper;
+package com.projteam.app.mappers;
 
-import static com.projteam.app.utils.ListAssert.assertListContentEquals;
-import static com.projteam.app.utils.ListAssert.assertListContentMatches;
+import static com.projteam.app.testutils.ListAssert.assertListContentEquals;
+import static com.projteam.app.testutils.ListAssert.assertListContentMatches;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import com.projteam.app.domain.game.tasks.MultipleChoice;
 import com.projteam.app.domain.game.tasks.MultipleChoiceElement;
 import com.projteam.app.domain.game.tasks.SentenceFormingElement;
 import com.projteam.app.domain.game.tasks.SingleChoice;
+import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.WordFill;
 import com.projteam.app.domain.game.tasks.WordFillElement;
@@ -39,19 +41,20 @@ import com.projteam.app.dto.game.tasks.create.MultipleChoiceDTO;
 import com.projteam.app.dto.game.tasks.create.MultipleChoiceElementDTO;
 import com.projteam.app.dto.game.tasks.create.SentenceFormingElementDTO;
 import com.projteam.app.dto.game.tasks.create.SingleChoiceDTO;
+import com.projteam.app.dto.game.tasks.create.TaskDTO;
 import com.projteam.app.dto.game.tasks.create.WordConnectDTO;
 import com.projteam.app.dto.game.tasks.create.WordFillDTO;
 import com.projteam.app.dto.game.tasks.create.WordFillElementDTO;
 import com.projteam.app.dto.game.tasks.create.ChoiceWordFillElementDTO.WordChoiceDTO;
 import com.projteam.app.dto.game.tasks.create.WordFillElementDTO.EmptySpaceDTO;
-import com.projteam.app.mapper.game.tasks.TaskMapper;
+import com.projteam.app.service.game.tasks.mappers.GenericTaskMapper;
 
 @SpringBootTest(webEnvironment = NONE)
 @ContextConfiguration(name = "Service-tests")
-class TaskCreationMapperTests
+class GenericTaskMapperTests
 {
 	@Autowired
-	private TaskMapper mapper;
+	private GenericTaskMapper mapper;
 	
 	@Test
 	void canMapWordFillToDTO()
@@ -424,6 +427,19 @@ class TaskCreationMapperTests
 		assertEquals(entity.getContent().getCorrectAnswers(), dto.getContent().getCorrectAnswers());
 		assertEquals(entity.getContent().getIncorrectAnswers(), dto.getContent().getIncorrectAnswers());
 	}
+	
+	@Test
+	public void shouldThrowWhenNoMapperCanAcceptDTO()
+	{
+		TaskDTO mockDTO = mock(TaskDTO.class);
+		assertThrows(IllegalArgumentException.class, () -> mapper.toEntity(mockDTO));
+	}
+	@Test
+	public void shouldThrowWhenNoMapperCanAcceptEntity()
+	{
+		Task mockEntity = mock(Task.class);
+		assertThrows(IllegalArgumentException.class, () -> mapper.toDTO(mockEntity));
+	}
 
 	//---Helpers---
 	
@@ -442,7 +458,7 @@ class TaskCreationMapperTests
 				new WordFillElement(UUID.randomUUID(),
 						wfText, wfEmptySpaces, false, wfPossibleAnswers), 100);
 	}
-	private WordFillDTO mockWordFillDTO()
+	public static WordFillDTO mockWordFillDTO()
 	{
 		List<String> wfText = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> wfAnswers = List.of("abc", "def", "ghi", "jkl");

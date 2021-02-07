@@ -1,19 +1,20 @@
-package com.projteam.app.mapper.game.tasks;
+package com.projteam.app.service.game.tasks.mappers;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.dto.game.tasks.create.TaskDTO;
+import com.projteam.app.service.game.tasks.mappers.create.TaskMapper;
 
 @Service
-public class TaskMapper
+public class GenericTaskMapper
 {
-	private List<com.projteam.app.mapper.game.tasks.create.TaskMapper> mappers;
+	private List<TaskMapper> mappers;
 	
 	@Autowired
-	public TaskMapper(
-			List<com.projteam.app.mapper.game.tasks.create.TaskMapper> mappers)
+	public GenericTaskMapper(
+			List<TaskMapper> mappers)
 	{
 		this.mappers = mappers;
 	}

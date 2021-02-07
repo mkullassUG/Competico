@@ -329,6 +329,17 @@ public class GameAPITests
 		}
 	}
 	
+	@ParameterizedTest
+	@ValueSource(ints = {-5, -1, 0, 1, 2, 5, 25, 100, 9999})
+	public void shouldGetRatingSuccessfully(int rating) throws Exception
+	{
+		when(gameService.getRating()).thenReturn(Optional.of(rating));
+		
+		mvc.perform(get("/api/v1/player/rating"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.rating", is(rating)));
+	}
+	
 	@Test
 	public void shouldGetGameResultsView() throws Exception
 	{

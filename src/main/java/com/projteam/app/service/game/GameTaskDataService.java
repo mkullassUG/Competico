@@ -42,16 +42,16 @@ import com.projteam.app.dto.game.tasks.create.SingleChoiceDTO;
 import com.projteam.app.dto.game.tasks.create.TaskDTO;
 import com.projteam.app.dto.game.tasks.create.WordConnectDTO;
 import com.projteam.app.dto.game.tasks.create.WordFillDTO;
-import com.projteam.app.mapper.game.tasks.TaskMapper;
 import com.projteam.app.service.AccountService;
 import com.projteam.app.service.game.tasks.TaskService;
+import com.projteam.app.service.game.tasks.mappers.GenericTaskMapper;
 
 @Service
 public class GameTaskDataService
 {
 	private List<TaskService> taskServices;
 	private AccountService accountService;
-	private TaskMapper taskMapper;
+	private GenericTaskMapper taskMapper;
 	
 	private Map<UUID, List<Task>> globalImportedTasks;
 	
@@ -65,7 +65,7 @@ public class GameTaskDataService
 	@Autowired
 	public GameTaskDataService(List<TaskService> taskServiceList,
 			AccountService accServ,
-			TaskMapper taskMapper)
+			GenericTaskMapper taskMapper)
 	{
 		taskServices = new ArrayList<>(taskServiceList);
 		accountService = accServ;
@@ -200,17 +200,6 @@ public class GameTaskDataService
 				Optional.ofNullable(globalImportedTasks.get(account.getId()))
 					.orElseGet(() -> new ArrayList<>()));
 	}
-	public JsonNode getImportedGlobalTasksAsJson()
-	{
-		return getImportedGlobalTasksAsJson(getAccount());
-	}
-	public JsonNode getImportedGlobalTasksAsJson(Account account)
-	{
-		return taskDTOsToJson(
-				taskListToDTO(
-					Optional.ofNullable(globalImportedTasks.get(account.getId()))
-						.orElseGet(() -> new ArrayList<>())));
-	}
 	
 	private List<TaskDTO> taskListToDTO(List<Task> tasks)
 	{
@@ -219,15 +208,9 @@ public class GameTaskDataService
 			.map(t -> taskMapper.toDTO(t))
 			.collect(Collectors.toList());
 	}
-	private JsonNode taskDTOsToJson(List<TaskDTO> tasks)
+	public String getTaskDtoName(TaskDTO dto)
 	{
-		return mapperByField.valueToTree(tasks
-				.stream()
-				.map(t -> Map.of(
-						"taskName", taskDtoClassNameToName.get(t.getClass().getName()),
-						"taskContent", t
-						))
-				.collect(Collectors.toList()));
+		return taskDtoClassNameToName.get(dto.getClass().getName());
 	}
 	private Task readTask(JsonNode task) throws IOException, ClassNotFoundException
 	{

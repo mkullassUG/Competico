@@ -1,4 +1,4 @@
-package com.projteam.app.mapper.game.tasks.create;
+package com.projteam.app.service.game.tasks.mappers.create;
 
 import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.dto.game.tasks.create.TaskDTO;
