@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -193,53 +194,120 @@ public class GameService
 				prDAO.save(pr);
 			grDAO.save(gr);
 			
-			Map<UUID, GameResultTotalDuringGameDTO> scores =
-					game.getCurrentResultsWithIDs();
-			List<PlayerData> playerDataList = new ArrayList<>(
-					scores.entrySet()
-						.stream()
-						.sorted((r1, r2) -> -Long.compare(
-								r1.getValue().getTotalScore(),
-								r2.getValue().getTotalScore()))
-						.map(sc -> pdServ.getPlayerData(accServ
-								.findByID(sc.getKey())
-								.orElse(null)))
-						.filter(Optional::isPresent)
-						.map(pd -> pd.orElse(null))
-						.collect(Collectors.toList()));
-			int l = playerDataList.size();
-			int lm = l - 1;
-			for (int i = 0; i < l; i++)
-			{
-				//TODO implement balancing based on total completion
-				PlayerData current = playerDataList.get(i);
-				if (i > 0)
-				{
-					PlayerData higher = playerDataList.get(i - 1);
-					int currRating = current.getRating();
-					int higherRating = higher.getRating();
-					
-					double expected = 1 / (1 + Math.pow(10, (higherRating - currRating) / 400.0));
-					current.setRating((int) Math.round(
-							currRating + (GAME_VALUE * (0 - expected))));
-				}
-				if (i < lm)
-				{
-					PlayerData lower = playerDataList.get(i + 1);
-					int currRating = current.getRating();
-					int lowerRating = lower.getRating();
-					
-					double expected = 1 / (1 + Math.pow(10, (lowerRating - currRating) / 400.0));
-					current.setRating((int) Math.round(
-							currRating + (GAME_VALUE * (1 - expected))));
-				}
-			}
-			playerDataList.forEach(pd -> pdServ.savePlayerData(pd));
+			updateRatings(gameCode, game);
 			
 			games.remove(gameCode);
 		}
 	}
-
+//	private void updateRatings(String gameCode, Game game)
+//	{
+//		Map<UUID, GameResultTotalDuringGameDTO> scores =
+//				game.getCurrentResultsWithIDs();
+//		List<PlayerData> playerDataList = new ArrayList<>(
+//				scores.entrySet()
+//					.stream()
+//					.sorted((r1, r2) -> -Long.compare(
+//							r1.getValue().getTotalScore(),
+//							r2.getValue().getTotalScore()))
+//					.map(sc -> pdServ.getPlayerData(accServ
+//							.findByID(sc.getKey())
+//							.orElse(null)))
+//					.filter(Optional::isPresent)
+//					.map(pd -> pd.orElse(null))
+//					.collect(Collectors.toList()));
+//		int l = playerDataList.size();
+//		int lm = l - 1;
+//		for (int i = 0; i < l; i++)
+//		{
+//			//TODO implement balancing based on total completion
+//			PlayerData current = playerDataList.get(i);
+//			if (i > 0)
+//			{
+//				PlayerData higher = playerDataList.get(i - 1);
+//				int currRating = current.getRating();
+//				int higherRating = higher.getRating();
+//				
+//				double expected = 1 / (1 + Math.pow(10, (higherRating - currRating) / 400.0));
+//				current.setRating((int) Math.round(
+//						currRating + (GAME_VALUE * (0 - expected))));
+//			}
+//			if (i < lm)
+//			{
+//				PlayerData lower = playerDataList.get(i + 1);
+//				int currRating = current.getRating();
+//				int lowerRating = lower.getRating();
+//				
+//				double expected = 1 / (1 + Math.pow(10, (lowerRating - currRating) / 400.0));
+//				current.setRating((int) Math.round(
+//						currRating + (GAME_VALUE * (1 - expected))));
+//			}
+//		}
+//		playerDataList.forEach(pd -> pdServ.savePlayerData(pd));
+//	}
+	private void updateRatings(String gameCode, Game game)
+	{
+		Map<UUID, GameResultTotalDuringGameDTO> scores =
+				game.getCurrentResultsWithIDs();
+		
+		Map<UUID, PlayerData> playerDataMap = new HashMap<>();
+		Map<UUID, Integer> newRatings = new HashMap<>();
+		
+		scores.forEach((playerID, playerScore) ->
+		{
+			PlayerData playerPD = pdServ.getPlayerData(accServ
+					.findByID(playerID)
+					.orElse(null))
+					.orElse(null);
+			if (playerPD == null)
+				return;
+			
+			int playerRating = playerPD.getRating();
+			
+			double scoreDeltaTotal = 0;
+			int eligibleOpponentsCount = 0;
+			for (Entry<UUID, GameResultTotalDuringGameDTO> e:
+				scores.entrySet())
+			{
+				UUID pID = e.getKey();
+				if (pID.equals(playerID))
+					continue;
+				
+				PlayerData pPD = pdServ.getPlayerData(accServ
+						.findByID(pID)
+						.orElse(null))
+						.orElse(null);
+				if (pPD == null)
+					continue;
+				
+				int pRating = playerPD.getRating();
+				
+				double real = (
+						Math.signum(
+							e.getValue().getTotalScore()
+							- playerScore.getTotalScore())
+						+ 1) / 2.0;
+				double expected = 1 / (1 + Math.pow(10,
+						(pRating - playerRating) / 400.0));
+				
+				scoreDeltaTotal += (real - expected);
+				eligibleOpponentsCount++;
+			}
+			
+			if (eligibleOpponentsCount == 0)
+				return;
+			
+			playerDataMap.put(playerID, playerPD);
+			newRatings.put(playerID, (int) Math.round(playerRating +
+					GAME_VALUE * (scoreDeltaTotal / eligibleOpponentsCount)));
+		});
+		
+		playerDataMap.forEach((playerID, playerPD) ->
+		{
+			playerPD.setRating(newRatings.getOrDefault(playerID, playerPD.getRating()));
+			pdServ.savePlayerData(playerPD);
+		});
+	}
+	
 	private Account getAccount()
 	{
 		return accServ.getAuthenticatedAccount()
