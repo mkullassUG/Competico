@@ -2,6 +2,7 @@ package com.projteam.app.service;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static com.projteam.app.domain.Account.SWAGGER_ADMIN;
+import static com.projteam.app.domain.Account.TASK_DATA_ADMIN;
 import static com.projteam.app.domain.Account.ACTUATOR_ADMIN;
 import static com.projteam.app.domain.Account.LECTURER_ROLE;
 import java.util.List;
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -52,9 +55,8 @@ public class AccountService implements UserDetailsService
 		this.passEnc = passEnc;
 		this.authManager = authManager;
 		this.secConConf = secConConf;
-		
-		initAdminAccount();
 	}
+	@EventListener(ContextRefreshedEvent.class)
 	@Transactional
 	public void initAdminAccount()
 	{
@@ -73,9 +75,10 @@ public class AccountService implements UserDetailsService
 		log.info("Generated Admin password: " + password);
 		
 		Account admin = accDao.findByUsername("Admin")
+				.map(acc -> Initializable.init(acc))
 				.map(acc ->
 				{
-					acc.setPassword(password);
+					acc.setPassword(passEnc.encode(password));
 					return acc;
 				})
 				.orElseGet(() -> new Account.Builder()
@@ -84,7 +87,7 @@ public class AccountService implements UserDetailsService
 						.withUsername("Admin")
 						.withNickname("Admin")
 						.withPassword(passEnc.encode(password))
-						.withRoles(List.of(ACTUATOR_ADMIN, SWAGGER_ADMIN, LECTURER_ROLE))
+						.withRoles(List.of(ACTUATOR_ADMIN, SWAGGER_ADMIN, TASK_DATA_ADMIN, LECTURER_ROLE))
 						.enabled(true)
 						.nonExpired(true)
 						.nonLocked(true)
@@ -101,6 +104,7 @@ public class AccountService implements UserDetailsService
 				|| (c == '-') || (c == '_');
 	}
 
+	@Transactional
 	public void register(HttpServletRequest req, RegistrationDTO regDto, boolean autoAuthenticate)
 	{
 		if (containsNull(regDto))
@@ -120,6 +124,7 @@ public class AccountService implements UserDetailsService
 		if (autoAuthenticate)
 			authenticate(req, regDto.getEmail(), regDto.getPassword());
 	}
+	@Transactional
 	public boolean login(HttpServletRequest req, LoginDTO loginDto)
 	{
 		Account acc = selectByEmailOrUsername(loginDto.getEmail()).orElse(null);
@@ -155,29 +160,34 @@ public class AccountService implements UserDetailsService
 			return null;
 		return auth;
 	}
+	@Transactional
 	public boolean isAuthenticated()
 	{
 		return getAuthentication() != null;
 	}
+	@Transactional
 	public Optional<Account> getAuthenticatedAccount()
 	{
-		return Optional.ofNullable(getAuthentication())
-				.map(auth -> (Account) auth.getPrincipal());
+		return init(Optional.ofNullable(getAuthentication())
+				.map(auth -> (Account) auth.getPrincipal()));
 	}
 	private Optional<Account> selectByEmailOrUsername(String emailOrUsername)
 	{
 		return init(accDao.findByEmailOrUsername(emailOrUsername, emailOrUsername));
 	}
+	@Transactional
 	public Optional<Account> findByID(UUID id)
 	{
 		return init(accDao.findById(id));
 	}
+	@Transactional
 	public Optional<Account> findByUsername(String username)
 	{
 		return init(accDao.findByUsername(username));
 	}
 	
 	@Override
+	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
 	{
 		return selectByEmailOrUsername(username)

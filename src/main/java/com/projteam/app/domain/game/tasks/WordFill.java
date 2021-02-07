@@ -5,14 +5,15 @@ import java.util.List;
 import java.util.UUID;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import com.projteam.app.domain.game.tasks.WordFillElement.EmptySpace;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
-import com.projteam.app.dto.game.tasks.TaskInfoDTO;
-import com.projteam.app.dto.game.tasks.WordFillElementDTO;
+import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.show.WordFillElementDTO;
 import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class WordFill implements Task
 {
 	private @Id UUID id;
 	private String instruction;
+	private @ElementCollection List<String> tags;
 	private @ManyToOne WordFillElement content;
 	
 	private double difficulty;

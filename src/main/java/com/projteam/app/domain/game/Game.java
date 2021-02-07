@@ -155,7 +155,18 @@ public class Game
 
 	public List<GameResultTotalDuringGameDTO> getCurrentResults()
 	{
-		List<GameResultTotalDuringGameDTO> ret = new ArrayList<>();
+		return new ArrayList<>(getCurrentResultsWithIDs()
+				.entrySet()
+				.stream()
+				.map(e -> e.getValue())
+				.sorted((r1, r2) -> -Long.compare(
+						r1.getTotalScore(),
+						r2.getTotalScore()))
+				.collect(Collectors.toList()));
+	}
+	public Map<UUID, GameResultTotalDuringGameDTO> getCurrentResultsWithIDs()
+	{
+		Map<UUID, GameResultTotalDuringGameDTO> ret = new HashMap<>();
 		for (Account player: originalPlayers)
 		{
 			UUID playerId = player.getId();
@@ -176,17 +187,16 @@ public class Game
 			boolean hasFinished = currentTask >= taskCount;
 			boolean isActive = activePlayers.contains(player);
 			
-			ret.add(new GameResultTotalDuringGameDTO(
-					player.getUsername(),
-					player.getNickname(), 
-					(long) score,
-					totalTime,
-					hasFinished,
-					!isActive));
+			ret.put(playerId,
+					new GameResultTotalDuringGameDTO(
+						player.getUsername(),
+						player.getNickname(), 
+						(long) score,
+						totalTime,
+						hasFinished,
+						!isActive));
 		}
-		return ret.stream()
-				.sorted((r1, r2) -> -Long.compare(r1.getTotalScore(), r2.getTotalScore()))
-				.collect(Collectors.toList());
+		return ret;
 	}
 	public List<GameResultPersonalDTO> getPersonalResults(Account player)
 	{

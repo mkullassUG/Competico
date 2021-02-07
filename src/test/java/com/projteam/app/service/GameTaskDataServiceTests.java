@@ -1,50 +1,129 @@
 package com.projteam.app.service;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.projteam.app.dao.game.tasks.ChoiceWordFillDAO;
-import com.projteam.app.dao.game.tasks.ChoiceWordFillElementDAO;
-import com.projteam.app.dao.game.tasks.ChoiceWordFillElementWordChoice;
-import com.projteam.app.dao.game.tasks.ChronologicalOrderDAO;
-import com.projteam.app.dao.game.tasks.ListChoiceWordFillDAO;
-import com.projteam.app.dao.game.tasks.ListSentenceFormingDAO;
-import com.projteam.app.dao.game.tasks.ListWordFillDAO;
-import com.projteam.app.dao.game.tasks.MultipleChoiceDAO;
-import com.projteam.app.dao.game.tasks.MultipleChoiceElementDAO;
-import com.projteam.app.dao.game.tasks.SentenceFormingElementDAO;
-import com.projteam.app.dao.game.tasks.SingleChoiceDAO;
-import com.projteam.app.dao.game.tasks.WordConnectDAO;
-import com.projteam.app.dao.game.tasks.WordFillDAO;
-import com.projteam.app.dao.game.tasks.WordFillElementDAO;
+import org.mockito.Spy;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.projteam.app.domain.Account;
+import com.projteam.app.domain.game.tasks.ChoiceWordFill;
+import com.projteam.app.domain.game.tasks.ChoiceWordFillElement;
+import com.projteam.app.domain.game.tasks.ChronologicalOrder;
+import com.projteam.app.domain.game.tasks.ListChoiceWordFill;
+import com.projteam.app.domain.game.tasks.ListSentenceForming;
+import com.projteam.app.domain.game.tasks.ListWordFill;
+import com.projteam.app.domain.game.tasks.MultipleChoice;
+import com.projteam.app.domain.game.tasks.MultipleChoiceElement;
+import com.projteam.app.domain.game.tasks.SentenceFormingElement;
+import com.projteam.app.domain.game.tasks.SingleChoice;
+import com.projteam.app.domain.game.tasks.WordConnect;
+import com.projteam.app.domain.game.tasks.WordFill;
+import com.projteam.app.domain.game.tasks.WordFillElement;
+import com.projteam.app.domain.game.tasks.ChoiceWordFillElement.WordChoice;
+import com.projteam.app.domain.game.tasks.WordFillElement.EmptySpace;
+import com.projteam.app.dto.game.tasks.create.ChoiceWordFillDTO;
+import com.projteam.app.dto.game.tasks.create.ChoiceWordFillElementDTO;
+import com.projteam.app.dto.game.tasks.create.ChoiceWordFillElementDTO.WordChoiceDTO;
+import com.projteam.app.dto.game.tasks.create.ChronologicalOrderDTO;
+import com.projteam.app.dto.game.tasks.create.ListChoiceWordFillDTO;
+import com.projteam.app.dto.game.tasks.create.ListSentenceFormingDTO;
+import com.projteam.app.dto.game.tasks.create.ListWordFillDTO;
+import com.projteam.app.dto.game.tasks.create.MultipleChoiceDTO;
+import com.projteam.app.dto.game.tasks.create.MultipleChoiceElementDTO;
+import com.projteam.app.dto.game.tasks.create.SentenceFormingElementDTO;
+import com.projteam.app.dto.game.tasks.create.SingleChoiceDTO;
+import com.projteam.app.dto.game.tasks.create.TaskDTO;
+import com.projteam.app.dto.game.tasks.create.WordConnectDTO;
+import com.projteam.app.dto.game.tasks.create.WordFillDTO;
+import com.projteam.app.dto.game.tasks.create.WordFillElementDTO;
+import com.projteam.app.dto.game.tasks.create.WordFillElementDTO.EmptySpaceDTO;
+import com.projteam.app.service.game.GameTaskDataService;
+import com.projteam.app.service.game.tasks.ChoiceWordFillService;
+import com.projteam.app.service.game.tasks.ChronologicalOrderService;
+import com.projteam.app.service.game.tasks.ListChoiceWordFillService;
+import com.projteam.app.service.game.tasks.ListSentenceFormingService;
+import com.projteam.app.service.game.tasks.ListWordFillService;
+import com.projteam.app.service.game.tasks.MultipleChoiceService;
+import com.projteam.app.service.game.tasks.SingleChoiceService;
+import com.projteam.app.service.game.tasks.WordConnectService;
+import com.projteam.app.service.game.tasks.WordFillService;
+import com.projteam.app.service.game.tasks.mappers.GenericTaskMapper;
+import com.projteam.app.service.game.tasks.mappers.create.ChoiceWordFillMapper;
+import com.projteam.app.service.game.tasks.mappers.create.ChronologicalOrderMapper;
+import com.projteam.app.service.game.tasks.mappers.create.ListChoiceWordFillMapper;
+import com.projteam.app.service.game.tasks.mappers.create.ListSentenceFormingMapper;
+import com.projteam.app.service.game.tasks.mappers.create.ListWordFillMapper;
+import com.projteam.app.service.game.tasks.mappers.create.MultipleChoiceMapper;
+import com.projteam.app.service.game.tasks.mappers.create.SingleChoiceMapper;
+import com.projteam.app.service.game.tasks.mappers.create.WordConnectMapper;
+import com.projteam.app.service.game.tasks.mappers.create.WordFillMapper;
 
 class GameTaskDataServiceTests
 {
-	private @Mock ChoiceWordFillDAO cwfDao;
-	private @Mock ChoiceWordFillElementDAO cwfeDao;
-	private @Mock ChoiceWordFillElementWordChoice cwfewcDao;
-	private @Mock ChronologicalOrderDAO coDao;
-	private @Mock ListChoiceWordFillDAO lcwfDao;
-	private @Mock ListSentenceFormingDAO lsfDao;
-	private @Mock ListWordFillDAO lwfDao;
-	private @Mock MultipleChoiceDAO mcDao;
-	private @Mock MultipleChoiceElementDAO mceDao;
-	private @Mock SentenceFormingElementDAO sfeDao;
-	private @Mock SingleChoiceDAO scDao;
-	private @Mock WordConnectDAO wcDao;
-	private @Mock WordFillDAO wfDao;
-	private @Mock WordFillElementDAO wfeDao;
+	private @Mock ChoiceWordFillService cwfServ;
+	private @Mock ChronologicalOrderService coServ;
+	private @Mock ListChoiceWordFillService lcwfServ;
+	private @Mock ListSentenceFormingService lsfServ;
+	private @Mock ListWordFillService lwfServ;
+	private @Mock MultipleChoiceService mcServ;
+	private @Mock SingleChoiceService scServ;
+	private @Mock WordConnectService wcServ;
+	private @Mock WordFillService wfServ;
 	
-	private @InjectMocks GameTaskDataService gtdServ;
+	private @Mock AccountService aServ;
+	
+	private @Spy ChoiceWordFillMapper cwfMapper;
+	private @Spy ChronologicalOrderMapper coMapper;
+	private @Spy ListChoiceWordFillMapper lcwfMapper;
+	private @Spy ListSentenceFormingMapper lsfMapper;
+	private @Spy ListWordFillMapper lwfMapper;
+	private @Spy MultipleChoiceMapper mcMapper;
+	private @Spy SingleChoiceMapper scMapper;
+	private @Spy WordConnectMapper wcMapper;
+	private @Spy WordFillMapper wfMapper;
+	
+	private GenericTaskMapper taskMapper;
+	
+	private GameTaskDataService gtdServ;
+	
+	private static final ObjectMapper mapper = new ObjectMapper();
 	
 	@BeforeEach
 	public void setup()
 	{
 		MockitoAnnotations.initMocks(this);
+		
+		taskMapper = new GenericTaskMapper(List.of(
+				cwfMapper, coMapper, lcwfMapper,
+				lsfMapper, lwfMapper, mcMapper,
+				scMapper, wcMapper, wfMapper));
+		
+		gtdServ = new GameTaskDataService(List.of(
+					cwfServ, coServ, lcwfServ,
+					lsfServ, lwfServ, mcServ,
+					scServ, wcServ, wfServ),
+				aServ, taskMapper);
 	}
 	
 	@ParameterizedTest
@@ -52,5 +131,497 @@ class GameTaskDataServiceTests
 	public void canCreateDefaultTask(int targetDifficulty)
 	{
 		assertNotNull(gtdServ.defaultTask(targetDifficulty));
+	}
+	@Test
+	public void canGetAllTasksAsJson()
+	{
+		when(cwfServ.genericFindAll())
+			.thenReturn(List.of(mockChoiceWordFill()));
+		when(coServ.genericFindAll())
+			.thenReturn(List.of(mockChronologicalOrder()));
+		when(lcwfServ.genericFindAll())
+			.thenReturn(List.of(mockListChoiceWordFill()));
+		when(lsfServ.genericFindAll())
+			.thenReturn(List.of(mockListSentenceForming()));
+		when(lwfServ.genericFindAll())
+			.thenReturn(List.of(mockListWordFill()));
+		when(mcServ.genericFindAll())
+			.thenReturn(List.of(mockMultipleChoice()));
+		when(scServ.genericFindAll())
+			.thenReturn(List.of(mockSingleChoice()));
+		when(wcServ.genericFindAll())
+			.thenReturn(List.of(mockWordConnect()));
+		when(wfServ.genericFindAll())
+			.thenReturn(List.of(mockWordFill()));
+		
+		int mockedTaskCount = 9;
+		
+		List<TaskDTO> res = gtdServ.getAllTasks();
+		assertNotNull(res);
+		assertThat(res.size(), greaterThanOrEqualTo(mockedTaskCount));
+		assertThat(res, not(hasItem(nullValue())));
+	}
+	@Test
+	public void shouldThrowWhenNoServiceCanAcceptTask()
+	{
+		WordFill task = mockWordFill();
+		
+		when(cwfServ.canAccept(task)).thenReturn(false);
+		when(coServ.canAccept(task)).thenReturn(false);
+		when(lcwfServ.canAccept(task)).thenReturn(false);
+		when(lsfServ.canAccept(task)).thenReturn(false);
+		when(lwfServ.canAccept(task)).thenReturn(false);
+		when(mcServ.canAccept(task)).thenReturn(false);
+		when(scServ.canAccept(task)).thenReturn(false);
+		when(wcServ.canAccept(task)).thenReturn(false);
+		when(wfServ.canAccept(task)).thenReturn(false);
+		
+		assertThrows(IllegalStateException.class, () ->
+				gtdServ.saveTask(task));
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldImportGlobalTask(JsonNode taskDtoWithName)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		
+		int taskCount = gtdServ.getImportedGlobalTaskCount(admin);
+		
+		gtdServ.importGlobalTask(taskDtoWithName, admin);
+		
+		assertEquals(gtdServ.getImportedGlobalTaskCount(admin), taskCount + 1);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldImportGlobalTaskWithAuthenticatedAdmin(JsonNode taskDtoWithName)
+			throws ClassNotFoundException, IOException
+	{
+		when(aServ.getAuthenticatedAccount())
+			.thenReturn(Optional.of(mockTaskDataAdmin()));
+		
+		int taskCount = gtdServ.getImportedGlobalTaskCount();
+		
+		gtdServ.importGlobalTask(taskDtoWithName);
+		
+		assertEquals(gtdServ.getImportedGlobalTaskCount(), taskCount + 1);
+	}
+	@Test
+	public void shouldGetImportedGlobalTasks()
+	{
+		assertNotNull(gtdServ.getImportedGlobalTasks(mockTaskDataAdmin()));
+	}
+	@Test
+	public void shouldGetImportedGlobalTasksWithAuthenticatedAdmin()
+	{
+		when(aServ.getAuthenticatedAccount())
+			.thenReturn(Optional.of(mockTaskDataAdmin()));
+		
+		assertNotNull(gtdServ.getImportedGlobalTasks());
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOs")
+	public void shouldImportGlobalTaskWithAuthenticatedAdmin(TaskDTO dto)
+	{
+		assertNotNull(gtdServ.getTaskDtoName(dto));
+	}
+	
+	//---Sources---
+	
+	public static List<Arguments> mockTaskDTOs()
+	{
+		return List.of(
+				Arguments.of(mockWordFillDTO()),
+				Arguments.of(mockChoiceWordFillDTO()),
+				Arguments.of(mockListWordFillDTO()),
+				Arguments.of(mockListChoiceWordFillDTO()),
+				Arguments.of(mockChronologicalOrderDTO()),
+				Arguments.of(mockListSentenceFormingDTO()),
+				Arguments.of(mockSingleChoiceDTO()),
+				Arguments.of(mockMultipleChoiceDTO()),
+				Arguments.of(mockWordConnectDTO()));
+	}
+	public static List<Arguments> mockTaskDTOsWithNames()
+	{
+		var ret = List.of(
+						Map.of(
+								"taskName", "WordFill",
+								"taskContent", mockWordFillDTO()),
+						Map.of(
+								"taskName", "ChoiceWordFill",
+								"taskContent", mockChoiceWordFillDTO()),
+						Map.of(
+								"taskName", "ListWordFill",
+								"taskContent", mockListWordFillDTO()),
+						Map.of(
+								"taskName", "ListChoiceWordFill",
+								"taskContent", mockListChoiceWordFillDTO()),
+						Map.of(
+								"taskName", "ChronologicalOrder",
+								"taskContent", mockChronologicalOrderDTO()),
+						Map.of(
+								"taskName", "ListSentenceForming",
+								"taskContent", mockListSentenceFormingDTO()),
+						Map.of(
+								"taskName", "SingleChoice",
+								"taskContent", mockSingleChoiceDTO()),
+						Map.of(
+								"taskName", "MultipleChoice",
+								"taskContent", mockMultipleChoiceDTO()),
+						Map.of(
+								"taskName", "WordConnect",
+								"taskContent", mockWordConnectDTO()));
+		
+		return ret.stream()
+				.map(m -> mapper.valueToTree(m))
+				.map(jn -> Arguments.of(jn))
+				.collect(Collectors.toList());
+	}
+	
+	private static Account mockTaskDataAdmin()
+	{
+		return new Account.Builder()
+				.withID(UUID.randomUUID())
+				.withEmail("testAdmin@test.pl")
+				.withUsername("TestAdmin")
+				.withPassword("QWERTY")
+				.withRoles(List.of(Account.TASK_DATA_ADMIN))
+				.build();
+	}
+	
+	//---Helpers---
+	
+	public static WordFill mockWordFill()
+	{
+		List<String> wfText = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
+		List<String> wfAnswers = List.of("abc", "def", "ghi", "jkl");
+		List<EmptySpace> wfEmptySpaces = wfAnswers
+				.stream()
+				.map(ans -> new EmptySpace(ans))
+				.collect(Collectors.toList());
+		List<String> wfPossibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
+		
+		return new WordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
+				new WordFillElement(UUID.randomUUID(),
+						wfText, wfEmptySpaces, false, wfPossibleAnswers), 100);
+	}
+	public static ChoiceWordFill mockChoiceWordFill()
+	{
+		List<String> cwfText = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
+		List<String> cwfAnswers = List.of("abc", "def", "ghi", "jkl");
+		List<WordChoice> wordChoices = cwfAnswers
+				.stream()
+				.map(ans -> new WordChoice(UUID.randomUUID(), ans, List.of("qwr")))
+				.collect(Collectors.toList());
+		
+		return new ChoiceWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
+				new ChoiceWordFillElement(UUID.randomUUID(),
+						cwfText, wordChoices, false), 100);
+	}
+	public static ListWordFill mockListWordFill()
+	{
+		List<List<String>> lwfText = List.of(
+				List.of("Lorem ", " ipsum ", " dolor"),
+				List.of("sit ", " amet"),
+				List.of("consectetur adipiscing  ", " elit"),
+				List.of("sed ", " do"));
+		List<List<String>> lwfAnswers = List.of(
+				List.of("abc", "def"),
+				List.of("ghi"),
+				List.of("jkl"),
+				List.of("mno"));
+		List<List<String>> lwfPossibleAnswers = List.of(
+				List.of("abc", "def", "ghi", "jkl"),
+				List.of("ghi", "def", "ghi"),
+				List.of("jkl", "ghi", "jkl"),
+				List.of("mno", "ghi", "def"));
+		
+		List<WordFillElement> lwfWordFillElemList = new ArrayList<>();
+		Iterator<List<String>> lwfTextIter = lwfText.iterator();
+		Iterator<List<String>> lwfPossAnsIter = lwfPossibleAnswers.iterator();
+		for (List<String> answerList: lwfAnswers)
+		{
+			List<String> textList = lwfTextIter.next();
+			List<String> possibleAnswersList = lwfPossAnsIter.next();
+			lwfWordFillElemList.add(new WordFillElement(UUID.randomUUID(),
+					textList,
+					answerList.stream()
+						.map(ans -> new EmptySpace(ans))
+						.collect(Collectors.toList()),
+					true,
+					possibleAnswersList));
+		}
+		
+		return new ListWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
+				lwfWordFillElemList, 100);
+	}
+	public static ListChoiceWordFill mockListChoiceWordFill()
+	{
+		List<List<String>> lcwfText = List.of(
+				List.of("Lorem ", " ipsum ", " dolor"),
+				List.of("sit ", " amet"),
+				List.of("consectetur adipiscing  ", " elit"),
+				List.of("sed ", " do"));
+		List<List<String>> lcwfAnswers = List.of(
+				List.of("abc", "def"),
+				List.of("ghi"),
+				List.of("jkl"),
+				List.of("mno"));
+		
+		List<ChoiceWordFillElement> lcwfWordFillElemList = new ArrayList<>();
+		Iterator<List<String>> lcwfTextIter = lcwfText.iterator();
+		for (List<String> answerList: lcwfAnswers)
+		{
+			List<String> textList = lcwfTextIter.next();
+			lcwfWordFillElemList.add(new ChoiceWordFillElement(UUID.randomUUID(),
+					textList,
+					answerList.stream()
+						.map(ans -> new WordChoice(UUID.randomUUID(), ans, List.of("qwe", "poi")))
+						.collect(Collectors.toList()),
+					true));
+		}
+		
+		return new ListChoiceWordFill(UUID.randomUUID(),
+				"Test instruction", List.of(),
+				lcwfWordFillElemList, 100);
+	}
+	public static ChronologicalOrder mockChronologicalOrder()
+	{
+		List<String> coText = List.of("Lorem ipsum dolor sit amet",
+				"consectetur adipiscing elit",
+				"sed do eiusmod tempor incididunt",
+				"ut labore et dolore magna aliqua",
+				"Ut enim ad minim veniam",
+				"quis nostrud exercitation",
+				"ullamco laboris nisi ut",
+				"aliquip ex ea commodo consequat");
+		
+		return new ChronologicalOrder(UUID.randomUUID(),
+				"Test instruction", List.of(),
+				coText, 100);
+	}
+	public static ListSentenceForming mockListSentenceForming()
+	{
+		List<List<String>> text = List.of(
+				List.of("Lorem ", " ipsum ", " dolor"),
+				List.of("sit ", " amet"),
+				List.of("consectetur adipiscing  ", " elit"),
+				List.of("sed ", " do"));
+		
+		List<SentenceFormingElement> lsfWordFillElemList = text.stream()
+				.map(textList -> new SentenceFormingElement(UUID.randomUUID(), textList))
+				.collect(Collectors.toList());
+		
+		return new ListSentenceForming(UUID.randomUUID(),
+				"Test instruction", List.of(),
+				lsfWordFillElemList, 100);
+	}
+	public static SingleChoice mockSingleChoice()
+	{
+		String scContent = "Lorem ipsum dolor sit amet";
+		String scAnswer = "consectetur";
+		List<String> scIncorrectAnswers = List.of(
+				"adipiscing", "elit", "sed");
+		
+		return new SingleChoice(UUID.randomUUID(), 
+				"Test instruction", List.of(),
+				scContent, scAnswer, scIncorrectAnswers, 100);
+	}
+	public static MultipleChoice mockMultipleChoice()
+	{
+		String mcContent = "Lorem ipsum dolor sit amet";
+		List<String> mcCorrectAnswers = List.of(
+				"eiusmod", "tempor", "incididunt ut");
+		List<String> mcIncorrectAnswers = List.of(
+				"adipiscing", "elit", "sed", "labore", "et dolore");
+		
+		return new MultipleChoice(UUID.randomUUID(),
+				"Test instruction", List.of(),
+				new MultipleChoiceElement(UUID.randomUUID(),
+						mcContent, mcCorrectAnswers, mcIncorrectAnswers), 100);
+	}
+	public static WordConnect mockWordConnect()
+	{
+		List<String> wcLeftWords = List.of("Lorem", "ipsum", "dolor", "sit", "amet");
+		List<String> wcRightWords = List.of("consectetur", "adipiscing", "elit", "sed do", "eiusmod");
+		Map<Integer, Integer> wcCorrectMapping = Map.of(
+				0, 3,
+				1, 0,
+				2, 4,
+				3, 2,
+				4, 1);
+		
+		return new WordConnect(UUID.randomUUID(),
+				"Test instruction", List.of(),
+				wcLeftWords, wcRightWords, wcCorrectMapping, 100);
+	}
+	
+	public static WordFillDTO mockWordFillDTO()
+	{
+		List<String> wfText = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
+		List<String> wfAnswers = List.of("abc", "def", "ghi", "jkl");
+		List<EmptySpaceDTO> wfEmptySpaces = wfAnswers
+				.stream()
+				.map(ans -> new EmptySpaceDTO(ans))
+				.collect(Collectors.toList());
+		List<String> wfPossibleAnswers = List.of("abc", "def", "ghi", "jkl", "mno", "pqr");
+		
+		return new WordFillDTO("Test instruction", List.of(), 100,
+				new WordFillElementDTO(wfText, wfEmptySpaces, false, wfPossibleAnswers));
+	}
+	public static ChoiceWordFillDTO mockChoiceWordFillDTO()
+	{
+		List<String> cwfText = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
+		List<String> cwfAnswers = List.of("abc", "def", "ghi", "jkl");
+		List<WordChoiceDTO> wordChoices = cwfAnswers
+				.stream()
+				.map(ans -> new WordChoiceDTO(ans, List.of("qwr")))
+				.collect(Collectors.toList());
+		
+		return new ChoiceWordFillDTO(
+				"Test instruction", List.of(), 100,
+				new ChoiceWordFillElementDTO(
+						cwfText, wordChoices, false));
+	}
+	public static ListWordFillDTO mockListWordFillDTO()
+	{
+		List<List<String>> lwfText = List.of(
+				List.of("Lorem ", " ipsum ", " dolor"),
+				List.of("sit ", " amet"),
+				List.of("consectetur adipiscing  ", " elit"),
+				List.of("sed ", " do"));
+		List<List<String>> lwfAnswers = List.of(
+				List.of("abc", "def"),
+				List.of("ghi"),
+				List.of("jkl"),
+				List.of("mno"));
+		List<List<String>> lwfPossibleAnswers = List.of(
+				List.of("abc", "def", "ghi", "jkl"),
+				List.of("ghi", "def", "ghi"),
+				List.of("jkl", "ghi", "jkl"),
+				List.of("mno", "ghi", "def"));
+		
+		List<WordFillElementDTO> lwfWordFillElemList = new ArrayList<>();
+		Iterator<List<String>> lwfTextIter = lwfText.iterator();
+		Iterator<List<String>> lwfPossAnsIter = lwfPossibleAnswers.iterator();
+		for (List<String> answerList: lwfAnswers)
+		{
+			List<String> textList = lwfTextIter.next();
+			List<String> possibleAnswersList = lwfPossAnsIter.next();
+			lwfWordFillElemList.add(new WordFillElementDTO(
+					textList,
+					answerList.stream()
+						.map(ans -> new EmptySpaceDTO(ans))
+						.collect(Collectors.toList()),
+					true,
+					possibleAnswersList));
+		}
+		
+		return new ListWordFillDTO(
+				"Test instruction", List.of(), 100,
+				lwfWordFillElemList);
+	}
+	public static ListChoiceWordFillDTO mockListChoiceWordFillDTO()
+	{
+		List<List<String>> lcwfText = List.of(
+				List.of("Lorem ", " ipsum ", " dolor"),
+				List.of("sit ", " amet"),
+				List.of("consectetur adipiscing  ", " elit"),
+				List.of("sed ", " do"));
+		List<List<String>> lcwfAnswers = List.of(
+				List.of("abc", "def"),
+				List.of("ghi"),
+				List.of("jkl"),
+				List.of("mno"));
+		
+		List<ChoiceWordFillElementDTO> lcwfWordFillElemList = new ArrayList<>();
+		Iterator<List<String>> lcwfTextIter = lcwfText.iterator();
+		for (List<String> answerList: lcwfAnswers)
+		{
+			List<String> textList = lcwfTextIter.next();
+			lcwfWordFillElemList.add(new ChoiceWordFillElementDTO(
+					textList,
+					answerList.stream()
+						.map(ans -> new WordChoiceDTO(ans, List.of("qwe", "poi")))
+						.collect(Collectors.toList()),
+					true));
+		}
+		
+		return new ListChoiceWordFillDTO(
+				"Test instruction", List.of(), 100,
+				lcwfWordFillElemList);
+	}
+	public static ChronologicalOrderDTO mockChronologicalOrderDTO()
+	{
+		List<String> coText = List.of("Lorem ipsum dolor sit amet",
+				"consectetur adipiscing elit",
+				"sed do eiusmod tempor incididunt",
+				"ut labore et dolore magna aliqua",
+				"Ut enim ad minim veniam",
+				"quis nostrud exercitation",
+				"ullamco laboris nisi ut",
+				"aliquip ex ea commodo consequat");
+		
+		return new ChronologicalOrderDTO(
+				"Test instruction", List.of(), 100,
+				coText);
+	}
+	public static ListSentenceFormingDTO mockListSentenceFormingDTO()
+	{
+		List<List<String>> text = List.of(
+				List.of("Lorem ", " ipsum ", " dolor"),
+				List.of("sit ", " amet"),
+				List.of("consectetur adipiscing  ", " elit"),
+				List.of("sed ", " do"));
+		
+		List<SentenceFormingElementDTO> lsfWordFillElemList = text.stream()
+				.map(textList -> new SentenceFormingElementDTO(textList))
+				.collect(Collectors.toList());
+		
+		return new ListSentenceFormingDTO(
+				"Test instruction", List.of(), 100,
+				lsfWordFillElemList);
+	}
+	public static SingleChoiceDTO mockSingleChoiceDTO()
+	{
+		String scContent = "Lorem ipsum dolor sit amet";
+		String scAnswer = "consectetur";
+		List<String> scIncorrectAnswers = List.of(
+				"adipiscing", "elit", "sed");
+		
+		return new SingleChoiceDTO(
+				"Test instruction", List.of(), 100,
+				scContent, scAnswer, scIncorrectAnswers);
+	}
+	public static MultipleChoiceDTO mockMultipleChoiceDTO()
+	{
+		String mcContent = "Lorem ipsum dolor sit amet";
+		List<String> mcCorrectAnswers = List.of(
+				"eiusmod", "tempor", "incididunt ut");
+		List<String> mcIncorrectAnswers = List.of(
+				"adipiscing", "elit", "sed", "labore", "et dolore");
+		
+		return new MultipleChoiceDTO(
+				"Test instruction", List.of(), 100,
+				new MultipleChoiceElementDTO(
+						mcContent, mcCorrectAnswers, mcIncorrectAnswers));
+	}
+	public static WordConnectDTO mockWordConnectDTO()
+	{
+		List<String> wcLeftWords = List.of("Lorem", "ipsum", "dolor", "sit", "amet");
+		List<String> wcRightWords = List.of("consectetur", "adipiscing", "elit", "sed do", "eiusmod");
+		Map<Integer, Integer> wcCorrectMapping = Map.of(
+				0, 3,
+				1, 0,
+				2, 4,
+				3, 2,
+				4, 1);
+		
+		return new WordConnectDTO(
+				"Test instruction", List.of(), 100,
+				wcLeftWords, wcRightWords, wcCorrectMapping);
 	}
 }

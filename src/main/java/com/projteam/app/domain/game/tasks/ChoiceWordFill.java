@@ -5,14 +5,15 @@ import java.util.List;
 import java.util.UUID;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import com.projteam.app.domain.game.tasks.ChoiceWordFillElement.WordChoice;
 import com.projteam.app.domain.game.tasks.answers.ChoiceWordFillAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
-import com.projteam.app.dto.game.tasks.ChoiceWordFillElementDTO;
-import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.show.ChoiceWordFillElementDTO;
+import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
 import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class ChoiceWordFill implements Task
 {
 	private @Id UUID id;
 	private String instruction;
+	private @ElementCollection List<String> tags;
 	private @ManyToOne ChoiceWordFillElement content;
 	
 	private double difficulty;

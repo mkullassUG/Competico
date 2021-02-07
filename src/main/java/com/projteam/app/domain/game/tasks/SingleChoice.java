@@ -9,8 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import com.projteam.app.domain.game.tasks.answers.SingleChoiceAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
-import com.projteam.app.dto.game.tasks.SingleChoiceDTO;
-import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.show.SingleChoiceDTO;
+import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
 import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,12 +25,13 @@ public class SingleChoice implements Task
 {
 	private @Id UUID id;
 	private String instruction;
+	private @ElementCollection List<String> tags;
 	private String content;
 	private String answer;
 	private @ElementCollection List<String> incorrectAnswers;
 	
 	private double difficulty;
-
+	
 	@Override
 	public double acceptAnswer(TaskAnswer answer)
 	{

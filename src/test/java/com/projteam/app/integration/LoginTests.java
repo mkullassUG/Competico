@@ -1,6 +1,6 @@
 package com.projteam.app.integration;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,7 +36,7 @@ import com.projteam.app.domain.Account;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.service.AccountService;
-import com.projteam.app.utils.Holder;
+import com.projteam.app.testutils.Holder;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest

@@ -6,14 +6,15 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderColumn;
 import com.projteam.app.domain.game.tasks.answers.ListChoiceWordFillAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
-import com.projteam.app.dto.game.tasks.ListChoiceWordFillDTO;
-import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.show.ListChoiceWordFillDTO;
+import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
 import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class ListChoiceWordFill implements Task
 {
 	private @Id UUID id;
 	private String instruction;
+	private @ElementCollection List<String> tags;
 	private @ManyToMany @OrderColumn List<ChoiceWordFillElement> rows;
 	
 	private double difficulty;
