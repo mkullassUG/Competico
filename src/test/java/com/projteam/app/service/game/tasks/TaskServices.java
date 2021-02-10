@@ -91,7 +91,7 @@ public class TaskServices
 	
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void wordFillSaveAcceptsOnlyCorrectTasks(Task task)
+	public void wordFillSaveAcceptsOnlyCorrectTasks(Task task)
 	{
 		if (task instanceof WordFill)
 			assertDoesNotThrow(() -> wfService.genericSave(task));
@@ -101,7 +101,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void choiceWordFillSaveAcceptsOnlyCorrectTasks(Task task)
+	public void choiceWordFillSaveAcceptsOnlyCorrectTasks(Task task)
 	{
 		if (task instanceof ChoiceWordFill)
 			assertDoesNotThrow(() -> cwfService.genericSave(task));
@@ -111,7 +111,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void listWordFillSaveAcceptsOnlyCorrectTasks(Task task)
+	public void listWordFillSaveAcceptsOnlyCorrectTasks(Task task)
 	{
 		if (task instanceof ListWordFill)
 			assertDoesNotThrow(() -> lwfService.genericSave(task));
@@ -121,7 +121,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void listChoiceWordFillSaveAcceptsOnlyCorrectTasks(Task task)
+	public void listChoiceWordFillSaveAcceptsOnlyCorrectTasks(Task task)
 	{
 		if (task instanceof ListChoiceWordFill)
 			assertDoesNotThrow(() -> lcwfService.genericSave(task));
@@ -131,7 +131,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void chronologicalOrderSaveAcceptsOnlyCorrectTasks(Task task)
+	public void chronologicalOrderSaveAcceptsOnlyCorrectTasks(Task task)
 	{
 		if (task instanceof ChronologicalOrder)
 			assertDoesNotThrow(() -> coService.genericSave(task));
@@ -141,7 +141,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void listSentenceFormingSaveAcceptsOnlyCorrectTasks(Task task)
+	public void listSentenceFormingSaveAcceptsOnlyCorrectTasks(Task task)
 	{
 		if (task instanceof ListSentenceForming)
 			assertDoesNotThrow(() -> lsfService.genericSave(task));
@@ -151,7 +151,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void singleChoiceSaveAcceptsOnlyCorrectTasks(Task task)
+	public void singleChoiceSaveAcceptsOnlyCorrectTasks(Task task)
 	{
 		if (task instanceof SingleChoice)
 			assertDoesNotThrow(() -> scService.genericSave(task));
@@ -161,7 +161,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void multipleChoiceSaveAcceptsOnlyCorrectTasks(Task task)
+	public void multipleChoiceSaveAcceptsOnlyCorrectTasks(Task task)
 	{
 		if (task instanceof MultipleChoice)
 			assertDoesNotThrow(() -> mcService.genericSave(task));
@@ -171,7 +171,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void wordConnectSaveAcceptsOnlyCorrectTasks(Task task)
+	public void wordConnectSaveAcceptsOnlyCorrectTasks(Task task)
 	{
 		if (task instanceof WordConnect)
 			assertDoesNotThrow(() -> wcService.genericSave(task));
@@ -182,7 +182,7 @@ public class TaskServices
 	
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void wordFillExistsByIdAcceptsOnlyCorrectTasks(Task task)
+	public void wordFillExistsByIdAcceptsOnlyCorrectTasks(Task task)
 	{
 		when(wfDao.existsById(any())).thenReturn(true);
 		
@@ -194,7 +194,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void choiceWordFillExistsByIdAcceptsOnlyCorrectTasks(Task task)
+	public void choiceWordFillExistsByIdAcceptsOnlyCorrectTasks(Task task)
 	{
 		when(cwfDao.existsById(any())).thenReturn(true);
 		
@@ -206,7 +206,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void listWordFillExistsByIdAcceptsOnlyCorrectTasks(Task task)
+	public void listWordFillExistsByIdAcceptsOnlyCorrectTasks(Task task)
 	{
 		when(lwfDao.existsById(any())).thenReturn(true);
 		
@@ -218,7 +218,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void listChoiceWordFillExistsByIdAcceptsOnlyCorrectTasks(Task task)
+	public void listChoiceWordFillExistsByIdAcceptsOnlyCorrectTasks(Task task)
 	{
 		when(lcwfDao.existsById(any())).thenReturn(true);
 		
@@ -230,7 +230,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void chronologicalOrderExistsByIdAcceptsOnlyCorrectTasks(Task task)
+	public void chronologicalOrderExistsByIdAcceptsOnlyCorrectTasks(Task task)
 	{
 		when(coDao.existsById(any())).thenReturn(true);
 		
@@ -242,7 +242,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void listSentenceFormingExistsByIdAcceptsOnlyCorrectTasks(Task task)
+	public void listSentenceFormingExistsByIdAcceptsOnlyCorrectTasks(Task task)
 	{
 		when(lsfDao.existsById(any())).thenReturn(true);
 		
@@ -254,7 +254,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void singleChoiceExistsByIdAcceptsOnlyCorrectTasks(Task task)
+	public void singleChoiceExistsByIdAcceptsOnlyCorrectTasks(Task task)
 	{
 		when(scDao.existsById(any())).thenReturn(true);
 		
@@ -266,7 +266,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void multipleChoiceExistsByIdAcceptsOnlyCorrectTasks(Task task)
+	public void multipleChoiceExistsByIdAcceptsOnlyCorrectTasks(Task task)
 	{
 		when(mcDao.existsById(any())).thenReturn(true);
 		
@@ -278,7 +278,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	void wordConnectExistsByIdAcceptsOnlyCorrectTasks(Task task)
+	public void wordConnectExistsByIdAcceptsOnlyCorrectTasks(Task task)
 	{
 		when(wcDao.existsById(any())).thenReturn(true);
 		
@@ -291,7 +291,7 @@ public class TaskServices
 	
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 25, 999})
-	void wordFillCanCount(int count)
+	public void wordFillCanCount(int count)
 	{
 		when(wfDao.count()).thenReturn((long) count);
 		
@@ -299,7 +299,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 25, 999})
-	void choiceWordFillCanCount(int count)
+	public void choiceWordFillCanCount(int count)
 	{
 		when(cwfDao.count()).thenReturn((long) count);
 		
@@ -307,7 +307,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 25, 999})
-	void listWordFillCanCount(int count)
+	public void listWordFillCanCount(int count)
 	{
 		when(lwfDao.count()).thenReturn((long) count);
 		
@@ -315,7 +315,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 25, 999})
-	void listChoiceWordFillCanCount(int count)
+	public void listChoiceWordFillCanCount(int count)
 	{
 		when(lcwfDao.count()).thenReturn((long) count);
 		
@@ -323,7 +323,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 25, 999})
-	void chronologicalOrderCanCount(int count)
+	public void chronologicalOrderCanCount(int count)
 	{
 		when(coDao.count()).thenReturn((long) count);
 		
@@ -331,7 +331,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 25, 999})
-	void listSentenceFormingCanCount(int count)
+	public void listSentenceFormingCanCount(int count)
 	{
 		when(lsfDao.count()).thenReturn((long) count);
 		
@@ -339,7 +339,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 25, 999})
-	void singleChoiceCanCount(int count)
+	public void singleChoiceCanCount(int count)
 	{
 		when(scDao.count()).thenReturn((long) count);
 		
@@ -347,7 +347,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 25, 999})
-	void multipleChoiceCanCount(int count)
+	public void multipleChoiceCanCount(int count)
 	{
 		when(mcDao.count()).thenReturn((long) count);
 		
@@ -355,7 +355,7 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 25, 999})
-	void wordConnectCanCount(int count)
+	public void wordConnectCanCount(int count)
 	{
 		when(wcDao.count()).thenReturn((long) count);
 		
@@ -363,7 +363,7 @@ public class TaskServices
 	}
 	
 	@Test
-	void wordFillCanGetRandomTask()
+	public void wordFillCanGetRandomTask()
 	{
 		WordFill mockTask = mockWordFill();
 		Random r = new Random();
@@ -374,7 +374,7 @@ public class TaskServices
 		assertEquals(wfService.genericFindRandom(r), mockTask);
 	}
 	@Test
-	void choiceWordFillCanGetRandomTask()
+	public void choiceWordFillCanGetRandomTask()
 	{
 		ChoiceWordFill mockTask = mockChoiceWordFill();
 		Random r = new Random();
@@ -385,7 +385,7 @@ public class TaskServices
 		assertEquals(cwfService.genericFindRandom(r), mockTask);
 	}
 	@Test
-	void listWordFillCanGetRandomTask()
+	public void listWordFillCanGetRandomTask()
 	{
 		ListWordFill mockTask = mockListWordFill();
 		Random r = new Random();
@@ -396,7 +396,7 @@ public class TaskServices
 		assertEquals(lwfService.genericFindRandom(r), mockTask);
 	}
 	@Test
-	void listChoiceWordFillCanGetRandomTask()
+	public void listChoiceWordFillCanGetRandomTask()
 	{
 		ListChoiceWordFill mockTask = mockListChoiceWordFill();
 		Random r = new Random();
@@ -407,7 +407,7 @@ public class TaskServices
 		assertEquals(lcwfService.genericFindRandom(r), mockTask);
 	}
 	@Test
-	void chronologicalOrderCanGetRandomTask()
+	public void chronologicalOrderCanGetRandomTask()
 	{
 		ChronologicalOrder mockTask = mockChronologicalOrder();
 		Random r = new Random();
@@ -418,7 +418,7 @@ public class TaskServices
 		assertEquals(coService.genericFindRandom(r), mockTask);
 	}
 	@Test
-	void listSentenceFormingCanGetRandomTask()
+	public void listSentenceFormingCanGetRandomTask()
 	{
 		ListSentenceForming mockTask = mockListSentenceForming();
 		Random r = new Random();
@@ -429,7 +429,7 @@ public class TaskServices
 		assertEquals(lsfService.genericFindRandom(r), mockTask);
 	}
 	@Test
-	void singleChoiceCanGetRandomTask()
+	public void singleChoiceCanGetRandomTask()
 	{
 		SingleChoice mockTask = mockSingleChoice();
 		Random r = new Random();
@@ -440,7 +440,7 @@ public class TaskServices
 		assertEquals(scService.genericFindRandom(r), mockTask);
 	}
 	@Test
-	void multipleChoiceCanGetRandomTask()
+	public void multipleChoiceCanGetRandomTask()
 	{
 		MultipleChoice mockTask = mockMultipleChoice();
 		Random r = new Random();
@@ -451,7 +451,7 @@ public class TaskServices
 		assertEquals(mcService.genericFindRandom(r), mockTask);
 	}
 	@Test
-	void wordConnectCanGetRandomTask()
+	public void wordConnectCanGetRandomTask()
 	{
 		WordConnect mockTask = mockWordConnect();
 		Random r = new Random();
@@ -463,7 +463,7 @@ public class TaskServices
 	}
 	
 	@Test
-	void wordFillCannotGetRandomTaskIfEmpty()
+	public void wordFillCannotGetRandomTaskIfEmpty()
 	{
 		Random r = new Random();
 
@@ -472,7 +472,7 @@ public class TaskServices
 		assertNull(wfService.genericFindRandom(r));
 	}
 	@Test
-	void choiceWordFillCannotGetRandomTaskIfEmpty()
+	public void choiceWordFillCannotGetRandomTaskIfEmpty()
 	{
 		Random r = new Random();
 
@@ -481,7 +481,7 @@ public class TaskServices
 		assertNull(cwfService.genericFindRandom(r));
 	}
 	@Test
-	void listWordFillCannotGetRandomTaskIfEmpty()
+	public void listWordFillCannotGetRandomTaskIfEmpty()
 	{
 		Random r = new Random();
 
@@ -490,7 +490,7 @@ public class TaskServices
 		assertNull(lwfService.genericFindRandom(r));
 	}
 	@Test
-	void listChoiceWordFillCannotGetRandomTaskIfEmpty()
+	public void listChoiceWordFillCannotGetRandomTaskIfEmpty()
 	{
 		Random r = new Random();
 
@@ -499,7 +499,7 @@ public class TaskServices
 		assertNull(lcwfService.genericFindRandom(r));
 	}
 	@Test
-	void chronologicalOrderCannotGetRandomTaskIfEmpty()
+	public void chronologicalOrderCannotGetRandomTaskIfEmpty()
 	{
 		Random r = new Random();
 
@@ -508,7 +508,7 @@ public class TaskServices
 		assertNull(coService.genericFindRandom(r));
 	}
 	@Test
-	void listSentenceFormingCannotGetRandomTaskIfEmpty()
+	public void listSentenceFormingCannotGetRandomTaskIfEmpty()
 	{
 		Random r = new Random();
 
@@ -517,7 +517,7 @@ public class TaskServices
 		assertNull(lsfService.genericFindRandom(r));
 	}
 	@Test
-	void singleChoiceCannotGetRandomTaskIfEmpty()
+	public void singleChoiceCannotGetRandomTaskIfEmpty()
 	{
 		Random r = new Random();
 
@@ -526,7 +526,7 @@ public class TaskServices
 		assertNull(scService.genericFindRandom(r));
 	}
 	@Test
-	void multipleChoiceCannotGetRandomTaskIfEmpty()
+	public void multipleChoiceCannotGetRandomTaskIfEmpty()
 	{
 		Random r = new Random();
 
@@ -535,7 +535,7 @@ public class TaskServices
 		assertNull(mcService.genericFindRandom(r));
 	}
 	@Test
-	void wordConnectCannotGetRandomTaskIfEmpty()
+	public void wordConnectCannotGetRandomTaskIfEmpty()
 	{
 		Random r = new Random();
 
@@ -545,7 +545,7 @@ public class TaskServices
 	}
 	
 	@Test
-	void wordFillCanGetAllTasks()
+	public void wordFillCanGetAllTasks()
 	{
 		WordFill mockTask = mockWordFill();
 
@@ -556,7 +556,7 @@ public class TaskServices
 		assertEquals(res.get(0), mockTask);
 	}
 	@Test
-	void choiceWordFillCanGetAllTasks()
+	public void choiceWordFillCanGetAllTasks()
 	{
 		ChoiceWordFill mockTask = mockChoiceWordFill();
 
@@ -567,7 +567,7 @@ public class TaskServices
 		assertEquals(res.get(0), mockTask);
 	}
 	@Test
-	void listWordFillCanGetAllTasks()
+	public void listWordFillCanGetAllTasks()
 	{
 		ListWordFill mockTask = mockListWordFill();
 
@@ -578,7 +578,7 @@ public class TaskServices
 		assertEquals(res.get(0), mockTask);
 	}
 	@Test
-	void listChoiceWordFillCanGetAllTasks()
+	public void listChoiceWordFillCanGetAllTasks()
 	{
 		ListChoiceWordFill mockTask = mockListChoiceWordFill();
 
@@ -589,7 +589,7 @@ public class TaskServices
 		assertEquals(res.get(0), mockTask);
 	}
 	@Test
-	void chronologicalOrderCanGetAllTasks()
+	public void chronologicalOrderCanGetAllTasks()
 	{
 		ChronologicalOrder mockTask = mockChronologicalOrder();
 
@@ -600,7 +600,7 @@ public class TaskServices
 		assertEquals(res.get(0), mockTask);
 	}
 	@Test
-	void listSentenceFormingCanGetAllTasks()
+	public void listSentenceFormingCanGetAllTasks()
 	{
 		ListSentenceForming mockTask = mockListSentenceForming();
 
@@ -611,7 +611,7 @@ public class TaskServices
 		assertEquals(res.get(0), mockTask);
 	}
 	@Test
-	void singleChoiceCanGetAllTasks()
+	public void singleChoiceCanGetAllTasks()
 	{
 		SingleChoice mockTask = mockSingleChoice();
 
@@ -622,7 +622,7 @@ public class TaskServices
 		assertEquals(res.get(0), mockTask);
 	}
 	@Test
-	void multipleChoiceCanGetAllTasks()
+	public void multipleChoiceCanGetAllTasks()
 	{
 		MultipleChoice mockTask = mockMultipleChoice();
 
@@ -633,7 +633,7 @@ public class TaskServices
 		assertEquals(res.get(0), mockTask);
 	}
 	@Test
-	void wordConnectCanGetAllTasks()
+	public void wordConnectCanGetAllTasks()
 	{
 		WordConnect mockTask = mockWordConnect();
 

@@ -15,55 +15,55 @@ import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 public class AnswerTypeTests
 {
 	@Test
-	void wordFillConvertsToDTO()
+	public void wordFillConvertsToDTO()
 	{
 		WordFill wf = new WordFill();
 		assertEquals(wf.getAnswerType(), WordFillAnswer.class);
 	}
 	@Test
-	void choiceWordFillConvertsToDTO()
+	public void choiceWordFillConvertsToDTO()
 	{
 		ChoiceWordFill cwf = new ChoiceWordFill();
 		assertEquals(cwf.getAnswerType(), ChoiceWordFillAnswer.class);
 	}
 	@Test
-	void listWordFillConvertsToDTO()
+	public void listWordFillConvertsToDTO()
 	{
 		ListWordFill lwf = new ListWordFill();
 		assertEquals(lwf.getAnswerType(), ListWordFillAnswer.class);
 	}
 	@Test
-	void listChoiceWordFillConvertsToDTO()
+	public void listChoiceWordFillConvertsToDTO()
 	{
 		ListChoiceWordFill lcwf = new ListChoiceWordFill();
 		assertEquals(lcwf.getAnswerType(), ListChoiceWordFillAnswer.class);
 	}
 	@Test
-	void chronologicalOrderConvertsToDTO()
+	public void chronologicalOrderConvertsToDTO()
 	{
 		ChronologicalOrder co = new ChronologicalOrder();
 		assertEquals(co.getAnswerType(), ChronologicalOrderAnswer.class);
 	}
 	@Test
-	void listSentenceFormingConvertsToDTO()
+	public void listSentenceFormingConvertsToDTO()
 	{
 		ListSentenceForming lsf = new ListSentenceForming();
 		assertEquals(lsf.getAnswerType(), ListSentenceFormingAnswer.class);
 	}
 	@Test
-	void singleChoiceConvertsToDTO()
+	public void singleChoiceConvertsToDTO()
 	{
 		SingleChoice sc = new SingleChoice();
 		assertEquals(sc.getAnswerType(), SingleChoiceAnswer.class);
 	}
 	@Test
-	void multipleChoiceConvertsToDTO()
+	public void multipleChoiceConvertsToDTO()
 	{
 		MultipleChoice mc = new MultipleChoice();
 		assertEquals(mc.getAnswerType(), MultipleChoiceAnswer.class);
 	}
 	@Test
-	void wordConnectConvertsToDTO()
+	public void wordConnectConvertsToDTO()
 	{
 		WordConnect wc = new WordConnect();
 		assertEquals(wc.getAnswerType(), WordConnectAnswer.class);

@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
@@ -219,6 +220,208 @@ class GameTaskDataServiceTests
 		
 		assertNotNull(gtdServ.getImportedGlobalTasks());
 	}
+	@Test
+	public void shouldGetImportedGlobalTaskInfo()
+	{
+		assertNotNull(gtdServ.getImportedGlobalTaskInfo(mockTaskDataAdmin()));
+	}
+	@Test
+	public void shouldGetImportedGlobalTaskInfoWithAuthenticatedAdmin()
+	{
+		when(aServ.getAuthenticatedAccount())
+			.thenReturn(Optional.of(mockTaskDataAdmin()));
+		
+		assertNotNull(gtdServ.getImportedGlobalTaskInfo());
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldGetTaskInfoWithImportedTask(JsonNode taskDtoWithName)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		int taskCount = gtdServ.getImportedGlobalTaskCount(admin);
+		
+		gtdServ.importGlobalTask(taskDtoWithName, admin);
+		List<Map<String, String>> res = gtdServ.getImportedGlobalTaskInfo(admin);
+		
+		assertNotNull(res);
+		assertEquals(res.size(), taskCount + 1);
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldRemoveImportedGlobalTask(JsonNode taskDtoWithName)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		int taskCount = gtdServ.getImportedGlobalTaskCount(admin);
+		
+		gtdServ.importGlobalTask(taskDtoWithName, admin);
+		UUID id = UUID.fromString(gtdServ.getImportedGlobalTaskInfo(admin)
+				.get(0)
+				.get("taskID"));
+		boolean success = gtdServ.removeImportedGlobalTask(id, admin);
+		
+		assertTrue(success);
+		assertEquals(gtdServ.getImportedGlobalTaskCount(admin), taskCount);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldRemoveImportedGlobalTaskWithAuthenticatedAdmin(JsonNode taskDtoWithName)
+			throws ClassNotFoundException, IOException
+	{
+		when(aServ.getAuthenticatedAccount())
+			.thenReturn(Optional.of(mockTaskDataAdmin()));
+		int taskCount = gtdServ.getImportedGlobalTaskCount();
+		
+		gtdServ.importGlobalTask(taskDtoWithName);
+		UUID id = UUID.fromString(gtdServ.getImportedGlobalTaskInfo()
+				.get(0)
+				.get("taskID"));
+		boolean success = gtdServ.removeImportedGlobalTask(id);
+		
+		assertTrue(success);
+		assertEquals(gtdServ.getImportedGlobalTaskCount(), taskCount);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldNotRemoveTasksWithIncorrectID(JsonNode taskDtoWithName)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		UUID wrongID = UUID.randomUUID();
+		
+		gtdServ.importGlobalTask(taskDtoWithName, admin);
+		int taskCount = gtdServ.getImportedGlobalTaskCount(admin);
+		
+		boolean success = gtdServ.removeImportedGlobalTask(wrongID, admin);
+		
+		assertFalse(success);
+		assertEquals(gtdServ.getImportedGlobalTaskCount(admin), taskCount);
+	}
+	@Test
+	public void shouldNotRemoveTasksWhenEmpty()
+	{
+		Account admin = mockTaskDataAdmin();
+		UUID wrongID = UUID.randomUUID();
+		
+		boolean success = gtdServ.removeImportedGlobalTask(wrongID, admin);
+		
+		assertFalse(success);
+		assertEquals(gtdServ.getImportedGlobalTaskCount(admin), 0);
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldGetImportedGlobalTask(JsonNode taskDtoWithName)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		
+		gtdServ.importGlobalTask(taskDtoWithName, admin);
+		UUID id = UUID.fromString(gtdServ.getImportedGlobalTaskInfo(admin)
+				.get(0)
+				.get("taskID"));
+		Optional<TaskDTO> ret = gtdServ.getImportedGlobalTask(id, admin);
+		
+		assertTrue(ret.isPresent());
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldGetImportedGlobalTaskWithAuthenticatedAdmin(JsonNode taskDtoWithName)
+			throws ClassNotFoundException, IOException
+	{
+		when(aServ.getAuthenticatedAccount())
+			.thenReturn(Optional.of(mockTaskDataAdmin()));
+		
+		gtdServ.importGlobalTask(taskDtoWithName);
+		UUID id = UUID.fromString(gtdServ.getImportedGlobalTaskInfo()
+				.get(0)
+				.get("taskID"));
+		Optional<TaskDTO> ret = gtdServ.getImportedGlobalTask(id);
+		
+		assertTrue(ret.isPresent());
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldNotGetTasksWithIncorrectID(JsonNode taskDtoWithName)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		UUID wrongID = UUID.randomUUID();
+		
+		gtdServ.importGlobalTask(taskDtoWithName, admin);
+		
+		Optional<TaskDTO> ret = gtdServ.getImportedGlobalTask(wrongID, admin);
+		
+		assertTrue(ret.isEmpty());
+	}
+	@Test
+	public void shouldNotGetTasksWhenEmpty()
+	{
+		Account admin = mockTaskDataAdmin();
+		UUID wrongID = UUID.randomUUID();
+		
+		Optional<TaskDTO> ret = gtdServ.getImportedGlobalTask(wrongID, admin);
+		
+		assertTrue(ret.isEmpty());
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockTwoTaskDTOsWithNames")
+	public void shouldEditGlobalTask(JsonNode originalTaskDTO, JsonNode newTaskDTO)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		
+		gtdServ.importGlobalTask(originalTaskDTO, admin);
+		UUID id = UUID.fromString(gtdServ.getImportedGlobalTaskInfo(admin)
+				.get(0)
+				.get("taskID"));
+		int taskCount = gtdServ.getImportedGlobalTaskCount(admin);
+		
+		boolean success = gtdServ.editImportedGlobalTask(id, newTaskDTO, admin);
+		
+		assertTrue(success);
+		assertEquals(gtdServ.getImportedGlobalTaskCount(admin), taskCount);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTwoTaskDTOsWithNames")
+	public void shouldEditGlobalTaskWithAuthenticatedAccount(
+			JsonNode originalTaskDTO, JsonNode newTaskDTO)
+			throws ClassNotFoundException, IOException
+	{
+		when(aServ.getAuthenticatedAccount())
+			.thenReturn(Optional.of(mockTaskDataAdmin()));
+		
+		gtdServ.importGlobalTask(originalTaskDTO);
+		UUID id = UUID.fromString(gtdServ.getImportedGlobalTaskInfo()
+				.get(0)
+				.get("taskID"));
+		int taskCount = gtdServ.getImportedGlobalTaskCount();
+		
+		boolean success = gtdServ.editImportedGlobalTask(id, newTaskDTO);
+		
+		assertTrue(success);
+		assertEquals(gtdServ.getImportedGlobalTaskCount(), taskCount);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTwoTaskDTOsWithNames")
+	public void shouldNotEditGlobalTaskWithIncorrectID(JsonNode originalTaskDTO, JsonNode newTaskDTO)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		
+		gtdServ.importGlobalTask(originalTaskDTO, admin);
+		int taskCount = gtdServ.getImportedGlobalTaskCount(admin);
+		UUID wrongID = UUID.randomUUID();
+		
+		boolean success = gtdServ.editImportedGlobalTask(wrongID, newTaskDTO, admin);
+		
+		assertFalse(success);
+		assertEquals(gtdServ.getImportedGlobalTaskCount(admin), taskCount);
+	}
+	
 	@ParameterizedTest
 	@MethodSource("mockTaskDTOs")
 	public void shouldImportGlobalTaskWithAuthenticatedAdmin(TaskDTO dto)
@@ -276,6 +479,53 @@ class GameTaskDataServiceTests
 				.map(m -> mapper.valueToTree(m))
 				.map(jn -> Arguments.of(jn))
 				.collect(Collectors.toList());
+	}
+	public static List<Arguments> mockTwoTaskDTOsWithNames()
+	{
+		var src = List.of(
+				Map.of(
+						"taskName", "WordFill",
+						"taskContent", mockWordFillDTO()),
+				Map.of(
+						"taskName", "ChoiceWordFill",
+						"taskContent", mockChoiceWordFillDTO()),
+				Map.of(
+						"taskName", "ListWordFill",
+						"taskContent", mockListWordFillDTO()),
+				Map.of(
+						"taskName", "ListChoiceWordFill",
+						"taskContent", mockListChoiceWordFillDTO()),
+				Map.of(
+						"taskName", "ChronologicalOrder",
+						"taskContent", mockChronologicalOrderDTO()),
+				Map.of(
+						"taskName", "ListSentenceForming",
+						"taskContent", mockListSentenceFormingDTO()),
+				Map.of(
+						"taskName", "SingleChoice",
+						"taskContent", mockSingleChoiceDTO()),
+				Map.of(
+						"taskName", "MultipleChoice",
+						"taskContent", mockMultipleChoiceDTO()),
+				Map.of(
+						"taskName", "WordConnect",
+						"taskContent", mockWordConnectDTO()));
+
+		var listMapped = src.stream()
+				.map(m -> mapper.valueToTree(m))
+				.collect(Collectors.toList());
+		int l = listMapped.size();
+		Random r = new Random(l);
+		
+		List<Arguments> ret = new ArrayList<Arguments>();
+		for (int i = 0; i < l; i++)
+		{
+			ret.add(Arguments.of(
+					listMapped.get(i),
+					listMapped.get(r.nextInt(l))));
+		}
+		
+		return ret;
 	}
 	
 	private static Account mockTaskDataAdmin()

@@ -1,14 +1,17 @@
 package com.projteam.app.api;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -68,6 +71,12 @@ public class TaskDataAPI
 	{
 		return taskDTOsWithName(gtdService.getImportedGlobalTasks());
 	}
+	@GetMapping("/api/v1/tasks/imported/info")
+	@ApiOperation(value = "Return a list containing the names and IDs of all imported tasks", code = 200)
+	public List<Map<String, String>> getImportedTaskInfo()
+	{
+		return gtdService.getImportedGlobalTaskInfo();
+	}
 	@GetMapping(value = "/api/v1/tasks/imported/json/file",
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	@ApiOperation(value = "Return a file containing all imported tasks in JSON", code = 200)
@@ -86,9 +95,47 @@ public class TaskDataAPI
 	}
 	@PostMapping("/api/v1/tasks/imported")
 	@ApiOperation(value = "Create a new task", code = 200)
-	public void importTask(@RequestBody JsonNode task) throws ClassNotFoundException, IOException
+	public ResponseEntity<?> importTask(@RequestBody JsonNode taskData)
 	{
-		gtdService.importGlobalTask(task);
+		try
+		{
+			gtdService.importGlobalTask(taskData);
+			return ResponseEntity.ok().build();
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	@GetMapping("/api/v1/tasks/imported/{id}")
+	@ApiOperation(value = "Delete an inported task with the given id", code = 200)
+	public Object getImportedTask(@PathVariable UUID id)
+	{
+		return gtdService.getImportedGlobalTask(id)
+				.map(t -> taskDTOwithName(t))
+				.map(t -> (Object) t)
+				.orElse(Map.of("taskExists", "false"));
+	}
+	@PutMapping("/api/v1/tasks/imported/{id}")
+	@ApiOperation(value = "Edit an inported task with the given id", code = 200)
+	public ResponseEntity<?> editImportedTask(@PathVariable UUID id, @RequestBody JsonNode newTaskData)
+	{
+		try
+		{
+			if (gtdService.editImportedGlobalTask(id, newTaskData))
+				return ResponseEntity.ok().build();
+			return ResponseEntity.badRequest().body("ID does not match any imported task");
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	@DeleteMapping("/api/v1/tasks/imported/{id}")
+	@ApiOperation(value = "Delete an inported task with the given id", code = 200)
+	public boolean deleteImportedTask(@PathVariable UUID id)
+	{
+		return gtdService.removeImportedGlobalTask(id);
 	}
 	
 	@GetMapping("/tasks/import/global")
@@ -103,8 +150,13 @@ public class TaskDataAPI
 		return dtoList.stream()
 			.map(t -> Map.of(
 					"taskName", gtdService.getTaskDtoName(t),
-					"taskContent", t
-					))
+					"taskContent", t))
 			.collect(Collectors.toList());
+	}
+	private Map<String, ?> taskDTOwithName(TaskDTO dto)
+	{
+		return Map.of(
+					"taskName", gtdService.getTaskDtoName(dto),
+					"taskContent", dto);
 	}
 }
