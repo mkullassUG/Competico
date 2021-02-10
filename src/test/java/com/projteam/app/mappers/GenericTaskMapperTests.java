@@ -57,7 +57,7 @@ class GenericTaskMapperTests
 	private GenericTaskMapper mapper;
 	
 	@Test
-	void canMapWordFillToDTO()
+	public void canMapWordFillToDTO()
 	{
 		WordFill entity = mockWordFill();
 		WordFillDTO dto = (WordFillDTO) mapper.toDTO(entity);
@@ -77,7 +77,7 @@ class GenericTaskMapperTests
 		assertEquals(dto.getContent().isStartWithText(), entity.getContent().isStartWithText());
 	}
 	@Test
-	void canMapListWordFillToDTO()
+	public void canMapListWordFillToDTO()
 	{
 		ListWordFill entity = mockListWordFill();
 		ListWordFillDTO dto = (ListWordFillDTO) mapper.toDTO(entity);
@@ -103,7 +103,7 @@ class GenericTaskMapperTests
 				});
 	}
 	@Test
-	void canMapChoiceWordFillToDTO()
+	public void canMapChoiceWordFillToDTO()
 	{
 		ChoiceWordFill entity = mockChoiceWordFill();
 		ChoiceWordFillDTO dto = (ChoiceWordFillDTO) mapper.toDTO(entity);
@@ -127,7 +127,7 @@ class GenericTaskMapperTests
 		assertEquals(dto.getContent().isStartWithText(), entity.getContent().isStartWithText());
 	}
 	@Test
-	void canMapListChoiceWordFillToDTO()
+	public void canMapListChoiceWordFillToDTO()
 	{
 		ListChoiceWordFill entity = mockListChoiceWordFill();
 		ListChoiceWordFillDTO dto = (ListChoiceWordFillDTO) mapper.toDTO(entity);
@@ -157,7 +157,7 @@ class GenericTaskMapperTests
 				});
 	}
 	@Test
-	void canMapListSentenceFormingToDTO()
+	public void canMapListSentenceFormingToDTO()
 	{
 		ListSentenceForming entity = mockListSentenceForming();
 		ListSentenceFormingDTO dto = (ListSentenceFormingDTO) mapper.toDTO(entity);
@@ -174,7 +174,7 @@ class GenericTaskMapperTests
 				entityRow -> entityRow.getWords());
 	}
 	@Test
-	void canMapWordConnectToDTO()
+	public void canMapWordConnectToDTO()
 	{
 		WordConnect entity = mockWordConnect();
 		WordConnectDTO dto = (WordConnectDTO) mapper.toDTO(entity);
@@ -189,7 +189,7 @@ class GenericTaskMapperTests
 		assertEquals(dto.getCorrectMapping(), entity.getCorrectMapping());
 	}
 	@Test
-	void canMapChronologicalOrderToDTO()
+	public void canMapChronologicalOrderToDTO()
 	{
 		ChronologicalOrder entity = mockChronologicalOrder();
 		ChronologicalOrderDTO dto = (ChronologicalOrderDTO) mapper.toDTO(entity);
@@ -202,7 +202,7 @@ class GenericTaskMapperTests
 		assertEquals(dto.getSentences(), entity.getSentences());
 	}
 	@Test
-	void canMapSingleChoiceToDTO()
+	public void canMapSingleChoiceToDTO()
 	{
 		SingleChoice entity = mockSingleChoice();
 		SingleChoiceDTO dto = (SingleChoiceDTO) mapper.toDTO(entity);
@@ -217,7 +217,7 @@ class GenericTaskMapperTests
 		assertEquals(dto.getIncorrectAnswers(), entity.getIncorrectAnswers());
 	}
 	@Test
-	void canMapMultipleChoiceToDTO()
+	public void canMapMultipleChoiceToDTO()
 	{
 		MultipleChoice entity = mockMultipleChoice();
 		MultipleChoiceDTO dto = (MultipleChoiceDTO) mapper.toDTO(entity);
@@ -233,7 +233,7 @@ class GenericTaskMapperTests
 	}
 	
 	@Test
-	void canMapWordFillToEntity()
+	public void canMapWordFillToEntity()
 	{
 		WordFillDTO dto = mockWordFillDTO();
 		WordFill entity = (WordFill) mapper.toEntity(dto);
@@ -256,7 +256,7 @@ class GenericTaskMapperTests
 		assertEquals(entity.getContent().isStartWithText(), dto.getContent().isStartWithText());
 	}
 	@Test
-	void canMapListWordFillToEntity()
+	public void canMapListWordFillToEntity()
 	{
 		ListWordFillDTO dto = mockListWordFillDTO();
 		ListWordFill entity = (ListWordFill) mapper.toEntity(dto);
@@ -284,7 +284,7 @@ class GenericTaskMapperTests
 				});
 	}
 	@Test
-	void canMapChoiceWordFillToEntity()
+	public void canMapChoiceWordFillToEntity()
 	{
 		ChoiceWordFillDTO dto = mockChoiceWordFillDTO();
 		ChoiceWordFill entity = (ChoiceWordFill) mapper.toEntity(dto);
@@ -311,7 +311,7 @@ class GenericTaskMapperTests
 		assertEquals(entity.getContent().isStartWithText(), dto.getContent().isStartWithText());
 	}
 	@Test
-	void canMapListChoiceWordFillToEntity()
+	public void canMapListChoiceWordFillToEntity()
 	{
 		ListChoiceWordFillDTO dto = mockListChoiceWordFillDTO();
 		ListChoiceWordFill entity = (ListChoiceWordFill) mapper.toEntity(dto);
@@ -344,7 +344,7 @@ class GenericTaskMapperTests
 				});
 	}
 	@Test
-	void canMapListSentenceFormingToEntity()
+	public void canMapListSentenceFormingToEntity()
 	{
 		ListSentenceFormingDTO dto = mockListSentenceFormingDTO();
 		ListSentenceForming entity = (ListSentenceForming) mapper.toEntity(dto);
@@ -365,7 +365,7 @@ class GenericTaskMapperTests
 				});
 	}
 	@Test
-	void canMapWordConnectToEntity()
+	public void canMapWordConnectToEntity()
 	{
 		WordConnectDTO dto = mockWordConnectDTO();
 		WordConnect entity = (WordConnect) mapper.toEntity(dto);
@@ -381,7 +381,7 @@ class GenericTaskMapperTests
 		assertEquals(entity.getCorrectMapping(), dto.getCorrectMapping());
 	}
 	@Test
-	void canMapChronologicalOrderToEntity()
+	public void canMapChronologicalOrderToEntity()
 	{
 		ChronologicalOrderDTO dto = mockChronologicalOrderDTO();
 		ChronologicalOrder entity = (ChronologicalOrder) mapper.toEntity(dto);
@@ -395,7 +395,7 @@ class GenericTaskMapperTests
 		assertEquals(entity.getSentences(), dto.getSentences());
 	}
 	@Test
-	void canMapSingleChoiceToEntity()
+	public void canMapSingleChoiceToEntity()
 	{
 		SingleChoiceDTO dto = mockSingleChoiceDTO();
 		SingleChoice entity = (SingleChoice) mapper.toEntity(dto);
@@ -411,7 +411,7 @@ class GenericTaskMapperTests
 		assertEquals(entity.getIncorrectAnswers(), dto.getIncorrectAnswers());
 	}
 	@Test
-	void canMapMultipleChoiceToEntity()
+	public void canMapMultipleChoiceToEntity()
 	{
 		MultipleChoiceDTO dto = mockMultipleChoiceDTO();
 		MultipleChoice entity = (MultipleChoice) mapper.toEntity(dto);

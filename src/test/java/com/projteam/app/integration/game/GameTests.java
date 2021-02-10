@@ -27,6 +27,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -49,6 +50,7 @@ import com.projteam.app.service.game.GameService;
 import com.projteam.app.service.game.PlayerDataService;
 
 @SpringBootTest
+@ContextConfiguration(name = "Integration-tests")
 @AutoConfigureMockMvc(addFilters = false)
 public class GameTests
 {

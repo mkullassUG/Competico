@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import com.projteam.app.dao.game.tasks.ChoiceWordFillDAO;
 import com.projteam.app.dao.game.tasks.ChoiceWordFillElementDAO;
 import com.projteam.app.dao.game.tasks.ChronologicalOrderDAO;
@@ -43,6 +44,7 @@ import com.projteam.app.domain.game.tasks.ChoiceWordFillElement.WordChoice;
 import com.projteam.app.domain.game.tasks.WordFillElement.EmptySpace;
 
 @SpringBootTest
+@ContextConfiguration(name = "Integration-tests")
 @AutoConfigureMockMvc
 public class TaskDAOTests
 {

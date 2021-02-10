@@ -23,7 +23,7 @@ import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 public class AnswerWrongDataTests
 {
 	@Test
-	void wordFillRejectsWrongAnswer()
+	public void wordFillRejectsWrongAnswer()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -43,7 +43,7 @@ public class AnswerWrongDataTests
 		assertEquals(wf.acceptAnswer(wfa), 0);
 	}
 	@Test
-	void choiceWordFillRejectsWrongAnswer()
+	public void choiceWordFillRejectsWrongAnswer()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -62,7 +62,7 @@ public class AnswerWrongDataTests
 		assertEquals(cwf.acceptAnswer(cwfa), 0);
 	}
 	@Test
-	void listWordFillRejectsWrongAnswer()
+	public void listWordFillRejectsWrongAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -108,7 +108,7 @@ public class AnswerWrongDataTests
 		assertEquals(lwf.acceptAnswer(lwfa), 0);
 	}
 	@Test
-	void listChoiceWordFillRejectsWrongAnswer()
+	public void listChoiceWordFillRejectsWrongAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -146,7 +146,7 @@ public class AnswerWrongDataTests
 		assertEquals(lcwf.acceptAnswer(lcwfa), 0);
 	}
 	@Test
-	void chronologicalOrderRejectsWrongAnswer()
+	public void chronologicalOrderRejectsWrongAnswer()
 	{
 		List<String> text = List.of("Lorem ipsum dolor sit amet",
 				"consectetur adipiscing elit",
@@ -167,7 +167,7 @@ public class AnswerWrongDataTests
 		assertEquals(co.acceptAnswer(coa), 0);
 	}
 	@Test
-	void listSentenceFormingRejectsWrongAnswer()
+	public void listSentenceFormingRejectsWrongAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -191,7 +191,7 @@ public class AnswerWrongDataTests
 		assertEquals(lsf.acceptAnswer(lsfa), 0);
 	}
 	@Test
-	void singleChoiceRejectsWrongAnswer()
+	public void singleChoiceRejectsWrongAnswer()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		String answer = "consectetur";
@@ -206,7 +206,7 @@ public class AnswerWrongDataTests
 		assertEquals(sc.acceptAnswer(sca), 0);
 	}
 	@Test
-	void multipleChoiceRejectsWrongAnswer()
+	public void multipleChoiceRejectsWrongAnswer()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		List<String> correctAnswers = List.of(
@@ -225,7 +225,7 @@ public class AnswerWrongDataTests
 		assertEquals(mc.acceptAnswer(mca), 0);
 	}
 	@Test
-	void wordConnectRejectsWrongAnswer()
+	public void wordConnectRejectsWrongAnswer()
 	{
 		List<String> leftWords = List.of("Lorem", "ipsum", "dolor", "sit", "amet");
 		List<String> rightWords = List.of("consectetur", "adipiscing", "elit", "sed do", "eiusmod");

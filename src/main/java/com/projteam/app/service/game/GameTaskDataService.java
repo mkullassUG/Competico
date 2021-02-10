@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -53,7 +55,7 @@ public class GameTaskDataService
 	private AccountService accountService;
 	private GenericTaskMapper taskMapper;
 	
-	private Map<UUID, List<Task>> globalImportedTasks;
+	private Map<UUID, List<Entry<UUID, Task>>> globalImportedTasks;
 	
 	private Map<String, Class<? extends TaskDTO>> taskDtoNameToClass;
 	private Map<String, Class<? extends Task>> taskNameToClass;
@@ -170,15 +172,17 @@ public class GameTaskDataService
 				.collect(Collectors.toList()));
 	}
 	
-	public void importGlobalTask(JsonNode task) throws IOException, ClassNotFoundException
+	public void importGlobalTask(JsonNode taskData) throws IOException, ClassNotFoundException
 	{
-		importGlobalTask(task, getAccount());
+		importGlobalTask(taskData, getAccount());
 	}
-	public void importGlobalTask(JsonNode task, Account acc) throws IOException, ClassNotFoundException
+	public void importGlobalTask(JsonNode taskData, Account acc) throws IOException, ClassNotFoundException
 	{
 		UUID id = acc.getId();
 		globalImportedTasks.computeIfAbsent(id, k -> new ArrayList<>());
-		globalImportedTasks.get(id).add(taskDtoJsonToTask(task));
+		globalImportedTasks.get(id).add(Map.entry(
+				UUID.randomUUID(),
+				taskDtoJsonToTask(taskData)));
 	}
 	public int getImportedGlobalTaskCount()
 	{
@@ -198,7 +202,85 @@ public class GameTaskDataService
 	{
 		return taskListToDTO(
 				Optional.ofNullable(globalImportedTasks.get(account.getId()))
-					.orElseGet(() -> new ArrayList<>()));
+					.orElseGet(() -> new ArrayList<>())
+				.stream()
+				.map(e -> e.getValue())
+				.collect(Collectors.toList()));
+	}
+	public List<Map<String, String>> getImportedGlobalTaskInfo()
+	{
+		return getImportedGlobalTaskInfo(getAccount());
+	}
+	public Optional<TaskDTO> getImportedGlobalTask(UUID id)
+	{
+		return getImportedGlobalTask(id, getAccount());
+	}
+	public Optional<TaskDTO> getImportedGlobalTask(UUID id, Account account)
+	{
+		return Optional.ofNullable(
+				globalImportedTasks.get(account.getId()))
+			.map(tasks ->
+			{
+				for (var e: tasks)
+				{
+					if (e.getKey().equals(id))
+						return taskMapper.toDTO(e.getValue());
+				}
+				return null;
+			});
+	}
+	public List<Map<String, String>> getImportedGlobalTaskInfo(Account account)
+	{
+		return Optional.ofNullable(globalImportedTasks.get(account.getId()))
+					.orElseGet(() -> new ArrayList<>())
+				.stream()
+				.map(e -> Map.of(
+						"taskID", e.getKey().toString(),
+						"taskName", getTaskDtoName(taskMapper.toDTO(e.getValue()))))
+				.collect(Collectors.toList());
+	}
+	public boolean removeImportedGlobalTask(UUID id)
+	{
+		return removeImportedGlobalTask(id, getAccount());
+	}
+	public boolean removeImportedGlobalTask(UUID id, Account account)
+	{
+		List<Entry<UUID, Task>> list = globalImportedTasks.get(account.getId());
+		if (list == null)
+			return false;
+		Iterator<Entry<UUID, Task>> it = list.iterator();
+		while (it.hasNext())
+		{
+			Entry<UUID, Task> e = it.next();
+			if (e.getKey().equals(id))
+			{
+				it.remove();
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean editImportedGlobalTask(UUID taskId, JsonNode taskData) throws IOException, ClassNotFoundException
+	{
+		return editImportedGlobalTask(taskId, taskData, getAccount());
+	}
+	public boolean editImportedGlobalTask(UUID taskId, JsonNode taskData, Account acc) throws IOException, ClassNotFoundException
+	{
+		UUID accId = acc.getId();
+		globalImportedTasks.computeIfAbsent(accId, k -> new ArrayList<>());
+		var list = globalImportedTasks.get(accId);
+		int l = list.size();
+		
+		for (int i = 0; i < l; i++)
+		{
+			var e = list.get(i);
+			if (e.getKey().equals(taskId))
+			{
+				list.set(i, Map.entry(taskId, taskDtoJsonToTask(taskData)));
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private List<TaskDTO> taskListToDTO(List<Task> tasks)

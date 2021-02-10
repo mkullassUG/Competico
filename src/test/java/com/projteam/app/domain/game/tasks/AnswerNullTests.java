@@ -24,7 +24,7 @@ import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 public class AnswerNullTests
 {
 	@Test
-	void wordFillRejectsNullAnswer()
+	public void wordFillRejectsNullAnswer()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -44,7 +44,7 @@ public class AnswerNullTests
 		assertEquals(wf.acceptAnswer(wfa), 0);
 	}
 	@Test
-	void wordFillRejectsNullListAnswer()
+	public void wordFillRejectsNullListAnswer()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -62,7 +62,7 @@ public class AnswerNullTests
 		assertEquals(wf.acceptAnswer(wfa), 0);
 	}
 	@Test
-	void choiceWordFillRejectsNullAnswer()
+	public void choiceWordFillRejectsNullAnswer()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -81,7 +81,7 @@ public class AnswerNullTests
 		assertEquals(cwf.acceptAnswer(cwfa), 0);
 	}
 	@Test
-	void choiceWordFillRejectsNullListAnswer()
+	public void choiceWordFillRejectsNullListAnswer()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -98,7 +98,7 @@ public class AnswerNullTests
 		assertEquals(cwf.acceptAnswer(cwfa), 0);
 	}
 	@Test
-	void listWordFillRejectsNullAnswer()
+	public void listWordFillRejectsNullAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -144,7 +144,7 @@ public class AnswerNullTests
 		assertEquals(lwf.acceptAnswer(lwfa), 0);
 	}
 	@Test
-	void listWordFillRejectsNullListAnswer()
+	public void listWordFillRejectsNullListAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -188,7 +188,7 @@ public class AnswerNullTests
 		assertEquals(lwf.acceptAnswer(lwfa), 0);
 	}
 	@Test
-	void listWordFillRejectsNullListOfListsAnswer()
+	public void listWordFillRejectsNullListOfListsAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -230,7 +230,7 @@ public class AnswerNullTests
 		assertEquals(lwf.acceptAnswer(lwfa), 0);
 	}
 	@Test
-	void listChoiceWordFillRejectsNullAnswer()
+	public void listChoiceWordFillRejectsNullAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -268,7 +268,7 @@ public class AnswerNullTests
 		assertEquals(lcwf.acceptAnswer(lcwfa), 0);
 	}
 	@Test
-	void listChoiceWordFillRejectsNullListAnswer()
+	public void listChoiceWordFillRejectsNullListAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -304,7 +304,7 @@ public class AnswerNullTests
 		assertEquals(lcwf.acceptAnswer(lcwfa), 0);
 	}
 	@Test
-	void listChoiceWordFillRejectsNullListOfListsAnswer()
+	public void listChoiceWordFillRejectsNullListOfListsAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -338,7 +338,7 @@ public class AnswerNullTests
 		assertEquals(lcwf.acceptAnswer(lcwfa), 0);
 	}
 	@Test
-	void chronologicalOrderRejectsNullAnswer()
+	public void chronologicalOrderRejectsNullAnswer()
 	{
 		List<String> text = List.of("Lorem ipsum dolor sit amet",
 				"consectetur adipiscing elit",
@@ -359,7 +359,7 @@ public class AnswerNullTests
 		assertEquals(co.acceptAnswer(coa), 0);
 	}
 	@Test
-	void chronologicalOrderRejectsNullListAnswer()
+	public void chronologicalOrderRejectsNullListAnswer()
 	{
 		List<String> text = List.of("Lorem ipsum dolor sit amet",
 				"consectetur adipiscing elit",
@@ -378,7 +378,7 @@ public class AnswerNullTests
 		assertEquals(co.acceptAnswer(coa), 0);
 	}
 	@Test
-	void listSentenceFormingRejectsNullAnswer()
+	public void listSentenceFormingRejectsNullAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -402,7 +402,7 @@ public class AnswerNullTests
 		assertEquals(lsf.acceptAnswer(lsfa), 0);
 	}
 	@Test
-	void listSentenceFormingRejectsNullListAnswer()
+	public void listSentenceFormingRejectsNullListAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -424,7 +424,7 @@ public class AnswerNullTests
 		assertEquals(lsf.acceptAnswer(lsfa), 0);
 	}
 	@Test
-	void listSentenceFormingRejectsNullListOfListsAnswer()
+	public void listSentenceFormingRejectsNullListOfListsAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -444,7 +444,7 @@ public class AnswerNullTests
 		assertEquals(lsf.acceptAnswer(lsfa), 0);
 	}
 	@Test
-	void singleChoiceRejectsNullAnswer()
+	public void singleChoiceRejectsNullAnswer()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		String answer = "consectetur";
@@ -459,7 +459,7 @@ public class AnswerNullTests
 		assertEquals(sc.acceptAnswer(sca), 0);
 	}
 	@Test
-	void multipleChoiceRejectsNullAnswer()
+	public void multipleChoiceRejectsNullAnswer()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		List<String> correctAnswers = List.of(
@@ -478,7 +478,7 @@ public class AnswerNullTests
 		assertEquals(mc.acceptAnswer(mca), 0);
 	}
 	@Test
-	void multipleChoiceRejectsNullListAnswer()
+	public void multipleChoiceRejectsNullListAnswer()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		List<String> correctAnswers = List.of(
@@ -494,7 +494,7 @@ public class AnswerNullTests
 		assertEquals(mc.acceptAnswer(mca), 0);
 	}
 	@Test
-	void wordConnectRejectsNullAnswer()
+	public void wordConnectRejectsNullAnswer()
 	{
 		List<String> leftWords = List.of("Lorem", "ipsum", "dolor", "sit", "amet");
 		List<String> rightWords = List.of("consectetur", "adipiscing", "elit", "sed do", "eiusmod");
@@ -515,7 +515,7 @@ public class AnswerNullTests
 		assertEquals(wc.acceptAnswer(wca), 0);
 	}
 	@Test
-	void wordConnectRejectsNullMapAnswer()
+	public void wordConnectRejectsNullMapAnswer()
 	{
 		List<String> leftWords = List.of("Lorem", "ipsum", "dolor", "sit", "amet");
 		List<String> rightWords = List.of("consectetur", "adipiscing", "elit", "sed do", "eiusmod");

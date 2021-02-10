@@ -64,21 +64,21 @@ class RegistrationDTOTests
 	
 	@ParameterizedTest
 	@MethodSource("mockRegistrationDTO")
-	void shouldBeEqualWhenSameObjectCompared(RegistrationDTO regDto)
+	public void shouldBeEqualWhenSameObjectCompared(RegistrationDTO regDto)
 	{
 		assertTrue(regDto.equals(regDto));
 		assertEquals(regDto.hashCode(), regDto.hashCode());
 	}
 	@ParameterizedTest
 	@MethodSource("mockTwoEqualRegistrationDTOs")
-	void shouldBeEqualWhenEqualObjectsCompared(RegistrationDTO regDto1, RegistrationDTO regDto2)
+	public void shouldBeEqualWhenEqualObjectsCompared(RegistrationDTO regDto1, RegistrationDTO regDto2)
 	{
 		assertTrue(regDto1.equals(regDto2));
 		assertEquals(regDto1.hashCode(), regDto2.hashCode());
 	}
 	@ParameterizedTest
 	@MethodSource("mockTwoUnequalRegistrationDTOs")
-	void shouldNotBeEqualWhenUnequalObjectsCompared(RegistrationDTO regDto1, RegistrationDTO regDto2)
+	public void shouldNotBeEqualWhenUnequalObjectsCompared(RegistrationDTO regDto1, RegistrationDTO regDto2)
 	{
 		assertFalse(regDto1.equals(regDto2));
 		assertDoesNotThrow(() -> regDto1.hashCode());
@@ -86,14 +86,14 @@ class RegistrationDTOTests
 	}
 	@ParameterizedTest
 	@MethodSource("mockRegistrationDTO")
-	void shouldNotBeEqualWhenComparingToNull(RegistrationDTO regDto1)
+	public void shouldNotBeEqualWhenComparingToNull(RegistrationDTO regDto1)
 	{
 		assertFalse(regDto1.equals(null));
 		assertDoesNotThrow(() -> regDto1.hashCode());
 	}
 	@ParameterizedTest
 	@MethodSource("mockRegistrationDTO")
-	void shouldNotBeEqualWhenComparingToDifferentType(RegistrationDTO regDto1)
+	public void shouldNotBeEqualWhenComparingToDifferentType(RegistrationDTO regDto1)
 	{
 		assertFalse(regDto1.equals(new Object()));
 		assertDoesNotThrow(() -> regDto1.hashCode());

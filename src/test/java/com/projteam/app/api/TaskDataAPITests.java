@@ -1,20 +1,29 @@
 package com.projteam.app.api;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -104,6 +113,17 @@ class TaskDataAPITests
 			.andExpect(jsonPath("$", not(hasItem(nullValue()))));
 	}
 	@ParameterizedTest
+	@MethodSource("mockTaskInfo")
+	public void canGetImportedTaskInfo(List<Map<String, String>> taskInfo) throws Exception
+	{
+		when(gtdService.getImportedGlobalTaskInfo()).thenReturn(taskInfo);
+		
+		mvc.perform(get("/api/v1/tasks/imported/info"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$", hasSize(taskInfo.size())))
+			.andExpect(jsonPath("$", not(hasItem(nullValue()))));
+	}
+	@ParameterizedTest
 	@MethodSource("mockTaskDTOs")
 	public void canGetImportedTasksAsJsonFile(List<TaskDTO> taskDTOs) throws Exception
 	{
@@ -129,6 +149,112 @@ class TaskDataAPITests
 		
 		verify(gtdService, times(1)).importGlobalTask(content);
 	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOs")
+	public void shouldReturnBadRequestWhenCannotImportTask(List<TaskDTO> taskDTOs) throws Exception
+	{
+		JsonNode content = mapper.valueToTree(taskDTOs);
+		String exceptionMessage = "Mock exception";
+		doThrow(new IllegalArgumentException(exceptionMessage))
+			.when(gtdService).importGlobalTask(content);
+		
+		mvc.perform(post("/api/v1/tasks/imported")
+				.contentType(APPLICATION_JSON_UTF8)
+				.content(content.toString()))
+			.andExpect(status().isBadRequest())
+			.andExpect(content().string(containsString(exceptionMessage)));
+		
+		verify(gtdService, times(1)).importGlobalTask(content);
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOs")
+	public void canEditTask(List<TaskDTO> taskDTOs) throws Exception
+	{
+		UUID id = UUID.randomUUID();
+		JsonNode content = mapper.valueToTree(taskDTOs);
+		when(gtdService.editImportedGlobalTask(id, content)).thenReturn(true);
+		
+		mvc.perform(put("/api/v1/tasks/imported/" + id)
+				.contentType(APPLICATION_JSON_UTF8)
+				.content(content.toString()))
+			.andExpect(status().isOk());
+		
+		verify(gtdService, times(1)).editImportedGlobalTask(id, content);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOs")
+	public void shouldReturnBadRequestWhenCannotEditTask(List<TaskDTO> taskDTOs) throws Exception
+	{
+		UUID id = UUID.randomUUID();
+		JsonNode content = mapper.valueToTree(taskDTOs);
+		when(gtdService.editImportedGlobalTask(id, content)).thenReturn(false);
+		
+		mvc.perform(put("/api/v1/tasks/imported/" + id)
+				.contentType(APPLICATION_JSON_UTF8)
+				.content(content.toString()))
+			.andExpect(status().isBadRequest());
+		
+		verify(gtdService, times(1)).editImportedGlobalTask(id, content);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOs")
+	public void shouldReturnBadRequestWhenEditTaskThrows(List<TaskDTO> taskDTOs) throws Exception
+	{
+		UUID id = UUID.randomUUID();
+		JsonNode content = mapper.valueToTree(taskDTOs);
+		String exceptionMessage = "Mock exception";
+		doThrow(new IllegalArgumentException(exceptionMessage))
+			.when(gtdService).editImportedGlobalTask(id, content);
+		
+		mvc.perform(put("/api/v1/tasks/imported/" + id)
+				.contentType(APPLICATION_JSON_UTF8)
+				.content(content.toString()))
+			.andExpect(status().isBadRequest())
+			.andExpect(content().string(containsString(exceptionMessage)));
+		
+		verify(gtdService, times(1)).editImportedGlobalTask(id, content);
+	}
+	
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	public void canAttemptToDeleteImportedTask(boolean success) throws Exception
+	{
+		UUID id = UUID.randomUUID();
+		when(gtdService.removeImportedGlobalTask(id)).thenReturn(success);
+		mvc.perform(delete("/api/v1/tasks/imported/" + id))
+			.andExpect(status().isOk())
+			.andExpect(content().string("" + success));
+		
+		verify(gtdService, times(1)).removeImportedGlobalTask(id);
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockTaskDTO")
+	public void canGetTaskByID(TaskDTO taskDTO) throws Exception
+	{
+		UUID id = UUID.randomUUID();
+		String taskName = "MockTask";
+		when(gtdService.getImportedGlobalTask(id)).thenReturn(Optional.of(taskDTO));
+		when(gtdService.getTaskDtoName(any())).thenReturn(taskName);
+		mvc.perform(get("/api/v1/tasks/imported/" + id))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.taskName", is(taskName)))
+			.andExpect(jsonPath("$.taskContent").exists());
+		
+		verify(gtdService, times(1)).getImportedGlobalTask(id);
+	}
+	@Test
+	public void cannotGetTaskWithIncorrectID() throws Exception
+	{
+		UUID id = UUID.randomUUID();
+		when(gtdService.getImportedGlobalTask(id)).thenReturn(Optional.empty());
+		mvc.perform(get("/api/v1/tasks/imported/" + id))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.taskExists", is("false")));
+		
+		verify(gtdService, times(1)).getImportedGlobalTask(id);
+	}
 	
 	@Test
 	public void canGetTaskCreatorPage() throws Exception
@@ -141,16 +267,44 @@ class TaskDataAPITests
 	
 	public static List<Arguments> mockTaskDTOs()
 	{
+		return taskDTOs()
+				.stream()
+				.map(l -> Arguments.of(l))
+				.collect(Collectors.toList());
+	}
+	public static List<Arguments> mockTaskDTO()
+	{
+		return taskDTOs()
+				.stream()
+				.map(l -> Arguments.of(l.get(0)))
+				.collect(Collectors.toList());
+	}
+	public static List<Arguments> mockTaskInfo()
+	{
+		return taskDTOs()
+				.stream()
+				.map(l -> l.stream()
+						.map(t -> Map.of(
+								"taskID", UUID.randomUUID().toString(),
+								"taskName", t.getClass().getName()))
+						.collect(Collectors.toList()))
+				.map(l -> Arguments.of(l))
+				.collect(Collectors.toList());
+	}
+	
+	//---Helpers---
+	
+	public static List<List<TaskDTO>> taskDTOs()
+	{
 		return List.of(
-				Arguments.of(
-						List.of(new ChronologicalOrderDTO(
-								"Test instruction",
-								List.of("tag1", "Tag-2", "tag 3"),
-								100,
-								List.of(
-									"Sen1",
-									"Sen 2",
-									"sentence 3"))
-						)));
+				List.of(new ChronologicalOrderDTO(
+					"Test instruction",
+					List.of("tag1", "Tag-2", "tag 3"),
+					100,
+					List.of(
+						"Sen1",
+						"Sen 2",
+						"sentence 3"))
+		));
 	}
 }

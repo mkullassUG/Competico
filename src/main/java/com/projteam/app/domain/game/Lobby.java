@@ -205,7 +205,10 @@ public class Lobby
 	}
 	private boolean isAccountInactive(Account acc, long maxTimeSinceLastInteractionMilli)
 	{
-		long diff = System.nanoTime() - lastInteractions.getOrDefault(acc.getId(), 0l);
+		UUID id = acc.getId();
+		if (!lastInteractions.containsKey(id))
+			return true;
+		long diff = System.nanoTime() - lastInteractions.get(id);
 		return (diff / NANOS_IN_MILLI) > maxTimeSinceLastInteractionMilli;
 	}
 }
