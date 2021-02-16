@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -32,28 +34,44 @@ import com.projteam.app.domain.game.tasks.SingleChoice;
 import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.WordFill;
+import com.projteam.app.dto.game.tasks.create.ChoiceWordFillDTO;
+import com.projteam.app.dto.game.tasks.create.ChronologicalOrderDTO;
+import com.projteam.app.dto.game.tasks.create.ListChoiceWordFillDTO;
+import com.projteam.app.dto.game.tasks.create.ListSentenceFormingDTO;
+import com.projteam.app.dto.game.tasks.create.ListWordFillDTO;
+import com.projteam.app.dto.game.tasks.create.MultipleChoiceDTO;
+import com.projteam.app.dto.game.tasks.create.SingleChoiceDTO;
+import com.projteam.app.dto.game.tasks.create.TaskDTO;
+import com.projteam.app.dto.game.tasks.create.WordConnectDTO;
+import com.projteam.app.dto.game.tasks.create.WordFillDTO;
 import com.projteam.app.service.AccountService;
 import com.projteam.app.service.game.tasks.TaskService;
+import com.projteam.app.service.game.tasks.mappers.GenericTaskMapper;
 
 @Service
 public class GameTaskDataService
 {
 	private List<TaskService> taskServices;
 	private AccountService accountService;
+	private GenericTaskMapper taskMapper;
 	
-	private Map<UUID, List<Task>> globalImportedTasks;
+	private Map<UUID, List<Entry<UUID, Task>>> globalImportedTasks;
 	
+	private Map<String, Class<? extends TaskDTO>> taskDtoNameToClass;
 	private Map<String, Class<? extends Task>> taskNameToClass;
+	private Map<String, String> taskDtoClassNameToName;
 	private Map<String, String> taskClassNameToName;
 	
 	private final ObjectMapper mapperByField;
 	
 	@Autowired
 	public GameTaskDataService(List<TaskService> taskServiceList,
-			AccountService accServ)
+			AccountService accServ,
+			GenericTaskMapper taskMapper)
 	{
 		taskServices = new ArrayList<>(taskServiceList);
 		accountService = accServ;
+		this.taskMapper = taskMapper;
 		
 		globalImportedTasks = new HashMap<>();
 		
@@ -142,25 +160,29 @@ public class GameTaskDataService
 	}
 
 	@Transactional
-	public JsonNode getAllTasksAsJson()
+	public List<TaskDTO> getAllTasks()
 	{
 		List<Task> ret = new ArrayList<>();
 		
 		for (TaskService taskServ: taskServices)
 			ret.addAll(taskServ.genericFindAll());
 		
-		return taskListToJson(ret);
+		return new ArrayList<>(ret.stream()
+				.map(task -> taskMapper.toDTO(task))
+				.collect(Collectors.toList()));
 	}
 	
-	public void importGlobalTask(JsonNode task) throws IOException, ClassNotFoundException
+	public void importGlobalTask(JsonNode taskData) throws IOException, ClassNotFoundException
 	{
-		importGlobalTask(task, getAccount());
+		importGlobalTask(taskData, getAccount());
 	}
-	public void importGlobalTask(JsonNode task, Account acc) throws IOException, ClassNotFoundException
+	public void importGlobalTask(JsonNode taskData, Account acc) throws IOException, ClassNotFoundException
 	{
 		UUID id = acc.getId();
 		globalImportedTasks.computeIfAbsent(id, k -> new ArrayList<>());
-		globalImportedTasks.get(id).add(readTask(task));
+		globalImportedTasks.get(id).add(Map.entry(
+				UUID.randomUUID(),
+				taskDtoJsonToTask(taskData)));
 	}
 	public int getImportedGlobalTaskCount()
 	{
@@ -172,26 +194,105 @@ public class GameTaskDataService
 				.map(l -> l.size())
 				.orElse(0);
 	}
-	public JsonNode getImportedGlobalTasksAsJson()
+	public List<TaskDTO> getImportedGlobalTasks()
 	{
-		return getImportedGlobalTasksAsJson(getAccount());
+		return getImportedGlobalTasks(getAccount());
 	}
-	public JsonNode getImportedGlobalTasksAsJson(Account account)
+	public List<TaskDTO> getImportedGlobalTasks(Account account)
 	{
-		return taskListToJson(
+		return taskListToDTO(
 				Optional.ofNullable(globalImportedTasks.get(account.getId()))
-					.orElseGet(() -> new ArrayList<>()));
+					.orElseGet(() -> new ArrayList<>())
+				.stream()
+				.map(e -> e.getValue())
+				.collect(Collectors.toList()));
+	}
+	public List<Map<String, String>> getImportedGlobalTaskInfo()
+	{
+		return getImportedGlobalTaskInfo(getAccount());
+	}
+	public Optional<TaskDTO> getImportedGlobalTask(UUID id)
+	{
+		return getImportedGlobalTask(id, getAccount());
+	}
+	public Optional<TaskDTO> getImportedGlobalTask(UUID id, Account account)
+	{
+		return Optional.ofNullable(
+				globalImportedTasks.get(account.getId()))
+			.map(tasks ->
+			{
+				for (var e: tasks)
+				{
+					if (e.getKey().equals(id))
+						return taskMapper.toDTO(e.getValue());
+				}
+				return null;
+			});
+	}
+	public List<Map<String, String>> getImportedGlobalTaskInfo(Account account)
+	{
+		return Optional.ofNullable(globalImportedTasks.get(account.getId()))
+					.orElseGet(() -> new ArrayList<>())
+				.stream()
+				.map(e -> Map.of(
+						"taskID", e.getKey().toString(),
+						"taskName", getTaskDtoName(taskMapper.toDTO(e.getValue()))))
+				.collect(Collectors.toList());
+	}
+	public boolean removeImportedGlobalTask(UUID id)
+	{
+		return removeImportedGlobalTask(id, getAccount());
+	}
+	public boolean removeImportedGlobalTask(UUID id, Account account)
+	{
+		List<Entry<UUID, Task>> list = globalImportedTasks.get(account.getId());
+		if (list == null)
+			return false;
+		Iterator<Entry<UUID, Task>> it = list.iterator();
+		while (it.hasNext())
+		{
+			Entry<UUID, Task> e = it.next();
+			if (e.getKey().equals(id))
+			{
+				it.remove();
+				return true;
+			}
+		}
+		return false;
+	}
+	public boolean editImportedGlobalTask(UUID taskId, JsonNode taskData) throws IOException, ClassNotFoundException
+	{
+		return editImportedGlobalTask(taskId, taskData, getAccount());
+	}
+	public boolean editImportedGlobalTask(UUID taskId, JsonNode taskData, Account acc) throws IOException, ClassNotFoundException
+	{
+		UUID accId = acc.getId();
+		globalImportedTasks.computeIfAbsent(accId, k -> new ArrayList<>());
+		var list = globalImportedTasks.get(accId);
+		int l = list.size();
+		
+		for (int i = 0; i < l; i++)
+		{
+			var e = list.get(i);
+			if (e.getKey().equals(taskId))
+			{
+				list.set(i, Map.entry(taskId, taskDtoJsonToTask(taskData)));
+				return true;
+			}
+		}
+		return false;
 	}
 	
-	private JsonNode taskListToJson(List<Task> tasks)
+	private List<TaskDTO> taskListToDTO(List<Task> tasks)
 	{
-		return mapperByField.valueToTree(tasks
-				.stream()
-				.map(t -> Map.of(
-						"taskName", taskClassNameToName.get(t.getClass().getName()),
-						"taskContent", t
-						))
-				.collect(Collectors.toList()));
+		return tasks
+			.stream()
+			.map(t -> taskMapper.toDTO(t))
+			.collect(Collectors.toList());
+	}
+	public String getTaskDtoName(TaskDTO dto)
+	{
+		return taskDtoClassNameToName.get(dto.getClass().getName());
 	}
 	private Task readTask(JsonNode task) throws IOException, ClassNotFoundException
 	{
@@ -203,24 +304,41 @@ public class GameTaskDataService
 		
 		return mapperByField.treeToValue(taskContent, taskClass);
 	}
+	private Task taskDtoJsonToTask(JsonNode task) throws IOException, ClassNotFoundException
+	{
+		String taskName = task.get("taskName").textValue();
+		JsonNode taskContent = task.get("taskContent");
+		Class<? extends TaskDTO> taskClass = taskDtoNameToClass.get(taskName);
+		if (taskClass == null)
+			throw new ClassNotFoundException("Could not find an applicable task definition");
+		
+		return taskMapper.toEntity(mapperByField.treeToValue(taskContent, taskClass));
+	}
 
 	private void initTaskNameMaps()
 	{
+		taskDtoNameToClass = new HashMap<>();
+		taskDtoClassNameToName = new HashMap<>();
+		
 		taskNameToClass = new HashMap<>();
 		taskClassNameToName = new HashMap<>();
 		
-		addTaskNameMapping("WordFill", WordFill.class);
-		addTaskNameMapping("ListWordFill", ListWordFill.class);
-		addTaskNameMapping("ChoiceWordFill", ChoiceWordFill.class);
-		addTaskNameMapping("ListChoiceWordFill", ListChoiceWordFill.class);
-		addTaskNameMapping("ListSentenceForming", ListSentenceForming.class);
-		addTaskNameMapping("SingleChoice", SingleChoice.class);
-		addTaskNameMapping("MultipleChoice", MultipleChoice.class);
-		addTaskNameMapping("WordConnect", WordConnect.class);
-		addTaskNameMapping("ChronologicalOrder", ChronologicalOrder.class);
+		addTaskNameMapping("WordFill", WordFillDTO.class, WordFill.class);
+		addTaskNameMapping("ListWordFill", ListWordFillDTO.class, ListWordFill.class);
+		addTaskNameMapping("ChoiceWordFill", ChoiceWordFillDTO.class, ChoiceWordFill.class);
+		addTaskNameMapping("ListChoiceWordFill", ListChoiceWordFillDTO.class, ListChoiceWordFill.class);
+		addTaskNameMapping("ListSentenceForming", ListSentenceFormingDTO.class, ListSentenceForming.class);
+		addTaskNameMapping("SingleChoice", SingleChoiceDTO.class, SingleChoice.class);
+		addTaskNameMapping("MultipleChoice", MultipleChoiceDTO.class, MultipleChoice.class);
+		addTaskNameMapping("WordConnect", WordConnectDTO.class, WordConnect.class);
+		addTaskNameMapping("ChronologicalOrder", ChronologicalOrderDTO.class, ChronologicalOrder.class);
 	}
-	private void addTaskNameMapping(String taskName, Class<? extends Task> taskClass)
+	private void addTaskNameMapping(String taskName,
+			Class<? extends TaskDTO> taskDtoClass,
+			Class<? extends Task> taskClass)
 	{
+		taskDtoNameToClass.put(taskName, taskDtoClass);
+		taskDtoClassNameToName.put(taskDtoClass.getName(), taskName);
 		taskNameToClass.put(taskName, taskClass);
 		taskClassNameToName.put(taskClass.getName(), taskName);
 	}

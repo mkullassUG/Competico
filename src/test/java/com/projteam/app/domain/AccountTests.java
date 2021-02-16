@@ -12,13 +12,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 class AccountTests
 {
 	@Test
-	void testAccountConstructor()
+	public void testAccountConstructor()
 	{
 		assertDoesNotThrow(() -> new Account());
 	}
 
 	@Test
-	void testIDfromBuilder()
+	public void testIDfromBuilder()
 	{
 		UUID id = UUID.randomUUID();
 		
@@ -29,7 +29,7 @@ class AccountTests
 		assertEquals(acc.getId(), id);
 	}
 	@Test
-	void testIDfromSetter()
+	public void testIDfromSetter()
 	{
 		UUID id = UUID.randomUUID();
 		
@@ -39,7 +39,7 @@ class AccountTests
 		assertEquals(acc.getId(), id);
 	}
 	@Test
-	void testGetEmailByBuilder()
+	public void testGetEmailByBuilder()
 	{
 		String email = "email";
 		
@@ -51,7 +51,7 @@ class AccountTests
 	}
 
 	@Test
-	void testGetEmailBySetter()
+	public void testGetEmailBySetter()
 	{
 		String email = "email";
 		
@@ -61,7 +61,7 @@ class AccountTests
 		assertEquals(acc.getEmail(), email);
 	}
 	@Test
-	void testEmailByBuilder()
+	public void testEmailByBuilder()
 	{
 		String email = "email";
 		
@@ -72,7 +72,7 @@ class AccountTests
 		assertEquals(acc.getEmail(), email);
 	}
 	@Test
-	void testEmailBySetter()
+	public void testEmailBySetter()
 	{
 		String email = "email";
 		
@@ -82,7 +82,7 @@ class AccountTests
 		assertEquals(acc.getEmail(), email);
 	}
 	@Test
-	void testUsernameByBuilder()
+	public void testUsernameByBuilder()
 	{
 		String username = "username";
 		
@@ -93,7 +93,7 @@ class AccountTests
 		assertEquals(acc.getUsername(), username);
 	}
 	@Test
-	void testUsernameBySetter()
+	public void testUsernameBySetter()
 	{
 		String username = "username";
 		
@@ -103,7 +103,7 @@ class AccountTests
 		assertEquals(acc.getUsername(), username);
 	}
 	@Test
-	void testNicknameByBuilder()
+	public void testNicknameByBuilder()
 	{
 		String nickname = "nickname";
 		
@@ -114,7 +114,7 @@ class AccountTests
 		assertEquals(acc.getNickname(), nickname);
 	}
 	@Test
-	void testNicknameBySetter()
+	public void testNicknameBySetter()
 	{
 		String nickname = "nickname";
 		
@@ -124,7 +124,7 @@ class AccountTests
 		assertEquals(acc.getNickname(), nickname);
 	}
 	@Test
-	void testPasswordHashByBuilder()
+	public void testPasswordHashByBuilder()
 	{
 		String passwordHash = "passHash";
 		
@@ -135,7 +135,7 @@ class AccountTests
 		assertEquals(acc.getPassword(), passwordHash);
 	}
 	@Test
-	void testPasswordHashBySetter()
+	public void testPasswordHashBySetter()
 	{
 		String passwordHash = "passHash";
 		
@@ -145,7 +145,7 @@ class AccountTests
 		assertEquals(acc.getPassword(), passwordHash);
 	}
 	@Test
-	void testRolesByBuilder()
+	public void testRolesByBuilder()
 	{
 		List<String> roles = List.of("Role1", "role2", "r3");
 		
@@ -156,7 +156,7 @@ class AccountTests
 		assertEquals(acc.getRoles(), roles);
 	}
 	@Test
-	void testRolesBySetter()
+	public void testRolesBySetter()
 	{
 		List<String> roles = List.of("Role1", "role2", "r3");
 		
@@ -166,7 +166,7 @@ class AccountTests
 		assertEquals(acc.getRoles(), roles);
 	}
 	@Test
-	void testEnabledByBuilder()
+	public void testEnabledByBuilder()
 	{
 		boolean enabled = true;
 		
@@ -177,7 +177,7 @@ class AccountTests
 		assertEquals(acc.isEnabled(), enabled);
 	}
 	@Test
-	void testEnabledBySetter()
+	public void testEnabledBySetter()
 	{
 		boolean enabled = true;
 		
@@ -187,7 +187,7 @@ class AccountTests
 		assertEquals(acc.isEnabled(), enabled);
 	}
 	@Test
-	void testNonExpiredByBuilder()
+	public void testNonExpiredByBuilder()
 	{
 		boolean nonExpired = true;
 		
@@ -198,7 +198,7 @@ class AccountTests
 		assertEquals(acc.isAccountNonExpired(), nonExpired);
 	}
 	@Test
-	void testNonExpiredBySetter()
+	public void testNonExpiredBySetter()
 	{
 		boolean nonExpired = true;
 		
@@ -208,7 +208,7 @@ class AccountTests
 		assertEquals(acc.isAccountNonExpired(), nonExpired);
 	}
 	@Test
-	void testNonLockedByBuilder()
+	public void testNonLockedByBuilder()
 	{
 		boolean nonLocked = true;
 		
@@ -219,7 +219,7 @@ class AccountTests
 		assertEquals(acc.isAccountNonLocked(), nonLocked);
 	}
 	@Test
-	void testNonLockedBySetter()
+	public void testNonLockedBySetter()
 	{
 		boolean nonLocked = true;
 		
@@ -229,7 +229,7 @@ class AccountTests
 		assertEquals(acc.isAccountNonLocked(), nonLocked);
 	}
 	@Test
-	void testCredentialsNonExpiredByBuilder()
+	public void testCredentialsNonExpiredByBuilder()
 	{
 		boolean credentialsNonExpired = true;
 		
@@ -240,7 +240,7 @@ class AccountTests
 		assertEquals(acc.isCredentialsNonExpired(), credentialsNonExpired);
 	}
 	@Test
-	void testCredentialsNonExpiredBySetter()
+	public void testCredentialsNonExpiredBySetter()
 	{
 		boolean credentialsNonExpired = true;
 		
@@ -251,7 +251,7 @@ class AccountTests
 	}
 	
 	@Test
-	void shouldHaveAssignedRoles()
+	public void shouldHaveAssignedRoles()
 	{
 		List<String> roles = List.of("Role1", "role2", "r3");
 		
@@ -262,7 +262,7 @@ class AccountTests
 		roles.forEach(role -> assertTrue(acc.hasRole(role)));
 	}
 	@Test
-	void shouldNotHaveUnassignedRoles()
+	public void shouldNotHaveUnassignedRoles()
 	{
 		List<String> roles = List.of("Role1", "role2", "r3");
 		
@@ -273,7 +273,7 @@ class AccountTests
 		assertFalse(acc.hasRole("role4"));
 	}
 	@Test
-	void shouldConvertRolesToAuthorities()
+	public void shouldConvertRolesToAuthorities()
 	{
 		List<String> roles = List.of("Role1", "role2", "r3");
 		
@@ -285,13 +285,13 @@ class AccountTests
 				assertTrue(roles.contains(auth.getAuthority())));
 	}
 	@Test
-	void shouldConvertToString()
+	public void shouldConvertToString()
 	{
 		assertDoesNotThrow(() -> new Account().toString());
 	}
 	
 	@Test
-	void shouldBeEqualWhenSameEmptyObjectCompared()
+	public void shouldBeEqualWhenSameEmptyObjectCompared()
 	{
 		Account acc = new Account();
 		
@@ -300,21 +300,21 @@ class AccountTests
 	}
 	@ParameterizedTest
 	@MethodSource("mockAccount")
-	void shouldBeEqualWhenSameObjectCompared(Account acc)
+	public void shouldBeEqualWhenSameObjectCompared(Account acc)
 	{
 		assertTrue(acc.equals(acc));
 		assertEquals(acc.hashCode(), acc.hashCode());
 	}
 	@ParameterizedTest
 	@MethodSource("mockTwoEqualAccounts")
-	void shouldBeEqualWhenEqualObjectsCompared(Account acc1, Account acc2)
+	public void shouldBeEqualWhenEqualObjectsCompared(Account acc1, Account acc2)
 	{
 		assertTrue(acc1.equals(acc2));
 		assertEquals(acc1.hashCode(), acc2.hashCode());
 	}
 	@ParameterizedTest
 	@MethodSource("mockTwoUnequalAccounts")
-	void shouldNotBeEqualWhenUnequalObjectsCompared(Account acc1, Account acc2)
+	public void shouldNotBeEqualWhenUnequalObjectsCompared(Account acc1, Account acc2)
 	{
 		assertFalse(acc1.equals(acc2));
 		assertDoesNotThrow(() -> acc1.hashCode());
@@ -322,14 +322,14 @@ class AccountTests
 	}
 	@ParameterizedTest
 	@MethodSource("mockAccount")
-	void shouldNotBeEqualWhenComparedToNull(Account acc)
+	public void shouldNotBeEqualWhenComparedToNull(Account acc)
 	{
 		assertFalse(acc.equals(null));
 		assertDoesNotThrow(() -> acc.hashCode());
 	}
 	@ParameterizedTest
 	@MethodSource("mockAccount")
-	void shouldNotBeEqualWhenComparedToDifferentType(Account acc)
+	public void shouldNotBeEqualWhenComparedToDifferentType(Account acc)
 	{
 		assertFalse(acc.equals(new Object()));
 		assertDoesNotThrow(() -> acc.hashCode());

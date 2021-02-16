@@ -28,6 +28,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,10 +37,11 @@ import com.projteam.app.domain.Account;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.service.AccountService;
-import com.projteam.app.utils.Holder;
+import com.projteam.app.testutils.Holder;
 
-@TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest
+@TestInstance(Lifecycle.PER_CLASS)
+@ContextConfiguration(name = "Integration-tests")
 @AutoConfigureMockMvc
 public class LoginTests
 {

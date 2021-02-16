@@ -29,6 +29,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -37,19 +38,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.config.SecurityContextConfig;
 import com.projteam.app.dao.AccountDAO;
 import com.projteam.app.domain.Account;
-import com.projteam.app.dto.game.tasks.ChoiceWordFillElementDTO;
-import com.projteam.app.dto.game.tasks.ChronologicalOrderDTO;
-import com.projteam.app.dto.game.tasks.ListChoiceWordFillDTO;
-import com.projteam.app.dto.game.tasks.ListWordFillDTO;
-import com.projteam.app.dto.game.tasks.MultipleChoiceElementDTO;
-import com.projteam.app.dto.game.tasks.SingleChoiceDTO;
-import com.projteam.app.dto.game.tasks.WordConnectDTO;
-import com.projteam.app.dto.game.tasks.WordFillElementDTO;
+import com.projteam.app.dto.game.tasks.show.ChoiceWordFillElementDTO;
+import com.projteam.app.dto.game.tasks.show.ChronologicalOrderDTO;
+import com.projteam.app.dto.game.tasks.show.ListChoiceWordFillDTO;
+import com.projteam.app.dto.game.tasks.show.ListWordFillDTO;
+import com.projteam.app.dto.game.tasks.show.MultipleChoiceElementDTO;
+import com.projteam.app.dto.game.tasks.show.SingleChoiceDTO;
+import com.projteam.app.dto.game.tasks.show.WordConnectDTO;
+import com.projteam.app.dto.game.tasks.show.WordFillElementDTO;
 import com.projteam.app.service.AccountService;
 import com.projteam.app.service.game.GameService;
 
 @SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)
+@ContextConfiguration(name = "Integration-tests")
 @AutoConfigureMockMvc(addFilters = false)
 public class GameTestsWithDatabase
 {

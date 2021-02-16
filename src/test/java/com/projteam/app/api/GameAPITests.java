@@ -44,7 +44,7 @@ import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 import com.projteam.app.dto.game.GameResultPersonalDTO;
 import com.projteam.app.dto.game.GameResultTotalDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
-import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
 import com.projteam.app.service.AccountService;
 import com.projteam.app.service.game.GameService;
 import com.projteam.app.service.game.GameTaskDataService;
@@ -327,6 +327,17 @@ public class GameAPITests
 			
 			verify(gameService).getHistory(page - 1);
 		}
+	}
+	
+	@ParameterizedTest
+	@ValueSource(ints = {-5, -1, 0, 1, 2, 5, 25, 100, 9999})
+	public void shouldGetRatingSuccessfully(int rating) throws Exception
+	{
+		when(gameService.getRating()).thenReturn(Optional.of(rating));
+		
+		mvc.perform(get("/api/v1/player/rating"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.rating", is(rating)));
 	}
 	
 	@Test

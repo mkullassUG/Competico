@@ -19,7 +19,7 @@
       "wordChoices" : [ {
         "id" : "7c88ee56-ef0a-4aa7-9c12-358c07cec370",
         "correctAnswer" : "until",
-        "inncorrectAnswers" : [ "by" ]
+        "incorrectAnswers" : [ "by" ]
       } ],
       "startWithText" : true
     }, {
@@ -28,7 +28,7 @@
       "wordChoices" : [ {
         "id" : "2d9e419d-5d4a-4049-8019-891b027b0fe0",
         "correctAnswer" : "on",
-        "inncorrectAnswers" : [ "in" ]
+        "incorrectAnswers" : [ "in" ]
       } ],
       "startWithText" : true
     }, {
@@ -37,7 +37,7 @@
       "wordChoices" : [ {
         "id" : "2cf31bc9-f3a2-4462-a063-11d33764df14",
         "correctAnswer" : "by",
-        "inncorrectAnswers" : [ "in" ]
+        "incorrectAnswers" : [ "in" ]
       } ],
       "startWithText" : true
     }, {
@@ -46,7 +46,7 @@
       "wordChoices" : [ {
         "id" : "c8d00301-1704-4b2e-9be2-8f89d215902d",
         "correctAnswer" : "at",
-        "inncorrectAnswers" : [ "on" ]
+        "incorrectAnswers" : [ "on" ]
       } ],
       "startWithText" : true
     }, {
@@ -55,7 +55,7 @@
       "wordChoices" : [ {
         "id" : "08aaea02-a95f-4a31-a976-b8b72bf468bf",
         "correctAnswer" : "already",
-        "inncorrectAnswers" : [ "before" ]
+        "incorrectAnswers" : [ "before" ]
       } ],
       "startWithText" : true
     }, {
@@ -64,7 +64,7 @@
       "wordChoices" : [ {
         "id" : "8882f1c1-f084-4106-a4ac-7aba25bbe5ee",
         "correctAnswer" : "on time",
-        "inncorrectAnswers" : [ "in time" ]
+        "incorrectAnswers" : [ "in time" ]
       } ],
       "startWithText" : true
     }, {
@@ -73,7 +73,7 @@
       "wordChoices" : [ {
         "id" : "fb6dc4b9-f1ba-4d6d-bea7-e6ae884410d0",
         "correctAnswer" : "Once",
-        "inncorrectAnswers" : [ "One day" ]
+        "incorrectAnswers" : [ "One day" ]
       } ],
       "startWithText" : false
     }, {
@@ -82,7 +82,7 @@
       "wordChoices" : [ {
         "id" : "b26d8da3-064c-4eab-8ecf-21966011ba86",
         "correctAnswer" : "for",
-        "inncorrectAnswers" : [ "since" ]
+        "incorrectAnswers" : [ "since" ]
       } ],
       "startWithText" : false
     } ],
@@ -332,7 +332,7 @@
     "tags" : [ ],
     "content" : {
       "id" : "5b3c7a43-c0e6-41bc-8de2-27fcb2a10c0a",
-      "text" : [ "I’m sorry to have to tell you that there has been some ", " in the project and we won’t be able to ", " our original ", " on July 30th for completing the ", " of the new software. Pedro’s absence for three weeks caused a bit of a ", ", and there were more delays when we realised that there was still some ", " in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month." ],
+      "text" : [ "I’m sorry to have to tell you that there has been some ", " in the project and we won’t be able to ", " our original ", " on July 30th for completing the ", " of the new software. Pedro’s absence for three weeks caused a bit of a ", ", and there were more delays when we realised that there was still some", " in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month." ],
       "emptySpaces" : [ {
         "answer" : "slippage"
       }, {

@@ -1,4 +1,4 @@
-package com.projteam.app.utils;
+package com.projteam.app.testutils;
 
 import java.io.Serializable;
 import org.mockito.invocation.InvocationOnMock;

@@ -2,11 +2,11 @@ const TaskCreator = (data_) =>{
 
     /*  Variables */
     var self = data_;
+    self.taskID; //do edycji
     self.taskContent = {};
     self.taskContent.tags = [];
     self.taskContent.difficulty = 100.0;
     self.taskContent.instruction = "ToDo instruction";
-    self.taskContent.id = "";
 
     /*  Logic functions */
     var taskCreatorInit = () => {
@@ -15,14 +15,6 @@ const TaskCreator = (data_) =>{
         
         */
         
-        /*NIE POWINO SIĘ TWORZYC ID PO STRONIE KLIENTA!*/
-        self.taskContent.id = uuidv4();
-    }
-    /*NIE POWINO SIĘ TWORZYC ID PO STRONIE KLIENTA!*/
-    var uuidv4 = () => {
-        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-          (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-        );
     }
 
     self.checkIfTaskReady = () => {
@@ -46,10 +38,37 @@ const TaskCreator = (data_) =>{
         /*TODO:
         podgląd stworzonego zadania jako gry*/
     }
-
-    self.sendTaskVariant = (ajaxCallback) => {
-
+    //wysłanie nowego
+    self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask) => {
+        ajaxCallback(
+            preparedTask,
+            (data) => {
+                console.log("sent");
+                onSuccess(); // self.setupImportedTasksTable();
+            }
+        );
     }
+    //TODO edycja starego 
+    self.sendEditedTaskVariant = (ajaxCallback, onSuccess, preparedTask) => {
+        ajaxCallback(
+            preparedTask,
+            (data) => {
+                console.log("edited");
+                onSuccess(); // self.setupImportedTasksTable();
+            }
+        );
+    }
+
+    /*TODO delete (delete nie musze robić z tego poziomu bo nie ważne jaki rodzaj taska)*/
+    // self.deleteTaskVariant = (ajaxCallback, onSuccess, preparedTask) => {
+    //     ajaxCallback(
+    //         preparedTask,
+    //         (data) => {
+    //             console.log("deleted");
+    //             onSuccess(); // self.setupImportedTasksTable();
+    //         }
+    //     );
+    // }
 
     self.setupDemoFromCurrent = () => {
         /*TODO:
@@ -289,14 +308,16 @@ const WordFillCreator = (data_ = {}) => {
     }
 
     var sendTaskVariantSuper = self.sendTaskVariant;
-    self.sendTaskVariant = (ajaxCallback) => {
-        sendTaskVariantSuper();
-        var preparedTask = self.prepareTaskJsonFile();
+    self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
-        ajaxCallback(
-            preparedTask,
-            (data)=>{console.log("sent")}
-        );
+        sendTaskVariantSuper(ajaxCallback, onSuccess, preparedTask);
+    }
+
+    var sendEditedTaskVariantSuper = self.sendEditedTaskVariant;
+    self.sendEditedTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
+        /*TODO
+        potrzeba jeszcze taskID*/
+        sendEditedTaskVariantSuper(ajaxCallback, onSuccess, preparedTask);
     }
 
     var loadTaskFromSuper = self.loadTaskFrom;
@@ -547,14 +568,9 @@ const ChronologicalOrderCreator = (data_ = {}) => {
     }
 
     var sendTaskVariantSuper = self.sendTaskVariant;
-    self.sendTaskVariant = (ajaxCallback) => {
+    self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
-        var preparedTask = self.prepareTaskJsonFile();
-
-        ajaxCallback(
-            preparedTask,
-            (data)=>{console.log("sent")}
-        );
+        sendTaskVariantSuper(ajaxCallback, onSuccess, preparedTask);
     }
 
     var loadTaskFromSuper = self.loadTaskFrom;
@@ -780,14 +796,9 @@ const WordConnectCreator = (data_ = {}) => {
     }
 
     var sendTaskVariantSuper = self.sendTaskVariant;
-    self.sendTaskVariant = (ajaxCallback) => {
+    self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
-        var preparedTask = self.prepareTaskJsonFile();
-
-        ajaxCallback(
-            preparedTask,
-            (data)=>{console.log("sent")}
-        );
+        sendTaskVariantSuper(ajaxCallback, onSuccess, preparedTask);
     }
 
     var loadTaskFromSuper = self.loadTaskFrom;

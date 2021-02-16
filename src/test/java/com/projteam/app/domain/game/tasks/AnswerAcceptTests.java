@@ -23,7 +23,7 @@ import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 public class AnswerAcceptTests
 {
 	@Test
-	void wordFillAcceptsAnswer()
+	public void wordFillAcceptsAnswer()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -41,7 +41,7 @@ public class AnswerAcceptTests
 		assertEquals(wf.acceptAnswer(wfa), 1);
 	}
 	@Test
-	void choiceWordFillAcceptsAnswer()
+	public void choiceWordFillAcceptsAnswer()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -58,7 +58,7 @@ public class AnswerAcceptTests
 		assertEquals(cwf.acceptAnswer(cwfa), 1);
 	}
 	@Test
-	void listWordFillAcceptsAnswer()
+	public void listWordFillAcceptsAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -100,7 +100,7 @@ public class AnswerAcceptTests
 		assertEquals(lwf.acceptAnswer(lwfa), 1);
 	}
 	@Test
-	void listChoiceWordFillAcceptsAnswer()
+	public void listChoiceWordFillAcceptsAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -134,7 +134,7 @@ public class AnswerAcceptTests
 		assertEquals(lcwf.acceptAnswer(lcwfa), 1);
 	}
 	@Test
-	void chronologicalOrderAcceptsAnswer()
+	public void chronologicalOrderAcceptsAnswer()
 	{
 		List<String> text = List.of("Lorem ipsum dolor sit amet",
 				"consectetur adipiscing elit",
@@ -153,7 +153,7 @@ public class AnswerAcceptTests
 		assertEquals(co.acceptAnswer(coa), 1);
 	}
 	@Test
-	void listSentenceFormingAcceptsAnswer()
+	public void listSentenceFormingAcceptsAnswer()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -173,7 +173,7 @@ public class AnswerAcceptTests
 		assertEquals(lsf.acceptAnswer(lsfa), 1);
 	}
 	@Test
-	void singleChoiceAcceptsAnswer()
+	public void singleChoiceAcceptsAnswer()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		String answer = "consectetur";
@@ -188,7 +188,7 @@ public class AnswerAcceptTests
 		assertEquals(sc.acceptAnswer(sca), 1);
 	}
 	@Test
-	void multipleChoiceAcceptsAnswer()
+	public void multipleChoiceAcceptsAnswer()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		List<String> correctAnswers = List.of(
@@ -204,7 +204,7 @@ public class AnswerAcceptTests
 		assertEquals(mc.acceptAnswer(mca), 1);
 	}
 	@Test
-	void wordConnectAcceptsAnswer()
+	public void wordConnectAcceptsAnswer()
 	{
 		List<String> leftWords = List.of("Lorem", "ipsum", "dolor", "sit", "amet");
 		List<String> rightWords = List.of("consectetur", "adipiscing", "elit", "sed do", "eiusmod");

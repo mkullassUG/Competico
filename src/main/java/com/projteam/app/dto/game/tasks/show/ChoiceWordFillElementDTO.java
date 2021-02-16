@@ -1,4 +1,4 @@
-package com.projteam.app.dto.game.tasks;
+package com.projteam.app.dto.game.tasks.show;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +23,7 @@ public class ChoiceWordFillElementDTO implements TaskDTO
 				.stream()
 				.map(wc -> 
 				{
-					List<String> ret = new ArrayList<>(wc.getInncorrectAnswers());
+					List<String> ret = new ArrayList<>(wc.getIncorrectAnswers());
 					ret.add(wc.getCorrectAnswer());
 					Collections.shuffle(ret);
 					return ret;

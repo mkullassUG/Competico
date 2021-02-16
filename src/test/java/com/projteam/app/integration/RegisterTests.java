@@ -36,7 +36,7 @@ import com.projteam.app.config.SecurityContextConfig;
 import com.projteam.app.domain.Account;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.service.AccountService;
-import com.projteam.app.utils.Holder;
+import com.projteam.app.testutils.Holder;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest

@@ -12,14 +12,14 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.domain.game.tasks.ChoiceWordFillElement.WordChoice;
 import com.projteam.app.domain.game.tasks.WordFillElement.EmptySpace;
-import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
 
 public class DTOConversionTests
 {
 	private ObjectMapper mapper = new ObjectMapper();
 	
 	@Test
-	void wordFillConvertsToDTO()
+	public void wordFillConvertsToDTO()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -38,7 +38,7 @@ public class DTOConversionTests
 		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
-	void choiceWordFillConvertsToDTO()
+	public void choiceWordFillConvertsToDTO()
 	{
 		List<String> text = List.of("Lorem ", " ipsum ", " dolor ", " sit ", " amet");
 		List<String> answers = List.of("abc", "def", "ghi", "jkl");
@@ -56,7 +56,7 @@ public class DTOConversionTests
 		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
-	void listWordFillConvertsToDTO()
+	public void listWordFillConvertsToDTO()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -98,7 +98,7 @@ public class DTOConversionTests
 		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
-	void listChoiceWordFillConvertsToDTO()
+	public void listChoiceWordFillConvertsToDTO()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -132,7 +132,7 @@ public class DTOConversionTests
 		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
-	void chronologicalOrderConvertsToDTO()
+	public void chronologicalOrderConvertsToDTO()
 	{
 		List<String> text = List.of("Lorem ipsum dolor sit amet",
 				"consectetur adipiscing elit",
@@ -151,7 +151,7 @@ public class DTOConversionTests
 		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
-	void listSentenceFormingConvertsToDTO()
+	public void listSentenceFormingConvertsToDTO()
 	{
 		List<List<String>> text = List.of(
 				List.of("Lorem ", " ipsum ", " dolor"),
@@ -171,7 +171,7 @@ public class DTOConversionTests
 		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
-	void singleChoiceConvertsToDTO()
+	public void singleChoiceConvertsToDTO()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		String answer = "consectetur";
@@ -186,7 +186,7 @@ public class DTOConversionTests
 		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
-	void multipleChoiceConvertsToDTO()
+	public void multipleChoiceConvertsToDTO()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		List<String> correctAnswers = List.of(
@@ -203,7 +203,7 @@ public class DTOConversionTests
 		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
-	void wordConnectConvertsToDTO()
+	public void wordConnectConvertsToDTO()
 	{
 		List<String> leftWords = List.of("Lorem", "ipsum", "dolor", "sit", "amet");
 		List<String> rightWords = List.of("consectetur", "adipiscing", "elit", "sed do", "eiusmod");

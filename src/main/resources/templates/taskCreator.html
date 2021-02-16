@@ -33,16 +33,16 @@
 
   <body class="bg-primary">
     <!-- main content -->
-    <button class="openbtn" onclick="openNav()">&#9776; Pozostałe zadania</button>
+    <button class="openbtn" id="openNavButton">&#9776; Pozostałe zadania</button>
     <nav class="navbar navbar-dark variantNavbar fixed-top">
       <div  id="main_nav">
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">  Wybór wariantu  </a>
+            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Wybór wariantu nowego zadania</a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item"> Wypełnianie luk w tekście &raquo </a>
                 <ul class="submenu dropdown-menu">
-                  <li><a class="dropdown-item" href="#WordFIll" id="btnWordFIll"> Jeden wielozdaniowy tekst, jedna pula odpowiedzi</a></li>
+                  <li><a class="dropdown-item" href="#WordFill" id="btnWordFill"> Jeden wielozdaniowy tekst, jedna pula odpowiedzi</a></li>
                   <li><a class="dropdown-item disabled" href="#"> Jeden wielozdaniowy tekst, wybór słowa dla każdej luki </a></li>
                   <li><a class="dropdown-item disabled" href="#"> Oddzielne zdania ułożone w wierszach, jedna pula odpowiedzi na wiersz </a></li>
                   <li><a class="dropdown-item disabled" href="#"> Oddzielne zdania ułożone w wierszach, wybór słowa dla każdej luki</a></li>
@@ -62,12 +62,55 @@
         </ul>
       </div>
     </nav>
-    <div id="mySidepanel" class="sidepanel">
-      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id="mySidepanel" class="sidepanel bg-dark">
+      <a href="javascript:void(0)" class="closebtn" id="closeNavButton">&times;</a>
       <a href="#">pozostałe zadania</a>
       <a href="#" id="btnDownloadJsonAllTasks">pobierz wszystkie zadania</a>
       <a href="#" id="btnDownloadJsonImportedTasks">pobierz importowane zadania</a>
-      
+      <div class="table-responsive">
+        <table class="table table-dark table-sm">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nazwa zadanka</th>
+              <th scope="col">edycja</th>
+              <th scope="col">usuwanie</th>
+            </tr>
+          </thead>
+          <tbody id="importedTasksElem">
+            <tr>
+              <th scope="row">1</th>
+              <td>WordFill</td>
+              <td>
+                <button type="button" class="btn btn-success">Edytuj</button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger">Usuń</button>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>WordConnect</td>
+              <td>
+                <button type="button" class="btn btn-success">Edytuj</button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger">Usuń</button>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>ListWordFill</td>
+              <td>
+                <button type="button" class="btn btn-success">Edytuj</button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger">Usuń</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="container fill text-center" id="bigChangeDiv">
       <!-- game -->
@@ -105,7 +148,7 @@
                     <input type="number" class="form-control" id="wordFillFontSize" placeholder="Font size" value="16" readonly>
                   </div>
                   <button class="m-1 btn btn-primary btn-sm" id="wordFillAddWord">wstaw brakujące słowo</button>
-                  <button class="m-1 btn btn-primary btn-sm"id="wordFillAddIncorrectWord">wstaw nadmiar słów</button>
+                  <button class="m-1 btn btn-primary btn-sm"id="wordFillAddIncorrectWord">Wstaw dodatkowe słowa</button>
                   <div class="invalid-feedback" id="invalidWordFillAddWord">
                     Nie zgadza się umiejscowienie tagów {[]}.
                   </div>
@@ -357,6 +400,60 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
             <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnSendSaveTask">Prześlij</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal edit task-->
+    <div class="modal fade" id="editTaskModalCenter" tabindex="-1" role="dialog" aria-labelledby="editTaskModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="editTaskModalLongTitle">Czy napewno zmienić zadanie?</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnSendEditTask">Edytuj</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal save edit task-->
+    <div class="modal fade" id="saveEditTaskModalCenter" tabindex="-1" role="dialog" aria-labelledby="saveEditTaskModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="saveEditTaskModalLongTitle">Czy napewno zapisać educje zadania?</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnSendSaveEditTask">Zapisz edycje</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal delete task-->
+    <div class="modal fade" id="deleteTaskModalCenter" tabindex="-1" role="dialog" aria-labelledby="deleteTaskModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="deleteTaskModalLongTitle">Czy napewno chcesz usunąć zadanie?</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnSendDeleteTask">Usuń</button>
           </div>
         </div>
       </div>

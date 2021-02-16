@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.projteam.app.dto.game.GameResultDTO;
@@ -174,18 +173,5 @@ public class GameAPI
 		return gameService.getRating()
 				.map(rating -> Map.<String, Object>of("rating", rating))
 				.orElse(Map.of("isPlayer", false));
-	}
-	
-	@GetMapping("/game/results/{gameID}")
-	@ApiOperation(value = "Display the results of a given game.")
-	public ModelAndView lobbyPage(@PathVariable("gameID") UUID gameID)
-	{
-		return new ModelAndView("gameResults");
-	}
-	@GetMapping("/game/history/{page}")
-	@ApiOperation(value = "Display the results of a given game.")
-	public ModelAndView gameHistory()
-	{
-		return new ModelAndView("gameHistory");
 	}
 }

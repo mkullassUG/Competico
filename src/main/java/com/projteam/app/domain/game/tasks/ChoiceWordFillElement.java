@@ -25,7 +25,7 @@ public class ChoiceWordFillElement implements Initializable
 	private @ElementCollection @OrderColumn List<String> text;
 	private @ManyToMany @OrderColumn List<WordChoice> wordChoices;
 	private boolean startWithText;
-
+	
 	@Data
 	@NoArgsConstructor
 	@AllArgsConstructor
@@ -35,12 +35,12 @@ public class ChoiceWordFillElement implements Initializable
 	{
 		private @Id UUID id;
 		private String correctAnswer;
-		private @ElementCollection List<String> inncorrectAnswers;
+		private @ElementCollection List<String> incorrectAnswers;
 		
 		@Override
 		public void initialize()
 		{
-			Initializable.initialize(inncorrectAnswers);
+			Initializable.initialize(incorrectAnswers);
 		}
 	}
 	@Override

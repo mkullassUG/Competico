@@ -2,11 +2,16 @@ package com.projteam.app.service.game;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static java.util.Collections.synchronizedMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,7 +40,7 @@ import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.dto.game.GameResultPersonalDTO;
 import com.projteam.app.dto.game.GameResultTotalDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
-import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
 import com.projteam.app.service.AccountService;
 
 @Service
@@ -49,6 +54,8 @@ public class GameService
 	private GameResultDAO grDAO;
 	
 	private Map<String, Game> games;
+	
+	private DateFormat df = new SimpleDateFormat("EEEE, d MMM yyyy HH:mm", new Locale("pl"));
 	
 	private static final long MAX_TIME_SINCE_LAST_INTERACTION_MILLI = 120000;
 	private static final int HISTORY_PAGE_SIZE = 30;
@@ -193,53 +200,91 @@ public class GameService
 				prDAO.save(pr);
 			grDAO.save(gr);
 			
-			Map<UUID, GameResultTotalDuringGameDTO> scores =
-					game.getCurrentResultsWithIDs();
-			List<PlayerData> playerDataList = new ArrayList<>(
-					scores.entrySet()
-						.stream()
-						.sorted((r1, r2) -> -Long.compare(
-								r1.getValue().getTotalScore(),
-								r2.getValue().getTotalScore()))
-						.map(sc -> pdServ.getPlayerData(accServ
-								.findByID(sc.getKey())
-								.orElse(null)))
-						.filter(Optional::isPresent)
-						.map(pd -> pd.orElse(null))
-						.collect(Collectors.toList()));
-			int l = playerDataList.size();
-			int lm = l - 1;
-			for (int i = 0; i < l; i++)
-			{
-				//TODO implement balancing based on total completion
-				PlayerData current = playerDataList.get(i);
-				if (i > 0)
-				{
-					PlayerData higher = playerDataList.get(i - 1);
-					int currRating = current.getRating();
-					int higherRating = higher.getRating();
-					
-					double expected = 1 / (1 + Math.pow(10, (higherRating - currRating) / 400.0));
-					current.setRating((int) Math.round(
-							currRating + (GAME_VALUE * (0 - expected))));
-				}
-				if (i < lm)
-				{
-					PlayerData lower = playerDataList.get(i + 1);
-					int currRating = current.getRating();
-					int lowerRating = lower.getRating();
-					
-					double expected = 1 / (1 + Math.pow(10, (lowerRating - currRating) / 400.0));
-					current.setRating((int) Math.round(
-							currRating + (GAME_VALUE * (1 - expected))));
-				}
-			}
-			playerDataList.forEach(pd -> pdServ.savePlayerData(pd));
+			updateRatings(gameCode, game);
 			
 			games.remove(gameCode);
 		}
 	}
-
+	private void updateRatings(String gameCode, Game game)
+	{
+		/*
+		 * O(n^2) time complexity, but way better accuracy than
+		 * just running the algorithm against 1 player higher and 1 player lower.
+		 * Still, better algorithms should be possible.
+		 * 
+		 * Idea 1: compute the average rating of the game (once outside of the loop), 
+		 * compute the expected result from that and the current player's rating,
+		 * use his overall position as the actual result (mapped to [-1, 1]).
+		 * 
+		 * Total completion should also be a factor in computing the rating:
+		 * - A player with 0% completion should never win rating
+		 * - A player with 100% completion should never lose rating
+		 * - The implementation must not introduce any
+		 * noticeable inflation or deflation to the system
+		 */
+		
+		Map<UUID, GameResultTotalDuringGameDTO> scores =
+				game.getCurrentResultsWithIDs();
+		
+		Map<UUID, PlayerData> playerDataMap = new HashMap<>();
+		Map<UUID, Integer> newRatings = new HashMap<>();
+		
+		scores.forEach((playerID, playerScore) ->
+		{
+			PlayerData playerPD = pdServ.getPlayerData(accServ
+					.findByID(playerID)
+					.orElse(null))
+					.orElse(null);
+			if (playerPD == null)
+				return;
+			
+			int playerRating = playerPD.getRating();
+			
+			double scoreDeltaTotal = 0;
+			int eligibleOpponentsCount = 0;
+			for (Entry<UUID, GameResultTotalDuringGameDTO> e:
+				scores.entrySet())
+			{
+				UUID pID = e.getKey();
+				if (pID.equals(playerID))
+					continue;
+				
+				PlayerData pPD = pdServ.getPlayerData(accServ
+						.findByID(pID)
+						.orElse(null))
+						.orElse(null);
+				if (pPD == null)
+					continue;
+				
+				int pRating = playerPD.getRating();
+				
+				double real = (
+						Math.signum(
+							playerScore.getTotalScore()
+							- e.getValue().getTotalScore())
+						+ 1) / 2.0;
+				double expected = 1 / (1 + Math.pow(10,
+						(pRating - playerRating) / 400.0));
+				
+				scoreDeltaTotal += (real - expected);
+				eligibleOpponentsCount++;
+			}
+			
+			if (eligibleOpponentsCount == 0)
+				return;
+			
+			playerDataMap.put(playerID, playerPD);
+			newRatings.put(playerID, (int) Math.round(playerRating +
+					GAME_VALUE * (scoreDeltaTotal / eligibleOpponentsCount)));
+		});
+		
+		playerDataMap.forEach((playerID, playerPD) ->
+		{
+			playerPD.setRating(newRatings.getOrDefault(playerID, playerPD.getRating()));
+			pdServ.savePlayerData(playerPD);
+		});
+	}
+	
 	private Account getAccount()
 	{
 		return accServ.getAuthenticatedAccount()
@@ -416,7 +461,7 @@ public class GameService
 				PageRequest.of(page, HISTORY_PAGE_SIZE, Sort.by(Order.desc("date"))))
 				.map(gr -> Map.of(
 						"id", gr.getGameID().toString(),
-						"date", gr.getDate().toString()));
+						"date", formatDate(gr.getDate())));
 	}
 	public Optional<Integer> getRating()
 	{
@@ -467,6 +512,11 @@ public class GameService
 		if (game == null)
 			return false;
 		return game.isPlayerActive(acc);
+	}
+	
+	private String formatDate(Date date)
+	{
+		return df.format(date);
 	}
 	
 	private <T, U> Map<T, U> syncMap()

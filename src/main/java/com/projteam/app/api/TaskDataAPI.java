@@ -1,15 +1,22 @@
 package com.projteam.app.api;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.projteam.app.dto.game.tasks.create.TaskDTO;
 import com.projteam.app.service.game.GameTaskDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +27,8 @@ public class TaskDataAPI
 {
 	private GameTaskDataService gtdService;
 	
+	private final ObjectMapper mapper = new ObjectMapper();
+	
 	@Autowired
 	public TaskDataAPI(GameTaskDataService gtdService)
 	{
@@ -28,9 +37,9 @@ public class TaskDataAPI
 	
 	@GetMapping("/api/v1/tasks/all/json")
 	@ApiOperation(value = "Return a list of all tasks in JSON", code = 200)
-	public JsonNode getTasksAsJson()
+	public List<Map<String, ?>> getTasks()
 	{
-		return gtdService.getAllTasksAsJson();
+		return taskDTOsWithName(gtdService.getAllTasks());
 	}
 	@GetMapping(value = "/api/v1/tasks/all/json/file",
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -38,7 +47,11 @@ public class TaskDataAPI
 	public Object getTasksAsJsonFile()
 	{
 		String filename = "tasks.json";
-		byte[] ret = getTasksAsJson().toPrettyString().getBytes();
+		byte[] ret = mapper.valueToTree(
+				taskDTOsWithName(
+						gtdService.getAllTasks()))
+				.toPrettyString()
+				.getBytes();
 		return ResponseEntity.ok()
 				.header("Content-Disposition",
 						"attachment; filename=\"" + filename + "\"")
@@ -53,9 +66,15 @@ public class TaskDataAPI
 	}
 	@GetMapping("/api/v1/tasks/imported/json")
 	@ApiOperation(value = "Return a list of all imported tasks in JSON", code = 200)
-	public JsonNode getImportedTasksAsJson()
+	public List<Map<String, ?>> getImportedTasks()
 	{
-		return gtdService.getImportedGlobalTasksAsJson();
+		return taskDTOsWithName(gtdService.getImportedGlobalTasks());
+	}
+	@GetMapping("/api/v1/tasks/imported/info")
+	@ApiOperation(value = "Return a list containing the names and IDs of all imported tasks", code = 200)
+	public List<Map<String, String>> getImportedTaskInfo()
+	{
+		return gtdService.getImportedGlobalTaskInfo();
 	}
 	@GetMapping(value = "/api/v1/tasks/imported/json/file",
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -63,7 +82,11 @@ public class TaskDataAPI
 	public Object getImportedTasksAsJsonFile()
 	{
 		String filename = "tasks.json";
-		byte[] ret = getTasksAsJson().toPrettyString().getBytes();
+		byte[] ret = mapper.valueToTree(
+				taskDTOsWithName(
+						gtdService.getImportedGlobalTasks()))
+					.toPrettyString()
+					.getBytes();
 		return ResponseEntity.ok()
 				.header("Content-Disposition",
 						"attachment; filename=\"" + filename + "\"")
@@ -71,27 +94,61 @@ public class TaskDataAPI
 	}
 	@PostMapping("/api/v1/tasks/imported")
 	@ApiOperation(value = "Create a new task", code = 200)
-	public void importTask(@RequestBody JsonNode task) throws ClassNotFoundException, IOException
+	public ResponseEntity<?> importTask(@RequestBody JsonNode taskData)
 	{
-		gtdService.importGlobalTask(task);
-	}
-	
-	@GetMapping("/tasks/import/global")
-	@ApiOperation(value = "Display a list of task data templates for global import")
-	public ModelAndView gameHistory()
-	{
-		return new ModelAndView("taskImportList");
-	}
-	
-	@RestController
-	@Api(value = "TaskCreatorAPI")
-	public class TaskCreatorApi
-	{
-		@GetMapping("/tasks/import/global/taskcreator")
-		@ApiOperation(value = "Display profile information of the current user", code = 200)
-		public ModelAndView TaskCreator()
+		try
 		{
-			return new ModelAndView("TaskCreator");
+			gtdService.importGlobalTask(taskData);
+			return ResponseEntity.ok().build();
 		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	@GetMapping("/api/v1/tasks/imported/{id}")
+	@ApiOperation(value = "Delete an inported task with the given id", code = 200)
+	public Object getImportedTask(@PathVariable UUID id)
+	{
+		return gtdService.getImportedGlobalTask(id)
+				.map(t -> taskDTOwithName(t))
+				.map(t -> (Object) t)
+				.orElse(Map.of("taskExists", "false"));
+	}
+	@PutMapping("/api/v1/tasks/imported/{id}")
+	@ApiOperation(value = "Edit an inported task with the given id", code = 200)
+	public ResponseEntity<?> editImportedTask(@PathVariable UUID id, @RequestBody JsonNode newTaskData)
+	{
+		try
+		{
+			if (gtdService.editImportedGlobalTask(id, newTaskData))
+				return ResponseEntity.ok().build();
+			return ResponseEntity.badRequest().body("ID does not match any imported task");
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	@DeleteMapping("/api/v1/tasks/imported/{id}")
+	@ApiOperation(value = "Delete an inported task with the given id", code = 200)
+	public boolean deleteImportedTask(@PathVariable UUID id)
+	{
+		return gtdService.removeImportedGlobalTask(id);
+	}
+	
+	private List<Map<String, ?>> taskDTOsWithName(List<TaskDTO> dtoList)
+	{
+		return dtoList.stream()
+			.map(t -> Map.of(
+					"taskName", gtdService.getTaskDtoName(t),
+					"taskContent", t))
+			.collect(Collectors.toList());
+	}
+	private Map<String, ?> taskDTOwithName(TaskDTO dto)
+	{
+		return Map.of(
+					"taskName", gtdService.getTaskDtoName(dto),
+					"taskContent", dto);
 	}
 }

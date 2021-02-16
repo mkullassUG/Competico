@@ -1,19 +1,18 @@
-package com.projteam.app.api;
+package com.projteam.app.api.web;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@RestController
+@Controller
 @Api(value = "DashboardAPI")
-public class DashboardAPI
+public class DashboardController
 {
 	@GetMapping("dashboard")
 	@ApiOperation(value = "Display the dashboard of the current user", code = 200)
-	public ModelAndView registerPage()
+	public String registerPage()
 	{
-		return new ModelAndView("dashboard");
+		return "dashboard";
 	}
 }

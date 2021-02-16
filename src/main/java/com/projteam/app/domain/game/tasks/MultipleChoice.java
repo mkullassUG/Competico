@@ -11,8 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import com.projteam.app.domain.game.tasks.answers.MultipleChoiceAnswer;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
-import com.projteam.app.dto.game.tasks.MultipleChoiceElementDTO;
-import com.projteam.app.dto.game.tasks.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.show.MultipleChoiceElementDTO;
+import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
 import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,7 +31,7 @@ public class MultipleChoice implements Task
 	private @ManyToOne MultipleChoiceElement content;
 	
 	private double difficulty;
-
+	
 	@Override
 	public double acceptAnswer(TaskAnswer answer)
 	{

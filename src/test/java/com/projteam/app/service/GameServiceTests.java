@@ -33,6 +33,7 @@ import com.projteam.app.dao.game.GameResultDAO;
 import com.projteam.app.domain.Account;
 import com.projteam.app.domain.game.PlayerResult;
 import com.projteam.app.domain.game.GameResult;
+import com.projteam.app.domain.game.PlayerData;
 import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
@@ -987,6 +988,48 @@ public class GameServiceTests
 		assertEquals(res.getNumberOfElements(), 1);
 		assertEquals(res.getTotalElements(), 1);
 		assertEquals(res.getContent().get(0).get("id"), gameID.toString());
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockLecturerHost")
+	public void shouldReturnEmptyWhenAccountIsNotAPlayer(Account acc)
+	{
+		when(pdService.getPlayerData(acc)).thenReturn(Optional.empty());
+		
+		assertTrue(gameService.getRating(acc).isEmpty());
+	}
+	@ParameterizedTest
+	@MethodSource("mockLecturerHost")
+	public void shouldReturnEmptyWhenAccountIsNotAPlayerWithAuthenticatedAccount(Account acc)
+	{
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(acc));
+		when(pdService.getPlayerData(acc)).thenReturn(Optional.empty());
+		
+		assertTrue(gameService.getRating().isEmpty());
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockPlayerHost")
+	public void shouldReturnPlayerData(Account acc)
+	{
+		when(pdService.getPlayerData(acc)).thenReturn(Optional.of(new PlayerData()));
+		
+		var ret = gameService.getRating(acc);
+		assertTrue(ret.isPresent());
+		assertNotNull(ret.orElse(null));
+	}
+	@ParameterizedTest
+	@MethodSource("mockPlayerHost")
+	public void shouldReturnPlayerDataWithAuthenticatedAccount(Account acc)
+	{
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(acc));
+		when(pdService.getPlayerData(acc)).thenReturn(Optional.of(new PlayerData()));
+		
+		var ret = gameService.getRating();
+		assertTrue(ret.isPresent());
+		assertNotNull(ret.orElse(null));
 	}
 	
 	//---Sources---

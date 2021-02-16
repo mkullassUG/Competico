@@ -13,8 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OrderColumn;
 import com.projteam.app.domain.game.tasks.answers.TaskAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordConnectAnswer;
-import com.projteam.app.dto.game.tasks.TaskInfoDTO;
-import com.projteam.app.dto.game.tasks.WordConnectDTO;
+import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
+import com.projteam.app.dto.game.tasks.show.WordConnectDTO;
 import com.projteam.app.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,7 +35,7 @@ public class WordConnect implements Task
 	private @ElementCollection Map<Integer, Integer> correctMapping;
 	
 	private double difficulty;
-
+	
 	@Override
 	public double acceptAnswer(TaskAnswer answer)
 	{
