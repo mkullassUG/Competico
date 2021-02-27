@@ -33,7 +33,7 @@
 
   <body class="bg-primary">
     <!-- main content -->
-    <button class="openbtn" id="openNavButton">&#9776; Pozostałe zadania</button>
+    <button class="openbtn" id="openNavButton">&#9776; Zapisane zadania (0)</button>
     <nav class="navbar navbar-dark variantNavbar fixed-top">
       <div  id="main_nav">
         <ul class="navbar-nav">
@@ -64,7 +64,7 @@
     </nav>
     <div id="mySidepanel" class="sidepanel bg-dark">
       <a href="javascript:void(0)" class="closebtn" id="closeNavButton">&times;</a>
-      <a href="#">pozostałe zadania</a>
+      <a class="position-absolute text-white" style="top:0" id="infoNavDiv">Zapisane zadania (0)</a>
       <a href="#" id="btnDownloadJsonAllTasks">pobierz wszystkie zadania</a>
       <a href="#" id="btnDownloadJsonImportedTasks">pobierz importowane zadania</a>
       <div class="table-responsive">
@@ -113,7 +113,6 @@
       </div>
     </div>
     <div class="container fill text-center" id="bigChangeDiv">
-      <!-- game -->
       <div class="row" id="Top">
         <div class="col-12">
         </div>
@@ -126,10 +125,12 @@
       </div>
       <div class="row  mt-3 rounded" id="Center">
         <div class="col-12" id="GameWrapperDiv">
-          <div class="m-custom my-3 p-3 rounded gameDivDecoration" style="overflow:hidden;" id="taskHolder">
+          <!-- game editing -->
+          <div class="m-custom my-3 p-3 rounded gameDivDecoration" style="overflow:hidden;" id="taskEditHolder">
             <!-- WordFill -->
-            <div class="bg-light btnShadow stuck" id="WordFillDiv">
+            <div class="bg-light btnShadow stuck taskDiv" id="WordFillDiv">
               <div class="12">
+                <span class="taskEditTitle">WordFill</span>
                 <div class="form-label-group">
                   <textarea class="form-control taskTagTextarea"  id="wordFillDivTaskTags" placeholder="cos" rows="1"></textarea>
                   <label for="wordFillDivTaskTags">Tagi</label>
@@ -148,7 +149,6 @@
                     <input type="number" class="form-control" id="wordFillFontSize" placeholder="Font size" value="16" readonly>
                   </div>
                   <button class="m-1 btn btn-primary btn-sm" id="wordFillAddWord">wstaw brakujące słowo</button>
-                  <button class="m-1 btn btn-primary btn-sm"id="wordFillAddIncorrectWord">Wstaw dodatkowe słowa</button>
                   <div class="invalid-feedback" id="invalidWordFillAddWord">
                     Nie zgadza się umiejscowienie tagów {[]}.
                   </div>
@@ -158,14 +158,18 @@
                 <textarea class="form-control taskTextTextarea"  id="wordFillDivTaskText" placeholder="cos" rows="4" >I’m sorry to have to tell you that there has been some {[slippage]} in the project and we won’t be able to {[stick to]} our original {[deadline]} on July 30th for completing the {[rollout]} of the new software. Pedro’s absence for three weeks caused a bit of a {[bottleneck]}, and there were more delays when we realised that there was still some {[dirty data]} in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month.</textarea>
                 <label for="wordFillDivTaskText">Treść</label>
               </div>
+              <div class="form-inline">
+                <button class="m-1 btn btn-primary btn-sm"id="wordFillAddIncorrectWord">Wstaw dodatkowe słowa</button> 
+              </div>
               <div class="form-label-group">
                 <textarea class="form-control incorrectWords"  id="wordFillDivIncorrectWords" placeholder="cos" rows="1" >word1, word2</textarea>
                 <label for="wordFillDivIncorrectWords">Dodatkowe, niepoprawne odpowiedzi</label>
               </div>
             </div>
             <!-- ChronologicalOrder -->
-            <div class="bg-light btnShadow collapse stuck" id="ChronologicalOrderDiv">
+            <div class="bg-light btnShadow collapse stuck taskDiv" id="ChronologicalOrderDiv">
               <div class="12">
+                <span class="taskEditTitle">ChronologicalOrder</span>
                 <div class="form-label-group">
                   <textarea class="form-control taskTagTextarea"  id="chronologicalOrderDivTaskTags" placeholder="cos" rows="1"></textarea>
                   <label for="chronologicalOrderDivTaskTags">Tagi</label>
@@ -230,8 +234,9 @@
               </div>
             </div>
             <!-- WordConnect -->
-            <div class="bg-light btnShadow collapse stuck" id="WordConnectDiv">
+            <div class="bg-light btnShadow collapse stuck taskDiv" id="WordConnectDiv">
               <div class="12">
+                <span class="taskEditTitle">WordConnect</span>
                 <div class="form-label-group">
                   <textarea class="form-control taskTagTextarea"  id="wordConnectDivTaskTags" placeholder="cos" rows="1"></textarea>
                   <label for="wordConnectDivTaskTags">Tagi</label>
@@ -377,12 +382,19 @@
               </div>
             </div>
           </div>
+          <!-- game demo -->
+          <div class="m-custom my-3 p-3 rounded gameDivDecoration collapse" style="overflow:hidden;" id="gameDemoDiv">
+            <div class="bg-light unselectable btnShadow" id="GameDiv">
+              Ładowanie zadanka
+            </div>
+          </div>
         </div>
       </div>
       <div class="row mt-3 text-center button-m-custom" id="Bottom">
         <div class="col-12">
-          <buton class="btn btn-lg btn-secondary mb-3 btnShadow disabled" id="btnDemoTask" data-toggle="modal" data-target="#demoTaskModalCenter">Podgląd w grze</buton>
-          <buton class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnSaveTask" data-toggle="modal" data-target="#saveTaskModalCenter">Zapisz zadanie</buton>
+          <button class="btn btn-lg btn-secondary mb-3 btnShadow disabled" id="btnDemoTask">Podgląd w grze</button>
+          <button class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnSaveTask" data-toggle="modal" data-target="#saveTaskModalCenter">Zapisz zadanie</button>
+          <button class="btn btn-lg btn-secondary mb-3 btnShadow collapse" id="btnSaveEditedTask" data-toggle="modal" data-target="#saveEditTaskModalCenter">Zapisz edytowane zadanie</button>
         </div>
       </div>
     </div>
@@ -428,7 +440,7 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title" id="saveEditTaskModalLongTitle">Czy napewno zapisać educje zadania?</h4>
+            <h4 class="modal-title" id="saveEditTaskModalLongTitle">Czy napewno zapisać edycje zadania?</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>

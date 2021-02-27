@@ -1,16 +1,28 @@
+.sidepanelClassForGameTimerH2 {
+    margin-left: 55%;
+}
+
+.sidepanelClassForBottonAndTasks {
+	margin-left: 21.5%;
+}
 
 .stuck { /*task creator content div stays in one place and adds scroll when too big*/
 	position: fixed;
-	top: 200px;
+	top: 160px;
 	left: 30%;
-	bottom: 200px;
+	bottom: 140px;
 	width: 50%!important;
 	overflow-y: scroll!important;
 }
 
+.taskEditTitle {
+	position: relative;
+	top: -25px;
+}
+
 #Bottom {
 	position: fixed;
-	bottom: 10%;
+	bottom: 5%;
 	width: 100%;
 	left: 3%;
 }

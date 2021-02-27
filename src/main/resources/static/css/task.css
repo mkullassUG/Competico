@@ -1,3 +1,7 @@
+#taskContent {
+  text-align: left; /*new 2021-02-26*/
+}
+
 /*answers template0*/
 .answer {
   background-color: rgb(255, 255, 255);
@@ -28,7 +32,12 @@
   left: -10px;
   top: -10px;
 }
-.draggable { position: absolute; padding: 0.3em; float: left; margin: 10px 10px 10px 0; }
+.draggable { position: absolute; padding: 0.3em; float: left; margin: 10px 10px 10px 0; 
+  /*double word answer wrap fix*/
+  display: inline-block;
+  white-space: nowrap;
+}
+
 .ui-draggable.ui-draggable-handle.ui-droppable.endpointDrag:active  {
   /*TODO
     naprawić bug bo nie działa poprawnie

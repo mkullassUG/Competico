@@ -149,7 +149,7 @@ const GameLogic = ( lobby, _task) => {
       return;
     }
     
-    self.currentTask - task;
+    self.currentTask = task;//bug 2021-02-26, zmiana z - na =
     
     if (!task.taskName)
       console.warn("Could not read task name!");

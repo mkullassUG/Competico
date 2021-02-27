@@ -4,7 +4,8 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
     self.playerInfo = playerInfo_;
     self.debug = debug;
     self.currentVariant;
-
+    self.focusedTaskID; //wybrane z tablicy zadań dla usuń / edytuj
+    self.lastEditedTaskID; // wybrane po potwierdzeniu edycji danego zadania
     /*       logic functions          */
     self.taskCreatorInit = () => {
         /* TODO
@@ -24,7 +25,7 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
     self.changeVariant = (variantString) => {
         /*TODO:
         -sprawdzanie czy wpisano coś w pola obecnego wariantu
-            -jesli tak to zapytanie czy na pewno...    
+            -jesli tak to zapytanie czy na pewno zmienić wariant na inny i stracić dane...    
         -zmiana wariantu do edytowania na przycisk
         */
 
@@ -34,6 +35,10 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
             2 - Łączenie słów i zwrotów z dwóch kolumn (WordConnect)
             3 - Układanie zdań w porządek chronologiczny (ChronologicalOrder)
         */
+
+        /*ukryj przucisk edycji, pokaż przycisk zapisu*/
+        $("#btnSaveEditedTask").hide();
+        $("#btnSaveTask").show();
 
         //sprawdzanie
         switch (variantString) {
@@ -119,7 +124,7 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
     }
 
     self.sendTask = () => {
-        /*TODO*/
+        
         if (!self.currentVariant) 
             return false;
         
@@ -127,25 +132,34 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
             self.sendAjaxTask,
             self.setupImportedTasksTable);
     }
-    /*TODO prepare task to edit*/
+    /*prepare task to edit*/
     self.editTask = (taskID) => {
         self.ajaxGetImportedTaskByID( 
             (data)=>{
+
+                /*swap variant to the one from data .taskName*/
+                self.changeVariant(data.taskName);
                 self.currentVariant.loadTaskFrom(data);
+                /*ustawić przycisk zapisz edycja zamiast zapisz zadanie*/
+                $("#btnSaveEditedTask").show();
+                $("#btnSaveTask").hide();
+                /*zapamiętać id obecnie edytowanego taska*/
+                self.lastEditedTaskID = taskID;
             },
             taskID)
     }
-    /*TODO send edited task*/
-    self.saveEditTask = () => {
+    /*send edited task*/
+    self.saveEditTask = (taskID) => {
         if (!self.currentVariant) 
             return false;
 
         self.currentVariant.sendEditedTaskVariant(
             self.sendAjaxEditTask,
-            self.setupImportedTasksTable);
+            self.setupImportedTasksTable,
+            taskID);
     };
 
-    /*TODO delete task*/
+    /*delete task*/
     self.deleteTask = (taskID) => {
         self.sendAjaxDeleteTask(taskID,self.setupImportedTasksTable);
     }
@@ -165,10 +179,14 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
                             <button type="button" class="btn btn-success editButton" data-taskID="`+task.taskID+`" data-toggle="modal" data-target="#editTaskModalCenter">Edytuj</button>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-danger" data-taskID="`+task.taskID+`" data-toggle="modal" data-target="#deleteTaskModalCenter">Usuń</button>
+                            <button type="button" class="btn btn-danger delButton" data-taskID="`+task.taskID+`" data-toggle="modal" data-target="#deleteTaskModalCenter">Usuń</button>
                         </td>
                     </tr> `);
             }
+
+            $("#openNavButton").html("&#9776; Zapisane zadania ("+importedTasksArray.length+")");
+            $("#infoNavDiv").html("Zapisane zadania ("+importedTasksArray.length+")");
+            
 
             $(".editButton").on("click",(e)=>{
                 if (self.debug)
@@ -179,11 +197,106 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
                 console.log(taskID)
 
                 //ustawiam przycisk z modala edycji pod dane id
+                //TODO czy to wgl działa??
                 $("#btnSendEditTask").data("taskid",taskID);
 
-                self.editTask(taskID);
+                //zrobie to zapamiętując id w pamięci...
+                self.focusedTaskID = taskID;
+                //self.editTask(taskID);
+            });
+
+            $(".delButton").on("click",(e)=>{
+                if (self.debug)
+                    console.log("delButton");
+                var taskID = $(e.target).data("taskid");
+                console.log(e)
+                console.log($(e.target))
+                console.log(taskID)
+
+                //ustawiam przycisk z modala edycji pod dane id
+                $("#btnSendDeleteTask").data("taskid",taskID);
+                self.focusedTaskID = taskID;
+                //self.editTask(taskID);
             });
         })
+    }
+
+    self.setupDemo = () => {
+        /*TODO
+        z obecnego wariantu, użyć tego co mam obecnie w nim i stworzyć z tego zadanie*/
+        if (!self.currentVariant)
+            return;
+
+        /*
+            1. przerobić to co mam w edycji na format json
+            1.2 (opcjonalne) randomizować odpowiedzi
+            2. ustawić widocznosc odpowiedniego elementu wariantu z gry
+            3. powstawiać dane do elementu gry
+        */
+        $("#gameDemoDiv").show();
+        $("#taskEditHolder").hide();
+
+        //Do task zapisać json zadania
+        var task = self.currentVariant.prepareTaskJsonFile();
+
+        //w gameLogic jest setupNewTask, czy chce zrobić grugie takie tutaj?
+        //start setupNewTask gameLogic
+        //czy otrzymany task jest pusty
+        if (task == null) {
+            if (self.debug)
+            console.warn("task was empty");
+            return;
+        }
+
+        task.task = task.taskContent; // bo tak jest w gameLogic
+
+        if (!task.taskName)
+            console.warn("Could not read task name!");
+
+        //czyszczenie porpzedniego taska jeśli jakiś był
+        //przygotowanie miejsca na następnego taska
+        if ($("#GameDiv").length)
+            $("#GameDiv").html("");
+
+        //mok task1
+        if (self.debug) 
+            console.log(task);
+        
+        //wybieranie odpowiedniej logiki dla konkretnego template'a
+        switch (task.taskName) {
+            case "WordFill":
+                task.task = task.taskContent.content; // bo takie wysyłam :v
+                self.currentTaskVariant = TaskVariant0(task.task);
+                break;
+            case "WordConnect":
+                self.currentTaskVariant = TaskVariant1(task.task);
+                break;
+            case "ChronologicalOrder":
+                self.currentTaskVariant = TaskVariant2(task.task);
+                break;
+            case "template3":
+                self.currentTaskVariant = TaskVariant3(task.task);//GameLogicVariants.logicVariant3(task);
+                break;
+            case "template4":
+                self.currentTaskVariant = TaskVariant4(task.task);//GameLogicVariants.logicVariant4(task);
+                break;
+            case "template5":
+                self.currentTaskVariant = TaskVariant5(task.task);//GameLogicVariants.logicVariant5(task);
+                break;
+            default:
+                console.warn("To pole jest tylko dla jeszcze nie zaimplementowancyh tasków, w produkcji nie powinno się nigdy wykonać!");
+                self.currentTaskVariant = {};
+                //ListWordFill answers
+                self.currentTaskVariant.getAnswers = () => { 
+                console.log("hello ListWordFill");
+                return {answers: [["test"]]} 
+                }
+                break;
+        }
+        //end setupNewTask gameLogic
+
+
+        //self.currentVariant
     }
     /*       event listeners          */
     if ($("#btnChronologicalOrder").length)
@@ -226,31 +339,29 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
         $("#btnSendEditTask").on("click",(e)=>{
             if (self.debug)
                 console.log("btnSendEditTask");
-            var taskID = $(e.target).data("taskid");
-            console.log(e)
-            console.log($(e.target))
-            console.log(taskID)
-            self.editTask(taskID);
+            // var taskID = $(e.target).data("taskid");
+            self.editTask(self.focusedTaskID);
         });
     if ($("#btnSendSaveEditTask").length)
         $("#btnSendSaveEditTask").on("click",(e)=>{
             if (self.debug)
                 console.log("btnSendSaveEditTask");
-                /*TODO:
-                pod edycji żeby zapisac musze znowu pobrać id taska, 
-                zrobie to albo przez zmienną obiektu albo html data-*/
+
             //var taskID = $(e.target).data("taskid");
-            self.saveEditTask();
+            self.saveEditTask(self.lastEditedTaskID);
         });
     if ($("#btnSendDeleteTask").length)
         $("#btnSendDeleteTask").on("click",(e)=>{
             if (self.debug)
                 console.log("btnSendDeleteTask");
-            var taskID = $(e.target).data("taskid");
-            console.log(e)
-            console.log($(e.target))
-            console.log(taskID)
-            self.deleteTask(taskID);
+            // var taskID = $(e.target).data("taskid");
+            self.deleteTask(self.focusedTaskID);
+        });
+    if ($("#btnDemoTask").length)
+        $("#btnDemoTask").on("click",(e)=>{
+            if (self.debug)
+                console.log("btnDemoTask");
+            self.setupDemo();
         });
     /* Ajax requests*/
     self.ajaxGetAllTasksFile = () => {
@@ -507,7 +618,8 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
 
 
         /*  dropdown menu   */
-        /*TODO przerobić tak żeby działało jak ja chce przy dynamicznie zmieniającym się ekranie*/
+        /*TODO 
+        przerobić tak żeby działało jak ja chce przy dynamicznie zmieniającym się ekranie (chyba moge usunąć TODO, bo zrobiłem wysuwanie na połowe ekranu i konetant teżsię ładnie kurczy)*/
         // Prevent closing from click inside dropdown
         $(document).on('click', '.dropdown-menu', function (e) {
             e.stopPropagation();
@@ -542,14 +654,59 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
         /* Set the width of the sidebar to 250px (show it) */
         function openNav() {
             document.getElementById("mySidepanel").style.width = "50%";
-            // document.getElementById("bigChangeDiv").style.transform = "translateX(250px)"; 
-            /*to wtedy zmienie szerokość diva*/
+            
+            /*to wtedy zmieniam ustawienie elementów od edycji zadań*/
+
+            /*#gametimer > h2*/
+            var h2GameTimer = $("#gameTimer > h2");
+            if (h2GameTimer.length > 0) {
+                if (!h2GameTimer.hasClass("sidepanelClassForGameTimerH2")) {
+                    h2GameTimer.addClass("sidepanelClassForGameTimerH2");
+                }
+            }
+            /*.taskDiv WSZYSTKIE */
+            var taskDivs = $(".taskDiv");
+            if (taskDivs.length > 0) {
+                if (!taskDivs.hasClass("sidepanelClassForBottonAndTasks")) {
+                    taskDivs.addClass("sidepanelClassForBottonAndTasks");
+                }
+            }
+
+            /*#Bottom	*/
+            var bottomDiv = $("#Bottom");
+            if (bottomDiv.length > 0) {
+                if (!bottomDiv.hasClass("sidepanelClassForBottonAndTasks")) {
+                    bottomDiv.addClass("sidepanelClassForBottonAndTasks");
+                }
+            }
         }
         
         /* Set the width of the sidebar to 0 (hide it) */
         function closeNav() {
             document.getElementById("mySidepanel").style.width = "0";
-            // document.getElementById("bigChangeDiv").style.transform = "none"; 
+            
+            /*#gametimer > h2*/
+            var h2GameTimer = $("#gameTimer > h2");
+            if (h2GameTimer.length > 0) {
+                if (h2GameTimer.hasClass("sidepanelClassForGameTimerH2")) {
+                    h2GameTimer.removeClass("sidepanelClassForGameTimerH2");
+                }
+            }
+            /*.taskDiv WSZYSTKIE */
+            var taskDivs = $(".taskDiv");
+            if (taskDivs.length > 0) {
+                if (taskDivs.hasClass("sidepanelClassForBottonAndTasks")) {
+                    taskDivs.removeClass("sidepanelClassForBottonAndTasks");
+                }
+            }
+
+            /*#Bottom	*/
+            var bottomDiv = $("#Bottom");
+            if (bottomDiv.length > 0) {
+                if (bottomDiv.hasClass("sidepanelClassForBottonAndTasks")) {
+                    bottomDiv.removeClass("sidepanelClassForBottonAndTasks");
+                }
+            }
         }
 
         $("#closeNavButton").on("click", ()=> {

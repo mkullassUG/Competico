@@ -49,9 +49,10 @@ const TaskCreator = (data_) =>{
         );
     }
     //TODO edycja starego 
-    self.sendEditedTaskVariant = (ajaxCallback, onSuccess, preparedTask) => {
+    self.sendEditedTaskVariant = (ajaxCallback, onSuccess, taskID, preparedTask) => {
         ajaxCallback(
             preparedTask,
+            taskID,
             (data) => {
                 console.log("edited");
                 onSuccess(); // self.setupImportedTasksTable();
@@ -77,7 +78,7 @@ const TaskCreator = (data_) =>{
 
     self.loadTaskFrom = (taskObject) => {
         /*TODO:
-        wczytanie zadania na ekraz z obiektu lub pliku json*/
+        wczytanie zadania na ekran z obiektu lub pliku json*/
         self.taskContent = taskObject.taskContent;
     }
 
@@ -85,7 +86,7 @@ const TaskCreator = (data_) =>{
     self.hideAllTaskDivsExceptGiven = (taskName) => {
         var taskDivName = taskName + "Div";
 
-        var taskDivs = $("#taskHolder").children();
+        var taskDivs = $("#taskEditHolder").children();
         for (let i = 0; i < taskDivs.length; i++) {
             var taskDiv = $(taskDivs[i]);
             taskDiv.hide();
@@ -314,10 +315,9 @@ const WordFillCreator = (data_ = {}) => {
     }
 
     var sendEditedTaskVariantSuper = self.sendEditedTaskVariant;
-    self.sendEditedTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
-        /*TODO
-        potrzeba jeszcze taskID*/
-        sendEditedTaskVariantSuper(ajaxCallback, onSuccess, preparedTask);
+    self.sendEditedTaskVariant = (ajaxCallback, onSuccess, taskID, preparedTask = self.prepareTaskJsonFile()) => {
+        
+        sendEditedTaskVariantSuper(ajaxCallback, onSuccess, taskID, preparedTask);
     }
 
     var loadTaskFromSuper = self.loadTaskFrom;
@@ -573,6 +573,12 @@ const ChronologicalOrderCreator = (data_ = {}) => {
         sendTaskVariantSuper(ajaxCallback, onSuccess, preparedTask);
     }
 
+    var sendEditedTaskVariantSuper = self.sendEditedTaskVariant;
+    self.sendEditedTaskVariant = (ajaxCallback, onSuccess, taskID, preparedTask = self.prepareTaskJsonFile()) => {
+        
+        sendEditedTaskVariantSuper(ajaxCallback, onSuccess, taskID, preparedTask);
+    }
+
     var loadTaskFromSuper = self.loadTaskFrom;
     self.loadTaskFrom = (taskObject) => {
         loadTaskFromSuper(taskObject);
@@ -799,6 +805,12 @@ const WordConnectCreator = (data_ = {}) => {
     self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
         sendTaskVariantSuper(ajaxCallback, onSuccess, preparedTask);
+    }
+
+    var sendEditedTaskVariantSuper = self.sendEditedTaskVariant;
+    self.sendEditedTaskVariant = (ajaxCallback, onSuccess, taskID, preparedTask = self.prepareTaskJsonFile()) => {
+        
+        sendEditedTaskVariantSuper(ajaxCallback, onSuccess, taskID, preparedTask);
     }
 
     var loadTaskFromSuper = self.loadTaskFrom;

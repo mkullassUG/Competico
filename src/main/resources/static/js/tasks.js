@@ -14,19 +14,7 @@ const TaskVariant0 = (taskData) => {
         self.textField = taskData.text;
         self.words = taskData.possibleAnswers;
         self.emptySpaceCount = taskData.emptySpaceCount;
-        self.trigger_drop = (draggable, droppable) => {
-          var draggable = $(draggable).draggable(),
-          droppable = $(droppable).droppable(),
-          droppableOffset = droppable.offset(),
-          draggableOffset = draggable.offset(),
-          dx = droppableOffset.left - draggableOffset.left,
-          dy = droppableOffset.top - draggableOffset.top;
-  
-          draggable.simulate("drag", {
-              dx: dx,
-              dy: dy
-          });
-        }
+
         var taskContentReady = "";
         var howManyBlanksFound = 0;
         if (taskData.startWithText) {
@@ -65,13 +53,56 @@ const TaskVariant0 = (taskData) => {
           ` + taskAnswerHolderReady + `
         </div>`);
         
-        //dla każdej stworzonej odpowiedzi upuść ją na parencie
-        var answerElements = $(".answer");
-        var answerParentElements = $(".answer").parent();
-        for (let i = 0; i < answerElements.length; i++) {
-          self.trigger_drop(answerElements[i],answerParentElements[i]);
+        /*ustawienie szerokości każdego "answer holdera" na max długość najdłuższej odpowiedzi*/
+        var elems = $(".answer ");
+        var maxWidth = 0;
+        for (let i = 0; i < elems.length; i++){
+          /*ręcznie powniesione o 1 px w górę*/
+          console.log(elems[i])
+          console.log(elems[i].offsetWidth)
+          maxWidth = Math.max(maxWidth, elems[i].offsetWidth + 1);
         }
+        console.log(maxWidth);
+        $(".answerHolderWrapper").width(maxWidth-16); //-16 bo tak...
+
+        //dla każdej stworzonej odpowiedzi upuść ją na parencie
+        /*żeby na starcie dobrze się ustawiały odpowiedzi w centrum "answer holdera",
+        BUG, nie działa, odpowiedzi przy inicie nie są dragowane?*/
+        self.trigger_drop = (draggable, droppable) => {
+          console.log("trigger_drop");
+          var draggable = $(draggable).draggable(),
+          droppable = $(droppable).droppable(),
+          droppableOffset = droppable.offset(),
+          draggableOffset = draggable.offset(),
+          dx = droppableOffset.left - draggableOffset.left,
+          dy = droppableOffset.top - draggableOffset.top;
+          
+          draggable.simulate("drag", {
+              dx: dx,
+              dy: dy
+          });
+        }
+        /* 2021-02-26
+        już widzę że bug polega na tym, że draguje answery jak jeszcze nie ma gdzie ich dragować?
+        cancer rozwiązanie: poczekać chwilę
+        u mnie wystarczają 2ms, 1ms to za mało.
+
+        kolejny problem to, że nie będzie za dobrze w qunit testach to działało, chyba że poczekam ~3ms
+        
+        TODO wymyśleć lepsze rozwiązanie
+        */
+        setTimeout(function() {
+          var answerElements = $(".answer");
+          var answerParentElements = $(".answer").parent();
+          for (let i = 0; i < answerElements.length; i++) {
+            self.trigger_drop(answerElements[i],answerParentElements[i]);
+          }
+        },2);
+        
+
         var answerDroppedOn = (answerDiv, fieldDiv) => {
+          console.log("answerDroppedOn");
+
           $(fieldDiv).data("answer",answerDiv.innerText);
           //sprawdza czy wczęsniej odpowiedź była przypisana do pola odpowiedzi
           if (self.answerCurrentlyAt[answerDiv.innerText]) {
@@ -118,7 +149,7 @@ const TaskVariant0 = (taskData) => {
             }
           });
         });
-  
+
         //to trzeba ogarnąć, observer nie może się powielać a unobserve nie działa
         console.log("ResizeObserver")
         if (resize_observer)
