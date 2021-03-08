@@ -147,8 +147,6 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
 
 
       */
-
-
       $('#LobbyDeletedModalCenter').modal('show');
       return 0;
     }
@@ -244,6 +242,9 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     if (data.lobbyExists === false) {
       console.log("wyjdź");
       console.log(data);
+      /*TODO 2021-03-01
+      bug (jest stan w którym nie istnieje lobby i gra kiedy gra się rozpoczyna)
+      fetchuje server wtedy dane z bazy więc nie wiadomo ile czasu trwa ten stan, a serwer nadal jes tw stanie odpowiadać na requesty*/
       $('#LobbyDeletedModalCenter').modal('show');
     } else if (data.gameStarted == true) {
       clearTimeout(self.ajaxLobbyLoopTimeout);
@@ -318,6 +319,9 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   var sendAjaxStart = () => {
     if (self.isHost == false)
       return;
+
+    clearTimeout(self.ajaxLobbyLoopTimeout);
+
     self.showModal();
     $.ajax({
       type     : "POST",
@@ -327,14 +331,18 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug)
           console.log("sendAjaxStart success");
-        
-          self.hideModal();
+        // if (data === false) {
+          self.ajaxLobbyLoopTimeout = setTimeout(()=>{ajaxConnectionLoop((data_)=>{self.updateCheck(data_)})},1000);
+        // }
+        self.hideModal();
+          //teraz lobbyloopa stopować
       },
       error: function(jqXHR, status, err) {
         if (self.debug) {
           console.log("sendAjaxStart error");
-          //gameSetupAfterChange();
         }
+
+        self.ajaxLobbyLoopTimeout = setTimeout(()=>{ajaxConnectionLoop((data_)=>{self.updateCheck(data_)})},1000);
         self.hideModal();
       }
     });

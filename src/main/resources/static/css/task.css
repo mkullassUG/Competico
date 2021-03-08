@@ -283,5 +283,33 @@ svg.fs-connector-hover path {
   cursor: -webkit-grabbing;
 }
 
+/*Template 3 ListWordFill*/
+.answerLWF {
+  background-color: rgb(255, 255, 255);
+  border: 3px solid rgb(10, 108, 255);
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.answerHolderLWF {
+  background-color: rgba(100,100,100,0.5);
+  width: calc(100% + 20px);
+  /* padding: 10px; */
+  text-align: center;
+  margin-left: -10px;
+  margin-top: -10px;
+}
+
+.answerHolderWrapperLWF { 
+  /* background-color:rgba(0, 162, 255, 0.541); */
+  /* margin:5px; */
+  display:inline-block;
+  vertical-align: middle; 
+  /* position: relative;  */
+  /* width: 50px;  */
+  height: 30px; 
+  /* padding: 0.5em;   */
+  /* margin: 10px;  */
+}
 
 /*other global.css*/

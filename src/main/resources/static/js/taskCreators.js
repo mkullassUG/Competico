@@ -257,8 +257,10 @@ const WordFillCreator = (data_ = {}) => {
 
             var textString = $("#wordFillDivTaskText").val();
             var tagsWithWords = textString.match(/\{\[[^]+?\]\}/g);
-            var correctWords = tagsWithWords.map(w=> w.replace("{[",'').replace("]}",''));
-
+            if (tagsWithWords != null) //BUG 2021-02-08
+                var correctWords = tagsWithWords.map(w=> w.replace("{[",'').replace("]}",''));
+            else 
+                var correctWords = [];
             //get emptySpaces
             for (let i = 0; i < correctWords.length; i++) {
                 var correctWord = correctWords[i];

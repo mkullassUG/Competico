@@ -3,9 +3,16 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
     /*       logic variables          */
     self.playerInfo = playerInfo_;
     self.debug = debug;
-    self.currentVariant;
     self.focusedTaskID; //wybrane z tablicy zadań dla usuń / edytuj
     self.lastEditedTaskID; // wybrane po potwierdzeniu edycji danego zadania
+    self.tablicaPolskichNazwTaskow = {
+        'WordFill': 'Jeden wielozdaniowy tekst, jedna pula odpowiedzi',
+        'WordConnect': 'Łączenie słów i zwrotów z dwóch kolumn',
+        'ChronologicalOrder': 'Układanie zdań w porządek chronologiczny'
+    };
+    self.currentTaskVariant; // ustawianie dema
+    self.currentVariant; //edytowanie
+
     /*       logic functions          */
     self.taskCreatorInit = () => {
         /* TODO
@@ -115,10 +122,6 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
 
     }
 
-    self.downloadAllTasks = () => {
-        self.ajaxGetAllTasksFile();
-    }
-
     self.downloadImportedTasks = () => {
         self.ajaxGetImportedTasksFile();
     }
@@ -173,8 +176,8 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
                 var task = importedTasksArray[i];
                 tableElem.append(`
                     <tr>
-                        <th scope="row">`+i+`</th>
-                        <td>`+task.taskName+`</td>
+                        <th scope="row">`+(i+1)+`</th>
+                        <td>` + self.tablicaPolskichNazwTaskow[task.taskName] + " (" + task.taskName + `)</td>
                         <td>
                             <button type="button" class="btn btn-success editButton" data-taskID="`+task.taskID+`" data-toggle="modal" data-target="#editTaskModalCenter">Edytuj</button>
                         </td>
@@ -235,22 +238,25 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
         */
         $("#gameDemoDiv").show();
         $("#taskEditHolder").hide();
+        $("#btnDemoTask").hide();
+        $("#btnDemoTaskEnd").show();
 
-        //Do task zapisać json zadania
-        var task = self.currentVariant.prepareTaskJsonFile();
+        //Do taskToSetup zapisać json zadania 
+        //BUG 2021-02-07 używałem tego samego obiektu do dema co wysyłania na serwer, FIX 2021-02-07: parsowanie obiektu na string JSON i spowrotem, żeby powtsał nowy obiekt dla dema
+        var taskToSetup = JSON.parse(JSON.stringify(self.currentVariant.prepareTaskJsonFile()));
 
         //w gameLogic jest setupNewTask, czy chce zrobić grugie takie tutaj?
         //start setupNewTask gameLogic
         //czy otrzymany task jest pusty
-        if (task == null) {
+        if (taskToSetup == null) {
             if (self.debug)
             console.warn("task was empty");
             return;
         }
+        
+        taskToSetup.task = taskToSetup.taskContent; // bo tak jest w gameLogic
 
-        task.task = task.taskContent; // bo tak jest w gameLogic
-
-        if (!task.taskName)
+        if (!taskToSetup.taskName)
             console.warn("Could not read task name!");
 
         //czyszczenie porpzedniego taska jeśli jakiś był
@@ -260,36 +266,39 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
 
         //mok task1
         if (self.debug) 
-            console.log(task);
+            console.log(taskToSetup);
         
         //wybieranie odpowiedniej logiki dla konkretnego template'a
-        switch (task.taskName) {
+        switch (taskToSetup.taskName) {
             case "WordFill":
-                task.task = task.taskContent.content; // bo takie wysyłam :v
-                self.currentTaskVariant = TaskVariant0(task.task);
+                taskToSetup.task = taskToSetup.taskContent.content; // bo takie wysyłam :v
+
+                taskToSetup.task.emptySpaceCount = taskToSetup.task.emptySpaces.length; //bo tego nie wysyłam serwerowi a potrzebuje sam do stworzenia zadania
+
+                self.currentTaskVariant = TaskVariant0(taskToSetup.task);
                 break;
             case "WordConnect":
-                self.currentTaskVariant = TaskVariant1(task.task);
+                self.currentTaskVariant = TaskVariant1(taskToSetup.task);
                 break;
             case "ChronologicalOrder":
-                self.currentTaskVariant = TaskVariant2(task.task);
+                self.currentTaskVariant = TaskVariant2(taskToSetup.task);
                 break;
             case "template3":
-                self.currentTaskVariant = TaskVariant3(task.task);//GameLogicVariants.logicVariant3(task);
+                self.currentTaskVariant = TaskVariant3(taskToSetup.task);//GameLogicVariants.logicVariant3(task);
                 break;
             case "template4":
-                self.currentTaskVariant = TaskVariant4(task.task);//GameLogicVariants.logicVariant4(task);
+                self.currentTaskVariant = TaskVariant4(taskToSetup.task);//GameLogicVariants.logicVariant4(task);
                 break;
             case "template5":
-                self.currentTaskVariant = TaskVariant5(task.task);//GameLogicVariants.logicVariant5(task);
+                self.currentTaskVariant = TaskVariant5(taskToSetup.task);//GameLogicVariants.logicVariant5(task);
                 break;
             default:
                 console.warn("To pole jest tylko dla jeszcze nie zaimplementowancyh tasków, w produkcji nie powinno się nigdy wykonać!");
                 self.currentTaskVariant = {};
                 //ListWordFill answers
                 self.currentTaskVariant.getAnswers = () => { 
-                console.log("hello ListWordFill");
-                return {answers: [["test"]]} 
+                    console.log("hello ListWordFill");
+                    return {answers: [["test"]]} 
                 }
                 break;
         }
@@ -298,6 +307,16 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
 
         //self.currentVariant
     }
+
+    self.endDemo = () => {
+
+        $("#gameDemoDiv").hide();
+        $("#taskEditHolder").show();
+        $("#btnDemoTask").show();
+        $("#btnDemoTaskEnd").hide();
+
+    }
+
     /*       event listeners          */
     if ($("#btnChronologicalOrder").length)
         $("#btnChronologicalOrder").on("click",()=>{
@@ -316,12 +335,6 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
             if (self.debug)
                 console.log("btnWordConnect");
             self.changeVariant("WordConnect");
-        });
-    if ($("#btnDownloadJsonAllTasks").length)
-        $("#btnDownloadJsonAllTasks").on("click",()=>{
-            if (self.debug)
-                console.log("btnDownloadJsonAllTasks");
-            self.downloadAllTasks();
         });
     if ($("#btnDownloadJsonImportedTasks").length)
         $("#btnDownloadJsonImportedTasks").on("click",()=>{
@@ -363,27 +376,14 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
                 console.log("btnDemoTask");
             self.setupDemo();
         });
+    if ($("#btnDemoTaskEnd").length)
+        $("#btnDemoTaskEnd").on("click",(e)=>{
+            if (self.debug)
+                console.log("btnDemoTaskEnd");
+            self.endDemo();
+        });
     /* Ajax requests*/
-    self.ajaxGetAllTasksFile = () => {
-        /*pobiera taski 
-        /api/v1/tasks/all/json/file*/
-
-        fetch('/api/v1/tasks/all/json/file')
-            .then(resp => resp.blob())
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                // the filename you want
-                a.download = 'tasksFile.json';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                alert('your file has downloaded!'); // or you know, something with better UX...
-            })
-            .catch(() => alert('oh no!'));
-    }
+    
 
     self.ajaxGetImportedTasksFile = () => {
         /*/api/v1/tasks/imported/json GET - lista wszystkich wprowadzonych zadań*/

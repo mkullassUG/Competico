@@ -1,5 +1,29 @@
-var resize_observer;
 // var currentObserver;
+var resize_observer;
+
+const TaskVariant = (taskData) => {
+  var self = taskData;//czy tu nie będzie porblemu, że nadpisuje i nie użyje ponownei taska
+
+  self.taskVariantInit = (taskData) => {
+    self.currentTaskNumber = taskData.currentTaskNumber;
+    if (resize_observer)
+      resize_observer.unobserve(document.querySelector("#GameDiv"));
+  }
+
+  self.getAnswers = () => {
+    var answers = [];//nie zawsze jest arrayem
+
+    return answers;
+  }
+
+  self.reset = () => {
+    self.answerCurrentlyAt = {};
+    $("#GameDiv").html("");
+
+  }
+
+  return self;
+}
 
 //WordFill
 const TaskVariant0 = (taskData) => {
@@ -10,14 +34,15 @@ const TaskVariant0 = (taskData) => {
         taskVariantInitSuper(taskData);
         console.log(taskData)
         self.answerCurrentlyAt = {};
-        self.taskData = taskData;
+        // self.taskData = taskData;
         self.textField = taskData.text;
         self.words = taskData.possibleAnswers;
         self.emptySpaceCount = taskData.emptySpaceCount;
+        self.startWithText = taskData.startWithText;
 
         var taskContentReady = "";
         var howManyBlanksFound = 0;
-        if (taskData.startWithText) {
+        if (self.startWithText) {
           for (let i = 0; i < self.textField.length; i++) {
             taskContentReady += self.textField[i] + ((howManyBlanksFound>=self.emptySpaceCount)?"":`<div class="answerHolderWrapper"><div class="droppableAnswerHolder" data-answer="">_</div></div>`);
             howManyBlanksFound++;
@@ -29,8 +54,8 @@ const TaskVariant0 = (taskData) => {
             howManyBlanksFound++;
             
           }
-        }
-  
+        } 
+
         //przygotowanie taskAnswerHolder
         var taskAnswerHolderReady = 
         `<div class="pb-2 mb-0 " id="taskAnswerHolder">`;
@@ -58,8 +83,8 @@ const TaskVariant0 = (taskData) => {
         var maxWidth = 0;
         for (let i = 0; i < elems.length; i++){
           /*ręcznie powniesione o 1 px w górę*/
-          console.log(elems[i])
-          console.log(elems[i].offsetWidth)
+          //console.log(elems[i])
+          //console.log(elems[i].offsetWidth)
           maxWidth = Math.max(maxWidth, elems[i].offsetWidth + 1);
         }
         console.log(maxWidth);
@@ -69,7 +94,7 @@ const TaskVariant0 = (taskData) => {
         /*żeby na starcie dobrze się ustawiały odpowiedzi w centrum "answer holdera",
         BUG, nie działa, odpowiedzi przy inicie nie są dragowane?*/
         self.trigger_drop = (draggable, droppable) => {
-          console.log("trigger_drop");
+          //console.log("trigger_drop");
           var draggable = $(draggable).draggable(),
           droppable = $(droppable).droppable(),
           droppableOffset = droppable.offset(),
@@ -101,7 +126,7 @@ const TaskVariant0 = (taskData) => {
         
 
         var answerDroppedOn = (answerDiv, fieldDiv) => {
-          console.log("answerDroppedOn");
+         // console.log("answerDroppedOn");
 
           $(fieldDiv).data("answer",answerDiv.innerText);
           //sprawdza czy wczęsniej odpowiedź była przypisana do pola odpowiedzi
@@ -498,11 +523,78 @@ const TaskVariant2 = (taskData) => {
 //ListWordFill
 const TaskVariant3 = (taskData) => {
   var self = TaskVariant(taskData);
-  
+
   var taskVariantInitSuper = self.taskVariantInit;
   self.taskVariantInit = (taskData) => {
-    taskVariantInitSuper(taskData);
+      taskVariantInitSuper(taskData);
 
+      //NEW 2021-03-08
+      console.log(taskData)
+      self.answerCurrentlyAt = [];//teraz to będzie tablica obiektów trzymających zaznaczoną odpowiedź
+      //TYLKO to sięnie zgrywa z tym co jest w reset TaskVariant, tam jest nadal obiekt
+      //to moge zamiast tablicy obiekt trzymający indexy, ex
+
+      // self.taskData = taskData;
+      self.textField = taskData.text; //tablica tablic zdań
+      self.words = taskData.possibleAnswers;//tablica tablic słów
+      self.emptySpaceCount = taskData.emptySpaceCount; //teraz to jest tablica liczb (ale nie miała byc jedna odpowiedz na zdanie max?) O.o
+      self.startWithText = taskData.startWithText; //tablica boolean
+
+      //dla każdego zdania:
+      var rows = self.words.length;
+
+      $("#GameDiv").html(``);
+
+      for (let i = 0; i < rows; i++) {
+          var textField = self.textField[i];
+          var words = self.words[i];
+          var emptySpaceCount = self.emptySpaceCount[i];
+          var startWithText = self.startWithText[i];
+
+          //1.1 miejsce na index zdania 
+          console.log("zdanie nr: " + i);
+
+          //1.2 ustawić miejsce na tekst
+          var taskContentReady = "("+ (i+1) +"). ";
+          var howManyBlanksFound = 0;
+          if (startWithText) {
+            for (let i = 0; i < textField.length; i++) {
+              taskContentReady += textField[i] + ((howManyBlanksFound>=emptySpaceCount)?"":`<div class="answerLWF">[blank]</div>`);
+              howManyBlanksFound++;
+            }
+          } else {
+            for (let i = 0; i < textField.length; i++) {
+              taskContentReady += ((howManyBlanksFound>=emptySpaceCount)?"":`<div class="answerLWF">[blank]</div>`) + textField[i];
+              console.log(howManyBlanksFound);
+              howManyBlanksFound++;
+              
+            }
+          } 
+
+          //2.1 ustawić miejsce na odpowiedzi
+          var taskAnswerHolderReady = 
+          `<div class="pb-2 mb-0 text-center" id="taskAnswerHolder">`;
+          for (let i = 0; i < words.length; i++) {
+            taskAnswerHolderReady += 
+            `<div class="answerLWF">` + words[i] + `</div>`
+          }
+          taskAnswerHolderReady += `</div>`;
+
+
+          $("#GameDiv").append(`
+          <div id="taskContent" class="border-top border-gray">`+ taskContentReady +`</div>
+          <div class="mb-0 border-bottom border-gray" id="taskAnswerHolder">
+            ` + taskAnswerHolderReady + `
+          </div>`)
+
+          //2.2 przypisać listenery pod nade odpowiedzi i miejsce na ostateczną odpowiedź
+          //Jquery-UI selectable (grupa tego zdania)
+
+          //3. oddzielić zdanie od nastepnego
+          
+          //nie musze ustawiac szerokości holdera bo robie SELECTABLE a nie DRAGGABLE
+          //https://api.jqueryui.com/selectable/
+      }
   }
 
   var getAnswersSuper = self.getAnswers;
@@ -522,7 +614,10 @@ const TaskVariant3 = (taskData) => {
   self.taskVariantInit(taskData);
   return self;
 }
-//WordFill bez animacji z klikaniem
+
+
+
+//WordFill bez animacji z klikaniem (DELETE this?)
 const TaskVariant4 = (taskData) => {
   var self = TaskVariant(taskData);
   
@@ -550,26 +645,3 @@ const TaskVariant4 = (taskData) => {
   return self;
 }
 
-const TaskVariant = (taskData) => {
-  var self = taskData;//czy tu nie będzie porblemu, że nadpisuje i nie użyje ponownei taska
-
-  self.taskVariantInit = (taskData) => {
-    self.currentTaskNumber = taskData.currentTaskNumber;
-    if (resize_observer)
-      resize_observer.unobserve(document.querySelector("#GameDiv"));
-  }
-
-  self.getAnswers = () => {
-    var answers = [];//nie zawsze jest arrayem
-
-    return answers;
-  }
-
-  self.reset = () => {
-    self.answerCurrentlyAt = {};
-    $("#GameDiv").html("");
-
-  }
-
-  return self;
-}

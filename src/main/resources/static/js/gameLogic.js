@@ -174,7 +174,7 @@ const GameLogic = ( lobby, _task) => {
       case "ChronologicalOrder":
         self.currentTaskVariant = TaskVariant2(task.task);
         break;
-      case "template3":
+      case "ListWordFill":
         self.currentTaskVariant = TaskVariant3(task.task);//GameLogicVariants.logicVariant3(task);
         break;
       case "template4":

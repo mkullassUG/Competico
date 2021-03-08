@@ -44,17 +44,17 @@
                 <ul class="submenu dropdown-menu">
                   <li><a class="dropdown-item" href="#WordFill" id="btnWordFill"> Jeden wielozdaniowy tekst, jedna pula odpowiedzi</a></li>
                   <li><a class="dropdown-item disabled" href="#"> Jeden wielozdaniowy tekst, wybór słowa dla każdej luki </a></li>
-                  <li><a class="dropdown-item disabled" href="#"> Oddzielne zdania ułożone w wierszach, jedna pula odpowiedzi na wiersz </a></li>
-                  <li><a class="dropdown-item disabled" href="#"> Oddzielne zdania ułożone w wierszach, wybór słowa dla każdej luki</a></li>
+                  <li><a class="dropdown-item disabled" href="#ListWordFill" id="btnListWordFill"> Oddzielne zdania ułożone w wierszach, jedna pula odpowiedzi na wiersz </a></li>
+                  <li><a class="dropdown-item disabled" href="#ListChoiceWordFill" id="btnListChoiceWordFill"> Oddzielne zdania ułożone w wierszach, wybór słowa dla każdej luki</a></li> 
                 </ul>
               </li>
               <li><a class="dropdown-item" href="#WordConnect" id="btnWordConnect"> Łączenie słów i zwrotów z dwóch kolumn </a></li>
               <li><a class="dropdown-item" href="#ChronologicalOrder" id="btnChronologicalOrder"> Układanie zdań w porządek chronologiczny </a></li>
-              <li><a class="dropdown-item disabled" href="#"> Układanie zdań z podanych wyrazów </a></li>
-              <li><a class="dropdown-item disabled" >  Wybór odpowiedzi (pytanie zamknięte) &raquo</a>
+              <li><a class="dropdown-item disabled" href="#ListSentenceForming" id="btnListSentenceForming"> Układanie zdań z podanych wyrazów </a></li>
+              <li><a class="dropdown-item disabled"> Wybór odpowiedzi (pytanie zamknięte) &raquo</a>
                 <ul class="submenu dropdown-menu">
-                  <li><a class="dropdown-item disabled" href="#"> Pojedyncza poprawna odpowiedź</a></li>
-                  <li><a class="dropdown-item disabled" href="#"> Wiele poprawnych odpowiedzi </a></li>
+                  <li><a class="dropdown-item disabled" href="#SingleChoice" id="btnSingleChoice"> Pojedyncza poprawna odpowiedź (Kahoot)</a></li>
+                  <li><a class="dropdown-item disabled" href="#MultipleChoice" id="btnMultipleChoice"> Wiele poprawnych odpowiedzi </a></li>
                 </ul>
               </li>
             </ul>
@@ -65,7 +65,6 @@
     <div id="mySidepanel" class="sidepanel bg-dark">
       <a href="javascript:void(0)" class="closebtn" id="closeNavButton">&times;</a>
       <a class="position-absolute text-white" style="top:0" id="infoNavDiv">Zapisane zadania (0)</a>
-      <a href="#" id="btnDownloadJsonAllTasks">pobierz wszystkie zadania</a>
       <a href="#" id="btnDownloadJsonImportedTasks">pobierz importowane zadania</a>
       <div class="table-responsive">
         <table class="table table-dark table-sm">
@@ -393,6 +392,7 @@
       <div class="row mt-3 text-center button-m-custom" id="Bottom">
         <div class="col-12">
           <button class="btn btn-lg btn-secondary mb-3 btnShadow disabled" id="btnDemoTask">Podgląd w grze</button>
+          <button class="btn btn-lg btn-secondary mb-3 btnShadow collapse" id="btnDemoTaskEnd">Powrót do edycji</button>
           <button class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnSaveTask" data-toggle="modal" data-target="#saveTaskModalCenter">Zapisz zadanie</button>
           <button class="btn btn-lg btn-secondary mb-3 btnShadow collapse" id="btnSaveEditedTask" data-toggle="modal" data-target="#saveEditTaskModalCenter">Zapisz edytowane zadanie</button>
         </div>

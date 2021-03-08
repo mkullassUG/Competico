@@ -102,8 +102,7 @@ public class GameService
 		
 		if (players.size() < 1)
 			return false;
-		if (!lobbyServ.deleteLobby(gameCode, requestSource))
-			return false;
+		
 		
 		int taskCount = 6 + (int) (Math.random() * 4); //TODO export to properties
 		double targetDifficulty = 100; //TODO refactor
@@ -114,7 +113,8 @@ public class GameService
 							.mapToObj(i -> gtdServ
 									.generateRandomTask(targetDifficulty))
 							.collect(Collectors.toList()))));
-		
+		if (!lobbyServ.deleteLobby(gameCode, requestSource))
+			return false;
 		games.put(gameCode, new Game(players, spectators, taskCount, taskMap));
 		return true;
 	}
