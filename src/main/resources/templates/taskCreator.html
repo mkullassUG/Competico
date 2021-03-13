@@ -391,7 +391,7 @@
       </div>
       <div class="row mt-3 text-center button-m-custom" id="Bottom">
         <div class="col-12">
-          <button class="btn btn-lg btn-secondary mb-3 btnShadow disabled" id="btnDemoTask">Podgląd w grze</button>
+          <button class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnDemoTask">Podgląd w grze</button>
           <button class="btn btn-lg btn-secondary mb-3 btnShadow collapse" id="btnDemoTaskEnd">Powrót do edycji</button>
           <button class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnSaveTask" data-toggle="modal" data-target="#saveTaskModalCenter">Zapisz zadanie</button>
           <button class="btn btn-lg btn-secondary mb-3 btnShadow collapse" id="btnSaveEditedTask" data-toggle="modal" data-target="#saveEditTaskModalCenter">Zapisz edytowane zadanie</button>
@@ -486,8 +486,22 @@
     <script src="js/bootstrap.min.js"></script> -->
     <script src="/js/bootstrap/popper.min.js"></script>
     <script src="/js/bootstrap/bootstrap.min.js"></script>
-    <script src="/js/taskCreators.js"></script>
-    <script src="/js/tasks.js"></script>
+
+    <!-- <script src="/js/taskCreators.js"></script> -->
+    <script src="/js/tasks/taskCreatorVariants/TaskCreatorVariant.js"></script>
+    <script src="/js/tasks/taskCreatorVariants/ChronologicalOrder_Creator.js"></script>
+    <script src="/js/tasks/taskCreatorVariants/WordConnect_Creator.js"></script>
+    <script src="/js/tasks/taskCreatorVariants/WordFill_Creator.js"></script>
+
+    <!-- <script src="/js/tasks.js"></script> -->
+    <script src="/js/tasks/tasksGameVariants/TaskGameVariant.js"></script>
+    <script src="/js/tasks/tasksGameVariants/ChronologicalOrder_Game.js"></script>
+    <script src="/js/tasks/tasksGameVariants/WordConnect_Game.js"></script>
+    <script src="/js/tasks/tasksGameVariants/WordFill_Game.js"></script>
+    
+    <script src="/js/tasks/TaskCreatorCore.js"></script>
+    <script src="/js/tasks/TaskGameCore.js"></script>
+
     <script src="/js/taskCreatorLogic.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.17.1/cytoscape.min.js" integrity="sha512-dR5Qb5zIoRodLJCkh0InsAi/uyP1Pd3lMAliXEdv5ol71k2qCwWFS9N18LIGH9MQuAPWu3adPyww5SK2deReog==" crossorigin="anonymous"></script>
     <script>

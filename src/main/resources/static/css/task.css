@@ -312,4 +312,18 @@ svg.fs-connector-hover path {
   /* margin: 10px;  */
 }
 
+/*Template 4 ListSentenceForming*/
+.LSFword {
+  display: inline-block;
+  border: 3px solid rgb(10, 108, 255);
+  border-radius: 10px;
+}
+.DivOrderedWords {
+  min-height: 39px;
+}
+
+.DivOrderedWords > hr {
+  margin: 0px;
+  border-top: 3px dotted blue;
+}
 /*other global.css*/

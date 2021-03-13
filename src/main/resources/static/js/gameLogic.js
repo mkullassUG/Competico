@@ -74,6 +74,11 @@ const GameLogic = ( lobby, _task) => {
   });
   self.cy.boxSelectionEnabled(false);
   self.cy.panningEnabled(false);
+  self.KropeczkiObserver;
+
+  self.resizeGameObserver;
+
+  self.GameCore = TaskGameCore();
 
   /*       logic functions          */
   self.gameInit = (task) => {
@@ -163,36 +168,8 @@ const GameLogic = ( lobby, _task) => {
     if (self.debug) 
       console.log(task);
     
-    //wybieranie odpowiedniej logiki dla konkretnego template'a
-    switch (task.taskName) {
-      case "WordFill":
-        self.currentTaskVariant = TaskVariant0(task.task);
-        break;
-      case "WordConnect":
-        self.currentTaskVariant = TaskVariant1(task.task);
-        break;
-      case "ChronologicalOrder":
-        self.currentTaskVariant = TaskVariant2(task.task);
-        break;
-      case "ListWordFill":
-        self.currentTaskVariant = TaskVariant3(task.task);//GameLogicVariants.logicVariant3(task);
-        break;
-      case "template4":
-        self.currentTaskVariant = TaskVariant4(task.task);//GameLogicVariants.logicVariant4(task);
-        break;
-      case "template5":
-        self.currentTaskVariant = TaskVariant5(task.task);//GameLogicVariants.logicVariant5(task);
-        break;
-      default:
-          console.warn("To pole jest tylko dla jeszcze nie zaimplementowancyh tasków, w produkcji nie powinno się nigdy wykonać!");
-          self.currentTaskVariant = {};
-          //ListWordFill answers
-          self.currentTaskVariant.getAnswers = () => { 
-            console.log("hello ListWordFill");
-            return {answers: [["test"]]} 
-          }
-        break;
-    }
+    self.currentTaskVariant = self.GameCore.getVariant(task.taskName, task.task);
+    self.setupResizeGameObserver();
 
     //ustawianie kropeczek
     self.buildCy(task.taskCount,task.currentTaskNumber);
@@ -208,6 +185,18 @@ const GameLogic = ( lobby, _task) => {
     
     self.KropeczkiObserver.observe(document.querySelector("#gameTimer"));
 
+  }
+
+  self.setupResizeGameObserver = () => {
+
+      if (self.resizeGameObserver)
+          self.resizeGameObserver.unobserve(document.querySelector("#GameDiv"));
+      self.resizeGameObserver = new ResizeObserver(function(entries) {
+          if (typeof self.currentTaskVariant.taskDoesNotExist === 'undefined')
+            self.currentTaskVariant.ResizeObserverVariantFunction();
+      });
+
+      self.resizeGameObserver.observe(document.querySelector("#GameDiv"));
   }
 
   self.buildCy = (totalTasks, current) => {

@@ -13,6 +13,8 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
     self.currentTaskVariant; // ustawianie dema
     self.currentVariant; //edytowanie
 
+    self.CreatorCore = TaskCreatorCore();
+
     /*       logic functions          */
     self.taskCreatorInit = () => {
         /* TODO
@@ -47,79 +49,8 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
         $("#btnSaveEditedTask").hide();
         $("#btnSaveTask").show();
 
-        //sprawdzanie
-        switch (variantString) {
-            case "WordFill":
-                self.currentVariant = WordFillCreator();
-                self.currentVariant.loadTaskFrom({
-                    "taskName" : "WordFill",
-                    "taskContent" : {
-                      "instruction" : "Complete the text with the missing words:",
-                      "tags" : [ ],
-                      "content" : {
-                        "text" : [ "I’m sorry to have to tell you that there has been some ", " in the project and we won’t be able to ", " our original ", " on July 30th for completing the ", " of the new software. Pedro’s absence for three weeks caused a bit of a ", ", and there were more delays when we realised that there was still some ", " in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month." ],
-                        "emptySpaces" : [ {
-                          "answer" : "slippage"
-                        }, {
-                          "answer" : "stick to"
-                        }, {
-                          "answer" : "deadline"
-                        }, {
-                          "answer" : "rollout"
-                        }, {
-                          "answer" : "bottleneck"
-                        }, {
-                          "answer" : "dirty data"
-                        } ],
-                        "startWithText" : true,
-                        "possibleAnswers" : [ "bottleneck", "deadline", "dirty data", "migrate", "rollout", "slippage", "stick to", "within", "scope" ]
-                      },
-                      "difficulty" : 100.0
-                    }
-                  });
-                break;
-            case "ChronologicalOrder":
-                self.currentVariant = ChronologicalOrderCreator();
-                self.currentVariant.loadTaskFrom({
-                    "taskName" : "ChronologicalOrder",
-                    "taskContent" : {
-                      "instruction" : "Put the phrases in order:",
-                      "tags" : [ ],
-                      "sentences" : [ "Try to understand the problem and define the purpose of the program.", "Once you have analysed the problem, define the successive logical steps of the program.", "Write the instructions in a high-level language of your choice.", "Once the code is written, test it to detect bugs or errors.", "Debug and fix errors in your code.", "Finally, review the program’s documentation." ],
-                      "difficulty" : 100.0
-                    }
-                  });
-                break;
-            case "WordConnect":
-                self.currentVariant = WordConnectCreator();
-                self.currentVariant.loadTaskFrom({
-                    "taskName" : "WordConnect",
-                    "taskContent" : {
-                      "instruction" : "Match the words with their translations:",
-                      "tags" : [ ],
-                      "leftWords" : [ "data mining", "pattern identification", "quantitative modelling", "class label", "class membership", "explanatory variable", "variable", "fault-tolerant", "spurious pattern", "outlier" ],
-                      "rightWords" : [ "eksploracja danych", "identyfikacja wzorca", "modelowanie ilościowe", "etykieta klasy", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna" ],
-                      "correctMapping" : {
-                        "0" : 0,
-                        "1" : 1,
-                        "2" : 2,
-                        "3" : 3,
-                        "4" : 4,
-                        "5" : 5,
-                        "6" : 6,
-                        "7" : 7,
-                        "8" : 8,
-                        "9" : 9
-                      },
-                      "difficulty" : 100.0
-                    }
-                  });
-                break;
-           default:
-               console.warn("TODO, to nie powinno się wydarzyć!")
-               break;
-        }
-
+        
+        self.currentVariant = self.CreatorCore.getVariant(variantString);
     }
 
     self.downloadImportedTasks = () => {
@@ -243,66 +174,17 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
 
         //Do taskToSetup zapisać json zadania 
         //BUG 2021-02-07 używałem tego samego obiektu do dema co wysyłania na serwer, FIX 2021-02-07: parsowanie obiektu na string JSON i spowrotem, żeby powtsał nowy obiekt dla dema
-        var taskToSetup = JSON.parse(JSON.stringify(self.currentVariant.prepareTaskJsonFile()));
-
-        //w gameLogic jest setupNewTask, czy chce zrobić grugie takie tutaj?
-        //start setupNewTask gameLogic
-        //czy otrzymany task jest pusty
-        if (taskToSetup == null) {
-            if (self.debug)
-            console.warn("task was empty");
-            return;
-        }
-        
-        taskToSetup.task = taskToSetup.taskContent; // bo tak jest w gameLogic
-
-        if (!taskToSetup.taskName)
-            console.warn("Could not read task name!");
-
         //czyszczenie porpzedniego taska jeśli jakiś był
         //przygotowanie miejsca na następnego taska
         if ($("#GameDiv").length)
             $("#GameDiv").html("");
 
-        //mok task1
+        var taskToSetup = self.currentVariant.prepareTaskJsonFile();
+        
         if (self.debug) 
             console.log(taskToSetup);
-        
-        //wybieranie odpowiedniej logiki dla konkretnego template'a
-        switch (taskToSetup.taskName) {
-            case "WordFill":
-                taskToSetup.task = taskToSetup.taskContent.content; // bo takie wysyłam :v
 
-                taskToSetup.task.emptySpaceCount = taskToSetup.task.emptySpaces.length; //bo tego nie wysyłam serwerowi a potrzebuje sam do stworzenia zadania
-
-                self.currentTaskVariant = TaskVariant0(taskToSetup.task);
-                break;
-            case "WordConnect":
-                self.currentTaskVariant = TaskVariant1(taskToSetup.task);
-                break;
-            case "ChronologicalOrder":
-                self.currentTaskVariant = TaskVariant2(taskToSetup.task);
-                break;
-            case "template3":
-                self.currentTaskVariant = TaskVariant3(taskToSetup.task);//GameLogicVariants.logicVariant3(task);
-                break;
-            case "template4":
-                self.currentTaskVariant = TaskVariant4(taskToSetup.task);//GameLogicVariants.logicVariant4(task);
-                break;
-            case "template5":
-                self.currentTaskVariant = TaskVariant5(taskToSetup.task);//GameLogicVariants.logicVariant5(task);
-                break;
-            default:
-                console.warn("To pole jest tylko dla jeszcze nie zaimplementowancyh tasków, w produkcji nie powinno się nigdy wykonać!");
-                self.currentTaskVariant = {};
-                //ListWordFill answers
-                self.currentTaskVariant.getAnswers = () => { 
-                    console.log("hello ListWordFill");
-                    return {answers: [["test"]]} 
-                }
-                break;
-        }
-        //end setupNewTask gameLogic
+        self.currentTaskVariant = self.CreatorCore.getVariant_GameCore(taskToSetup.taskName, self.currentVariant.prepareTaskJsonFile());
 
 
         //self.currentVariant
