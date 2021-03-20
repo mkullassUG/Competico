@@ -17,7 +17,9 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.projteam.app.dto.game.GameResultDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
+import com.projteam.app.dto.game.LeaderboardEntryDTO;
 import com.projteam.app.service.game.GameService;
+import com.projteam.app.service.game.PlayerDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -28,11 +30,13 @@ import io.swagger.annotations.ApiResponses;
 public class GameAPI
 {
 	private GameService gameService;
+	private PlayerDataService pdService;
 	
 	@Autowired
-	public GameAPI(GameService gs)
+	public GameAPI(GameService gs, PlayerDataService pd)
 	{
 		gameService = gs;
+		pdService = pd;
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
@@ -173,5 +177,26 @@ public class GameAPI
 		return gameService.getRating()
 				.map(rating -> Map.<String, Object>of("rating", rating))
 				.orElse(Map.of("isPlayer", false));
+	}
+	
+	@ApiOperation(value = "Get top players from leaderboard", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Leaderboard received")
+	})
+	@GetMapping("api/v1/game/leaderboard/top")
+	public List<LeaderboardEntryDTO> getTopLeaderboard()
+	{
+		return pdService.getTopLeaderboard();
+	}
+	@ApiOperation(value = "Get players around the current player's rating from leaderboard", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Leaderboard received")
+	})
+	@GetMapping("api/v1/game/leaderboard/relative")
+	public List<LeaderboardEntryDTO> getRelativeLeaderboard()
+	{
+		return pdService.getRelativeLeaderboard();
 	}
 }

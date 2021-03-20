@@ -290,6 +290,21 @@ svg.fs-connector-hover path {
   border-radius: 10px;
   display: inline-block;
 }
+.answerLWF:hover {
+  background-color: blue!important;
+  border: 3px solid blue!important;
+  color: white!important;
+}
+.answerLWF:active {
+  background-color: cyan!important;
+  border: 3px solid cyan!important;
+  color: black!important;
+}
+.answerLWFselected {
+  background-color: cyan!important;
+  border: 3px solid cyan!important;
+  color: black!important;
+}
 
 .answerHolderLWF {
   background-color: rgba(100,100,100,0.5);

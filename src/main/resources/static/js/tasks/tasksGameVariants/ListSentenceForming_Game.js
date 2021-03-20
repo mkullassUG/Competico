@@ -5,8 +5,11 @@ const ListSentenceForming_Game = (taskData) => {
     /*TODO
       line breaks:
       https://stackoverflow.com/questions/61783668/detect-line-break-with-css
+
+      dodać to do resize observera tego taska
     */
     self.lineBreakDetection_andHrInsertion_In_DivOrderedWords = (elmnt) => {
+        //elmnt - array słów z jednego bloku do podzielenia na rzędy
         var previous = null;
         for (var i = 0; i < elmnt.length; i++) {
             var current=elmnt[i];

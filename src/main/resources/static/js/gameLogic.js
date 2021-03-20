@@ -8,6 +8,20 @@
 
 */
 
+/*TODO
+  WAŻNE 2021-03-20:
+
+  detekcja czy przycisk jest niżej od gaedivz żeby nei zasłaniać:
+  
+console.log(
+	"is botton top ("
+		+ $("#btnNextTask").offset().top + 
+	"px) lower than gamediv bottom ("+($("#GameDiv").offset().top + $("#GameDiv").height())+"px + 60 margin): " + (
+	($("#btnNextTask").offset().top) >
+	($("#GameDiv").offset().top + $("#GameDiv").height() + 60)
+	)
+)
+*/
 const GameLogic = ( lobby, _task) => {
 
   /*       logic variables          */
@@ -192,8 +206,13 @@ const GameLogic = ( lobby, _task) => {
       if (self.resizeGameObserver)
           self.resizeGameObserver.unobserve(document.querySelector("#GameDiv"));
       self.resizeGameObserver = new ResizeObserver(function(entries) {
+          //new 2021-03-20 TODO
+          if (!(($("#btnNextTask").offset().top) > ($("#GameDiv").offset().top + $("#GameDiv").height() + 60)))
+            console.warn("GameDiv wychodzi poza ekran lub przycisk zasłania!");
+
           if (typeof self.currentTaskVariant.taskDoesNotExist === 'undefined')
-            self.currentTaskVariant.ResizeObserverVariantFunction();
+              self.currentTaskVariant.ResizeObserverVariantFunction();
+
       });
 
       self.resizeGameObserver.observe(document.querySelector("#GameDiv"));
@@ -332,9 +351,9 @@ const GameLogic = ( lobby, _task) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug) {
           console.log("ajaxGamePing success");
-          console.log(data);
-          console.log(textStatus);
-          console.log(jqXHR);
+          // console.log(data);
+          // console.log(textStatus);
+          // console.log(jqXHR);
         }
         self.ajaxGamePingLoopTimeout = setTimeout(()=>{ajaxGamePing(lobbyCode)},10000);
       },
