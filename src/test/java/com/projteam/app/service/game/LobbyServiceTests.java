@@ -1,4 +1,4 @@
-package com.projteam.app.service;
+package com.projteam.app.service.game;
 
 import static com.projteam.app.domain.Account.LECTURER_ROLE;
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
@@ -28,7 +28,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import com.projteam.app.domain.Account;
 import com.projteam.app.dto.lobby.LobbyOptionsDTO;
-import com.projteam.app.service.game.LobbyService;
+import com.projteam.app.service.AccountService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LobbyServiceTests

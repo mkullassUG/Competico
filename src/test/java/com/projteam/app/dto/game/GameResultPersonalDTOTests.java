@@ -67,6 +67,7 @@ class GameResultPersonalDTOTests
 	}
 	
 	//---Sources---
+	
 	public static List<Arguments> equalDTOs()
 	{
 		GameResultPersonalDTO sameObj = new GameResultPersonalDTO(0.75, 2000, 100);

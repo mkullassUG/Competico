@@ -2,26 +2,39 @@ package com.projteam.app.service.game;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static com.projteam.app.utils.Initializable.init;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import com.projteam.app.dao.game.PlayerDataDAO;
 import com.projteam.app.domain.Account;
 import com.projteam.app.domain.game.PlayerData;
+import com.projteam.app.dto.game.LeaderboardEntryDTO;
+import com.projteam.app.service.AccountService;
+import com.projteam.app.utils.OffsetBasedPageRequest;
 
 @Service
 public class PlayerDataService
 {
 	private PlayerDataDAO playerDataDao;
+	private AccountService accountService;
 	
 	public static final int DEFAULT_RATING = 1000;
+	public static final int LEADERBOARD_SNIPPET_SIZE = 5;
 	
 	@Autowired
-	public PlayerDataService(PlayerDataDAO playerDataDao)
+	public PlayerDataService(PlayerDataDAO playerDataDao,
+			AccountService accountService)
 	{
 		this.playerDataDao = playerDataDao;
+		this.accountService = accountService;
 	}
 	
 	@Transactional
@@ -47,9 +60,76 @@ public class PlayerDataService
 	{
 		if (pd == null)
 			return null;
-		if (!pd.getAccount().hasRole(PLAYER_ROLE))
+		Account acc = pd.getAccount();
+		if ((acc == null) || !acc.hasRole(PLAYER_ROLE))
 			return null;
 		
 		return playerDataDao.save(pd);
+	}
+	
+	@Transactional
+	public List<LeaderboardEntryDTO> getTopLeaderboard()
+	{
+		Page<PlayerData> page = playerDataDao.findAll(
+				PageRequest.of(0, LEADERBOARD_SNIPPET_SIZE,
+				Sort.by(Order.desc("rating"), Order.desc("account.username"))));
+		
+		List<LeaderboardEntryDTO> ret = new ArrayList<>();
+		
+		int pos = 1;
+		for (PlayerData entry: page)
+		{
+			Account acc = entry.getAccount();
+			ret.add(new LeaderboardEntryDTO(
+					acc.getUsername(),
+					acc.getNickname(),
+					pos, entry.getRating()));
+			pos++;
+		}
+		return ret;
+	}
+	@Transactional
+	public List<LeaderboardEntryDTO> getRelativeLeaderboard()
+	{
+		return getRelativeLeaderboard(getAccount());
+	}
+	@Transactional
+	public List<LeaderboardEntryDTO> getRelativeLeaderboard(Account acc)
+	{
+		if (acc == null)
+			return List.of();
+		PlayerData currentPD = playerDataDao.findByAccount_id(acc.getId())
+				.orElse(null);
+		if (currentPD == null)
+			return List.of();
+		
+		int position = playerDataDao.getPositionOnLeaderboard(
+				currentPD.getRating(), acc.getUsername());
+		int start = Math.max(position - (LEADERBOARD_SNIPPET_SIZE / 2), 0);
+		
+		Page<PlayerData> page = playerDataDao.findAll(
+				OffsetBasedPageRequest.of(start, LEADERBOARD_SNIPPET_SIZE,
+				Sort.by(Order.desc("rating"), Order.desc("account.username"))));
+		
+		List<LeaderboardEntryDTO> ret = new ArrayList<>();
+		
+		int curr = start + 1;
+		for (PlayerData entry: page)
+		{
+			Account currAcc = entry.getAccount();
+			ret.add(new LeaderboardEntryDTO(
+					currAcc.getUsername(),
+					currAcc.getNickname(),
+					curr, entry.getRating()));
+			curr++;
+		}
+		
+		return ret;
+	}
+	
+	private Account getAccount()
+	{
+		return accountService.getAuthenticatedAccount()
+				.orElseThrow(() -> new IllegalArgumentException("Not authenticated."));
 	}
 }

@@ -1,4 +1,4 @@
-package com.projteam.app.service;
+package com.projteam.app.service.game;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
@@ -59,7 +59,7 @@ import com.projteam.app.dto.game.tasks.create.WordConnectDTO;
 import com.projteam.app.dto.game.tasks.create.WordFillDTO;
 import com.projteam.app.dto.game.tasks.create.WordFillElementDTO;
 import com.projteam.app.dto.game.tasks.create.WordFillElementDTO.EmptySpaceDTO;
-import com.projteam.app.service.game.GameTaskDataService;
+import com.projteam.app.service.AccountService;
 import com.projteam.app.service.game.tasks.ChoiceWordFillService;
 import com.projteam.app.service.game.tasks.ChronologicalOrderService;
 import com.projteam.app.service.game.tasks.ListChoiceWordFillService;
@@ -211,6 +211,21 @@ class GameTaskDataServiceTests
 	public void shouldGetImportedGlobalTasks()
 	{
 		assertNotNull(gtdServ.getImportedGlobalTasks(mockTaskDataAdmin()));
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldGetImportedGlobalTasksAfterAddingTask(JsonNode taskDTO)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		
+		gtdServ.importGlobalTask(taskDTO, admin);
+		int taskCount = gtdServ.getImportedGlobalTaskCount(admin);
+		
+		var res = gtdServ.getImportedGlobalTasks(admin);
+		
+		assertNotNull(res);
+		assertEquals(res.size(), taskCount);
 	}
 	@Test
 	public void shouldGetImportedGlobalTasksWithAuthenticatedAdmin()
@@ -417,6 +432,21 @@ class GameTaskDataServiceTests
 		UUID wrongID = UUID.randomUUID();
 		
 		boolean success = gtdServ.editImportedGlobalTask(wrongID, newTaskDTO, admin);
+		
+		assertFalse(success);
+		assertEquals(gtdServ.getImportedGlobalTaskCount(admin), taskCount);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldNotEditGlobalTaskWhenEmpty(JsonNode taskDTO)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		
+		int taskCount = gtdServ.getImportedGlobalTaskCount(admin);
+		UUID wrongID = UUID.randomUUID();
+		
+		boolean success = gtdServ.editImportedGlobalTask(wrongID, taskDTO, admin);
 		
 		assertFalse(success);
 		assertEquals(gtdServ.getImportedGlobalTaskCount(admin), taskCount);

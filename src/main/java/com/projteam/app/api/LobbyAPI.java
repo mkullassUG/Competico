@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import com.projteam.app.domain.Account;
 import com.projteam.app.dto.lobby.LobbyOptionsDTO;
 import com.projteam.app.service.AccountService;
@@ -213,19 +212,6 @@ public class LobbyAPI
 		return Optional.ofNullable(lobbyService.getRandomLobby())
 			.map(gameCode -> new ResponseEntity<String>(gameCode, HttpStatus.OK))
 			.orElseGet(() -> new ResponseEntity<String>("No lobby available", HttpStatus.NOT_FOUND));
-	}
-	
-	@GetMapping("/lobby")
-	@ApiOperation(value = "Display the lobby join page.")
-    public ModelAndView lobbyJoin()
-    {
-        return new ModelAndView("lobby-join");
-    }
-	@GetMapping("/game/{code}")
-	@ApiOperation(value = "Display the lobby with the given game code.")
-	public ModelAndView lobbyPage(@PathVariable("code") String code)
-	{
-		return new ModelAndView("lobby");
 	}
 	
 	private Account getAuthenticatedAccount()

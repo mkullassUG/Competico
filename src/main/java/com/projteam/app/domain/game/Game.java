@@ -145,7 +145,7 @@ public class Game
 			Map<Integer, Long> timeTaken = new HashMap<>(timeTakenForTasks.get(playerId));
 			
 			//TODO include in game result
-			boolean isActive = activePlayers.contains(player);
+//			boolean isActive = activePlayers.contains(player);
 			
 			PlayerResult pr = new PlayerResult(gameResultId, playerId, completion, difficulty, timeTaken);
 			gr.addResult(pr);
@@ -219,7 +219,7 @@ public class Game
 						timeTaken.size()));
 		
 		//TODO include in game result
-		boolean isActive = activePlayers.contains(player);
+//		boolean isActive = activePlayers.contains(player);
 		
 		for (int i = 0; i < l; i++)
 		{
