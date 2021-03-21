@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.dto.game.tasks.create.TaskDTO;
@@ -136,13 +135,6 @@ public class TaskDataAPI
 	public boolean deleteImportedTask(@PathVariable UUID id)
 	{
 		return gtdService.removeImportedGlobalTask(id);
-	}
-	
-	@GetMapping("/tasks/import/global")
-	@ApiOperation(value = "Display a list of task data templates for global import")
-	public ModelAndView taskImportList()
-	{
-		return new ModelAndView("taskcreator");
 	}
 	
 	private List<Map<String, ?>> taskDTOsWithName(List<TaskDTO> dtoList)

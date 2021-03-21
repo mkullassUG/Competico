@@ -89,7 +89,7 @@ public class GameService
 	{
 		if (!lobbyServ.lobbyExists(gameCode))
 			return false;
-		if (games.containsKey(gameCode))
+		if (gameExists(gameCode))
 			return false;
 		if (!lobbyServ.isHost(gameCode, requestSource))
 			return false;
@@ -102,8 +102,6 @@ public class GameService
 		
 		if (players.size() < 1)
 			return false;
-		if (!lobbyServ.deleteLobby(gameCode, requestSource))
-			return false;
 		
 		int taskCount = 6 + (int) (Math.random() * 4); //TODO export to properties
 		double targetDifficulty = 100; //TODO refactor
@@ -115,6 +113,8 @@ public class GameService
 									.generateRandomTask(targetDifficulty))
 							.collect(Collectors.toList()))));
 		
+		if (!lobbyServ.deleteLobby(gameCode, requestSource))
+			return false;
 		games.put(gameCode, new Game(players, spectators, taskCount, taskMap));
 		return true;
 	}
@@ -142,7 +142,7 @@ public class GameService
 	}
 	private Task getCurrentTask(String gameCode, Account player)
 	{
-		if (!games.containsKey(gameCode))
+		if (!gameExists(gameCode))
 			return null;
 		
 		Game game = games.get(gameCode);
@@ -155,7 +155,7 @@ public class GameService
 	}
 	public boolean hasGameFinished(String gameCode, Account player)
 	{
-		if (!games.containsKey(gameCode))
+		if (!gameExists(gameCode))
 			return true;
 		return games.get(gameCode).hasGameFinishedFor(player);
 	}
@@ -167,7 +167,7 @@ public class GameService
 	}
 	private boolean acceptAnswer(String gameCode, TaskAnswer answer, Account player)
 	{
-		if (!games.containsKey(gameCode))
+		if (!gameExists(gameCode))
 			return false;
 		
 		Game game = games.get(gameCode);
@@ -182,7 +182,7 @@ public class GameService
 	}
 	public Class<? extends TaskAnswer> getCurrentAnswerClass(String gameCode, Account player)
 	{
-		if (!games.containsKey(gameCode))
+		if (!gameExists(gameCode))
 			return null;
 		
 		Game game = games.get(gameCode);
@@ -293,15 +293,17 @@ public class GameService
 
 	private TaskAnswer convertRawAnswer(String gameCode, JsonNode answer) throws JsonProcessingException
 	{
+		if (!gameExists(gameCode))
+			return null;
 		if (answer == null)
 			return mapper.treeToValue(
 					JsonNodeFactory.instance.nullNode(),
 					getCurrentTask(gameCode).getAnswerType());
 		return mapper.treeToValue(answer, getCurrentTask(gameCode).getAnswerType());
 	}
-	public void acceptAnswer(String gameCode, JsonNode answer) throws JsonProcessingException
+	public boolean acceptAnswer(String gameCode, JsonNode answer) throws JsonProcessingException
 	{
-		acceptAnswer(gameCode, convertRawAnswer(gameCode, answer));
+		return acceptAnswer(gameCode, convertRawAnswer(gameCode, answer));
 	}
 
 	public int getTaskNumber(String gameCode)
@@ -310,7 +312,7 @@ public class GameService
 	}
 	public int getTaskNumber(String gameCode, Account player)
 	{
-		if (!games.containsKey(gameCode))
+		if (!gameExists(gameCode))
 			return -1;
 		Game game = games.get(gameCode);
 		return game.getCurrentTaskNumber(player);
@@ -322,7 +324,7 @@ public class GameService
 	}
 	public int getTaskCount(String gameCode, Account acc)
 	{
-		if (!games.containsKey(gameCode))
+		if (!gameExists(gameCode))
 			return -1;
 		Game game = games.get(gameCode);
 		return game.getTaskCount(acc);

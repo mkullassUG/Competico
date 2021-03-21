@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.projteam.app.dto.game.GameResultDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
+import com.projteam.app.dto.game.LeaderboardEntryDTO;
 import com.projteam.app.service.game.GameService;
+import com.projteam.app.service.game.PlayerDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -29,11 +30,13 @@ import io.swagger.annotations.ApiResponses;
 public class GameAPI
 {
 	private GameService gameService;
+	private PlayerDataService pdService;
 	
 	@Autowired
-	public GameAPI(GameService gs)
+	public GameAPI(GameService gs, PlayerDataService pd)
 	{
 		gameService = gs;
+		pdService = pd;
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
@@ -176,16 +179,24 @@ public class GameAPI
 				.orElse(Map.of("isPlayer", false));
 	}
 	
-	@GetMapping("/game/results/{gameID}")
-	@ApiOperation(value = "Display the results of a given game.")
-	public ModelAndView lobbyPage(@PathVariable("gameID") UUID gameID)
+	@ApiOperation(value = "Get top players from leaderboard", code = 200)
+	@ApiResponses(
 	{
-		return new ModelAndView("gameResults");
+		@ApiResponse(code = 200, message = "Leaderboard received")
+	})
+	@GetMapping("api/v1/game/leaderboard/top")
+	public List<LeaderboardEntryDTO> getTopLeaderboard()
+	{
+		return pdService.getTopLeaderboard();
 	}
-	@GetMapping("/game/history/{page}")
-	@ApiOperation(value = "Display the results of a given game.")
-	public ModelAndView gameHistory()
+	@ApiOperation(value = "Get players around the current player's rating from leaderboard", code = 200)
+	@ApiResponses(
 	{
-		return new ModelAndView("gameHistory");
+		@ApiResponse(code = 200, message = "Leaderboard received")
+	})
+	@GetMapping("api/v1/game/leaderboard/relative")
+	public List<LeaderboardEntryDTO> getRelativeLeaderboard()
+	{
+		return pdService.getRelativeLeaderboard();
 	}
 }

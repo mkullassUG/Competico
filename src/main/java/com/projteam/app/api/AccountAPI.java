@@ -2,8 +2,6 @@ package com.projteam.app.api;
 
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.service.AccountService;
@@ -21,14 +18,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @Api(value = "AccountAPI", tags = "The main API managing account access")
 public class AccountAPI
 {
 	private AccountService accServ;
-	
-	private Logger log = LoggerFactory.getLogger(AccountAPI.class);
 	
 	@Autowired
 	public AccountAPI(AccountService accServ)
@@ -105,22 +102,5 @@ public class AccountAPI
 						"nickname", acc.getNickname(),
 						"roles", acc.getRoles()))
 				.orElseGet(() -> Map.of("authenticated", false));
-	}
-
-	@GetMapping("register")
-	@ApiOperation(value = "Display the registration page", code = 200)
-	public Object registerPage()
-	{
-		if (accServ.isAuthenticated())
-			return new ModelAndView("redirect:/dashboard");
-		return new ModelAndView("/register");
-	}
-	@GetMapping("login")
-	@ApiOperation(value = "Display the login page", code = 200)
-	public ModelAndView loginPage()
-	{
-		if (accServ.isAuthenticated())
-			return new ModelAndView("redirect:/dashboard");
-		return new ModelAndView("/login");
 	}
 }

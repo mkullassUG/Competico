@@ -1,4 +1,4 @@
-package com.projteam.app.service;
+package com.projteam.app.service.game;
 
 import static com.projteam.app.domain.Account.LECTURER_ROLE;
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
@@ -28,7 +28,9 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import com.projteam.app.dao.game.PlayerResultDAO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.projteam.app.dao.game.GameResultDAO;
 import com.projteam.app.domain.Account;
 import com.projteam.app.domain.game.PlayerResult;
@@ -39,10 +41,7 @@ import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 import com.projteam.app.dto.game.GameResultPersonalDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
-import com.projteam.app.service.game.GameService;
-import com.projteam.app.service.game.GameTaskDataService;
-import com.projteam.app.service.game.LobbyService;
-import com.projteam.app.service.game.PlayerDataService;
+import com.projteam.app.service.AccountService;
 
 public class GameServiceTests
 {
@@ -614,6 +613,25 @@ public class GameServiceTests
 							isCollectionOrMap(inv.getMethod()
 									.getReturnType())?
 							null:RETURNS_DEFAULTS.answer(inv)));
+		
+		assertFalse(success);
+	}
+	@ParameterizedTest
+	@MethodSource({"mockPlayerHostAndTwoPlayers", "mockLecturerHostAndTwoPlayers"})
+	public void cannotAcceptRawAnswerIfGameDoesNotExist(
+			Account host, Account player, Account otherPlayer) throws JsonProcessingException
+	{
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(player));
+		when(gtdService.generateRandomTask(anyDouble()))
+			.thenReturn(mockTask());
+		
+		String gameCode = "gameCode";
+		createGameFromLobby(gameCode, host, player, otherPlayer);
+		String wrongGameCode = gameCode + "wrong";
+		
+		boolean success = gameService.acceptAnswer(wrongGameCode,
+				JsonNodeFactory.instance.objectNode());
 		
 		assertFalse(success);
 	}
