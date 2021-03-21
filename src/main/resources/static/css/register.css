@@ -6,8 +6,12 @@ body {
 }
 nav {
 	z-index:2;
+	
 }
 
+.iconbig {
+  height: 30px;
+}
 .footer {
   position: absolute;
   bottom: 0;

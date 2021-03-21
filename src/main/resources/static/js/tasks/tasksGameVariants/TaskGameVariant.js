@@ -18,7 +18,7 @@ const TaskGameVariant = (taskData) => {
     }
 
     self.ResizeObserverVariantFunction = () => {
-        console.log("ResizeObserverVariantFunction")
+        
     }
 
     return self;

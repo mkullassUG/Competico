@@ -2,6 +2,9 @@
   max-width: 960px;
 }
 
+.iconbig {
+  height: 30px;
+}
 /*
  * Custom translucent site header
  */

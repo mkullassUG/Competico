@@ -28,7 +28,6 @@ const ChronologicalOrder_Game = (taskData) => {
         cursorAt: { top: 17 }
       });
       var appendTo = $( "#sortable" ).sortable( "option", "appendTo" );
-      console.log(appendTo);
     }
   
     var getAnswersSuper = self.getAnswers;

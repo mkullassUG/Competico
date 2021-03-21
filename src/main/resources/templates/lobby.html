@@ -9,22 +9,21 @@
     <title>Lobby</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/cover/">
-    <link rel="icon" href="/assets/myIcons/icon.svg">
+    <link rel="icon" href="../assets/myIcons/icon.svg">
     <!-- Bootstrap core CSS -->
     <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/bootstrap/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/bootstrap/font-awesome.min.css">
     <!-- Custom styles for this template -->
-    <link href="/css/lobby.css" rel="stylesheet"> 
-    <link href="/css/global.css" rel="stylesheet">
-    <link href="/css/task.css" rel="stylesheet"> 
     
-    <link href="/js/jquery/jquery-plugins/jquery-ui.min.css" rel="stylesheet">
+    <link href="../js/jquery/jquery-plugins/jquery-ui.min.css" rel="stylesheet">
+    <link href="../css/lobby.css" rel="stylesheet"> 
+    <link href="../css/task.css" rel="stylesheet"> 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="/js/jquery/jquery-plugins/jquery-ui.min.js"></script>
-    <script src="/js/jquery/jquery-plugins/jquery-ui-touch-punch.min.js"></script>
-    <script src="/js/jquery/jquery-plugins/jquery-simulate.js"></script>
-    <script src="/js/jsPlumb/jsPlumb.js"></script>
+    <script src="../js/jquery/jquery-plugins/jquery-ui.min.js"></script>
+    <script src="../js/jquery/jquery-plugins/jquery-ui-touch-punch.min.js"></script>
+    <script src="../js/jquery/jquery-plugins/jquery-simulate.js"></script>
+    <script src="../js/jsPlumb/jsPlumb.js"></script>
 
     
   </head>
@@ -54,7 +53,7 @@
           <div id="lobbyHost" class="d-flex align-items-center p-3 my-3 text-dark-50 bg-light rounded btnShadow">
             <div class="col-12">
               <h6 class="border-bottom border-gray pb-2 mb-0">
-                <img class="mr-3" src="/assets/myIcons/iconfinder_law_iconsArtboard_1_copy_5_2393033.svg" alt="" width="48" height="48">
+                <img class="mr-3" src="../assets/myIcons/iconfinder_law_iconsArtboard_1_copy_5_2393033.svg" alt="" width="48" height="48">
                 Host:
               </h6>
               <div class="lh-100">
@@ -195,7 +194,7 @@
     <!--
     <footer class="footer">
       <div class="container text-center">
-        <span class="text-muted m-auto">Ucz się angielskiego razem z nami <img src="/assets/myIcons/iconbigblack.svg" class="iconbig" style=" filter: invert(25%);"></span>
+        <span class="text-muted m-auto">Ucz się angielskiego razem z nami <img src="../assets/myIcons/iconbigblack.svg" class="iconbig" style=" filter: invert(25%);"></span>
       </div>
     </footer> -->
     <!-- Modal settings-->
@@ -309,26 +308,14 @@
     <!-- <script src="js/jquery-3.5.1.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script> -->
-    <script src="/js/bootstrap/popper.min.js"></script>
-    <script src="/js/bootstrap/bootstrap.min.js"></script>
-
-    <script src="/js/gameLogic.js"></script>
-
-    <!-- <script src="/js/tasks.js"></script> -->
-    <script src="/js/tasks/tasksGameVariants/TaskGameVariant.js"></script>
-    <script src="/js/tasks/tasksGameVariants/ChronologicalOrder_Game.js"></script>
-    <script src="/js/tasks/tasksGameVariants/WordConnect_Game.js"></script>
-    <script src="/js/tasks/tasksGameVariants/WordFill_Game.js"></script>
-    <script src="/js/tasks/tasksGameVariants/ListWordFill_Game.js"></script>
-    <script src="/js/tasks/tasksGameVariants/ListChoiceWordFill_Game.js"></script>
-    <script src="/js/tasks/tasksGameVariants/ListSentenceForming_Game.js"></script>
-
-    <script src="/js/tasks/TaskGameCore.js"></script>
-
-    <script src="/js/lobbyLogic.js"></script>
+    <script src="../js/bootstrap/popper.min.js"></script>
+    <script src="../js/bootstrap/bootstrap.min.js"></script>
+    <script src="../js/gameLogic.js"></script>
+    <script src="../js/tasks.js"></script>
+    <script src="../js/lobbyLogic.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.17.1/cytoscape.min.js" integrity="sha512-dR5Qb5zIoRodLJCkh0InsAi/uyP1Pd3lMAliXEdv5ol71k2qCwWFS9N18LIGH9MQuAPWu3adPyww5SK2deReog==" crossorigin="anonymous"></script>
     <script>
-      var debug = LobbyLogic.getInstance(debug = true);
+      var debug = LobbyLogic.getInstance(debug = false);
     </script>
   </body>
 </html>

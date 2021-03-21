@@ -8,20 +8,6 @@
 
 */
 
-/*TODO
-  WAŻNE 2021-03-20:
-
-  detekcja czy przycisk jest niżej od gaedivz żeby nei zasłaniać:
-  
-console.log(
-	"is botton top ("
-		+ $("#btnNextTask").offset().top + 
-	"px) lower than gamediv bottom ("+($("#GameDiv").offset().top + $("#GameDiv").height())+"px + 60 margin): " + (
-	($("#btnNextTask").offset().top) >
-	($("#GameDiv").offset().top + $("#GameDiv").height() + 60)
-	)
-)
-*/
 const GameLogic = ( lobby, _task) => {
 
   /*       logic variables          */
@@ -88,11 +74,6 @@ const GameLogic = ( lobby, _task) => {
   });
   self.cy.boxSelectionEnabled(false);
   self.cy.panningEnabled(false);
-  self.KropeczkiObserver;
-
-  self.resizeGameObserver;
-
-  self.GameCore = TaskGameCore();
 
   /*       logic functions          */
   self.gameInit = (task) => {
@@ -144,12 +125,9 @@ const GameLogic = ( lobby, _task) => {
     //wyświewtlić modala czy napewn ochce oddac zadanie
     if (!self.currentTaskVariant) {
       console.warn("nie ma gotowych odpowiedzi!");
-      /*
-        Dla testowych danych zakomentowałem bo nie pozwalało przejśc do nastepnego zadania gdy jak opierwszy nie był działający już task
-      */
+      /*Dla testowych danych zakomentowałem bo nie pozwalało przejśc do nastepnego zadania gdy jak opierwszy nie był działający już task*/
       //return;
     }
-    console.log(self.currentTaskVariant.getAnswers());
     var answers = self.currentTaskVariant.getAnswers();
 
     ajaxSendAnswerAndReceiveNext(answers);
@@ -168,7 +146,7 @@ const GameLogic = ( lobby, _task) => {
       return;
     }
     
-    self.currentTask = task;//bug 2021-02-26, zmiana z - na =
+    self.currentTask - task;
     
     if (!task.taskName)
       console.warn("Could not read task name!");
@@ -182,8 +160,36 @@ const GameLogic = ( lobby, _task) => {
     if (self.debug) 
       console.log(task);
     
-    self.currentTaskVariant = self.GameCore.getVariant(task.taskName, task.task);
-    self.setupResizeGameObserver();
+    //wybieranie odpowiedniej logiki dla konkretnego template'a
+    switch (task.taskName) {
+      case "WordFill":
+        self.currentTaskVariant = TaskVariant0(task.task);
+        break;
+      case "WordConnect":
+        self.currentTaskVariant = TaskVariant1(task.task);
+        break;
+      case "ChronologicalOrder":
+        self.currentTaskVariant = TaskVariant2(task.task);
+        break;
+      case "template3":
+        self.currentTaskVariant = TaskVariant3(task.task);//GameLogicVariants.logicVariant3(task);
+        break;
+      case "template4":
+        self.currentTaskVariant = TaskVariant4(task.task);//GameLogicVariants.logicVariant4(task);
+        break;
+      case "template5":
+        self.currentTaskVariant = TaskVariant5(task.task);//GameLogicVariants.logicVariant5(task);
+        break;
+      default:
+          console.warn("To pole jest tylko dla jeszcze nie zaimplementowancyh tasków, w produkcji nie powinno się nigdy wykonać!");
+          self.currentTaskVariant = {};
+          //ListWordFill answers
+          self.currentTaskVariant.getAnswers = () => { 
+            console.log("hello ListWordFill");
+            return {answers: [["test"]]} 
+          }
+        break;
+    }
 
     //ustawianie kropeczek
     self.buildCy(task.taskCount,task.currentTaskNumber);
@@ -199,24 +205,6 @@ const GameLogic = ( lobby, _task) => {
     
     self.KropeczkiObserver.observe(document.querySelector("#gameTimer"));
 
-    self.taskComeAnimation();
-  }
-
-  self.setupResizeGameObserver = () => {
-
-      if (self.resizeGameObserver)
-          self.resizeGameObserver.unobserve(document.querySelector("#GameDiv"));
-      self.resizeGameObserver = new ResizeObserver(function(entries) {
-          //new 2021-03-20 TODO
-          if (!(($("#btnNextTask").offset().top) > ($("#GameDiv").offset().top + $("#GameDiv").height() + 60)))
-            console.warn("GameDiv wychodzi poza ekran lub przycisk zasłania!");
-
-          if (typeof self.currentTaskVariant.taskDoesNotExist === 'undefined')
-              self.currentTaskVariant.ResizeObserverVariantFunction();
-
-      });
-
-      self.resizeGameObserver.observe(document.querySelector("#GameDiv"));
   }
 
   self.buildCy = (totalTasks, current) => {
@@ -280,44 +268,6 @@ const GameLogic = ( lobby, _task) => {
     window.location.replace("/game/results/" + self.gameID);
 
   }
-
-  self.taskComeAnimation = () => {
-    
-      //animate receive
-      //wyłączam bo wiele bugów
-      return;
-      $('#GameWrapperDiv').css({
-        left: "-2000px",
-      });
-      $('#GameWrapperDiv').animate({
-        zoom: 1,
-        opacity: 1,
-        left: "+=2000"
-      }, 1000, function() {
-        // Animation complete.
-        $('#GameWrapperDiv').css({
-          left: "inherit",
-          zoom: "inherit",
-          opacity: "inherit",
-        });
-      });
-  }
-  self.taskDoneAnimation = () => {
-
-      //animate send away
-      //wyłączam bo wiele bugów
-      return;
-      $('#GameWrapperDiv').animate({
-        zoom: 0.5,
-        opacity: 0.25,
-        left: "+=3000"
-      }, 1000, function() {
-        // Animation complete.
-        $('#GameWrapperDiv').css({
-            left: "-2000px",
-        });
-      });
-  }
   /*       event listeners          */
   if ($("#btnSendAnswer").length)
     $("#btnSendAnswer").on("click",(e) => {
@@ -348,9 +298,10 @@ const GameLogic = ( lobby, _task) => {
   }
   
   var ajaxSendAnswerAndReceiveNext = ( answer ) => {
+
     self.showModal();
     var send = answer;
-    console.log(send);
+
     $.ajax({
       type     : "POST",
       cache    : false,
@@ -360,16 +311,7 @@ const GameLogic = ( lobby, _task) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug) {
           console.log("ajaxSendAnswerAndReceiveNext success");
-          // console.log(data);
-          // console.log(textStatus);
-          // console.log(jqXHR);
         }
-        
-        if ( self.currentTaskVariant )
-          self.currentTaskVariant.isTaskDone = true;
-
-        self.taskDoneAnimation();
-
         self.hideModal();
         ajaxReceiveGameChange();
       },
@@ -385,8 +327,8 @@ const GameLogic = ( lobby, _task) => {
       }
     });
   }
-  
   /*   ajax http requests       */
+
   var ajaxGamePing = (lobbyCode) => {
     $.ajax({
       type     : "POST",
@@ -395,9 +337,9 @@ const GameLogic = ( lobby, _task) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug) {
           console.log("ajaxGamePing success");
-          // console.log(data);
-          // console.log(textStatus);
-          // console.log(jqXHR);
+          console.log(data);
+          console.log(textStatus);
+          console.log(jqXHR);
         }
         self.ajaxGamePingLoopTimeout = setTimeout(()=>{ajaxGamePing(lobbyCode)},10000);
       },

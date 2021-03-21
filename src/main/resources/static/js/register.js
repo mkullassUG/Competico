@@ -21,7 +21,6 @@ $(document).ready(function(){
     $("#emailfeedback").hide(); 
 
     let validation = validateData(send);
-    $("#accountExistValidation").hide();
     if (validation.valid)
       $.ajax({
       type     : "POST",
@@ -29,15 +28,19 @@ $(document).ready(function(){
       url      : "api/v1/register/",
       data     : JSON.stringify(send),
       contentType: "application/json",
-      success: function(data, textStatus, jqXHR) {
 
-          location.replace("dashboard");
+      success: function(data, textStatus, jqXHR) {
+          //called when successful
+          window.location.href = "dashboard";
+        
       },
 
       error: function(data, textStatus, err) {
-
-        $("#accountExistValidation").show();
-        console.log(data);
+        //called when there is an error
+      
+          //TODO error message on screen
+          //"Jak będziesz to później implementował, znany error ma kod 400 i opis pod responseText"
+          console.warn("status: " + err.status  + ": " + err);
       }
     });
     else {
@@ -52,8 +55,6 @@ $(document).ready(function(){
     }
       
   });
-
-  NavbarLogic.getInstance();
 });
 
 var validateData = (data) => {
@@ -61,7 +62,7 @@ var validateData = (data) => {
   //https://getbootstrap.com/docs/4.0/components/popovers/
   
   let emailValid = (data) => {
-    if (!data.match(/(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-z0-9-]*[a-zA-Z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-zA-Z0-9-]*[a-zA-Z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/)) 
+    if (!data.match(/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/)) 
       return false;
     else
       return true;
@@ -114,4 +115,9 @@ var validateData = (data) => {
   return {valid: valid, username: username, password: password, password2: password2, email: email};
   
 }
-
+  /*
+  1.poprawnosc emaila
+  2.długośc username
+  3.długośc hasła
+  4.czy hasła te same
+  */

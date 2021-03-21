@@ -23,7 +23,6 @@ const ListWordFill_Game = (taskData) => {
         taskVariantInitSuper(taskData);
   
         //NEW 2021-03-08
-        console.log(taskData)
         self.answerCurrentlyAt = [];//teraz to będzie tablica obiektów trzymających zaznaczoną odpowiedź
         //TYLKO to sięnie zgrywa z tym co jest w reset TaskVariant, tam jest nadal obiekt
         //to moge zamiast tablicy obiekt trzymający indexy, ex
@@ -161,10 +160,7 @@ const ListWordFill_Game = (taskData) => {
                 that.text = $(answer).text();
 
                 that.answerDiv.on('click', (e) => {
-                    console.log(that.selected)
                     if (!that.selected) {
-                        //that.select();
-                        console.log('click');
                         that.mainWordFillContainer.answerWasSelected(that);
                     } else
                         that.unselect();
@@ -220,14 +216,11 @@ const ListWordFill_Game = (taskData) => {
                 var onclickFunction = (e) => {
                     //jeśli niebył click na answer W tym Wordfill Divie to odznacz wszystkie
                     if (self.isTaskDone) {
-                        console.log("removing document listener of previous task");
                         $(document).off('click', onclickFunction);
                         return;
                     }
 
                     var clickedElement = $(e.target);
-                    console.log(clickedElement);
-
                     var wasClickOnAnswerElement = false; //ale wewnątrz danego WordFillLista
 
                     for ( let i = 0; i < that.blankElements.length; i++) {
@@ -273,8 +266,6 @@ const ListWordFill_Game = (taskData) => {
 
             that.answerWasSelected = (answer) => {
 
-                console.log(that.blankContainers)
-
                 if ( that.blankContainers.length == 1) {
                     var onlyBlank = that.blankContainers[0];
                     onlyBlank.setBlankAnswerTo(answer);
@@ -306,7 +297,6 @@ const ListWordFill_Game = (taskData) => {
                 for (let i = 0; i < that.answerContainers.length; i++) {
                     var answer = that.answerContainers[i];
                     if ( answer.text === blank.text) {
-                        console.log("found!");
                         answer.unuse();
                         break;
                     }
@@ -328,21 +318,15 @@ const ListWordFill_Game = (taskData) => {
     self.getAnswers = () => {
         var answers = getAnswersSuper();
         answers = [];
-        console.log(self.singleWordFillArray)
-        console.log(self.singleWordFillArray.length)
         for (let i = 0; i < self.singleWordFillArray.length; i++) {
             var wfContainer = self.singleWordFillArray[i];
             answers[i] = [];
-            console.log(wfContainer.blankContainers.length)
 
             for ( let j = 0; j < wfContainer.blankContainers.length; j++) {
                 var filledBlank = wfContainer.blankContainers[j];
-                console.log(filledBlank)
-
                 answers[i][j] = filledBlank.text;
             }
         }
-        console.log(answers)
         return {"answers": answers};
     }
   

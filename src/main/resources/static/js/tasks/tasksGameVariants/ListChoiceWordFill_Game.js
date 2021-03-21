@@ -17,7 +17,6 @@ const ListChoiceWordFill_Game = (taskData) => {
   
         $("#GameDiv").html(``);
         for (let i = 0; i < rows; i++) {
-            console.log("i: " + i)
 
             var textFieldRowArray = self.textFields[i];
             var wordChoicesRowArray = self.wordChoices[i];
@@ -28,12 +27,10 @@ const ListChoiceWordFill_Game = (taskData) => {
             if (startWithText) {
                 for (let j = 0; j < textFieldRowArray.length; j++) {
                     var text = textFieldRowArray[j];
-                    console.log("j: " + j)
                     taskContentReady += text;
                     if (wordChoicesRowArray[j])
                         for (let k = 0; k < (wordChoicesRowArray[j].length); k++) {
                             var choiceWord = wordChoicesRowArray[j][k];
-                            console.log("k: " + k)
                             taskContentReady += `<div class="choiceDiv">`
                             if ( k == 0 && wordChoicesRowArray[j].length > 1) {
                                 taskContentReady += `<div class="answerLCWF">`+choiceWord+`</div>` + "/";
@@ -119,11 +116,9 @@ const ListChoiceWordFill_Game = (taskData) => {
 
             that.init = (containerDiv_) => {
                 that.choiceHoldingElements = $($(containerDiv_).find(".answerLCWF"));
-                console.log(that.choiceContainers)
 
                 for ( let i = 0; i < that.choiceHoldingElements.length; i++) {
                     var choice = that.choiceHoldingElements[i];
-                    console.log(choice)
                     that.choiceContainers.push(ChoiceContainer(choice, that));
                 }
 
@@ -136,8 +131,6 @@ const ListChoiceWordFill_Game = (taskData) => {
                 }
             }
             that.choiceWasSelected = (choice) => {
-                console.log(that.choiceContainers)
-
                 that.unuseAllChoices();
                 choice.use();
             }
@@ -162,18 +155,18 @@ const ListChoiceWordFill_Game = (taskData) => {
             var cwfContainer = self.singleChoiceWordFillArray[i];
             answers[i] = [];
 
+            var counter = 0;
             for ( let j = 0; j < cwfContainer.choiceContainers.length; j++) {
                 var singleChoiceElement = cwfContainer.choiceContainers[j];
 
                 //jak to ma działać, że więcej może być odpowiedzi dlatego w arrayu trzymam?
-                var counter = 0;
+                
                 if (singleChoiceElement.used){
                     answers[i][counter] = singleChoiceElement.text;
                     counter++;
                 }
             }
         }
-        console.log(answers)
         return {"answers": answers};
     }
   
