@@ -199,6 +199,7 @@ const GameLogic = ( lobby, _task) => {
     
     self.KropeczkiObserver.observe(document.querySelector("#gameTimer"));
 
+    self.taskComeAnimation();
   }
 
   self.setupResizeGameObserver = () => {
@@ -279,6 +280,44 @@ const GameLogic = ( lobby, _task) => {
     window.location.replace("/game/results/" + self.gameID);
 
   }
+
+  self.taskComeAnimation = () => {
+    
+      //animate receive
+      //wyłączam bo wiele bugów
+      return;
+      $('#GameWrapperDiv').css({
+        left: "-2000px",
+      });
+      $('#GameWrapperDiv').animate({
+        zoom: 1,
+        opacity: 1,
+        left: "+=2000"
+      }, 1000, function() {
+        // Animation complete.
+        $('#GameWrapperDiv').css({
+          left: "inherit",
+          zoom: "inherit",
+          opacity: "inherit",
+        });
+      });
+  }
+  self.taskDoneAnimation = () => {
+
+      //animate send away
+      //wyłączam bo wiele bugów
+      return;
+      $('#GameWrapperDiv').animate({
+        zoom: 0.5,
+        opacity: 0.25,
+        left: "+=3000"
+      }, 1000, function() {
+        // Animation complete.
+        $('#GameWrapperDiv').css({
+            left: "-2000px",
+        });
+      });
+  }
   /*       event listeners          */
   if ($("#btnSendAnswer").length)
     $("#btnSendAnswer").on("click",(e) => {
@@ -325,9 +364,12 @@ const GameLogic = ( lobby, _task) => {
           // console.log(textStatus);
           // console.log(jqXHR);
         }
-
+        
         if ( self.currentTaskVariant )
           self.currentTaskVariant.isTaskDone = true;
+
+        self.taskDoneAnimation();
+
         self.hideModal();
         ajaxReceiveGameChange();
       },

@@ -14,3 +14,10 @@ ISTNIEJĄCY BUG:
 
 ISTNIEJĄCY BUG:
 - w ListChoiceWordFill nie da się wysłac pustej odpowiedzi, msuzą być wszystkie wypełnione!
+
+
+
+////////animacje:
+-bug z obiektem resizeObserver (zwłaszcza dla WordFill)
+-bug z poszerzającym się oknem
+-lagi?
