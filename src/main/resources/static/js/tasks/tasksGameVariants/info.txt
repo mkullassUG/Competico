@@ -1,0 +1,16 @@
+info o możliwych, istniejących lub rozwiązanych bugach:
+
+2021-03-21:
+
+ISTNIEJĄCY BUG:
+-w ListChoiceWordFill możliwe że po zaznaczeniu odpowiedzi długiej, tekst przeciągnie się na tyle że przycisk będzie zasłaniał reszte odpowiedzi
+
+ISTNIEJĄCY BUG:
+-w wordFill można kilka odpowiedzi na siebie nałożyć 
+
+
+ISTNIEJĄCY BUG:
+------ogólnie jak task jest zadługi to rozjeżdża sięstrona, jest wykrywanie zrobione od tego ale jak to naprawiać?
+
+ISTNIEJĄCY BUG:
+- w ListChoiceWordFill nie da się wysłac pustej odpowiedzi, msuzą być wszystkie wypełnione!

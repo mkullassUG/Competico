@@ -321,11 +321,13 @@ const GameLogic = ( lobby, _task) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug) {
           console.log("ajaxSendAnswerAndReceiveNext success");
-          console.log(data);
-          console.log(textStatus);
-          console.log(jqXHR);
-          
+          // console.log(data);
+          // console.log(textStatus);
+          // console.log(jqXHR);
         }
+
+        if ( self.currentTaskVariant )
+          self.currentTaskVariant.isTaskDone = true;
         self.hideModal();
         ajaxReceiveGameChange();
       },
@@ -341,8 +343,8 @@ const GameLogic = ( lobby, _task) => {
       }
     });
   }
+  
   /*   ajax http requests       */
-
   var ajaxGamePing = (lobbyCode) => {
     $.ajax({
       type     : "POST",

@@ -1,19 +1,20 @@
 const TaskGameVariant = (taskData) => {
-    var self = taskData;//czy tu nie będzie porblemu, że nadpisuje i nie użyje ponownie taska
-  
+    var self = taskData;
+
+    self.isTaskDone;/*used to remove eventListeners of specific tasks when they end*/
+
     self.taskVariantInit = (taskData) => {
+        self.isTaskDone = false;
     }
   
     self.getAnswers = () => {
         var answers = [];//nie zawsze jest arrayem
-  
         return answers;
     }
   
     self.reset = () => {
         self.answerCurrentlyAt = {};
         $("#GameDiv").html("");
-
     }
 
     self.ResizeObserverVariantFunction = () => {

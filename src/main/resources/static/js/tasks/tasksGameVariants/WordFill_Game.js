@@ -7,7 +7,7 @@ const WordFill_Game = (taskData) => {
     var taskVariantInitSuper = self.taskVariantInit;
     self.taskVariantInit = (taskData) => {
         taskVariantInitSuper(taskData);
-        console.log(taskData)
+        
         self.answerCurrentlyAt = {};
         // self.taskData = taskData;
         self.textField = taskData.text;
@@ -58,11 +58,8 @@ const WordFill_Game = (taskData) => {
         var maxWidth = 0;
         for (let i = 0; i < elems.length; i++){
             /*ręcznie powniesione o 1 px w górę*/
-            //console.log(elems[i])
-            //console.log(elems[i].offsetWidth)
             maxWidth = Math.max(maxWidth, elems[i].offsetWidth + 1);
         }
-        console.log(maxWidth);
         $(".answerHolderWrapper").width(maxWidth-16); //-16 bo tak...
 
         self.DraggableObject = () => {

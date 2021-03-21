@@ -28,20 +28,14 @@ const TaskGameCore = (data) => {
             case "ListSentenceFormingAnswer":
                 variantObject = ListSentenceForming_Game(task);
             break;
-            case "ListChoiceWordFill": 
+            case "ListChoiceWordFill":
+                variantObject = ListChoiceWordFill_Game(task);
                 //TODO: not finished!!!
                 //variantObject = ListSentenceForming_Game(task);
-            //break;
+            break;
             default:
                 console.warn("To pole jest tylko dla jeszcze nie zaimplementowancyh tasków, w produkcji nie powinno się nigdy wykonać!");
-                variantObject = {
-                    taskDoesNotExist : true,
-                    getAnswers: () => { 
-                        console.log("hello ListWordFill");
-                        //ListWordFill answers... więc nie zadziała dla np ListChoiceWordFill?
-                        return {answers: [["test"]]} 
-                    }
-                };
+                
             break;
         }
 

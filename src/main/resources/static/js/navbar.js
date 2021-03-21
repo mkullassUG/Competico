@@ -7,7 +7,6 @@ const NavbarLogic = (accountInfo_) => {
   
     /*       logic functions          */
     self.navbarLogic = (accountInfo) => {
-        console.log("navbarLogic");
     
         self.nickname = accountInfo.nickname;
         self.username = accountInfo.username;
@@ -71,7 +70,6 @@ NavbarLogic.getInstance = (debug = false) => {
           NavbarLogic.singleton = NavbarLogic({}, debug);
           else //zalogowany
           NavbarLogic.singleton = NavbarLogic(accountInfo, debug);
-          console.log("NavbarLogic");
         },
         error: function(jqXHR, status, err) {
           if (debug){

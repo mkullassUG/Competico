@@ -289,6 +289,8 @@ svg.fs-connector-hover path {
   border: 3px solid rgb(10, 108, 255);
   border-radius: 10px;
   display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 .answerLWF:hover {
   background-color: blue!important;
@@ -309,22 +311,15 @@ svg.fs-connector-hover path {
 .answerHolderLWF {
   background-color: rgba(100,100,100,0.5);
   width: calc(100% + 20px);
-  /* padding: 10px; */
   text-align: center;
   margin-left: -10px;
   margin-top: -10px;
 }
 
 .answerHolderWrapperLWF { 
-  /* background-color:rgba(0, 162, 255, 0.541); */
-  /* margin:5px; */
   display:inline-block;
   vertical-align: middle; 
-  /* position: relative;  */
-  /* width: 50px;  */
   height: 30px; 
-  /* padding: 0.5em;   */
-  /* margin: 10px;  */
 }
 
 /*Template 4 ListSentenceForming*/
@@ -340,5 +335,29 @@ svg.fs-connector-hover path {
 .DivOrderedWords > hr {
   margin: 0px;
   border-top: 3px dotted blue;
+}
+
+/*Template 6 ListChoiceWordFill*/
+
+.answerLCWF {
+  background-color: rgb(255, 255, 255);
+  border: 3px solid rgb(10, 108, 255);
+  border-radius: 10px;
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.answerLCWF:hover {
+  background-color: blue!important;
+  border: 3px solid blue!important;
+  color: white!important;
+}
+.answerLCWF:active {
+  background-color: cyan!important;
+  border: 3px solid cyan!important;
+  color: black!important;
+}
+.choiceDiv {
+  display: inline-block;
 }
 /*other global.css*/
