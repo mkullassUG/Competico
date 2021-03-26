@@ -2,9 +2,6 @@
   max-width: 960px;
 }
 
-.iconbig {
-  height: 30px;
-}
 /*
  * Custom translucent site header
  */
@@ -48,7 +45,7 @@
       background-image: none;
 }
 
-@media (min-width: 1309px) {
+@media (min-width: 1200px) {
   #headline {
       background-repeat: no-repeat;
       background-position: right 30px center;

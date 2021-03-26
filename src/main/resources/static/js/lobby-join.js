@@ -11,22 +11,13 @@ const LobbyJoinLogic = (debug = false) => {
     gameStarted = data.gameStarted;
     nickname = data.nickname;
 
-    /* 
-    ///ustaliliśmy, że tego nie wysyłamy, bo itak musze być zalogowany żeby to wysłać?
-    if (!data.logged)
-      window.location = "/login"; 
-    */
-
     if ((data.isHost != null && data.isHost) || 
       (data.gameCode != null && data.gameCode != ""))
       window.location = "/game/" + data.gameCode;
 
-      /*
-        TODO
-        nie zdarzyłem napisac wstawiania nicku gracza do navbara, najpierw potrzeba wziąc navbar ze strony np dashboard któr yzdaje się miał pole nickname po prawej stronie
-      */
+    NavbarLogic.getInstance();
 
-      $('.hideBeforeLoad').css("display", "flex").fadeIn();
+    $('.hideBeforeLoad').css("display", "flex").fadeIn();
   }
 
   var gameFound = (data) => {
@@ -53,6 +44,7 @@ const LobbyJoinLogic = (debug = false) => {
   }
 
   var lobbyCreated = (code) => window.location = "/game/" + code;
+
   /*Ajax*/
   var ajaxReceiveWhoAmI = () => {
 
@@ -251,6 +243,3 @@ LobbyJoinLogic.create = (debug = false) => {
   else
     LobbyJoinLogic()
 }
-
-//LobbyJoinLogic.create();
-var debug = LobbyJoinLogic.create(debug = true);

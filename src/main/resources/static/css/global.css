@@ -29,3 +29,26 @@
     border-bottom-width: 1px !important;
     border-bottom-style: dotted !important;
 }
+
+/*navbar fix ale nie moge tak po prostuy dać wszystkim bo niektóre są wyłączone*/
+/* .navbar-collapse > ul {
+    margin-left: auto;
+}  */
+
+.navbar-collapse > a{
+    margin-left: auto;
+}
+.navbar-collapse > ul > li:not(.navbar-collapse > ul > li:first-child) {
+    border-left: 1px solid black;
+}
+  /*@media (min-width: 992px){
+    ul {
+      flex-grow: 1;
+      text-align: center!important;
+      display: inline-block!important;
+    }
+  
+    ul > li {
+      display: inline-block! important;
+    }
+  } */

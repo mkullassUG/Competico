@@ -9,7 +9,6 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
 
     /*  Logic functions */
     var chronologicalOrderCreatorInit = () => {
-        console.log("chronologicalOrderCreatorInit");
         self.hideAllTaskDivsExceptGiven(self.taskName);
         
         /*pozbywam się even listenerów z przycisków przez klonowanie*/
@@ -20,7 +19,6 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
 
         if ( buttonAddSentenceClone.length )
             buttonAddSentenceClone.on('click', (e) => {
-                console.log("click")
                 self.addNewSentence();
             });
 
@@ -198,7 +196,6 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
         sentenceDiv.append(element);
         
         $("#btnChronologicalOrderRemoveSentence"+i).on('click', (e) => {
-            console.log("remove");
             self.removeSentence(i);
         });
     }

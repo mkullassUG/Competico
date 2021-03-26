@@ -126,9 +126,6 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
                 if (self.debug)
                     console.log("editButton");
                 var taskID = $(e.target).data("taskid");
-                console.log(e)
-                console.log($(e.target))
-                console.log(taskID)
 
                 //ustawiam przycisk z modala edycji pod dane id
                 //TODO czy to wgl działa??
@@ -143,14 +140,10 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
                 if (self.debug)
                     console.log("delButton");
                 var taskID = $(e.target).data("taskid");
-                console.log(e)
-                console.log($(e.target))
-                console.log(taskID)
 
                 //ustawiam przycisk z modala edycji pod dane id
                 $("#btnSendDeleteTask").data("taskid",taskID);
                 self.focusedTaskID = taskID;
-                //self.editTask(taskID);
             });
         })
     }
@@ -303,10 +296,7 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
             },
             error: function(jqXHR, status, err) {
                 if (self.debug) {
-                console.warn("ajaxGetNumberOfTasks error");
-                console.warn(jqXHR);
-                console.warn(status);
-                console.warn(err);
+                    console.warn("ajaxGetNumberOfTasks error");
                 }
             }
         });
@@ -322,16 +312,12 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
             success: function(data, textStatus, jqXHR) {
                 if (self.debug) {
                     console.warn("ajaxGetImpotedTasksArray success");
-                    console.log(data);
                 }
                 callback(data);
             },
             error: function(jqXHR, status, err) {   
                 if (self.debug) {
-                    console.warn("ajaxGetImpotedTasksArray error");
-                    console.warn(jqXHR);
-                    console.warn(status);
-                    console.warn(err);    
+                    console.warn("ajaxGetImpotedTasksArray error");    
                 }  
             }
         });
@@ -346,16 +332,12 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
             success: function(data, textStatus, jqXHR) {
                 if (self.debug) {
                     console.warn("ajaxGetImportedTaskByID success");
-                    console.log(data);
                 }
                 callback(data);
             },
             error: function(jqXHR, status, err) {     
                 if (self.debug) {
-                    console.warn("ajaxGetImportedTaskByID error");
-                    console.warn(jqXHR);
-                    console.warn(status);
-                    console.warn(err);    
+                    console.warn("ajaxGetImportedTaskByID error"); 
                 }  
             }
         });
@@ -364,7 +346,6 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
     self.sendAjaxTask = (task, callback) => {
         /* /api/v1/tasks/imported POST - dodanie nowego zadania przez JSON */
         var send = task;
-        console.log(send);
         $.ajax({
             type     : "POST",
             cache    : false,
@@ -374,16 +355,12 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
             success: function(data, textStatus, jqXHR) {
                 if (self.debug) {
                     console.log("sendAjaxTask success");
-                    console.log(data);
                 }
                 callback(data)
             },
             error: function(jqXHR, status, err) {
                 if (self.debug) {
-                console.warn("sendAjaxTask error");
-                console.warn(jqXHR);
-                console.warn(status);
-                console.warn(err);
+                    console.warn("sendAjaxTask error");
                 }
             }
         });
@@ -392,7 +369,6 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
     self.sendAjaxEditTask = (task, taskID, callback) => {
 
         var send = task;
-        console.log(send);
         $.ajax({
             type     : "PUT",
             cache    : false,
@@ -402,16 +378,12 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
             success: function(data, textStatus, jqXHR) {
                 if (self.debug) {
                     console.log("sendAjaxEditTask success");
-                    console.log(data);
                 }
                 callback(data)
             },
             error: function(jqXHR, status, err) {
                 if (self.debug) {
                 console.warn("sendAjaxEditTask error");
-                console.warn(jqXHR);
-                console.warn(status);
-                console.warn(err);
                 }
             }
         });
@@ -427,16 +399,12 @@ const TaskCreatorLogic = (playerInfo_, debug) => {
             success: function(data, textStatus, jqXHR) {
                 if (self.debug) {
                     console.log("sendAjaxDeleteTask success");
-                    console.log(data);
                 }
                 callback(data)
             },
             error: function(jqXHR, status, err) {
                 if (self.debug) {
                     console.warn("sendAjaxDeleteTask error");
-                    console.warn(jqXHR);
-                    console.warn(status);
-                    console.warn(err);
                 }
             }
         });
@@ -620,20 +588,13 @@ TaskCreatorLogic.getInstance = (debug) => {
         contentType: "application/json",
         success: function(playerInfo, textStatus, jqXHR) {
             if (debug){
-            console.log("ajaxReceiveWhoAmI success");
-            console.log(playerInfo);
-            console.log(textStatus);
-            console.log(jqXHR);
+                console.log("ajaxReceiveWhoAmI success");
             }
             TaskCreatorLogic.singleton = TaskCreatorLogic(playerInfo, debug);
-            console.log("TaskCreatorLogic");
         },
         error: function(jqXHR, status, err) {
             if (debug){
-            console.warn("ajaxReceiveWhoAmI error");
-            console.log(data);
-            console.log(textStatus);
-            console.log(jqXHR);
+                console.warn("ajaxReceiveWhoAmI error");
             }
         }
         });

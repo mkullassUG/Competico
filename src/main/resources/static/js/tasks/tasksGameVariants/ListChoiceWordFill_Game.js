@@ -17,20 +17,20 @@ const ListChoiceWordFill_Game = (taskData) => {
   
         $("#GameDiv").html(``);
         for (let i = 0; i < rows; i++) {
-
             var textFieldRowArray = self.textFields[i];
             var wordChoicesRowArray = self.wordChoices[i];
             var startWithText = self.startWithText[i];
-  
             var taskContentReady = "("+ (i+1) +"). ";
 
             if (startWithText) {
                 for (let j = 0; j < textFieldRowArray.length; j++) {
                     var text = textFieldRowArray[j];
+
                     taskContentReady += text;
                     if (wordChoicesRowArray[j])
                         for (let k = 0; k < (wordChoicesRowArray[j].length); k++) {
                             var choiceWord = wordChoicesRowArray[j][k];
+
                             taskContentReady += `<div class="choiceDiv">`
                             if ( k == 0 && wordChoicesRowArray[j].length > 1) {
                                 taskContentReady += `<div class="answerLCWF">`+choiceWord+`</div>` + "/";
@@ -86,9 +86,7 @@ const ListChoiceWordFill_Game = (taskData) => {
                 that.text = $(answer).text();
 
                 that.choiceDiv.on('click', (e) => {
-                    console.log(that.selected)
                     if (!that.selected) {
-                        console.log('click');
                         that.mainChoiceWordFillContainer.choiceWasSelected(that);
                     } else
                         that.unuse();
@@ -155,12 +153,11 @@ const ListChoiceWordFill_Game = (taskData) => {
             var cwfContainer = self.singleChoiceWordFillArray[i];
             answers[i] = [];
 
-            var counter = 0;
             for ( let j = 0; j < cwfContainer.choiceContainers.length; j++) {
                 var singleChoiceElement = cwfContainer.choiceContainers[j];
 
                 //jak to ma działać, że więcej może być odpowiedzi dlatego w arrayu trzymam?
-                
+                var counter = 0;
                 if (singleChoiceElement.used){
                     answers[i][counter] = singleChoiceElement.text;
                     counter++;

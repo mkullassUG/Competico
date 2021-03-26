@@ -43,7 +43,6 @@ const TaskCreatorVariant = (data_) =>{
         ajaxCallback(
             preparedTask,
             (data) => {
-                console.log("sent");
                 onSuccess(); // self.setupImportedTasksTable();
             }
         );
@@ -54,22 +53,10 @@ const TaskCreatorVariant = (data_) =>{
             preparedTask,
             taskID,
             (data) => {
-                console.log("edited");
                 onSuccess(); // self.setupImportedTasksTable();
             }
         );
     }
-
-    /*TODO delete (delete nie musze robić z tego poziomu bo nie ważne jaki rodzaj taska)*/
-    // self.deleteTaskVariant = (ajaxCallback, onSuccess, preparedTask) => {
-    //     ajaxCallback(
-    //         preparedTask,
-    //         (data) => {
-    //             console.log("deleted");
-    //             onSuccess(); // self.setupImportedTasksTable();
-    //         }
-    //     );
-    // }
 
     self.setupDemoFromCurrent = () => {
         /*TODO:

@@ -1,95 +1,107 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Jekyll v4.1.1">
-    <title>Lobby</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.1.1">
+  <title>Lobby</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/cover/">
-    <link rel="icon" href="assets/myIcons/icon.svg">
-    <!-- Bootstrap core CSS -->
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/cover/">
+  <link rel="icon" href="assets/myIcons/icon.svg">
+  <!-- Bootstrap core CSS -->
   <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/bootstrap/font-awesome.min.css">
-    <!-- Custom styles for this template -->
-    <link href="css/lobby-join.css" rel="stylesheet">
-  </head>
-  <body class="bg-primary">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top">
-      <div class="container-xl">
-        <a class="navbar-brand" href="/">
-          <img src="assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
-        </a>
-        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
-          <ul class="navbar-nav w-100">
-            <li class="nav-item ml-lg-auto">
-              <a class="nav-link" href="/">Strona Domowa</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="lobby">Gra</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#">Wsparcie</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="dashboard">Rankingi</a>
-            </li>
-            <li class="nav-item mr-auto">
-              <a class="nav-link disabled" href="#">Profil</a>
-            </li>
-          </ul>
-          <span></span>
-          <a class="nav-link mr-r pl-0 logOutButton" href="/logout">Wyloguj</a>
-        </div>
-      </div>
-    </nav>
-    <!-- loading modal -->
-    <div class="modal fade hideBeforeLoadModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
-          <span class="fa fa-spinner fa-spin fa-3x"></span>
-      </div>
-    </div>
-    <!-- main content -->
-    <div class="container fill text-center hideBeforeLoad">
-      <div class="row m-auto" >
-        <div class="col-12">
-          <h2>Szukaj gry</h2>
-          <button type="button" id="btnSearch" class="btn btn-lg 
-          btn-secondary">Szukaj</button>
-        </div>
-        <div class="col-12 col-sm-6">
-          <h2>Stwórz grę</h2>
-          <button type="button" id="btnHost" class="btn btn-lg btn-secondary">Stwórz</button>
-        </div>
-        <div class="col-12 col-sm-6">
-          <h2>Wprowadź kod</h2>
-          <input type="text" class="input-lg form-control" id="inputCode" placeholder="Kod">
-          <div class="collapse" id="btnJoinCodeCollapse">
-            <button type="button" id="btnJoinCode" class="btn btn-lg btn-secondary">Dołącz</button>
-          </div>
-          <div class="invisible" id="btnJoinCodeInvisible">
-            <button type="button" class="btn btn-lg btn-secondary" >Dołącz</button>
-          </div>
-        </div>
+  <!-- Custom styles for this template -->
+  <link href="css/lobby-join.css" rel="stylesheet">
+  <link href="/css/global.css" rel="stylesheet">
+</head>
+<body class="bg-primary">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top fixed-top">
+    <div class="container-xl">
+      <a class="navbar-brand" href="/">
+        <img src="assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Strona Domowa</a>
+          </li>
+          <li class="nav-item collapse active" id="gameHyperlink">
+            <a class="nav-link active" href="/lobby">Gra</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#" id="helpHyperlink">Wsparcie</a>
+          </li>
+          <li class="nav-item" id="registerHyperlink">
+            <a class="nav-link" href="/register">Rejestracja</a>
+          </li>
+          <li class="nav-item" id="loginHyperlink">
+            <a class="nav-link mr-auto" href="/login" >Zaloguj</a>
+          </li>
+          <li class="nav-item collapse" id="dashboardHyperlink">
+            <a class="nav-link" href="/dashboard" >Rankingi</a>
+          </li>
+          <li class="nav-item collapse" id="swaggerHyperlink">
+            <a class="nav-link " href="/swagger-ui/">Swagger</a>
+          </li>
+          <li class="nav-item collapse" id="taskDataHyperlink">
+            <a class="nav-link " href="/tasks/import/global">Task creator</a>
+          </li>
+          <li class="nav-item collapse" id="actuatorHyperlink">
+            <a class="nav-link " href="/actuator">Actuator</a>
+          </li>
+          <li class="nav-item mr-auto collapse" id="profileHyperlink">
+            <a class="nav-link disabled" href="#">Profil</a>
+          </li>
+        </ul>
+        <a class="nav-link mr-r pl-0 collapse" id="logOutButton" href="/logout">Wyloguj</a>
       </div>
     </div>
-    <footer class="footer">
-      <div class="container text-center">
-        <span class="text-muted m-auto">Ucz się angielskiego razem z nami</span>
+  </nav>
+  <!-- loading modal -->
+  <div class="modal fade hideBeforeLoadModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
+        <span class="fa fa-spinner fa-spin fa-3x"></span>
+    </div>
+  </div>
+  <!-- main content -->
+  <div class="container fill text-center hideBeforeLoad">
+    <div class="row m-auto" id="buttonHolder">
+      <div class="col-12 col-sm-4">
+        <h2>Szukaj gry</h2>
+        <button type="button" id="btnSearch" class="btn btn-lg 
+        btn-secondary">Szukaj</button>
       </div>
-    </footer>
-  </body>
-</html>
+      <div class="col-12 col-sm-4">
+        <h2>Stwórz grę</h2>
+        <button type="button" id="btnHost" class="btn btn-lg btn-secondary">Stwórz</button>
+      </div>
+      <div class="col-12 col-sm-4">
+        <h2>Wprowadź kod</h2>
+        <input type="text" class="input-lg form-control" id="inputCode" placeholder="Kod">
+        <div class="collapse" id="btnJoinCodeCollapse">
+          <button type="button" id="btnJoinCode" class="btn btn-lg btn-secondary">Dołącz</button>
+        </div>
+        <div class="invisible" id="btnJoinCodeInvisible">
+          <button type="button" class="btn btn-lg btn-secondary" >Dołącz</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="footer">
+    <div class="container text-center">
+      <span class="footer-text m-auto">Ucz się angielskiego razem z nami</span>
+    </div>
+  </footer>
 <script src="js/jquery/jquery-3.5.1.min.js"></script>
 <script src="js/bootstrap/popper.min.js"></script>
 <script src="js/bootstrap/bootstrap.min.js"></script>
-
 <script src="js/lobby-join.js"></script>
 <script src="js/navbar.js"></script>
 <script>

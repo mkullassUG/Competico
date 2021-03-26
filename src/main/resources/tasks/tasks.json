@@ -311,7 +311,7 @@
     "id" : "146933ca-563d-44ac-9aab-9305389e081a",
     "instruction" : "Match the words with their synonyms:",
     "tags" : [ ],
-    "leftWords" : [ "GLEAN", "DEBUNK", "SOUND", "WINDING", "IN DEPTH", "EGRESS", "ITEM" ],
+    "leftWords" : [ "GLEAN", "DEBUNK", "SOUND", "WINDING", "IN, DEPTH", "EGRESS", "ITEM" ],
     "rightWords" : [ "obtain, gather", "invalidate, discredit", "healthy, toned, in good shape", "full of twists and turns, zigzagging", "thoroughly, extensively", "exit, way out", "thing, article, object" ],
     "correctMapping" : {
       "0" : 0,

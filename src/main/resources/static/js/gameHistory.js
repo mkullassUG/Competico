@@ -16,6 +16,7 @@ const GameHistoryLogic = (playerInfo_, pageNumber_, debug_) => {
       self.username = playerInfo.username;
 
       ajaxGetGameHistory((data)=>self.setupGameHistory(data));
+      NavbarLogic.singleton = NavbarLogic(playerInfo, debug);
     }
     
     self.setupGameHistory = (data) => {
@@ -24,9 +25,15 @@ const GameHistoryLogic = (playerInfo_, pageNumber_, debug_) => {
         if ( data == null)
             return;
 
+        $("#currentUser").html(self.nickname + " <small>" + self.username + "</small>")
         var gameTable = $("#gameTable");
         gameTable.html("");
         var newTr, newTdCount, newTdScore;
+
+        if (data.content.length <= 0) {
+          gameTable.append("Nie rozegrano żadnych gier.");
+          return;
+        }
         for (let i = 0; i < data.content.length; i++) {
             var gameID = data.content[i].id;
              var gameDate = data.content[i].date;

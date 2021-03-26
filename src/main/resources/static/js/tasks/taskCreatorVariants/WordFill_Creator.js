@@ -17,7 +17,6 @@ const WordFill_Creator = (data_ = {}) => {
 
     /*  Logic functions */
     var wordFillCreatorInit = () => {
-        console.log("wordFillCreatorInit");
 
         self.hideAllTaskDivsExceptGiven(self.taskName);
 
@@ -28,7 +27,6 @@ const WordFill_Creator = (data_ = {}) => {
 
             if ( buttonClone.length )
                 buttonClone.on('click', (e) => {
-                    console.log("click")
                     self.addNewIncorrectWord();
                 });
         }
@@ -40,7 +38,6 @@ const WordFill_Creator = (data_ = {}) => {
 
             if ( buttonClone.length ) {
                 buttonClone.on('click', (e) => {
-                    console.log("click")
                     self.addNewWord("{[", "]}");
                 });
                 

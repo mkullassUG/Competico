@@ -35,6 +35,8 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
 
   /*       logic functions          */
   self.lobbyInit = (playerInfo) => {
+    if (self.debug)
+      console.log("lobbyInit");
 
     self.isHost = playerInfo.isHost; 
     self.nickname = playerInfo.nickname;
@@ -123,7 +125,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   }
 
   self.leaveLobby = () => {
-    //wyświewtlić modala czy napewn ochce wyjść
+    //wyświewtlić modala czy napewno chce wyjść
     window.location = "/lobby"; 
   }
 
@@ -137,23 +139,17 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     }
     */
     if (!lobby.exists && self.possiblyJoinedFromEndGame === false) {
-      console.warn("lobby nie znalezione!");
-      console.warn(lobby);
-      /*TODO
-        wyswietlic że Lobby zostało zakończone przez Hosta modal
-
-
-      */
-
-
+      if (self.debug)
+        console.warn("lobby nie znalezione!");
+      /* wyswietlic że Lobby zostało zakończone przez Hosta modal */
       $('#LobbyDeletedModalCenter').modal('show');
       return 0;
     }
-    console.warn(lobby);
 
     //setup lobby
     if (!lobby.host) {
-      console.warn("Zainicjować wyjście klienta z tego lobby");
+      if (self.debug)
+        console.warn("Zainicjować wyjście klienta z tego lobby");
       return 0;
     }
     self.lobbyHost = lobby.host;
@@ -165,7 +161,8 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       $("#lobbyplayers > .player").remove();
 
     if (typeof lobby.players == 'undefined') {
-      console.warn("nie znaleziono żadnych graczy w lobby");
+      if (self.debug)
+        console.warn("nie znaleziono żadnych graczy w lobby");
       return 0;
     }
     //self.removePlaver(); //todo
@@ -237,10 +234,11 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   self.updateCheck = (data) => {
 
     self.ajaxLobbyLoopTimeout = setTimeout(()=>{ajaxConnectionLoop((data_)=>{self.updateCheck(data_)})},1000);
-    console.log("data.lobbyExists === false :" + (data.lobbyExists === false));
     if (data.lobbyExists === false) {
-      console.log("wyjdź");
-      console.log(data);
+
+      /*TODO 2021-03-01
+      bug (jest stan w którym nie istnieje lobby i gra kiedy gra się rozpoczyna)
+      fetchuje server wtedy dane z bazy więc nie wiadomo ile czasu trwa ten stan, a serwer nadal jes tw stanie odpowiadać na requesty*/
       $('#LobbyDeletedModalCenter').modal('show');
     } else if (data.gameStarted == true) {
       clearTimeout(self.ajaxLobbyLoopTimeout);
@@ -315,6 +313,9 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   var sendAjaxStart = () => {
     if (self.isHost == false)
       return;
+
+    clearTimeout(self.ajaxLobbyLoopTimeout);
+
     self.showModal();
     $.ajax({
       type     : "POST",
@@ -324,14 +325,18 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug)
           console.log("sendAjaxStart success");
-        
-          self.hideModal();
+        // if (data === false) {
+          self.ajaxLobbyLoopTimeout = setTimeout(()=>{ajaxConnectionLoop((data_)=>{self.updateCheck(data_)})},1000);
+        // }
+        self.hideModal();
+          //teraz lobbyloopa stopować
       },
       error: function(jqXHR, status, err) {
         if (self.debug) {
           console.log("sendAjaxStart error");
-          //gameSetupAfterChange();
         }
+
+        self.ajaxLobbyLoopTimeout = setTimeout(()=>{ajaxConnectionLoop((data_)=>{self.updateCheck(data_)})},1000);
         self.hideModal();
       }
     });
@@ -371,11 +376,6 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug){
           console.log("sendAjaxKickPlayer success");
-          console.log("/api/v1/lobby/" + self.lobbyCode + "/players");
-          console.log(send);
-          console.log(data);
-          console.log(textStatus);
-          console.log(jqXHR);
         }
         //chyba że w checkChanges będzie usuwać go innym a samemu będzie pisac że lobby nie istnieje... albo whoami będzie sprawdzać kiedyś tam?
         console.warn("Zaimplementować usuwanie gracza!!");
@@ -408,9 +408,6 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
         */
         if (self.debug == true) {
           console.log("SettingsChange success");
-          console.log(data);
-          console.log(jqXHR);
-          console.log(textStatus);
         }
         if (data)
           self.updateLobbySettingsAsHost();
@@ -424,6 +421,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   
   /*   ajax http requests       */
   var ajaxConnectionLoop = ( callback ) => {
+    
     $.ajax({
       type     : "GET",
       cache    : false,
@@ -432,8 +430,6 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug) {
           console.log("ajaxConnectionLoop success");
-          console.log("/api/v1/lobby/" + self.lobbyCode + "/changes");
-          console.log(data);
         }
         /*
           callback dla:
@@ -446,9 +442,6 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       error: function(jqXHR, status, err) {
         if (self.debug){
           console.warn("connectionLoop error");
-          // console.log(jqXHR);
-          // console.log(status);
-          // console.log(err);
         }
         callback(data);
       }
@@ -463,18 +456,12 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug) {
           console.log("ajaxGetLobbyChange success");
-          console.log(data);
-          console.log(textStatus);
-          console.log(jqXHR);
         }
         self.lobbySetupAfterChange(data);
       },
       error: function(jqXHR, status, err) {
         if (self.debug){
           console.warn("ajaxGetLobbyChange error");
-          // console.log(jqXHR);
-          // console.log(status);
-          // console.log(err);
         }
       }
     });
@@ -489,7 +476,6 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug) {
           console.log("ajaxSendJoin success");
-          //console.log(jqXHR);
         }
         self.hideModal();
 
@@ -497,10 +483,6 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       error: function(jqXHR, status, err) {
         if (self.debug) {
           console.warn("ajaxSendJoin error");
-          console.warn(jqXHR);
-          console.warn(status);
-          console.warn(err);
-          //console.log(jqXHR);
         }
         self.hideModal();
       }
@@ -540,9 +522,6 @@ LobbyLogic.getInstance = (debug = false) => {
       success: function(playerInfo, textStatus, jqXHR) {
         if (debug){
           console.log("ajaxReceiveWhoAmI success");
-          console.log(playerInfo);
-          console.log(textStatus);
-          console.log(jqXHR);
         }
         hideModal();
         playerInfo.showModal = showModal;
@@ -552,9 +531,6 @@ LobbyLogic.getInstance = (debug = false) => {
       error: function(jqXHR, status, err) {
         if (debug){
           console.warn("ajaxReceiveWhoAmI error");
-          // console.log(data);
-          // console.log(textStatus);
-          // console.log(jqXHR);
         }
         
         hideModal();
@@ -564,3 +540,16 @@ LobbyLogic.getInstance = (debug = false) => {
   
   ajaxReceiveWhoAmI();
 }
+//LobbyLogic.create();
+
+/*
+odbieram{
+
+  text: ["Lorem ipsum dolor sit amet,", {0: "a"},"sefsefsfsef", {}, "awdawdadad"],
+  list: [],
+}
+odpowiedź: {
+
+  array_w_kolejności:[ inpStr1, inpStr2,...],
+}
+*/

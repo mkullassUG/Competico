@@ -221,6 +221,7 @@ const ListWordFill_Game = (taskData) => {
                     }
 
                     var clickedElement = $(e.target);
+
                     var wasClickOnAnswerElement = false; //ale wewnątrz danego WordFillLista
 
                     for ( let i = 0; i < that.blankElements.length; i++) {
@@ -324,6 +325,7 @@ const ListWordFill_Game = (taskData) => {
 
             for ( let j = 0; j < wfContainer.blankContainers.length; j++) {
                 var filledBlank = wfContainer.blankContainers[j];
+
                 answers[i][j] = filledBlank.text;
             }
         }

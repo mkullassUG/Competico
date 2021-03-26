@@ -13,7 +13,7 @@ ISTNIEJĄCY BUG:
 ------ogólnie jak task jest zadługi to rozjeżdża sięstrona, jest wykrywanie zrobione od tego ale jak to naprawiać?
 
 ISTNIEJĄCY BUG:
-- w ListChoiceWordFill nie da się wysłac pustej odpowiedzi, muszą być wszystkie wypełnione!
+- w ListChoiceWordFill nie da się wysłac pustej odpowiedzi, msuzą być wszystkie wypełnione!
 
 
 

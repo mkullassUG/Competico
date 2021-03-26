@@ -12,7 +12,7 @@ const NavbarLogic = (accountInfo_) => {
         self.username = accountInfo.username;
         self.email = accountInfo.email;
         self.roles = accountInfo.roles?accountInfo.roles:[];
-        self.authenticated = accountInfo.authenticated;
+        self.authenticated = accountInfo.authenticated?true:(self.nickname?true:false);
     
         //$("#currentUser").html(self.nickname + " <small>" + self.username + "</small>")
 
@@ -31,7 +31,9 @@ const NavbarLogic = (accountInfo_) => {
             $("#dashboardHyperlink").show();
             $("#logOutButton").show();
             $("#gameHyperlink").show();
-        }
+            
+            $(".navbar-collapse > ul").addClass("ml-auto")
+        } 
     }
   
     /*       event listeners          */

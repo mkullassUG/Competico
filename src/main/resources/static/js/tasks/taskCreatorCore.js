@@ -108,7 +108,7 @@ const TaskCreatorCore = (data) => {
             case "WordFill":
                 var task;
                 task = taskToSetup.taskContent.content;
-                task.emptySpaceCount = taskToSetup.task.emptySpaces.length;
+                task.emptySpaceCount = taskToSetup.taskContent.content.emptySpaces.length;
 
                 variantObject = self.GameCore.getVariant(variantString, task);
                 

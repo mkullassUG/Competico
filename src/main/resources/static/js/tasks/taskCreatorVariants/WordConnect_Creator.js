@@ -11,7 +11,6 @@ const WordConnect_Creator = (data_ = {}) => {
 
     /*  Logic functions */
     var wordConnectCreatorInit = () => {
-        console.log("wordConnectCreatorInit");
 
         self.hideAllTaskDivsExceptGiven(self.taskName);
     }
@@ -257,7 +256,6 @@ const WordConnect_Creator = (data_ = {}) => {
         buttonAddConnectionClone.on('click', (e) => {
             
             self.addNewConnection();
-            console.log("click")
         });
     }
 
