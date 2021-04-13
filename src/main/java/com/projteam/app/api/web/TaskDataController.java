@@ -11,6 +11,6 @@ public class TaskDataController
 	@ApiOperation(value = "Display a list of task data templates for global import")
 	public String taskImportList()
 	{
-		return "taskcreator";
+		return "taskCreator";
 	}
 }

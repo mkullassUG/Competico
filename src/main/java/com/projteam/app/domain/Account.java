@@ -33,19 +33,19 @@ import lombok.ToString;
 	@UniqueConstraint(columnNames = {"email", "username"}))
 public class Account implements UserDetails, Initializable
 {
-	private @Id @Column(name = "id", unique = true) UUID id;
-	private @Column(name = "email", unique = true) String email;
-	private @Column(name = "username", unique = true) String username;
-	private @Column(name = "password") String password;
-	private @Column(name = "nickname") String nickname;
+	private @Id @Column(name = "id", unique = true, updatable = false) UUID id;
+	private @Column(name = "email", unique = true, updatable = true) String email;
+	private @Column(name = "username", unique = true, updatable = false) String username;
+	private @Column(name = "password", updatable = true) String password;
+	private @Column(name = "nickname", updatable = true) String nickname;
 	
-	private @Column(name = "accountEnabled") boolean enabled = true;
-	private @Column(name = "accountNonExpired") boolean accountNonExpired = true;
-	private @Column(name = "accountNonLocked") boolean accountNonLocked = true;
-	private @Column(name = "credentialsNonExpired") boolean credentialsNonExpired = true;
+	private @Column(name = "accountEnabled", updatable = true) boolean enabled = true;
+	private @Column(name = "accountNonExpired", updatable = true) boolean accountNonExpired = true;
+	private @Column(name = "accountNonLocked", updatable = true) boolean accountNonLocked = true;
+	private @Column(name = "credentialsNonExpired", updatable = true) boolean credentialsNonExpired = true;
 	
 	@ElementCollection
-	@Column(name = "roles")
+	@Column(name = "roles", updatable = true)
 	private List<String> roles;
 	
 	public static final String PLAYER_ROLE = "PLAYER";

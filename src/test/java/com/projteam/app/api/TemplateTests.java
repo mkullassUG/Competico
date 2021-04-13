@@ -57,4 +57,10 @@ class TemplateTests
 		mvc.perform(get("/game/gameCode"))
 			.andExpect(status().isOk());
 	}
+	@Test
+	public void shouldReturnTaskCreatorPage() throws Exception
+	{
+		mvc.perform(get("/tasks/import/global"))
+			.andExpect(status().isOk());
+	}
 }

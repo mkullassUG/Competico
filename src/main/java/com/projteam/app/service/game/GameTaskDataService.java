@@ -260,6 +260,14 @@ public class GameTaskDataService
 		}
 		return false;
 	}
+	public void removeAllImportedGlobalTasks()
+	{
+		removeAllImportedGlobalTasks(getAccount());
+	}
+	public void removeAllImportedGlobalTasks(Account account)
+	{
+		globalImportedTasks.remove(account.getId());
+	}
 	public boolean editImportedGlobalTask(UUID taskId, JsonNode taskData) throws IOException, ClassNotFoundException
 	{
 		return editImportedGlobalTask(taskId, taskData, getAccount());

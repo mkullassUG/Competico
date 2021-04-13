@@ -7,6 +7,7 @@ import com.projteam.app.domain.Account;
 
 public interface AccountDAO extends JpaRepository<Account, UUID>
 {
+	public Optional<Account> findByEmail(String email);
 	public Optional<Account> findByUsername(String username);
 	public Optional<Account> findByEmailOrUsername(String email, String username);
 	public boolean existsByUsername(String username);

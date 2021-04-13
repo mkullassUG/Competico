@@ -106,7 +106,7 @@
       "id" : "8c802a14-ba6b-4122-818f-738e2782cc9b",
       "text" : [ "I’m afraid I can’t say it at the ", " of my head." ],
       "emptySpaces" : [ {
-        "answer" : "GLAD"
+        "answer" : "TOP"
       } ],
       "startWithText" : true,
       "possibleAnswers" : [ "TIP", "END", "TOP", "BACK" ]

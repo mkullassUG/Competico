@@ -54,6 +54,8 @@ public class ListChoiceWordFill implements Task
 		long l = rows.stream()
 				.mapToLong(row -> row.getWordChoices().size())
 				.sum();
+		if (l == 0)
+			return 1;
 		
 		long score = 0;
 		
@@ -63,7 +65,7 @@ public class ListChoiceWordFill implements Task
 				continue;
 			List<String> currList = iter.next();
 			if (row.size() != currList.size())
-				throw new IllegalArgumentException("Answer length differs from task size");
+				continue;
 			Iterator<String> currIt = currList.iterator();
 			for (String ans: row)
 			{

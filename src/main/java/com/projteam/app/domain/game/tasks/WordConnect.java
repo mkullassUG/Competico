@@ -47,6 +47,10 @@ public class WordConnect implements Task
 		if (answerMapping == null)
 			return 0;
 		
+		int l = correctMapping.size();
+		if (l == 0)
+			return 1;
+		
 		long score = 0;
 		
 		for (Entry<String, String> e: answerMapping.entrySet())
@@ -62,7 +66,7 @@ public class WordConnect implements Task
 				score++;
 		}
 		
-		return ((double) score) / correctMapping.size();
+		return ((double) score) / l;
 	}
 	@Override
 	public Class<? extends TaskAnswer> getAnswerType()

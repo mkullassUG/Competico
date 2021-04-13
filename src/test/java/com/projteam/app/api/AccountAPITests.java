@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -41,6 +42,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingExcept
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.domain.Account;
 import com.projteam.app.dto.LoginDTO;
+import com.projteam.app.dto.PasswordChangeDTO;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.service.AccountService;
 import com.projteam.app.service.game.GameService;
@@ -188,6 +190,62 @@ public class AccountAPITests
 				.content("" + isAuthenticated))
 			.andExpect(status().isOk())
 			.andExpect(content().string("" + isAuthenticated));
+	}
+	
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	public void shouldUpdateEmail(boolean success) throws Exception
+	{
+		String email = "mockEmail@mock.org";
+		
+		when(accountService.changeEmail(email))
+			.thenReturn(success);
+		
+		mvc.perform(put("/api/v1/account/email")
+				.contentType(APPLICATION_JSON_UTF8)
+				.content("" + email))
+			.andExpect(status().isOk())
+			.andExpect(content().string("" + success));
+		
+		verify(accountService, times(1)).changeEmail(email);
+	}
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	public void shouldUpdateNickname(boolean success) throws Exception
+	{
+		String nickname = "mockAccount";
+		
+		when(accountService.changeNickname(nickname))
+			.thenReturn(success);
+		
+		mvc.perform(put("/api/v1/account/nickname")
+				.contentType(APPLICATION_JSON_UTF8)
+				.content("" + nickname))
+			.andExpect(status().isOk())
+			.andExpect(content().string("" + success));
+		
+		verify(accountService, times(1)).changeNickname(nickname);
+	}
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	public void shouldUpdatePassword(boolean success) throws Exception
+	{
+		PasswordChangeDTO pcDto = new PasswordChangeDTO("oldPass123", "newPass456");
+		
+		when(accountService.changePassword(
+				pcDto.getOldPassword(),
+				pcDto.getNewPassword()))
+			.thenReturn(success);
+		
+		mvc.perform(put("/api/v1/account/password")
+				.contentType(APPLICATION_JSON_UTF8)
+				.content(mapper.valueToTree(pcDto).toString()))
+			.andExpect(status().isOk())
+			.andExpect(content().string("" + success));
+		
+		verify(accountService, times(1)).changePassword(
+				pcDto.getOldPassword(),
+				pcDto.getNewPassword());
 	}
 	
 	@Test
