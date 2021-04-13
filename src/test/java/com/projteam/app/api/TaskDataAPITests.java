@@ -228,6 +228,14 @@ class TaskDataAPITests
 		
 		verify(gtdService, times(1)).removeImportedGlobalTask(id);
 	}
+	@Test
+	public void canAttemptToDeleteAllImportedTasks() throws Exception
+	{
+		mvc.perform(delete("/api/v1/tasks/imported"))
+			.andExpect(status().isOk());
+		
+		verify(gtdService, times(1)).removeAllImportedGlobalTasks();
+	}
 	
 	@ParameterizedTest
 	@MethodSource("mockTaskDTO")
@@ -254,13 +262,6 @@ class TaskDataAPITests
 			.andExpect(jsonPath("$.taskExists", is("false")));
 		
 		verify(gtdService, times(1)).getImportedGlobalTask(id);
-	}
-	
-	@Test
-	public void canGetTaskCreatorPage() throws Exception
-	{
-		mvc.perform(get("/tasks/import/global"))
-			.andExpect(status().isOk());
 	}
 	
 	//---Sources---

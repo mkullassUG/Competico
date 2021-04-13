@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 import com.projteam.app.config.SecurityContextConfig;
@@ -122,7 +123,7 @@ public class AccountService implements UserDetailsService
 				.build();
 		acc = accDao.save(acc);
 		if (autoAuthenticate)
-			authenticate(req, regDto.getEmail(), regDto.getPassword());
+			authenticate(req, acc.getUsername(), regDto.getPassword());
 	}
 	@Transactional
 	public boolean login(HttpServletRequest req, LoginDTO loginDto)
@@ -132,7 +133,7 @@ public class AccountService implements UserDetailsService
 			return false;
 		if (passEnc.matches(loginDto.getPassword(), acc.getPassword()))
 		{
-			authenticate(req, loginDto.getEmail(), loginDto.getPassword());
+			authenticate(req, acc.getUsername(), loginDto.getPassword());
 			return true;
 		}
 		else
@@ -142,16 +143,36 @@ public class AccountService implements UserDetailsService
 	/* Manual authentication, required due to lack of
 	 * Json authentication support from Spring Security
 	 * */
-	private void authenticate(HttpServletRequest req, String email, CharSequence password)
+	private void authenticate(HttpServletRequest req,
+			String username, CharSequence password)
 	{
 		UsernamePasswordAuthenticationToken authReq
-			= new UsernamePasswordAuthenticationToken(email, password);
+			= new UsernamePasswordAuthenticationToken(username, password);
 	    Authentication auth = authManager.authenticate(authReq);
 	    
 	    SecurityContext sc = secConConf.getContext();
 	    sc.setAuthentication(auth);
+	    
 	    HttpSession session = req.getSession(true);
 	    session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
+	}
+	private void refreshAuth(Account acc)
+	{
+		SecurityContext sc = secConConf.getContext();
+		Authentication auth = sc.getAuthentication();
+		PreAuthenticatedAuthenticationToken newAuth
+			= new PreAuthenticatedAuthenticationToken(
+					acc, auth.getCredentials(), auth.getAuthorities());
+		newAuth.setAuthenticated(true);
+	    sc.setAuthentication(newAuth);
+	}
+	private void refreshAuth(String username, CharSequence newPassword)
+	{
+		SecurityContext sc = secConConf.getContext();
+		Authentication newAuth = new UsernamePasswordAuthenticationToken(
+				username, newPassword);
+		newAuth = authManager.authenticate(newAuth);
+	    sc.setAuthentication(newAuth);
 	}
 	private Authentication getAuthentication()
 	{
@@ -168,8 +189,18 @@ public class AccountService implements UserDetailsService
 	@Transactional
 	public Optional<Account> getAuthenticatedAccount()
 	{
-		return init(Optional.ofNullable(getAuthentication())
-				.map(auth -> (Account) auth.getPrincipal()));
+		try
+		{
+			return init(Optional.ofNullable(getAuthentication())
+					.map(auth -> (Account) auth.getPrincipal()));
+		}
+		catch (Exception e)
+		{
+			System.err.println("An error occurred while fetching authentication, logging out user.");
+			e.printStackTrace();
+			secConConf.clearContext();
+			return Optional.empty();
+		}
 	}
 	private Optional<Account> selectByEmailOrUsername(String emailOrUsername)
 	{
@@ -186,11 +217,111 @@ public class AccountService implements UserDetailsService
 		return init(accDao.findByUsername(username));
 	}
 	
+	@Transactional
+	public boolean changeEmail(String newEmail)
+	{
+		Optional<Account> acc = getAuthenticatedAccount();
+		if (acc.isPresent())
+			return changeEmail(acc.get(), newEmail);
+		return false;
+	}
+	@Transactional
+	public boolean changeEmail(Account acc, String newEmail)
+	{
+		if (acc == null)
+			return false;
+		
+		try
+		{
+			if (accDao.findByEmail(newEmail).isPresent())
+				return false;
+			
+			acc = accDao.findByUsername(acc.getUsername()).orElse(null);
+			if (acc == null)
+				return false;
+			
+			Initializable.init(acc);
+			acc.setEmail(newEmail);
+			acc = accDao.saveAndFlush(acc);
+			
+			refreshAuth(acc);
+			return true;
+		}
+		catch (Exception e)
+		{}
+		return false;
+	}
+	@Transactional
+	public boolean changeNickname(String newNickname)
+	{
+		Optional<Account> acc = getAuthenticatedAccount();
+		if (acc.isPresent())
+			return changeNickname(acc.get(), newNickname);
+		return false;
+	}
+	@Transactional
+	public boolean changeNickname(Account acc, String newNickname)
+	{
+		if (acc == null)
+			return false;
+		
+		try
+		{
+			acc = accDao.findByUsername(acc.getUsername()).orElse(null);
+			if (acc == null)
+				return false;
+			
+			Initializable.init(acc);
+			acc.setNickname(newNickname);
+			acc = accDao.saveAndFlush(acc);
+			
+			refreshAuth(acc);
+			return true;
+		}
+		catch (Exception e)
+		{}
+		return false;
+	}
+	@Transactional
+	public boolean changePassword(CharSequence oldPassword, CharSequence newPassword)
+	{
+		Optional<Account> acc = getAuthenticatedAccount();
+		if (acc.isPresent())
+			return changePassword(acc.get(), oldPassword, newPassword);
+		return false;
+	}
+	@Transactional
+	public boolean changePassword(Account acc, CharSequence oldPassword, CharSequence newPassword)
+	{
+		if (acc == null)
+			return false;
+
+		try
+		{
+			if (passEnc.matches(oldPassword, acc.getPassword()))
+			{
+				acc = accDao.findByUsername(acc.getUsername()).orElse(null);
+				if (acc == null)
+					return false;
+
+				Initializable.init(acc);
+				acc.setPassword(passEnc.encode(newPassword));
+				acc = accDao.saveAndFlush(acc);
+				
+				refreshAuth(acc.getUsername(), newPassword);
+				return true;
+			}
+		}
+		catch (Exception e)
+		{}
+		return false;
+	}
+	
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
 	{
-		return selectByEmailOrUsername(username)
+		return accDao.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("Invalid email or password."));
 	}
 	

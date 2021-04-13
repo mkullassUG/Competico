@@ -11,4 +11,8 @@ public class SecurityContextConfig
 	{
 		return SecurityContextHolder.getContext();
 	}
+	public void clearContext()
+	{
+		 SecurityContextHolder.clearContext();
+	}
 }

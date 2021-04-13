@@ -136,6 +136,12 @@ public class TaskDataAPI
 	{
 		return gtdService.removeImportedGlobalTask(id);
 	}
+	@DeleteMapping("/api/v1/tasks/imported")
+	@ApiOperation(value = "Delete all inported tasks", code = 200)
+	public void deleteImportedTasks()
+	{
+		gtdService.removeAllImportedGlobalTasks();
+	}
 	
 	private List<Map<String, ?>> taskDTOsWithName(List<TaskDTO> dtoList)
 	{

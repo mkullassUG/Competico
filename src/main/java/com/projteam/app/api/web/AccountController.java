@@ -23,7 +23,7 @@ public class AccountController
 	{
 		if (accServ.isAuthenticated())
 			return "redirect:/dashboard";
-		return "/register";
+		return "register";
 	}
 	@GetMapping("login")
 	@ApiOperation(value = "Display the login page", code = 200)
@@ -31,6 +31,13 @@ public class AccountController
 	{
 		if (accServ.isAuthenticated())
 			return "redirect:/dashboard";
-		return "/login";
+		return "login";
+	}
+	
+	@GetMapping("/profile")
+	@ApiOperation(value = "Display profile information of the current user", code = 200)
+	public String homePage()
+	{
+		return "profile";
 	}
 }

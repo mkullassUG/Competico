@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -66,13 +65,12 @@ public class AccountServiceTests
 		HttpServletRequest req = new MockHttpServletRequest();
 		SecurityContext sc = mock(SecurityContext.class);
 		when(secConConf.getContext()).thenReturn(sc);
+		when(accDao.save(any())).thenAnswer(inv -> inv.getArgument(0));
 		
 		accountService.register(req, mockRegDto, true);
 		
 		verify(passEnc, times(1)).encode(mockRegDto.getPassword());
-		verify(authManager, times(1)).authenticate(argThat(auth ->
-			auth.getPrincipal().equals(mockRegDto.getEmail())
-			&& auth.getCredentials().equals(mockRegDto.getPassword())));
+		verify(authManager, times(1)).authenticate(any());
 	}
 	@ParameterizedTest
 	@MethodSource("mockRegistrationData")
@@ -120,7 +118,7 @@ public class AccountServiceTests
 		ArgumentCaptor<Authentication> authCap = ArgumentCaptor.forClass(Authentication.class);
 		verify(authManager, times(1)).authenticate(authCap.capture());
 		Authentication auth = authCap.getValue();
-		assertEquals(auth.getPrincipal(), mockRegDto.getEmail());
+		assertEquals(auth.getPrincipal(), mockRegDto.getUsername());
 		assertEquals(auth.getCredentials(), mockRegDto.getPassword());
 		verify(passEnc, times(1)).matches(mockRegDto.getPassword(), mockRegDto.getPassword().toString());
 	}
@@ -257,8 +255,7 @@ public class AccountServiceTests
 	@MethodSource("mockAccountAndUsername")
 	public void shouldLoadUserByUsernameOrEmailWhenOneExists(String username, Account acc)
 	{
-		when(accDao.findByEmailOrUsername(acc.getEmail(), acc.getEmail())).thenReturn(Optional.of(acc));
-		when(accDao.findByEmailOrUsername(acc.getUsername(), acc.getUsername())).thenReturn(Optional.of(acc));
+		when(accDao.findByUsername(acc.getUsername())).thenReturn(Optional.of(acc));
 		
 		UserDetails res = accountService.loadUserByUsername(username);
 		
@@ -281,6 +278,145 @@ public class AccountServiceTests
 		when(accDao.findById(id)).thenReturn(acc);
 		
 		assertEquals(accountService.findByID(id), acc);
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canChangeEmail(Account acc)
+	{
+		String newEmail = "newMockEmail@mock.pl";
+		when(accDao.findByUsername(acc.getUsername()))
+			.thenReturn(Optional.of(acc));
+		when(accDao.save(acc)).thenReturn(acc);
+		when(accDao.saveAndFlush(acc)).thenReturn(acc);
+		
+		SecurityContext sc = mock(SecurityContext.class);
+		Authentication auth = mock(Authentication.class);
+		when(secConConf.getContext()).thenReturn(sc);
+		when(sc.getAuthentication()).thenReturn(auth);
+		when(auth.isAuthenticated()).thenReturn(true);
+		when(auth.getPrincipal()).thenReturn(acc);
+		
+		boolean success = accountService.changeEmail(acc, newEmail);
+		
+		assertTrue(success);
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canChangeEmailWithAuthenticatedAccount(Account acc)
+	{
+		String newEmail = "newMockEmail@mock.pl";
+		when(accDao.findByUsername(acc.getUsername()))
+			.thenReturn(Optional.of(acc));
+		when(accDao.save(acc)).thenReturn(acc);
+		when(accDao.saveAndFlush(acc)).thenReturn(acc);
+		
+		SecurityContext sc = mock(SecurityContext.class);
+		Authentication auth = mock(Authentication.class);
+		when(secConConf.getContext()).thenReturn(sc);
+		when(sc.getAuthentication()).thenReturn(auth);
+		when(auth.isAuthenticated()).thenReturn(true);
+		when(auth.getPrincipal()).thenReturn(acc);
+		
+		boolean success = accountService.changeEmail(newEmail);
+		
+		assertTrue(success);
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canChangeNickname(Account acc)
+	{
+		String newNickname = "newMockAccNick";
+		when(accDao.findByUsername(acc.getUsername()))
+			.thenReturn(Optional.of(acc));
+		when(accDao.save(acc)).thenReturn(acc);
+		when(accDao.saveAndFlush(acc)).thenReturn(acc);
+		
+		SecurityContext sc = mock(SecurityContext.class);
+		Authentication auth = mock(Authentication.class);
+		when(secConConf.getContext()).thenReturn(sc);
+		when(sc.getAuthentication()).thenReturn(auth);
+		when(auth.isAuthenticated()).thenReturn(true);
+		when(auth.getPrincipal()).thenReturn(acc);
+		
+		boolean success = accountService.changeNickname(acc, newNickname);
+		
+		assertTrue(success);
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canChangeNicknameWithAuthenticatedAccount(Account acc)
+	{
+		String newNickname = "newMockAccNick";
+		when(accDao.findByUsername(acc.getUsername()))
+			.thenReturn(Optional.of(acc));
+		when(accDao.save(acc)).thenReturn(acc);
+		when(accDao.saveAndFlush(acc)).thenReturn(acc);
+		
+		SecurityContext sc = mock(SecurityContext.class);
+		Authentication auth = mock(Authentication.class);
+		when(secConConf.getContext()).thenReturn(sc);
+		when(sc.getAuthentication()).thenReturn(auth);
+		when(auth.isAuthenticated()).thenReturn(true);
+		when(auth.getPrincipal()).thenReturn(acc);
+		
+		boolean success = accountService.changeNickname(newNickname);
+		
+		assertTrue(success);
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canChangePassword(Account acc)
+	{
+		String oldPassword = acc.getPassword();
+		String newPassword = "qwerty123POI";
+		
+		when(passEnc.matches(oldPassword, oldPassword))
+			.thenReturn(true);
+		when(passEnc.encode(newPassword))
+			.thenReturn(newPassword);
+		when(accDao.findByUsername(acc.getUsername()))
+			.thenReturn(Optional.of(acc));
+		when(accDao.save(acc)).thenReturn(acc);
+		when(accDao.saveAndFlush(acc)).thenReturn(acc);
+		
+		SecurityContext sc = mock(SecurityContext.class);
+		Authentication auth = mock(Authentication.class);
+		when(secConConf.getContext()).thenReturn(sc);
+		when(sc.getAuthentication()).thenReturn(auth);
+		when(auth.isAuthenticated()).thenReturn(true);
+		when(auth.getPrincipal()).thenReturn(acc);
+		
+		boolean success = accountService.changePassword(acc, oldPassword, newPassword);
+		
+		assertTrue(success);
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canChangePasswordWithAuthenticatedAccount(Account acc)
+	{
+		String oldPassword = acc.getPassword();
+		String newPassword = "qwerty123POI";
+		
+		when(passEnc.matches(oldPassword, oldPassword))
+			.thenReturn(true);
+		when(passEnc.encode(newPassword))
+			.thenReturn(newPassword);
+		when(accDao.findByUsername(acc.getUsername()))
+			.thenReturn(Optional.of(acc));
+		when(accDao.save(acc)).thenReturn(acc);
+		when(accDao.saveAndFlush(acc)).thenReturn(acc);
+		
+		SecurityContext sc = mock(SecurityContext.class);
+		Authentication auth = mock(Authentication.class);
+		when(secConConf.getContext()).thenReturn(sc);
+		when(sc.getAuthentication()).thenReturn(auth);
+		when(auth.isAuthenticated()).thenReturn(true);
+		when(auth.getPrincipal()).thenReturn(acc);
+		
+		boolean success = accountService.changePassword(oldPassword, newPassword);
+		
+		assertTrue(success);
 	}
 	
 	//---Sources---

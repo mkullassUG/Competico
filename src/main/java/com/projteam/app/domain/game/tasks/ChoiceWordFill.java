@@ -56,9 +56,13 @@ public class ChoiceWordFill implements Task
 		
 		if (ansList == null)
 			return 0;
-		if (ansList.size() != getWordChoices().size())
-			throw new IllegalArgumentException("Answer length differs from task size: "
-					+ ansList.size() + ", " + getWordChoices().size());
+		
+		int aL = ansList.size();
+		
+		if (aL != getWordChoices().size())
+			return 0;
+		if (aL == 0)
+			return 1;
 		
 		long score = 0;
 		
@@ -68,7 +72,7 @@ public class ChoiceWordFill implements Task
 				score++;
 		}
 		
-		return ((double) score) / ansList.size();
+		return ((double) score) / aL;
 	}
 	@Override
 	public Class<? extends TaskAnswer> getAnswerType()

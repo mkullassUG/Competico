@@ -7,10 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.projteam.app.dto.LoginDTO;
+import com.projteam.app.dto.PasswordChangeDTO;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.service.AccountService;
 import io.swagger.annotations.Api;
@@ -87,10 +89,10 @@ public class AccountAPI
 	}
 	
 	@GetMapping("api/v1/account/info")
-	@ApiOperation(value = "Get information the current account", code = 200)
+	@ApiOperation(value = "Get information about the current account", code = 200)
 	@ApiResponses(
 	{
-		@ApiResponse(code = 200, message = "Information the current account")
+		@ApiResponse(code = 200, message = "Information about the current account")
 	})
 	public Object getAccountInfo()
 	{
@@ -102,5 +104,36 @@ public class AccountAPI
 						"nickname", acc.getNickname(),
 						"roles", acc.getRoles()))
 				.orElseGet(() -> Map.of("authenticated", false));
+	}
+	
+	@PutMapping("api/v1/account/email")
+	@ApiOperation(value = "Update email of the current account", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Whether the email was updated")
+	})
+	public boolean changeEmail(@RequestBody String newEmail)
+	{
+		return accServ.changeEmail(newEmail);
+	}
+	@PutMapping("api/v1/account/nickname")
+	@ApiOperation(value = "Update nickname of the current account", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Whether the email was updated")
+	})
+	public boolean changeNickname(@RequestBody String newNickname)
+	{
+		return accServ.changeNickname(newNickname);
+	}
+	@PutMapping("api/v1/account/password")
+	@ApiOperation(value = "Update password of the current account", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Whether the email was updated")
+	})
+	public boolean changePassword(@RequestBody PasswordChangeDTO pcDto)
+	{
+		return accServ.changePassword(pcDto.getOldPassword(), pcDto.getNewPassword());
 	}
 }

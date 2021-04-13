@@ -60,9 +60,13 @@ public class WordFill implements Task
 		
 		if (ansList == null)
 			return 0;
-		if (ansList.size() != getEmptySpaces().size())
-			throw new IllegalArgumentException("Answer length differs from task size: "
-					+ ansList.size() + ", " + getEmptySpaces().size());
+		
+		int aL = ansList.size();
+		
+		if (aL != getEmptySpaces().size())
+			return 0;
+		if (aL == 0)
+			return 1;
 		
 		long score = 0;
 		
@@ -72,7 +76,7 @@ public class WordFill implements Task
 				score++;
 		}
 		
-		return ((double) score) / ansList.size();
+		return ((double) score) / aL;
 	}
 	@Override
 	public Class<? extends TaskAnswer> getAnswerType()

@@ -41,6 +41,7 @@ import com.projteam.app.domain.Account;
 import com.projteam.app.dto.game.tasks.show.ChoiceWordFillElementDTO;
 import com.projteam.app.dto.game.tasks.show.ChronologicalOrderDTO;
 import com.projteam.app.dto.game.tasks.show.ListChoiceWordFillDTO;
+import com.projteam.app.dto.game.tasks.show.ListSentenceFormingDTO;
 import com.projteam.app.dto.game.tasks.show.ListWordFillDTO;
 import com.projteam.app.dto.game.tasks.show.MultipleChoiceElementDTO;
 import com.projteam.app.dto.game.tasks.show.SingleChoiceDTO;
@@ -400,6 +401,12 @@ public class GameTestsWithDatabase
 				return mapper.valueToTree(
 						Map.of("answers", coDto.getSentences()))
 							.toString();
+			case "ListSentenceForming":
+				ListSentenceFormingDTO lsfDTO = mapper.treeToValue(taskInfo.get("task"),
+						ListSentenceFormingDTO.class);
+				return mapper.valueToTree(
+						Map.of("answers", lsfDTO.getWords())
+						).toString();
 			default:
 				return "[]";
 		}

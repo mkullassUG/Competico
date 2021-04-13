@@ -44,9 +44,13 @@ public class MultipleChoice implements Task
 		
 		if (ansList == null)
 			return 0;
-		if (ansList.size() != content.getCorrectAnswers().size())
-			throw new IllegalArgumentException("Answer length differs from task size: "
-					+ ansList.size() + ", " + content.getCorrectAnswers().size());
+		
+		int aL = ansList.size();
+		
+		if (aL != content.getCorrectAnswers().size())
+			return 0;
+		if (aL == 0)
+			return 1;
 		
 		long score = 0;
 		
@@ -56,7 +60,7 @@ public class MultipleChoice implements Task
 				score++;
 		}
 		
-		return ((double) score) / ansList.size();
+		return ((double) score) / aL;
 	}
 	@Override
 	public Class<? extends TaskAnswer> getAnswerType()

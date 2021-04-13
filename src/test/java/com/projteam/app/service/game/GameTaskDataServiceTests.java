@@ -300,6 +300,31 @@ class GameTaskDataServiceTests
 	}
 	@ParameterizedTest
 	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldRemoveAllImportedGlobalTasks(JsonNode taskDtoWithName)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		
+		gtdServ.importGlobalTask(taskDtoWithName, admin);
+		gtdServ.removeAllImportedGlobalTasks(admin);
+		
+		assertEquals(gtdServ.getImportedGlobalTaskCount(admin), 0);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
+	public void shouldRemoveAllImportedGlobalTasksWithAuthenticatedAdmin(JsonNode taskDtoWithName)
+			throws ClassNotFoundException, IOException
+	{
+		when(aServ.getAuthenticatedAccount())
+			.thenReturn(Optional.of(mockTaskDataAdmin()));
+		
+		gtdServ.importGlobalTask(taskDtoWithName);
+		gtdServ.removeAllImportedGlobalTasks();
+		
+		assertEquals(gtdServ.getImportedGlobalTaskCount(), 0);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOsWithNames")
 	public void shouldNotRemoveTasksWithIncorrectID(JsonNode taskDtoWithName)
 			throws ClassNotFoundException, IOException
 	{
