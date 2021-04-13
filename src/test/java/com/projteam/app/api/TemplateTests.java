@@ -2,6 +2,7 @@ package com.projteam.app.api;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -58,6 +59,7 @@ class TemplateTests
 			.andExpect(status().isOk());
 	}
 	@Test
+	@Disabled("Disabled until Task Manager is ready")
 	public void shouldReturnTaskCreatorPage() throws Exception
 	{
 		mvc.perform(get("/tasks/import/global"))
