@@ -11,22 +11,13 @@ const LobbyJoinLogic = (debug = false) => {
     gameStarted = data.gameStarted;
     nickname = data.nickname;
 
-    /* 
-    ///ustaliliśmy, że tego nie wysyłamy, bo itak musze być zalogowany żeby to wysłać?
-    if (!data.logged)
-      window.location = "/login"; 
-    */
-
     if ((data.isHost != null && data.isHost) || 
       (data.gameCode != null && data.gameCode != ""))
       window.location = "/game/" + data.gameCode;
 
-      /*
-        TODO
-        nie zdarzyłem napisac wstawiania nicku gracza do navbara, najpierw potrzeba wziąc navbar ze strony np dashboard któr yzdaje się miał pole nickname po prawej stronie
-      */
+    NavbarLogic.getInstance();
 
-      $('.hideBeforeLoad').css("display", "flex").fadeIn();
+    $('.hideBeforeLoad').css("display", "flex").fadeIn();
   }
 
   var gameFound = (data) => {
@@ -34,8 +25,31 @@ const LobbyJoinLogic = (debug = false) => {
     if (data)
       window.location = "game/" + data;
     else {
-      alert("Nie znaleziono żadnych gier");
+      //alert("Nie znaleziono żadnych gier");
+      displayFailInfoAnimation("Nie znaleziono żadnych gier");
     }
+  }
+
+  var displayFailInfoAnimation = (text) => {
+    var failInfoDiv = $(`<div class="failInfo alert alert-danger">` + text + `</div>`)
+    $("#buttonHolderWrapper").append(failInfoDiv)
+
+    failInfoDiv.animate({
+      top: "13%",
+      opacity: 1
+    }, 2000, function() {
+      // Animation complete.
+      setTimeout(function(){
+        failInfoDiv.animate({
+          top: "16%",
+          opacity: 0
+        }, 1000, function() {
+          // Second Animation complete.
+          failInfoDiv.remove();
+        });
+      },2000)
+      
+    });
   }
 
   var isCodeCorrect = (data) => {
@@ -47,12 +61,15 @@ const LobbyJoinLogic = (debug = false) => {
       if (!data.isFull)
         window.location = "game/" + $("#inputCode")[0].value;
       else
-        alert("lobby pełne");
+        //alert("lobby pełne");
+        displayFailInfoAnimation("lobby pełne");
     else
-      alert("kod nie prawidłowy");
+      //alert("kod nie prawidłowy");
+      displayFailInfoAnimation("kod nie prawidłowy");
   }
 
   var lobbyCreated = (code) => window.location = "/game/" + code;
+
   /*Ajax*/
   var ajaxReceiveWhoAmI = () => {
 
@@ -107,7 +124,8 @@ const LobbyJoinLogic = (debug = false) => {
           if (jqXHR.status == 200) 
             gameFound(data);
            else
-            alert("Nie ma wolnego lobby");
+            //alert("Nie ma wolnego lobby");
+            displayFailInfoAnimation("Nie ma wolnego lobby");
       },
       error: function(jqXHR, status, err) {
         if (debug) {
@@ -116,7 +134,8 @@ const LobbyJoinLogic = (debug = false) => {
           console.log(status)
           console.log(err)
         }
-        alert("Nie znaleziono wolnego lobby");
+        //alert("Nie znaleziono wolnego lobby");
+        displayFailInfoAnimation("Nie znaleziono wolnego lobby");
         $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
 
 
@@ -175,7 +194,8 @@ const LobbyJoinLogic = (debug = false) => {
             
             lobbyCreated(data);
           } else
-            alert("nie stworzono lobby");
+            //alert("nie stworzono lobby");
+            displayFailInfoAnimation("nie stworzono lobby");
       },
       error: function(jqXHR, status, err) {
         if (debug)
@@ -251,6 +271,3 @@ LobbyJoinLogic.create = (debug = false) => {
   else
     LobbyJoinLogic()
 }
-
-//LobbyJoinLogic.create();
-var debug = LobbyJoinLogic.create(debug = true);

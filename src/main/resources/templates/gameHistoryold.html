@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Language learning game">
+    <meta name="author" content="Artur, Michał">
+    <title>Lobby</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/cover/">
+    <link rel="icon" href="/assets/myIcons/icon.svg">
+    <!-- Bootstrap core CSS -->
+    <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap/font-awesome.min.css">
+    <!-- Custom styles for this template -->
+    
+    <link href="/js/jquery/jquery-plugins/jquery-ui.min.css" rel="stylesheet">
+    <link href="/css/gameResults.css" rel="stylesheet"> 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="/js/jquery/jquery-plugins/jquery-ui.min.js"></script>
+    <script src="/js/jquery/jquery-plugins/jquery-ui-touch-punch.min.js"></script>
+    <script src="/js/jquery/jquery-plugins/jquery-simulate.js"></script>
+    <script src="/js/jsPlumb/jsPlumb.js"></script>
+
+    
+  </head>
+
+  <body class="bg-primary">
+    <!-- main content -->
+    <div class="container fill text-center" id="bigChangeDiv">
+      <!-- end game -->
+      <div class="row mt-3" id="gameEndCenter">
+        <div class="col-12">
+          <h2 class="text-white">Twoje gry:</h2>
+          <div id="endGameDashboard" >
+            <div class="col-12" id="endGameWrapperDiv">
+              <div class="m-custom my-3 p-3 rounded gameDivDecoration" style="overflow:hidden;">
+                <div class="bg-light btnShadow" id="endGameDiv">
+                  <table class="table table-sm">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Gra</th>
+                      </tr>
+                    </thead>
+                    <tbody id="gameTable">
+                      
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3" id="gameEndBottom">
+      </div>
+    </div>
+    <!-- <footer class="footer">
+      <div class="container text-center">
+        <span class="text-muted m-auto">Ucz się angielskiego razem z nami <img src="/assets/myIcons/iconbigblack.svg" class="iconbig" style=" filter: invert(25%);"></span>
+      </div>
+    </footer> -->
+    <!-- loading modal -->
+    <div class="hideBeforeLoadModal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+      <div class="modal-dialog modal-sm">
+          <div class="modal-content" style="width: 48px">
+              <span class="fa fa-spinner fa-spin fa-3x"></span>
+          </div>
+      </div>
+    </div>
+
+    <script src="/js/bootstrap/popper.min.js"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/js/gameHistory.js"></script>
+    <script>
+      var debug = GameHistoryLogic.getInstance(debug = false);
+    </script>
+  </body>
+</html>

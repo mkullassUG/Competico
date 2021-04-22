@@ -18,18 +18,28 @@ $(document).ready(function(){
             contentType: "application/json",
 
             success: function(data, textStatus, jqXHR) {
-            //called when successful
-            window.location.href = "dashboard";
-            
+                location.replace("dashboard");
             },
-
             error: function(jqXHR, status, err) {
-            //called when there is an error
-
-            //TODO error message on screen
-            //"Jak będziesz to później implementował, znany error ma kod 400 i opis pod responseText"
-            console.warn("status: " + jqXHR.status  + ": " + err );
+                $(".invalid-feedback").show();
             }
         });
     });
+
+    $(".input-group-append .btn").on('click', function(event) {
+        event.preventDefault();
+        if($('#inputPassword').attr("type") == "text"){
+            $('#inputPassword').attr('type', 'password');
+            $('.btn i').addClass( "fa-eye-slash" );
+            $('.btn i').removeClass( "fa-eye" );
+        }else if($('#inputPassword').attr("type") == "password"){
+            $('#inputPassword').attr('type', 'text');
+            $('.btn i').removeClass( "fa-eye-slash" );
+            $('.btn i').addClass( "fa-eye" );
+        }
+    });
+
+    $('[data-toggle="tooltip"]').tooltip();
+
+    NavbarLogic.getInstance();
 });

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -108,8 +109,16 @@ public class AccountService implements UserDetailsService
 	@Transactional
 	public void register(HttpServletRequest req, RegistrationDTO regDto, boolean autoAuthenticate)
 	{
-		if (containsNull(regDto))
-			throw new NullPointerException("Registration DTO contains null values: " + regDto);
+		if (!validateUsername(regDto.getUsername()))
+			throw new IllegalArgumentException("BAD_USERNAME");
+		if (!validateEmail(regDto.getEmail()))
+			throw new IllegalArgumentException("BAD_EMAIL");
+		if (!validatePassword(regDto.getPassword()))
+			throw new IllegalArgumentException("BAD_PASSWORD");
+		
+		if (accDao.existsByUsernameOrEmail(
+				regDto.getUsername(), regDto.getEmail()))
+			throw new IllegalArgumentException("DATA_ALREADY_USED");
 		
 		String passHash = passEnc.encode(regDto.getPassword());
 		
@@ -196,8 +205,8 @@ public class AccountService implements UserDetailsService
 		}
 		catch (Exception e)
 		{
-			System.err.println("An error occurred while fetching authentication, logging out user.");
-			e.printStackTrace();
+			log.error("An error occurred while fetching authentication, logging out user. "
+					+ "Cause: " + e.getClass().getTypeName() + ": " + e.getMessage());
 			secConConf.clearContext();
 			return Optional.empty();
 		}
@@ -218,103 +227,101 @@ public class AccountService implements UserDetailsService
 	}
 	
 	@Transactional
-	public boolean changeEmail(String newEmail)
+	public void changeEmail(String newEmail, CharSequence password)
 	{
 		Optional<Account> acc = getAuthenticatedAccount();
 		if (acc.isPresent())
-			return changeEmail(acc.get(), newEmail);
-		return false;
+			changeEmail(acc.get(), newEmail, password);
+		else
+			throw new IllegalArgumentException("NOT_AUTHENTICATED");
 	}
 	@Transactional
-	public boolean changeEmail(Account acc, String newEmail)
+	public void changeEmail(Account acc, String newEmail, CharSequence password)
 	{
 		if (acc == null)
-			return false;
+			throw new IllegalArgumentException("NOT_AUTHENTICATED");
 		
-		try
-		{
-			if (accDao.findByEmail(newEmail).isPresent())
-				return false;
-			
-			acc = accDao.findByUsername(acc.getUsername()).orElse(null);
-			if (acc == null)
-				return false;
-			
-			Initializable.init(acc);
-			acc.setEmail(newEmail);
-			acc = accDao.saveAndFlush(acc);
-			
-			refreshAuth(acc);
-			return true;
-		}
-		catch (Exception e)
-		{}
-		return false;
-	}
-	@Transactional
-	public boolean changeNickname(String newNickname)
-	{
-		Optional<Account> acc = getAuthenticatedAccount();
-		if (acc.isPresent())
-			return changeNickname(acc.get(), newNickname);
-		return false;
-	}
-	@Transactional
-	public boolean changeNickname(Account acc, String newNickname)
-	{
-		if (acc == null)
-			return false;
+		if (!passEnc.matches(password, acc.getPassword()))
+			throw new IllegalArgumentException("BAD_PASSWORD");
 		
-		try
-		{
-			acc = accDao.findByUsername(acc.getUsername()).orElse(null);
-			if (acc == null)
-				return false;
-			
-			Initializable.init(acc);
-			acc.setNickname(newNickname);
-			acc = accDao.saveAndFlush(acc);
-			
-			refreshAuth(acc);
-			return true;
-		}
-		catch (Exception e)
-		{}
-		return false;
+		if (!validateEmail(newEmail))
+			throw new IllegalArgumentException("BAD_EMAIL");
+		if (newEmail.equals(acc.getEmail()))
+			throw new IllegalArgumentException("SAME_EMAIL");
+		if (accDao.findByEmail(newEmail).isPresent())
+			throw new IllegalArgumentException("USED_EMAIL");
+		
+		acc = accDao.findByUsername(acc.getUsername()).orElse(null);
+		if (acc == null)
+			throw new IllegalArgumentException("NOT_AUTHENTICATED");
+		
+		Initializable.init(acc);
+		acc.setEmail(newEmail);
+		acc = accDao.saveAndFlush(acc);
+		
+		refreshAuth(acc);
 	}
 	@Transactional
-	public boolean changePassword(CharSequence oldPassword, CharSequence newPassword)
+	public void changeNickname(String newNickname)
 	{
 		Optional<Account> acc = getAuthenticatedAccount();
 		if (acc.isPresent())
-			return changePassword(acc.get(), oldPassword, newPassword);
-		return false;
+			changeNickname(acc.get(), newNickname);
+		else
+			throw new IllegalArgumentException("NOT_AUTHENTICATED");
 	}
 	@Transactional
-	public boolean changePassword(Account acc, CharSequence oldPassword, CharSequence newPassword)
+	public void changeNickname(Account acc, String newNickname)
 	{
 		if (acc == null)
-			return false;
+			throw new IllegalArgumentException("NOT_AUTHENTICATED");
+		
+		if (!validateNickname(newNickname))
+			throw new IllegalArgumentException("BAD_NICKNAME");
+		
+		acc = accDao.findByUsername(acc.getUsername()).orElse(null);
+		if (acc == null)
+			throw new IllegalArgumentException("NOT_AUTHENTICATED");
+		
+		Initializable.init(acc);
+		acc.setNickname(newNickname);
+		acc = accDao.saveAndFlush(acc);
+		
+		refreshAuth(acc);
+	}
+	@Transactional
+	public void changePassword(CharSequence oldPassword, CharSequence newPassword)
+	{
+		Optional<Account> acc = getAuthenticatedAccount();
+		if (acc.isPresent())
+			changePassword(acc.get(), oldPassword, newPassword);
+		else
+			throw new IllegalArgumentException("NOT_AUTHENTICATED");
+	}
+	@Transactional
+	public void changePassword(Account acc, CharSequence oldPassword, CharSequence newPassword)
+	{
+		if (acc == null)
+			throw new IllegalArgumentException("NOT_AUTHENTICATED");
 
-		try
-		{
-			if (passEnc.matches(oldPassword, acc.getPassword()))
-			{
-				acc = accDao.findByUsername(acc.getUsername()).orElse(null);
-				if (acc == null)
-					return false;
+		if (!validatePassword(newPassword))
+			throw new IllegalArgumentException("BAD_NEW_PASSWORD");
+		
+		String currPassword = acc.getPassword();
+		if ((currPassword != null) && !passEnc.matches(oldPassword, currPassword))
+			throw new IllegalArgumentException("BAD_OLD_PASSWORD");
+		if ((currPassword != null) && passEnc.matches(newPassword, currPassword))
+			throw new IllegalArgumentException("SAME_PASSWORD");
+		
+		acc = accDao.findByUsername(acc.getUsername()).orElse(null);
+		if (acc == null)
+			throw new IllegalArgumentException("NOT_AUTHENTICATED");
 
-				Initializable.init(acc);
-				acc.setPassword(passEnc.encode(newPassword));
-				acc = accDao.saveAndFlush(acc);
-				
-				refreshAuth(acc.getUsername(), newPassword);
-				return true;
-			}
-		}
-		catch (Exception e)
-		{}
-		return false;
+		Initializable.init(acc);
+		acc.setPassword(passEnc.encode(newPassword));
+		acc = accDao.saveAndFlush(acc);
+		
+		refreshAuth(acc.getUsername(), newPassword);
 	}
 	
 	@Override
@@ -325,12 +332,42 @@ public class AccountService implements UserDetailsService
 				.orElseThrow(() -> new UsernameNotFoundException("Invalid email or password."));
 	}
 	
-	private boolean containsNull(RegistrationDTO regDto)
+	private boolean validateEmail(String email)
 	{
-		return (regDto == null)
-				|| (regDto.getEmail() == null)
-				|| (regDto.getUsername() == null)
-				|| (regDto.getPassword() == null);
+		if (email == null)
+			return false;
+		
+		return email.matches("(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+"
+				+ "(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|\\\"(?:["
+				+ "\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b"
+				+ "\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*"
+				+ "\\\")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+"
+				+ "[a-zA-Z0-9](?:[a-z0-9-]*[a-zA-Z0-9])?|\\[(?:(?:25[0-5]|"
+				+ "2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4]"
+				+ "[0-9]|[01]?[0-9][0-9]?|[a-zA-Z0-9-]*[a-zA-Z0-9]:(?:[\\x01-"
+				+ "\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\"
+				+ "[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
+	}
+	private boolean validateUsername(String username)
+	{
+		if (username == null)
+			return false;
+		
+		return username.matches("^(?=.{4,32}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$");
+	}
+	private boolean validateNickname(String nickname)
+	{
+		if (nickname == null)
+			return false;
+		
+		return nickname.matches("^(?=.{1,32}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$");
+	}
+	private boolean validatePassword(CharSequence password)
+	{
+		if (password == null)
+			return false;
+		
+		return Pattern.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$", password);
 	}
 
 	private static <T extends Initializable> Optional<T> init(Optional<T> in)

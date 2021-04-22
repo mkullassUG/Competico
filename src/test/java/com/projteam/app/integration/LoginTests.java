@@ -112,7 +112,7 @@ public class LoginTests
 		String username1 = "TestPlayerForLogin1";
 		String username2 = "TestPlayerForLogin2";
 		
-		String password = "QWERTY";
+		String password = "QWERTYuiop123";
 		
 		return List.of(
 				new RegistrationDTO(

@@ -1,5 +1,6 @@
 package com.projteam.app.api;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,11 +45,13 @@ import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 import com.projteam.app.dto.game.GameResultPersonalDTO;
 import com.projteam.app.dto.game.GameResultTotalDTO;
 import com.projteam.app.dto.game.GameResultTotalDuringGameDTO;
+import com.projteam.app.dto.game.LeaderboardEntryDTO;
 import com.projteam.app.dto.game.tasks.show.TaskInfoDTO;
 import com.projteam.app.service.AccountService;
 import com.projteam.app.service.game.GameService;
 import com.projteam.app.service.game.GameTaskDataService;
 import com.projteam.app.service.game.LobbyService;
+import com.projteam.app.service.game.PlayerDataService;
 
 @SpringBootTest
 @ContextConfiguration(name = "API-tests")
@@ -62,6 +65,7 @@ public class GameAPITests
 	private @MockBean LobbyService lobbyService;
 	private @MockBean GameService gameService;
 	private @MockBean GameTaskDataService gtdService;
+	private @MockBean PlayerDataService pdService;
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	
@@ -338,6 +342,35 @@ public class GameAPITests
 		mvc.perform(get("/api/v1/player/rating"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.rating", is(rating)));
+	}
+	
+	@Test
+	public void shouldGetTopLeaderboardSuccessfully() throws Exception
+	{
+		var ret = List.of(
+				new LeaderboardEntryDTO("user1", "nick1", 1, 1200),
+				new LeaderboardEntryDTO("user2", "nick2", 2, 1000),
+				new LeaderboardEntryDTO("user3", "nick3", 3, 800));
+		
+		when(pdService.getTopLeaderboard()).thenReturn(ret);
+		
+		mvc.perform(get("/api/v1/game/leaderboard/top"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$", hasSize(ret.size())));
+	}
+	@Test
+	public void shouldGetRelativeLeaderboardSuccessfully() throws Exception
+	{
+		var ret = List.of(
+				new LeaderboardEntryDTO("username1", "nickname1", 12, 700),
+				new LeaderboardEntryDTO("username2", "nickname2", 13, 680),
+				new LeaderboardEntryDTO("username3", "nickname3", 14, 670));
+		
+		when(pdService.getRelativeLeaderboard()).thenReturn(ret);
+		
+		mvc.perform(get("/api/v1/game/leaderboard/relative"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$", hasSize(ret.size())));
 	}
 	
 	@Test

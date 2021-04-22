@@ -1,0 +1,100 @@
+#logOutButton {
+    color: rgba(255,255,255,0.5);
+}
+  
+#logOutButton:hover {
+    color: rgba(255,255,255,1);
+}
+
+.iconbig {
+    height: 30px;
+}
+
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+  
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+}
+
+.border-bottom-dotted{
+    border-bottom-width: 1px !important;
+    border-bottom-style: dotted !important;
+}
+
+/*navbar fix ale nie moge tak po prostuy dać wszystkim bo niektóre są wyłączone*/
+/* .navbar-collapse > ul {
+    margin-left: auto;
+}  */
+
+.navbar-collapse > a{
+    margin-left: auto;
+}
+@media (min-width: 990px) {
+  .navbar-collapse > ul > li:not(.navbar-collapse > ul > li:first-child) {
+      border-left: 1px solid #0062cc;
+  }
+}
+  /*@media (min-width: 992px){
+    ul {
+      flex-grow: 1;
+      text-align: center!important;
+      display: inline-block!important;
+    }
+  
+    ul > li {
+      display: inline-block! important;
+    }
+  } */
+/*buttons animation*/
+.btn-custom-animation {
+  box-shadow: 0 0.3rem 0.1rem rgb(0 0 0 / 50%);
+  transition: box-shadow 1s, transform 1s; 
+}
+
+.btn-custom-animation:hover {
+  box-shadow: 0 0.2rem 0.1rem rgb(0 0 0 / 30%)!important;
+  transform: translateY(0.1rem);
+}
+
+.btn-custom-animation:active {
+  box-shadow: 0 0rem 0rem rgb(0 0 0 / 20%)!important;
+}
+
+#GameDiv {
+  margin-bottom: 100px;
+}
+
+#GameDiv, 
+#endGameDiv {
+  border-radius: 90px;
+  overflow: hidden;
+  padding: 30px;
+  transform: translate(-30px);
+  width: calc(100% + 60px);
+  line-height: 2;
+}
+
+#gameBottom {
+	position: fixed;
+	bottom: 5%;
+	width: 100%;
+	left: 3%;
+}
+
+.tooltip.show {
+  opacity: .7;
+}
+
+.fillForTooltip {
+  display:inline-block;
+}
+

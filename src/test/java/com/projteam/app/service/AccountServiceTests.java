@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -90,8 +92,16 @@ public class AccountServiceTests
 	{
 		HttpServletRequest req = new MockHttpServletRequest();
 		
-		assertThrows(NullPointerException.class,
-				() -> accountService.register(req, mockRegDto, autoAuthenticate));
+		try
+		{
+			accountService.register(req, mockRegDto, autoAuthenticate);
+		}
+		catch (NullPointerException | IllegalArgumentException exc)
+		{}
+		catch (Exception e)
+		{
+			fail();
+		}
 	}
 	@ParameterizedTest
 	@MethodSource("mockRegistrationData")
@@ -297,9 +307,10 @@ public class AccountServiceTests
 		when(auth.isAuthenticated()).thenReturn(true);
 		when(auth.getPrincipal()).thenReturn(acc);
 		
-		boolean success = accountService.changeEmail(acc, newEmail);
+		when(passEnc.matches(acc.getPassword(), acc.getPassword()))
+			.thenReturn(true);
 		
-		assertTrue(success);
+		assertDoesNotThrow(() -> accountService.changeEmail(acc, newEmail, acc.getPassword()));
 	}
 	@ParameterizedTest
 	@MethodSource("mockAccount")
@@ -318,9 +329,10 @@ public class AccountServiceTests
 		when(auth.isAuthenticated()).thenReturn(true);
 		when(auth.getPrincipal()).thenReturn(acc);
 		
-		boolean success = accountService.changeEmail(newEmail);
+		when(passEnc.matches(acc.getPassword(), acc.getPassword()))
+			.thenReturn(true);
 		
-		assertTrue(success);
+		assertDoesNotThrow(() -> accountService.changeEmail(newEmail, acc.getPassword()));
 	}
 	@ParameterizedTest
 	@MethodSource("mockAccount")
@@ -339,9 +351,7 @@ public class AccountServiceTests
 		when(auth.isAuthenticated()).thenReturn(true);
 		when(auth.getPrincipal()).thenReturn(acc);
 		
-		boolean success = accountService.changeNickname(acc, newNickname);
-		
-		assertTrue(success);
+		assertDoesNotThrow(() -> accountService.changeNickname(acc, newNickname));
 	}
 	@ParameterizedTest
 	@MethodSource("mockAccount")
@@ -360,9 +370,7 @@ public class AccountServiceTests
 		when(auth.isAuthenticated()).thenReturn(true);
 		when(auth.getPrincipal()).thenReturn(acc);
 		
-		boolean success = accountService.changeNickname(newNickname);
-		
-		assertTrue(success);
+		assertDoesNotThrow(() -> accountService.changeNickname(newNickname));
 	}
 	@ParameterizedTest
 	@MethodSource("mockAccount")
@@ -387,9 +395,7 @@ public class AccountServiceTests
 		when(auth.isAuthenticated()).thenReturn(true);
 		when(auth.getPrincipal()).thenReturn(acc);
 		
-		boolean success = accountService.changePassword(acc, oldPassword, newPassword);
-		
-		assertTrue(success);
+		assertDoesNotThrow(() -> accountService.changePassword(acc, oldPassword, newPassword));
 	}
 	@ParameterizedTest
 	@MethodSource("mockAccount")
@@ -414,9 +420,7 @@ public class AccountServiceTests
 		when(auth.isAuthenticated()).thenReturn(true);
 		when(auth.getPrincipal()).thenReturn(acc);
 		
-		boolean success = accountService.changePassword(oldPassword, newPassword);
-		
-		assertTrue(success);
+		assertDoesNotThrow(() -> accountService.changePassword(oldPassword, newPassword));
 	}
 	
 	//---Sources---
@@ -426,12 +430,12 @@ public class AccountServiceTests
 		return List.of(Arguments.of(new RegistrationDTO(
 						"testplayer@test.pl",
 						"TestPlayer",
-						"QWERTY",
+						"QWERTYuiop123",
 						true)),
 				Arguments.of(new RegistrationDTO(
 						"testlecturer@test.pl",
 						"TestLecturer",
-						"QWERTY",
+						"QWERTYuiop123",
 						false)));
 	}
 	public static List<Arguments> mockNullRegistrationDataAndAutoAuth()
@@ -441,42 +445,42 @@ public class AccountServiceTests
 				Arguments.of(new RegistrationDTO(
 						null,
 						"TestLecturer",
-						"QWERTY",
+						"QWERTYuiop123",
 						false), false),
 				Arguments.of(new RegistrationDTO(
 						null,
 						"TestLecturer",
-						"QWERTY",
+						"QWERTYuiop123",
 						true), false),
 				Arguments.of(new RegistrationDTO(
 						null,
 						"TestLecturer",
-						"QWERTY",
+						"QWERTYuiop123",
 						false), true),
 				Arguments.of(new RegistrationDTO(
 						null,
 						"TestLecturer",
-						"QWERTY",
+						"QWERTYuiop123",
 						true), true),
 				Arguments.of(new RegistrationDTO(
 						"testlecturer@test.pl",
 						null,
-						"QWERTY",
+						"QWERTYuiop123",
 						false), false),
 				Arguments.of(new RegistrationDTO(
 						"testlecturer@test.pl",
 						null,
-						"QWERTY",
+						"QWERTYuiop123",
 						true), false),
 				Arguments.of(new RegistrationDTO(
 						"testlecturer@test.pl",
 						null,
-						"QWERTY",
+						"QWERTYuiop123",
 						false), true),
 				Arguments.of(new RegistrationDTO(
 						"testlecturer@test.pl",
 						null,
-						"QWERTY",
+						"QWERTYuiop123",
 						true), true),
 				Arguments.of(new RegistrationDTO(
 						"testlecturer@test.pl",
@@ -501,22 +505,22 @@ public class AccountServiceTests
 				Arguments.of(new RegistrationDTO(
 						null,
 						null,
-						"QWERTY",
+						"QWERTYuiop123",
 						false), false),
 				Arguments.of(new RegistrationDTO(
 						null,
 						null,
-						"QWERTY",
+						"QWERTYuiop123",
 						false), false),
 				Arguments.of(new RegistrationDTO(
 						null,
 						null,
-						"QWERTY",
+						"QWERTYuiop123",
 						false), true),
 				Arguments.of(new RegistrationDTO(
 						null,
 						null,
-						"QWERTY",
+						"QWERTYuiop123",
 						true), true),
 				Arguments.of(new RegistrationDTO(
 						null,
@@ -586,7 +590,7 @@ public class AccountServiceTests
 				Arguments.of(username, new Account.Builder()
 						.withEmail("testAcc@test.pl")
 						.withUsername(username)
-						.withPassword("QWERTY")
+						.withPassword("QWERTYuiop123")
 						.build()));
 	}
 	public static List<Arguments> mockAccount()
@@ -595,7 +599,7 @@ public class AccountServiceTests
 				Arguments.of(new Account.Builder()
 						.withEmail("testAcc@test.pl")
 						.withUsername("TestAccount")
-						.withPassword("QWERTY")
+						.withPassword("QWERTYuiop123")
 						.build()));
 	}
 	public static List<Arguments> mockUsername()
@@ -610,7 +614,7 @@ public class AccountServiceTests
 					new Account.Builder()
 						.withEmail("testAcc@test.pl")
 						.withUsername("TestAccount")
-						.withPassword("QWERTY")
+						.withPassword("QWERTYuiop123")
 						.build())));
 	}
 }

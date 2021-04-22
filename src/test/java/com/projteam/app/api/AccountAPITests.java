@@ -31,6 +31,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,6 +42,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.domain.Account;
+import com.projteam.app.dto.EmailChangeDTO;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.PasswordChangeDTO;
 import com.projteam.app.dto.RegistrationDTO;
@@ -135,7 +137,7 @@ public class AccountAPITests
 	@MethodSource("mockRegistrationData")
 	public void shouldReturnBadRequestWhenUserAlreadyRegistered(RegistrationDTO mockRegDto) throws Exception
 	{
-		doThrow(new IllegalStateException("Account with provided data already exists"))
+		doThrow(new IllegalArgumentException("DATA_ALREADY_USED"))
 			.when(accountService)
 			.register(any(), eq(mockRegDto), eq(true));
 		
@@ -196,18 +198,19 @@ public class AccountAPITests
 	@ValueSource(booleans = {true, false})
 	public void shouldUpdateEmail(boolean success) throws Exception
 	{
-		String email = "mockEmail@mock.org";
+		EmailChangeDTO eDto = new EmailChangeDTO("mockEmail@mock.org", "password123456");
 		
-		when(accountService.changeEmail(email))
-			.thenReturn(success);
+		if (!success)
+			Mockito.doThrow(new IllegalArgumentException())
+				.when(accountService)
+				.changeEmail(eDto.getEmail(), eDto.getPassword());
 		
 		mvc.perform(put("/api/v1/account/email")
 				.contentType(APPLICATION_JSON_UTF8)
-				.content("" + email))
-			.andExpect(status().isOk())
-			.andExpect(content().string("" + success));
+				.content(mapper.valueToTree(eDto).toString()))
+			.andExpect(success?status().isOk():status().isBadRequest());
 		
-		verify(accountService, times(1)).changeEmail(email);
+		verify(accountService, times(1)).changeEmail(eDto.getEmail(), eDto.getPassword());
 	}
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
@@ -215,14 +218,15 @@ public class AccountAPITests
 	{
 		String nickname = "mockAccount";
 		
-		when(accountService.changeNickname(nickname))
-			.thenReturn(success);
+		if (!success)
+			Mockito.doThrow(new IllegalArgumentException())
+				.when(accountService)
+				.changeNickname(nickname);
 		
 		mvc.perform(put("/api/v1/account/nickname")
 				.contentType(APPLICATION_JSON_UTF8)
 				.content("" + nickname))
-			.andExpect(status().isOk())
-			.andExpect(content().string("" + success));
+			.andExpect(success?status().isOk():status().isBadRequest());
 		
 		verify(accountService, times(1)).changeNickname(nickname);
 	}
@@ -232,16 +236,17 @@ public class AccountAPITests
 	{
 		PasswordChangeDTO pcDto = new PasswordChangeDTO("oldPass123", "newPass456");
 		
-		when(accountService.changePassword(
-				pcDto.getOldPassword(),
-				pcDto.getNewPassword()))
-			.thenReturn(success);
+		if (!success)
+			Mockito.doThrow(new IllegalArgumentException())
+				.when(accountService)
+				.changePassword(
+						pcDto.getOldPassword(),
+						pcDto.getNewPassword());
 		
 		mvc.perform(put("/api/v1/account/password")
 				.contentType(APPLICATION_JSON_UTF8)
 				.content(mapper.valueToTree(pcDto).toString()))
-			.andExpect(status().isOk())
-			.andExpect(content().string("" + success));
+			.andExpect(success?status().isOk():status().isBadRequest());
 		
 		verify(accountService, times(1)).changePassword(
 				pcDto.getOldPassword(),

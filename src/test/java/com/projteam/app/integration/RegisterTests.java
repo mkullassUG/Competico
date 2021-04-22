@@ -106,7 +106,7 @@ public class RegisterTests
 		String username1 = "TestPlayerForRegistration1";
 		String username2 = "TestPlayerForRegistration2";
 		
-		String password = "QWERTY";
+		String password = "QWERTYuiop123";
 		
 		return List.of(
 				new RegistrationDTO(

@@ -58,9 +58,9 @@ class TemplateTests
 		mvc.perform(get("/game/gameCode"))
 			.andExpect(status().isOk());
 	}
+	@Disabled
 	@Test
-	@Disabled("Disabled until Task Manager is ready")
-	public void shouldReturnTaskCreatorPage() throws Exception
+	public void shouldReturnTaskManagerPage() throws Exception
 	{
 		mvc.perform(get("/tasks/import/global"))
 			.andExpect(status().isOk());
