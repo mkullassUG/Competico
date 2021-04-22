@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.dto.game.tasks.create.TaskDTO;
@@ -99,6 +101,21 @@ public class TaskDataAPI
 		try
 		{
 			gtdService.importGlobalTask(taskData);
+			return ResponseEntity.ok().build();
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	@PostMapping(value = "/api/v1/tasks/imported/json/file",
+			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@ApiOperation(value = "Return a file containing all imported tasks in JSON", code = 200)
+	public ResponseEntity<?> importTasksAsJsonFile(@RequestParam("file") MultipartFile file)
+	{
+		try
+		{
+			gtdService.importGlobalTasks(file);
 			return ResponseEntity.ok().build();
 		}
 		catch (Exception e)

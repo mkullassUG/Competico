@@ -1,171 +1,5 @@
-html,
-body {
-  height: 100%;
-  
-  background-color: #f5f5f5;
-  /* color: #fff; */
-  box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
-}
-
-.unselectable {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-.ui-icon {
-  filter: invert(0%) sepia(90%) saturate(6554%) hue-rotate(575deg) brightness(119%) contrast(141%);
-}
-
-#gameTimer{
-  text-align: center;
-  color:white;
-  font-size:30px;
-}
-
-#lobbyCenter {
-  overflow: hidden;
-}
-#lobbySettings {
-  box-shadow: none !important;
-  margin: auto;
-  height: 20%;
-  margin-top: 50px;
-  margin-bottom: -50px;
-}
-#GameDiv, #endGameDiv {
-  border-radius: 90px;
-  overflow: hidden;
-  padding: 30px;
-  transform: translate(-30px);
-  width: calc(100% + 60px);
-  line-height: 2;
-}
-.endGameDashboard {
-  /* margin-top: 100px; */
-}
-.gameDivDecoration {
-  overflow: hidden;
-}
-#lobbyMainHost {
-  height: 20%;
-}
-#GameWrapperDiv  {
-  margin-top: -100px;
-}
-
-#lobbyCenter, #gameCenter, #gameEndCenter {
-  height: 70%;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  line-height: 60px;
-  z-index: 0!important;
-}
-#inputCode {
-  max-width: 225px;
-  margin: auto;
-}
-nav {
-	z-index:2;
-	
-}
-.iconbig {
-  height: 30px;
-}
-
-.container {
-  /* display: -ms-flexbox;
-  display: flex;
-  -ms-flex-align: center; */
-  align-items: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  z-index: 1;
-  text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
-}
-h2 {
-  
-  text-shadow: 0 0.3rem 0.1rem rgba(0, 0, 0, .5);
-}
-.fill {
-  top: 40px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  width: auto;
-  height: auto;
-}
-
-.form-signin {
-  width: 100%;
-  max-width: 330px;
-  padding: 15px;
-  margin: auto;
-}
-.form-signin .checkbox {
-  font-weight: 400;
-}
-.form-signin .form-control {
-  position: relative;
-  box-sizing: border-box;
-  height: auto;
-  padding: 10px;
-  font-size: 16px;
-}
-.form-signin .form-control:focus {
-  z-index: 2;
-}
-.form-signin input[type="email"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-/*loading modal*/
-.bd-example-modal-lg .modal-dialog{
-  display: table;
-  position: relative;
-  margin: 0 auto;
-  top: calc(50% - 24px);
-}
-
-.bd-example-modal-lg .modal-dialog .modal-content{
-  background-color: transparent;
-  border: none;
-}
-
-.hideBeforeLoad {
-  display: none;
-  z-index: 2!important; /*just cuz container div contains this class*/
-}
-.hideBeforeLoadModal {
-  height: 100%;
-}
-/*other*/
-.bd-placeholder-img {
-  font-size: 1.125rem;
-  text-anchor: middle;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-@media (min-width: 768px) {
-  .bd-placeholder-img-lg {
-    font-size: 3.5rem;
-  }
+#taskContent {
+  text-align: left; /*new 2021-02-26*/
 }
 
 /*answers template0*/
@@ -173,6 +7,7 @@ h2 {
   background-color: rgb(255, 255, 255);
   border: 3px solid rgb(10, 108, 255);
   border-radius: 10px;
+  padding: 9px!important;;
 }
 .answer:active{
   /*TODO
@@ -191,14 +26,20 @@ h2 {
 
 .droppableAnswerHolder {
   position: absolute;
-  background-color: rgba(100,100,100,0.5);
+  /* background-color: rgba(100,100,100,0.5); */
   width: calc(100% + 20px);
-  padding: 10px;
+  padding: 16px;
   text-align: center;
   left: -10px;
   top: -10px;
+  line-height: 1;
 }
-.draggable { position: absolute; padding: 0.3em; float: left; margin: 10px 10px 10px 0; }
+.draggable { position: absolute; padding: 0.3em; float: left; margin: 10px 10px 10px 0; 
+  /*double word answer wrap fix*/
+  display: inline-block;
+  white-space: nowrap;
+}
+
 .ui-draggable.ui-draggable-handle.ui-droppable.endpointDrag:active  {
   /*TODO
     naprawić bug bo nie działa poprawnie
@@ -220,6 +61,8 @@ h2 {
   height: 30px; 
   padding: 0.5em;  
   margin: 10px; 
+  border: 4px dotted rgba(0, 0, 0, 0.534);
+  border-radius: 5px;
 }
 
 .ui-droppable-hover {
@@ -229,14 +72,18 @@ h2 {
   background-color: rgba(0, 61, 228, 0.5);
 }
 .ui-droppable {
-  background-color: rgba(228, 0, 0, 0.11);
+  /* background-color: rgba(228, 0, 0, 0.11); */
 }
 .ui-state-highlight {
-  background-color: rgba(0, 175, 228, 0.116);
-  color: black;
-  border: none;
+  
+  background: #f8f8f8!important;
+  border: none!important;
 } 
-
+.ui-state-highlight-custom:not(.ui-droppable-hover) {
+  color: black;
+  background-color: rgba(255, 255, 255, 0)!important;
+  border: none;
+}
 
 .ui-draggable-dragging {
   background-color: green;
@@ -275,13 +122,20 @@ h2 {
   }
 }
 @media (max-width: 990px) {
-  .m-custom {
+  #gameCenter .m-custom {
     margin-top: 60px!important;
+  }
+  #Center .m-custom {
+    margin-top: 80px!important;
   }
 }
 @media (max-width: 770px) {
-  .m-custom {
+  #gameCenter .m-custom {
     margin-top: 40px!important;
+  }
+
+  #Center .m-custom {
+    margin-top: 60px!important;
   }
 }
 
@@ -376,9 +230,6 @@ svg.fs-connector-hover path {
   float: left;
   width: 100%;
 }
-.containerC {
-  /*test*/
-}
 
 .word {
   border: 1px solid black;
@@ -399,7 +250,38 @@ svg.fs-connector-hover path {
 }
 
 /*css template'a od chronological orderu*/
+
+.ui-icon {
+  filter: invert(0%) sepia(90%) saturate(6554%) hue-rotate(575deg) brightness(119%) contrast(141%);
+}
+
+.ui-icon-right {
+  margin: auto!important;
+  position: absolute!important;
+  top: 0; bottom: 0; right: 0;
+}
+.ui-icon-left {
+  margin: auto!important;
+  position: absolute!important;
+  top: 0; bottom: 0; left: 0;
+}
+
 .ui-state-default.ui-sortable-handle {
+  
+  color:black;
+  border: 2px solid blue;
+  border-radius: 20%;
+  margin-top: 1px;
+  margin-bottom: 1px;
+
+  position: relative;
+
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-right: 15px;
+  padding-left: 15px;
+
   cursor: move; /* fallback if grab cursor is unsupported */
   cursor: grab;
   cursor: -moz-grab;
@@ -417,3 +299,187 @@ svg.fs-connector-hover path {
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
 }
+
+/*Template 3 ListWordFill*/
+.answerLWF {
+  background-color: rgb(255, 255, 255);
+  border: 3px solid rgb(10, 108, 255);
+  border-radius: 10px;
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.answerLWF:hover {
+  background-color: blue!important;
+  border: 3px solid blue!important;
+  color: white!important;
+}
+.answerLWF:active {
+  background-color: cyan!important;
+  border: 3px solid cyan!important;
+  color: black!important;
+}
+.answerLWFselected {
+  background-color: cyan!important;
+  border: 3px solid cyan!important;
+  color: black!important;
+}
+
+.answerHolderLWF {
+  background-color: rgba(100,100,100,0.5);
+  width: calc(100% + 20px);
+  text-align: center;
+  margin-left: -10px;
+  margin-top: -10px;
+}
+
+.answerHolderWrapperLWF { 
+  display:inline-block;
+  vertical-align: middle; 
+  height: 30px; 
+}
+/*Template 4 ListSentenceForming*/
+.DivListSentenceForming {
+  text-align: right;
+  position: relative;
+}
+.sentenceIndex {
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: gray;
+  color: white;
+}
+
+.LSFword {
+  display: inline-block;
+  border: 3px solid rgb(10, 108, 255);
+  border-radius: 10px;
+  margin-right: 5px;
+  cursor: grab;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.DivRandomizedWords, .DivOrderedWords {
+  min-height: 42px;
+}
+.DivRandomizedWords > hr, .DivOrderedWords > hr {
+  margin: 0px;
+  border-top: 3px dotted blue;
+}
+.DivRandomizedWords  {
+  text-align: center;
+}
+/*z jakiegoś powodu musze inaczej ustawiać... czy w edytorze inaczej demo jest budowane?
+w game edytorze to jest zależne od
+*/
+/*gra*/
+#gameCenter > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivRandomizedWords,
+#gameCenter > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivOrderedWords
+{
+  /*tutaj się obchodzi dobrze pez relativa... ale nadal inaczej*/
+  /* position:relative; */
+  background: 
+    radial-gradient(
+      circle at 5px 37px,
+      rgb(10, 108, 255) 1px,
+      #ffffff00 2px,
+      #ffffff00 8px
+    )
+    0 0 / 8px 38px;
+  background-blend-mode: multiply, normal, normal, normal;
+  width: 90%;
+  display: inline-block;
+}
+#gameCenter > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivRandomizedWords > li.ui-sortable-helper,
+#gameCenter > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivOrderedWords > li.ui-sortable-helper
+{
+  
+  /* margin-top:-10px; */
+  cursor: pointer;
+  background-color:blue;
+  color: white;
+}
+
+/*edytor*/
+#Center > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivRandomizedWords,
+#Center > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivOrderedWords
+{
+  position:relative;
+  background: 
+    radial-gradient(
+      circle at 5px 37px,
+      rgb(10, 108, 255) 1px,
+      #ffffff00 2px,
+      #ffffff00 8px
+    )
+    0 0 / 8px 38px;
+  background-blend-mode: multiply, normal, normal, normal;
+  width: 90%;
+  display: inline-block;
+  /* background: repeating-linear-gradient(#ffffff, #ffffff 35px, #9198e5 36px, rgb(10, 108, 255) 38px); */
+}
+#Center > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivRandomizedWords > li.ui-sortable-helper,
+#Center > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivOrderedWords > li.ui-sortable-helper
+{
+  cursor: pointer;
+  background-color:blue;
+  color: white;
+}
+
+.DivRandomizedWords > li.ui-sortable-placeholder, .DivOrderedWords > li.ui-sortable-placeholder {
+  background-color: yellow!important;
+  text-align: center;
+  min-width:20px;
+  min-height:20px;
+  display: inline-block;
+}
+.DivRandomizedWords > li.ui-sortable-placeholder::before, .DivOrderedWords > li.ui-sortable-placeholder::before{
+  content:"+";
+}
+
+.DivRandomizedWords > li.ui-sortable-handle{
+  background-color: white;
+  color: black;
+}
+.DivOrderedWords > li.ui-sortable-handle{
+  background-color: rgb(10, 108, 255);
+  color: white;
+}
+/*Template 6 ListChoiceWordFill*/
+
+.answerLCWF {
+  background-color: rgb(255, 255, 255);
+  border: 3px solid rgb(10, 108, 255);
+  border-radius: 10px;
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.answerLCWF:hover {
+  background-color: blue!important;
+  border: 3px solid blue!important;
+  color: white!important;
+  text-decoration: none;
+}
+.answerLCWF:active {
+  background-color: cyan!important;
+  border: 3px solid cyan!important;
+  color: black!important;
+}
+.choiceDiv {
+  display: inline-block;
+}
+
+.unusedLCWF {
+  text-decoration: line-through;
+  border: none!important;
+  color: gray;
+}
+
+
+/*other global.css*/

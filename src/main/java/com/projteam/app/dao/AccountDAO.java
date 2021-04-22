@@ -11,4 +11,5 @@ public interface AccountDAO extends JpaRepository<Account, UUID>
 	public Optional<Account> findByUsername(String username);
 	public Optional<Account> findByEmailOrUsername(String email, String username);
 	public boolean existsByUsername(String username);
+	public boolean existsByUsernameOrEmail(String username, String email);
 }

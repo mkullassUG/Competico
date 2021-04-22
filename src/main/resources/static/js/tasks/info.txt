@@ -1,0 +1,37 @@
+info o możliwych, istniejących lub rozwiązanych bugach:
+
+2021-03-29:
+Istniejący BUG:
+przy wybraniu opcji edycji taska pojawi się wiadomośc o nieudanym wstawieniu nowego wiersza, ponieważ na początku w inicie taskCreatora każdego wariantu który ma cośz listą próbuje wstawiać pierwszy wiersz, żeby nie było pusto
+
+2021-03-28:
+Naprawiony BUG:
+BUG z WordFillami odkryłem w kreatorze, jak są 2 obok siebie i nie ma odstępu pomiędzy nimi to jest dziwnie...
+
+Naprawiony BUG:
+ListChoiceWordFill źle tworzył odpowiedzi, prowizoryczny fix z pomocą jquery
+
+ISTNIEJĄCY BUG:
+ListChoiceWordFill pozwala na stworzenie choiceDiv'a z nie wpisanymi słowami i odpowiedziami, pewnei też pozwala na stworzenie takeigo bez poprawnej odpowiedzi z wszystkimi złymi...  można też spamowac przecinkami i miec puste niepoprawne
+
+2021-03-21:
+ISTNIEJĄCY BUG:
+-w ListChoiceWordFill możliwe że po zaznaczeniu odpowiedzi długiej, tekst przeciągnie się na tyle że przycisk będzie zasłaniał reszte odpowiedzi
+
+Naprawiony BUG (2021-04-12):
+-w wordFill można kilka odpowiedzi na siebie nałożyć 
+
+
+Naprawiony BUG (2021-04-12):
+------ogólnie jak task jest zadługi to rozjeżdża sięstrona, jest wykrywanie zrobione od tego ale jak to naprawiać?
+
+Naprawiony BUG (2021-04-12):
+- w ListChoiceWordFill nie da się wysłac pustej odpowiedzi, msuzą być wszystkie wypełnione!
+
+
+
+////////animacje:
+-bug z obiektem resizeObserver (zwłaszcza dla WordFill)
+-bug z poszerzającym się oknem
+-lagi?
+

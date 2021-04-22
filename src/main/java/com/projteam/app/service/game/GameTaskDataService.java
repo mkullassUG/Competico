@@ -20,6 +20,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -183,6 +184,23 @@ public class GameTaskDataService
 		globalImportedTasks.get(id).add(Map.entry(
 				UUID.randomUUID(),
 				taskDtoJsonToTask(taskData)));
+	}
+	public void importGlobalTasks(MultipartFile file) throws IOException, ClassNotFoundException
+	{
+		importGlobalTasks(file, getAccount());
+	}
+	public void importGlobalTasks(MultipartFile file, Account acc) throws IOException, ClassNotFoundException
+	{
+		JsonNode data = mapperByField.readTree(file.getInputStream());
+		if (data.isArray())
+		{
+			for (JsonNode task: data)
+				importGlobalTask(task, acc);
+		}
+		else
+		{
+			importGlobalTask(data, acc);
+		}
 	}
 	public int getImportedGlobalTaskCount()
 	{

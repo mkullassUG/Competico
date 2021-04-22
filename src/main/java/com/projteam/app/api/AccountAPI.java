@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import com.projteam.app.dto.EmailChangeDTO;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.PasswordChangeDTO;
 import com.projteam.app.dto.RegistrationDTO;
@@ -54,9 +55,9 @@ public class AccountAPI
 			log.debug("Account registered successfully.");
 			return new ResponseEntity<Object>(HttpStatus.CREATED);
 		}
-		catch (Exception e)
+		catch (IllegalArgumentException e)
 		{
-			return ResponseEntity.badRequest().body("Konto z podanymi danymi już istnieje.");
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
@@ -112,9 +113,17 @@ public class AccountAPI
 	{
 		@ApiResponse(code = 200, message = "Whether the email was updated")
 	})
-	public boolean changeEmail(@RequestBody String newEmail)
+	public ResponseEntity<String> changeEmail(@RequestBody EmailChangeDTO eDto)
 	{
-		return accServ.changeEmail(newEmail);
+		try
+		{
+			accServ.changeEmail(eDto.getEmail(), eDto.getPassword());
+			return ResponseEntity.ok().build();
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	@PutMapping("api/v1/account/nickname")
 	@ApiOperation(value = "Update nickname of the current account", code = 200)
@@ -122,9 +131,17 @@ public class AccountAPI
 	{
 		@ApiResponse(code = 200, message = "Whether the email was updated")
 	})
-	public boolean changeNickname(@RequestBody String newNickname)
+	public ResponseEntity<String> changeNickname(@RequestBody String newNickname)
 	{
-		return accServ.changeNickname(newNickname);
+		try
+		{
+			accServ.changeNickname(newNickname);
+			return ResponseEntity.ok().build();
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	@PutMapping("api/v1/account/password")
 	@ApiOperation(value = "Update password of the current account", code = 200)
@@ -132,8 +149,16 @@ public class AccountAPI
 	{
 		@ApiResponse(code = 200, message = "Whether the email was updated")
 	})
-	public boolean changePassword(@RequestBody PasswordChangeDTO pcDto)
+	public ResponseEntity<String> changePassword(@RequestBody PasswordChangeDTO pcDto)
 	{
-		return accServ.changePassword(pcDto.getOldPassword(), pcDto.getNewPassword());
+		try
+		{
+			accServ.changePassword(pcDto.getOldPassword(), pcDto.getNewPassword());
+			return ResponseEntity.ok().build();
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 }

@@ -117,7 +117,7 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
             console.log("2zaszła zmiana wyniku dla: " + self.allPreviousResults[i].username)
           }
   
-          if (self.username == self.allResults[i].nickname && self.nickname == self.allResults[i].username)
+          if (self.username == self.allResults[i].username && self.nickname == self.allResults[i].nickname)
             newTr = $('<tr class="lobbyMe">');
           else if (self.allResults[i].hasFinished === undefined)
             newTr = $('<tr>');
