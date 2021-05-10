@@ -3,14 +3,22 @@ LobbyLogic odpowiada za:
 1.Odczytanie informacji o kliencie
 3.obsługiwanie przycisków i dynamicznego widoku lobby przez ajax i jquery
 4.przeniesienie klienta na następny widok z gameLogic
-
 */
 
+const LobbyLogic = (playerInfo, _lobbyCode, debug = false, $jq, myWindow) => {
 
-const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
-
+  if ( $jq )
+      $ = $jq;
+  if ( myWindow )
+      window = myWindow;
+    
   /*       logic variables          */
+  if (LobbyLogic.singleton)
+      return LobbyLogic.singleton;
   var self = playerInfo;
+  if (!LobbyLogic.singleton)
+      LobbyLogic.singleton = self;
+
   self.lobbySettings = {
     maxPlayers: 1,
     allowsRandomPlayers: null
@@ -34,7 +42,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   self.possiblyJoinedFromEndGame;
   self.preventFromShowingLobbyDeletedModal = true;
 
-  /*       logic functions          */
+  // /*       logic functions          */
   self.lobbyInit = (playerInfo) => {
     if (self.debug)
       console.log("lobbyInit");
@@ -69,11 +77,16 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     if (typeof self.isHost == undefined && self.debug)
       console.warn("Critical error, invalid data received from server isHost == undefined");
     
+    if (self.isLecturer) 
+        $("body").addClass("lektorBody");
+    else
+        $("body").addClass("playerBody");
+
     if (self.isHost) {
       //ustawianie lobby widoku hosta
       $("#btnStart").show();
       $("#btnSettings").show();
-      $("#lobbyHostUsername").html(self.nickname);
+      $("#lobbyHostUsername").text(self.nickname);
         if (self.isLecturer)
           self.setupLobbyForLecturer();
     } else {
@@ -82,21 +95,20 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       $("#lobbySettings").hide();
       $(".btnKick").addClass("collapse");
     }
-    if ($('.btn').length)
-      $('.btn').popover();
+    if ($('.btn').length && $('.btn').popover)
+        $('.btn').popover();
 
     //ustaw kod
     if ($("#lobbyCode").length)
-      $("#lobbyCode").html("Kod: " + self.lobbyCode);
+      $("#lobbyCode").text("Kod: " + self.lobbyCode);
 
     /*TODO, jeśli skończyłem grę to może chce zobaczyć wyniki wszystkich!! lobby exist:false dostaje i wyświetlam tylko modala żeby wyjść!!
     
     */
 
-    ajaxReceiveLobbyChange();
+    self.ajaxReceiveLobbyChange();
 
-    
-    $('[data-toggle="tooltip"]').tooltip();
+    tooltipsUpdate();
 
     $('#exampleModalCenter').on('shown.bs.modal', function (e) {
       $('#btnSettings').one('focus', function (e) {
@@ -105,10 +117,33 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     });
     
     //callback true-> jeśli coś się zmieniło false -> jeśli nie
-    ajaxConnectionLoop((data)=>{self.updateCheck(data)})
+    ajaxConnectionLoop((data)=>{self.updateCheck(data)});
   }
 
+  var tooltipsUpdate = () => {
+
+    if ( $('[data-toggle="tooltip"]').tooltip !== null && $('[data-toggle="tooltip"]').tooltip !== undefined)
+        $('[data-toggle="tooltip"]').tooltip({
+            trigger : 'hover'
+        });  
+  }
+  
+  //new 2021-04-27
+  var resizeWindow = () => {
+      
+      //var sy = window.scrollY;
+      $("html").height("100%");
+      if( self.debug )
+        console.log("res");
+      $("html").height($(document).height());
+      //window.scrollTo(0,sy);
+  } 
+  window.onresize = resizeWindow;
+
   self.startGame = () => {
+
+    //ToDo, jeśli lektor to do gameResults
+
     $("#bigChangeDiv").removeClass("text-center").removeClass("hideBeforeLoad");
     $("#lobbyTop").hide();
     $("#lobbyCenter").hide();
@@ -178,43 +213,77 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     self.lobbyHost = lobby.host;
 
     if ($("#lobbyHostUsername").length)
-      $("#lobbyHostUsername").html(self.lobbyHost.username + " " + self.lobbyHost.nickname);
+      $("#lobbyHostUsername").text(self.lobbyHost.username + " " + self.lobbyHost.nickname);
     //------player list
-    if($("#lobbyplayers > .player").length)
-      $("#lobbyplayers > .player").remove();
+    if($("#lobbyPlayersTable > .player").length)
+      $("#lobbyPlayersTable > .player").remove();
 
     if (typeof lobby.players == 'undefined') {
       if (self.debug)
         console.warn("nie znaleziono żadnych graczy w lobby");
       return 0;
     }
-    //self.removePlaver(); //todo
-    //$("#btnSendkick")
+    
     let playersLength = lobby.players.length;
-    for (let i = 0; i < playersLength; i++) {
-      let player = lobby.players[i];
-      if (player.username !== self.lobbyHost.username && player.nickname !== self.lobbyHost.nickname) {
-        var specialPlayer = "",
-        specialClass = "";
-        if (self.username === player.username && self.nickname ===  player.nickname) {
-          specialPlayer = "(me)";
-          specialClass = "lobbyMe"
-        }
-        let playerDiv = $(`<div class="media text-muted pt-3 player `+specialClass+`">
+    
+    var isFirstPlayerInTable = true;
+    
+    if ($("#lobbyPlayersTable").length) {
+        if ( self.lobbyHost.roles.includes("PLAYER")) {
+          var specialPlayer = "",
+          specialClass = "";
+
+          if (self.username === self.lobbyHost.username && self.nickname ===  self.lobbyHost.nickname) {
+            specialPlayer = "(me)";
+            specialClass = "lobbyMe"
+          } else {
+            specialPlayer = "(host)";
+          }
+
+          let playerDiv = $(`<div class="media text-muted `+(!isFirstPlayerInTable?"pt-3":"")+` player `+specialClass+`">
               <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
                   <strong class="text-gray-dark">` + specialPlayer + ` `
-                    + player.username + `</strong>
-                  <a href="" class="btnKick" data-username="` + player.username + `">Usuń</a>
+                    + self.lobbyHost.username + `</strong>
+                  
                 </div>
-                <span class="d-block text-left"><i>` + player.nickname + `</i></span>
+                <span class="d-block text-left"><i>` + self.lobbyHost.nickname + `</i></span>
               </div>
             </div>`);
-        if ($("#lobbyplayers").length)    
-          $("#lobbyplayers").append(playerDiv);
-      }
+              
+            $("#lobbyPlayersTable").append(playerDiv);
+            isFirstPlayerInTable = false;
+        }
+
+        for (let i = 0; i < playersLength; i++) {
+          let player = lobby.players[i];
+          if (player.username !== self.lobbyHost.username && player.nickname !== self.lobbyHost.nickname) {
+            var specialPlayer = "",
+            specialClass = "";
+            if (self.username === player.username && self.nickname ===  player.nickname) {
+              specialPlayer = "(me)";
+              specialClass = "lobbyMe"
+            }
+    
+            let playerDiv = $(`<div class="media text-muted `+(!isFirstPlayerInTable?"pt-3":"")+` player `+specialClass+`">
+                  <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+                  <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                      <strong class="text-gray-dark">` + specialPlayer + ` `
+                        + player.username + `</strong>
+                      <a href="" class="btnKick" data-username="` + player.username + `">Usuń</a>
+                    </div>
+                    <span class="d-block text-left"><i>` + player.nickname + `</i></span>
+                  </div>
+                </div>`);
+            isFirstPlayerInTable = false;
+                
+              $("#lobbyPlayersTable").append(playerDiv);
+          }
+        }
     }
+    
     
     if (self.isHost){
       if ($(".btnKick").length)
@@ -232,7 +301,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     }
     //-----max players
     if (lobby.maxPlayers != null) {
-      $("#lobbyMaxPlayers").val("Gracze " + playersLength + "\\" + lobby.maxPlayers);
+      $("#lobbyMaxPlayers").text("Gracze " + playersLength + "\\" + lobby.maxPlayers);
     }
 
     //------lobby settings dla hosta ustawic
@@ -245,7 +314,8 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
 
       if (lobby.allowsRandomPlayers === true || lobby.allowsRandomPlayers === false) {
 
-        $("#allowsRandomPlayersCB").checked == lobby.allowsRandomPlayers;
+        self.allowsRandomPlayers = lobby.allowsRandomPlayers;
+        $("#allowsRandomPlayersCB")[0].checked == lobby.allowsRandomPlayers;
         self.lobbySettings.allowsRandomPlayers = lobby.allowsRandomPlayers;
         self.lobbySettingsPlaceholder.allowsRandomPlayers = lobby.allowsRandomPlayers;
       }
@@ -261,6 +331,9 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       //2021-04-22, (fast fix?) lobby deleted modal showing at the start randomly
       if (self.preventFromShowingLobbyDeletedModal) {
           self.preventFromShowingLobbyDeletedModal=false;
+          //new bug fix
+          //new 2021-04-27
+          resizeWindow();
           return;
       }
       /*TODO 2021-03-01
@@ -272,11 +345,12 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       console.warn("jest stan w którym nie istnieje lobby i gra kiedy gra się rozpoczyna");
       $('#LobbyDeletedModalCenter').modal('show');
     } else if (data.gameStarted == true) {
+        $("body").removeClass("lektorBody").removeClass("playerBody");
       clearTimeout(self.ajaxLobbyLoopTimeout);
       self.gameID = data.gameID;
       self.startGame(); //tutaj tworzyć obiekt taska?
     } else if (data.lobbyContentChanged == true){
-      ajaxReceiveLobbyChange();
+      self.ajaxReceiveLobbyChange();
     }
   } 
 
@@ -321,6 +395,8 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
 
       if (self.isHost == true) {
         self.lobbySettingsPlaceholder.maxPlayers = parseInt($("#inputMaxPlayers").val());
+        
+        console.log("take change");
         self.lobbySettingsPlaceholder.allowsRandomPlayers = $("#allowsRandomPlayersCB")[0].checked;
         sendAjaxSettingsChange();
         
@@ -343,7 +419,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
   if ($("#btnSettings").length)
     $("#btnSettings").on('click',(e) => {
       $("#inputMaxPlayers").val(self.lobbySettings.maxPlayers);
-      $("#allowsRandomPlayersCB").checked = self.allowsRandomPlayers;
+      $("#allowsRandomPlayersCB")[0].checked = self.allowsRandomPlayers;
     });
   if ($("#lektorCB").length)
     $("#lektorCB").on('click',(e) => {
@@ -367,6 +443,11 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
             $("#customTaskSetModeOnDiv").hide();
         }
     });
+
+  if ($("#allowsRandomPlayersCB").length) 
+    $("#allowsRandomPlayersCB").on('click', (e)=> {
+        self.allowsRandomPlayers = $("#allowsRandomPlayersCB")[0].checked;
+    })
   /*     ajax http actions       */
   var sendAjaxStart = () => {
     if (self.isHost == false)
@@ -448,7 +529,12 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     if (self.isHost == false)
       return;
 
-    var send = { ...self.lobbySettingsPlaceholder} 
+    //coverage jest robione przez moduł istambul / esprima który nie wspiera kodu ECMAScript 2017 i wyżej.
+    //wspiera do ECMAScript 2016 
+    //var send = {...self.lobbySettingsPlaceholder};
+
+    var send = JSON.parse(JSON.stringify(self.lobbySettingsPlaceholder));
+
     if (self.debug == true)
       console.log(send);
 
@@ -506,7 +592,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       }
     });
   }
-  var ajaxReceiveLobbyChange = ( ) => {
+  self.ajaxReceiveLobbyChange = ( ) => {
     $.ajax({
       type     : "GET",
       cache    : false,
@@ -515,6 +601,7 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
       success: function(data, textStatus, jqXHR) {
         if (self.debug) {
           console.log("ajaxGetLobbyChange success");
+          console.log(data);
         }
         self.lobbySetupAfterChange(data);
       },
@@ -548,18 +635,25 @@ const LobbyLogic = (playerInfo, _lobbyCode, debug = false) => {
     });
   }
   
-  /*  initalization  */
+  // /*  initalization  */
   self.lobbyInit(playerInfo);
   
   return self;
 }
 
-LobbyLogic.getInstance = (debug = false) => {
+LobbyLogic.getInstance = (debug = false, $jq, myWindow, cbTest) => {
+
+    //for testing
+    if ( $jq )
+        $ = $jq;
+    if ( myWindow )
+        window = myWindow;
 
     if (LobbyLogic.singleton)
         return LobbyLogic.singleton;
-    var lobbyCode = window.location.href.substring(this.location.href.lastIndexOf('/') + 1);
 
+    var lobbyCode = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+    
     var showModal = () => {
         if (typeof $("").modal != 'undefined') {
             $('.hideBeforeLoadModal').modal('show');
@@ -572,7 +666,9 @@ LobbyLogic.getInstance = (debug = false) => {
     }
 
     var ajaxReceiveWhoAmI = ( ) => {
+
         showModal();
+
         $.ajax({
             type     : "GET",
             cache    : false,
@@ -582,15 +678,15 @@ LobbyLogic.getInstance = (debug = false) => {
                 if (debug){
                     console.log("ajaxReceiveWhoAmI success");
                 }
-              
+                
                 ajaxReceiveAccountInfo(playerInfo);
             },
             error: function(jqXHR, status, err) {
                 if (debug){
                     console.warn("ajaxReceiveWhoAmI error");
                 }
-              
-              hideModal();
+
+                hideModal();
             }
         });
     }
@@ -610,7 +706,11 @@ LobbyLogic.getInstance = (debug = false) => {
               playerInfo.showModal = showModal;
               playerInfo.hideModal = hideModal;
               playerInfo.roles = accountInfo.roles;
-              LobbyLogic.singleton = LobbyLogic(playerInfo, lobbyCode, debug);
+
+              if ( cbTest )
+                  cbTest("success");
+
+              LobbyLogic.singleton = LobbyLogic(playerInfo, lobbyCode, debug, $, window);
               hideModal();
           },
           error: function(jqXHR, status, err) {
@@ -623,17 +723,8 @@ LobbyLogic.getInstance = (debug = false) => {
     }
 
     ajaxReceiveWhoAmI();
+    return LobbyLogic.singleton;
 }
-//LobbyLogic.create();
 
-/*
-odbieram{
-
-  text: ["Lorem ipsum dolor sit amet,", {0: "a"},"sefsefsfsef", {}, "awdawdadad"],
-  list: [],
-}
-odpowiedź: {
-
-  array_w_kolejności:[ inpStr1, inpStr2,...],
-}
-*/
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+    module.exports = {LobbyLogic};

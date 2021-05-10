@@ -78,4 +78,18 @@ body{
     position: absolute;
     font-size: 25px;
 }
+.editIconClassDiv {
+    padding-left: 0px;
+}
 /*other global.css*/
+
+
+@media (min-width: 768px) and (min-height: 1100px) {
+
+    body {
+        background-repeat: no-repeat;
+        background-position: center bottom -140px;
+        background-image: url("../assets/Personal site-amico.svg");
+        background-size: 1000px;
+    }
+}

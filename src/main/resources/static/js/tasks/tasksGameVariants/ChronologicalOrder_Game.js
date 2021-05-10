@@ -1,6 +1,7 @@
 //ChronologicalOrder
 const ChronologicalOrder_Game = (taskData) => {
     var self = TaskGameVariant(taskData);
+    self.taskName = "ChronologicalOrder";
   
     var taskVariantInitSuper = self.taskVariantInit;
     self.taskVariantInit = (taskData) => {
@@ -9,21 +10,27 @@ const ChronologicalOrder_Game = (taskData) => {
       self.answerCurrentlyAt = {};
       self.sentences = taskData.sentences;
   
-      var taskContentReady = `<ul id="sortable" class="ui-sortable">`;
+      var taskContentReady = $(`<ul id="sortable" class="ui-sortable">`);
       for (let i = 0; i < self.sentences.length; i++) {
         var sentence = self.sentences[i];
-        taskContentReady += `<li class="ui-state-default ui-sortable-handle"><span class="ui-icon-left ui-icon ui-icon-arrowthick-2-n-s"></span>` + sentence + `<span class="ui-icon-right ui-icon float-right ui-icon-arrowthick-2-n-s"></span></li>`;
+        var li = $(`<li class="ui-state-default ui-sortable-handle">`);
+        li.append($(`<span class="ui-icon-left ui-icon ui-icon-arrowthick-2-n-s">`));
+        li.append(document.createTextNode(sentence));
+        li.append($(`<span class="ui-icon-right ui-icon float-right ui-icon-arrowthick-2-n-s">`));
+        taskContentReady.append(li);
       }
-      taskContentReady += `</ul>`;
-  
-      $("#GameDiv").html(`<h6 class="border-bottom border-gray pb-2 mb-0 text-dark"> Content: </h6>
-      <div id="taskContent">`+ taskContentReady +`</div>
-      `);
+      $("#GameDiv").html(``);
+      $("#GameDiv").append($(`<h6 class="border-bottom border-gray pb-2 mb-0 text-dark"> Content: </h6>`));
+      var taskContentDiv = $(`<div id="taskContent">`);
+      taskContentDiv.append(taskContentReady)
+      $("#GameDiv").append(taskContentDiv);
       
       
       $( "#sortable" ).sortable({
         zIndex: 9999,
-        containment: "#taskContent",
+        placeholder: "ui-state-highlight", // new
+        forcePlaceholderSize: true, // new
+        containment: "#GameWrapperDiv",
         appendTo: document.body,
         cursorAt: { top: 17 }
       });

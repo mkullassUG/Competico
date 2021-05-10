@@ -72,3 +72,13 @@ nav {
   position: relative;
   margin-bottom: 1rem;
 }
+
+@media (min-width: 1640px) {
+	body {
+		
+		background-repeat: no-repeat;
+    background-position: right -300px bottom;
+    background-image: url(../assets/mobile-login-animate.svg);
+	}
+}
+

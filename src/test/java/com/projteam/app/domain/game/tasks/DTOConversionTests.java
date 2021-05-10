@@ -171,22 +171,7 @@ public class DTOConversionTests
 		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}
 	@Test
-	public void singleChoiceConvertsToDTO()
-	{
-		String content = "Lorem ipsum dolor sit amet";
-		String answer = "consectetur";
-		List<String> incorrectAnswers = List.of(
-				"adipiscing", "elit", "sed");
-		
-		SingleChoice sc = new SingleChoice(UUID.randomUUID(),
-				"Test instruction", List.of(),
-				content, answer, incorrectAnswers, 1);
-		TaskInfoDTO ti = sc.prepareTaskInfo(0, 1);
-		assertNotNull(ti);
-		assertDoesNotThrow(() -> mapper.valueToTree(ti));
-	}
-	@Test
-	public void multipleChoiceConvertsToDTO()
+	public void optionSelectConvertsToDTO()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		List<String> correctAnswers = List.of(
@@ -194,11 +179,11 @@ public class DTOConversionTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(),
+		OptionSelect os = new OptionSelect(UUID.randomUUID(),
 				"Test instruction", List.of(),
-				new MultipleChoiceElement(UUID.randomUUID(),
+				new OptionSelectElement(UUID.randomUUID(),
 						content, correctAnswers, incorrectAnswers), 1);
-		TaskInfoDTO ti = mc.prepareTaskInfo(0, 1);
+		TaskInfoDTO ti = os.prepareTaskInfo(0, 1);
 		assertNotNull(ti);
 		assertDoesNotThrow(() -> mapper.valueToTree(ti));
 	}

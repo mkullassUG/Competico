@@ -1,68 +1,12 @@
 //ListSentenceForming
 const ListSentenceForming_Game = (taskData) => {
     var self = TaskGameVariant(taskData);
+    self.taskName = "ListSentenceForming";
     
-    /*TODO
-      line breaks:
-      https://stackoverflow.com/questions/61783668/detect-line-break-with-css
-
-      dodać to do resize observera tego taska
-    */
-    self.lineBreakDetection_andHrInsertion_In_DivOrderedWords = (DirectParentElmnt) => {
-        //elmnt - array słów z jednego bloku do podzielenia na rzędy
-
-        //raczej na początku msuze usuwać wszystkie linie
-        DirectParentElmnt.find("hr").remove();
-
-        var elmnt = DirectParentElmnt.find(".LSFword");
-
-        // if ( elmnt.length == 0) {
-        //     console.log(DirectParentElmnt.find(".LSFword"))
-        //     DirectParentElmnt.prepend(`<li class="LSFword placeholder-empty">blank</li>`);
-        // } else {
-        //     console.log(DirectParentElmnt.find(".LSFword"))
-        //     DirectParentElmnt.find(".placeholder-empty").remove();
-        // }
-
-        var previous = null;
-        for (var i = 0; i < elmnt.length; i++) {
-            var current=elmnt[i];
-            //console.log("next");
-            var currentRect= current.getBoundingClientRect();
-            if(previous!=null) {
-                var previousRect= previous.getBoundingClientRect();
-                if(currentRect.top!=previousRect.top) {
-        
-                    //add hr before that element if not yet exists
-                    //console.log("adding hr after: ");
-                    //console.log(previous);
-                    if (!$( current ).prev().is("hr")){
-                    //console.log("adding hr")
-                    // $( "hr" ).insertBefore( $( current ) );
-                        $( "<hr>" ).insertAfter( $( previous ) );
-                    }
-                    //console.log("was it successful: ");
-                    //console.log($( current ).prev().is("hr"));
-                } 
-            }
-            var previous=current;
-        }
-    
-        //last:
-        var last = $(elmnt[elmnt.length-1]);
-        if (!last.next().is("hr")) {
-            $( "<hr>" ).insertAfter( last );
-        }
-    }
-  
-    //GameLogic.singleton.setupNewTask({taskName: "ListSentenceFormingAnswer",task:{}})
-    //GameLogic.singleton.currentTaskVariant.lineBreakDetection_andHrInsertion_In_DivOrderedWords($(".LSFword "))
     var taskVariantInitSuper = self.taskVariantInit;
     self.taskVariantInit = (taskData) => {
         taskVariantInitSuper(taskData);
     
-        //var sentences = 5;
-
         //ROWS nie WORDS
         var sentence_rows = taskData.words;/*[
             ["Let's", "play", "at", "the", "fword", "park", "you", "wword"],
@@ -79,18 +23,18 @@ const ListSentenceForming_Game = (taskData) => {
         $("#GameDiv").html("");
         for ( let i = 0; i < sentence_rows.length; i++) {
             var row = sentence_rows[i];
-            //console.log(row)
-            DivListSentenceForming = $(`<div class="DivListSentenceForming" id="DivListSentenceForming` + i + `"></div>`);
-            DivRandomizedWords = $(`<ul class="DivRandomizedWords border-bottom border-primary connectedSortable`+i+`" id="DivRandomizedWords`+i+`"></ul>`);
+            
+            DivListSentenceForming = $(`<div class="Div` + self.taskName + `" id="Div` + self.taskName + `` + i + `">`);
+            DivRandomizedWords = $(`<ul class="DivRandomizedWords border-primary connectedSortable`+i+`" id="DivRandomizedWords`+i+`">`);
             for (let j = 0; j < row.length; j++) {
-                var word = row[j];
-                //console.log(word)
+                var word = document.createTextNode(row[j]);
 
-                DivRandomizedWords.append(`<li class="LSFword">` + word + `</li>`);
+                var li = $(`<li class="` + self.taskName + `word">`);
+                li.append(word);
+                DivRandomizedWords.append(li);
             }
     
-            //self.lineBreakDetection_andHrInsertion_In_DivOrderedWords(DivRandomizedWords);
-            DivOrderedWords = $(`<ul class="DivOrderedWords border-bottom border-primary text-left connectedSortable`+i+`" id="DivOrderedWords`+i+`"></ul>`);
+            DivOrderedWords = $(`<ul class="DivOrderedWords border-bottom border-primary text-left connectedSortable`+i+`" id="DivOrderedWords`+i+`">`);
             DivListSentenceForming.append(`<div class="sentenceIndex">` + (i+1) + `</div>`);
             DivListSentenceForming.append(DivRandomizedWords);
             DivListSentenceForming.append(DivOrderedWords);
@@ -102,16 +46,13 @@ const ListSentenceForming_Game = (taskData) => {
                 //może się przydać:
                 //https://raw.githubusercontent.com/mattheworiordan/jquery.simulate.drag-sortable.js/master/jquery.simulate.drag-sortable.js
 
-                //$($(".LSFword")[1]).simulateDragSortable({ move: 4 });
-                var elmnt = $(e.target).find(".LSFword");
+                //$($(".ListSentenceFormingword")[1]).simulateDragSortable({ move: 4 });
+                var elmnt = $(e.target).find("." + self.taskName + "word");
 
                 if ( elmnt.length == 1 && $(e.target).hasClass("DivOrderedWords")) {
                     //fast fix
                     $(elmnt[0]).simulateDragSortable({ move: 1 });
                 }
-
-                //console.log("activate")
-                //self.lineBreakDetection_andHrInsertion_In_DivOrderedWords($(e.target));
             }
 
             $( `#DivRandomizedWords` + i + `, #DivOrderedWords`+i ).sortable({
@@ -125,9 +66,7 @@ const ListSentenceForming_Game = (taskData) => {
                 // out: doterHrUpdate,
                 cursor: "grabbing"
             }).disableSelection();
-            
         }
-  
     }
   
     var getAnswersSuper = self.getAnswers;
@@ -137,9 +76,9 @@ const ListSentenceForming_Game = (taskData) => {
         
         var DivOrderedWords = $(".DivOrderedWords");
         for (let i = 0; i < DivOrderedWords.length; i++) {
-            var divLSF = DivOrderedWords[i];
+            var divListSentenceForming = DivOrderedWords[i];
             answers[i] = [];
-            var wordsDivs = $(divLSF).find(".LSFword");
+            var wordsDivs = $(divListSentenceForming).find("." + self.taskName + "word");
             for ( let j = 0; j <  wordsDivs.length; j++) {
                 var divW = $(wordsDivs[j]);
 
@@ -151,9 +90,9 @@ const ListSentenceForming_Game = (taskData) => {
 
         var DivRandomizedWords  = $(".DivRandomizedWords ");
         for (let i = 0; i < DivRandomizedWords.length; i++) {
-            var divLSF = DivRandomizedWords[i];
+            var divListSentenceForming = DivRandomizedWords[i];
 
-            var wordsDivs = $(divLSF).find(".LSFword");
+            var wordsDivs = $(divListSentenceForming).find("." + self.taskName + "word");
             for ( let j = 0; j <  wordsDivs.length; j++) {
                 var divW = $(wordsDivs[j]);
 

@@ -149,3 +149,12 @@ nav {
     color: #777;
   }
 }
+
+@media (min-width: 1700px) {
+	body {
+		
+		background-repeat: no-repeat;
+    background-position: right -300px bottom;
+    background-image: url(../assets/mobile-login-animate.svg);
+	}
+}

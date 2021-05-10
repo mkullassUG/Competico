@@ -3,10 +3,19 @@ będę musiał przerabiać textarea na content editable żeby miec możliwosć w
 
 ALE contenteditable jest przestarzałe (a input level 2 jest jeszcze nie używany wszędzie?)
 */
-const WordFill_Creator = (data_ = {}) => {
+const WordFill_Creator = (data_ = {}, debug = false, $jq, myWindow, deps = {}, cbTest) => {
+
+    /* environment preparation */
+    if ( deps.TaskCreatorVariant && typeof TaskCreatorVariant == "undefined")
+        TaskCreatorVariant = deps.TaskCreatorVariant;
+    if ( $jq && typeof $ == "undefined")
+        $ = $jq;
+    if ( myWindow && typeof window == "undefined")
+        window = myWindow;
 
     /*  Extends TaskCreator */
     var self = TaskCreatorVariant(data_);
+
     /*  Variables */
     self.taskName = "WordFill";
     self.taskContent.content = {};
@@ -16,12 +25,12 @@ const WordFill_Creator = (data_ = {}) => {
     self.taskContent.content.possibleAnswers = [];
 
     /*  Logic functions */
-    var wordFillCreatorInit = () => {
+    var WordFillCreatorInit = () => {
 
         self.hideAllTaskDivsExceptGiven(self.taskName);
 
-        if ( $("#wordFillAddIncorrectWord").length > 0) {
-            var button = $("#wordFillAddIncorrectWord"),
+        if ( $("#" + self.taskName + "AddIncorrectWord").length > 0) {
+            var button = $("#" + self.taskName + "AddIncorrectWord"),
             buttonClone = button.clone();
             button.replaceWith( buttonClone );
 
@@ -31,8 +40,8 @@ const WordFill_Creator = (data_ = {}) => {
                 });
         }
 
-        if ( $("#wordFillAddWord").length > 0) {
-            var button = $("#wordFillAddWord"),
+        if ( $("#" + self.taskName + "AddWord").length > 0) {
+            var button = $("#" + self.taskName + "AddWord"),
             buttonClone = button.clone();
             button.replaceWith( buttonClone );
 
@@ -45,21 +54,24 @@ const WordFill_Creator = (data_ = {}) => {
                     e.preventDefault(); // prevent the textarea to loose focus!
                 });    
 
-                if ($("#wordFillDivTaskText").length > 0) {
+                if ($("#" + self.taskName + "DivTaskText").length > 0) {
                     /*wyłaczanie przycisku jeśli nie mam focusa na textarea*/
                     
-                    $("#wordFillDivTaskText").on('blur', function(e) {
+                    $("#" + self.taskName + "DivTaskText").on('blur', function(e) {
                         // your code here
                         buttonClone.attr('disabled','');
                     });
 
-                    $("#wordFillDivTaskText").on('focus', function(e) {
+                    $("#" + self.taskName + "DivTaskText").on('focus', function(e) {
                         // your code here
                         buttonClone.removeAttr("disabled");
                     });
                 }
             }
         }
+
+        if ( cbTest )
+            cbTest("success");
     }
 
     var checkIfTaskReadySuper = self.checkIfTaskReady;
@@ -105,16 +117,16 @@ const WordFill_Creator = (data_ = {}) => {
 
         //czy można pobrać difficulty
         //slider
-        if ($("#customRangeWordFill").length > 0) {
-            self.taskContent.difficulty = $("#customRangeWordFill").val();
+        if ($("#customRange" + self.taskName + "").length > 0) {
+            self.taskContent.difficulty = $("#customRange" + self.taskName + "").val();
         }
-        // if ($("#wordFillDificulty").length) {
-        //     self.taskContent.difficulty = $("#wordFillDificulty").val();
+        // if ($("#" + self.taskName + "Dificulty").length) {
+        //     self.taskContent.difficulty = $("#" + self.taskName + "Dificulty").val();
         // }
 
         //czy można pograc tagi
-        if ($("#wordFillDivTaskTags").length) {
-            var tagsString = $("#wordFillDivTaskTags").val();
+        if ($("#" + self.taskName + "DivTaskTags").length) {
+            var tagsString = $("#" + self.taskName + "DivTaskTags").val();
             var tags = tagsString.split(",")
                 .map(t=> t.trim())
                 .filter(t => t!="");
@@ -124,12 +136,12 @@ const WordFill_Creator = (data_ = {}) => {
             }
         }
         //czy można pobrać instrukcje
-        if ( $("#wordFillDivTaskInstruction").length ) {
-            self.taskContent.instruction = $("#wordFillDivTaskInstruction").val().trim();
+        if ( $("#" + self.taskName + "DivTaskInstruction").length ) {
+            self.taskContent.instruction = $("#" + self.taskName + "DivTaskInstruction").val().trim();
         }   
         
         //czy można pobrać zdania
-        if ( $("#wordFillDivTaskText").length ) {
+        if ( $("#" + self.taskName + "DivTaskText").length ) {
             /*
                 self.taskContent.content.text = [];
                 self.taskContent.content.emptySpaces = [];
@@ -141,7 +153,7 @@ const WordFill_Creator = (data_ = {}) => {
             self.taskContent.content.startWithText;
             self.taskContent.content.possibleAnswers = [];
 
-            var textString = $("#wordFillDivTaskText").val();
+            var textString = $("#" + self.taskName + "DivTaskText").val();
             var tagsWithWords = textString.match(/\{\[[^]+?\]\}/g);
             if (tagsWithWords != null) //BUG 2021-02-08
                 var correctWords = tagsWithWords.map(w=> w.replace("{[",'').replace("]}",''));
@@ -161,7 +173,7 @@ const WordFill_Creator = (data_ = {}) => {
             }
             
             //get possibleAnswers
-            var inCorrectWordsString = $("#wordFillDivIncorrectWords").val();
+            var inCorrectWordsString = $("#" + self.taskName + "DivIncorrectWords").val();
             var inCorrectWords = inCorrectWordsString.split(",")
                 .map(t=> t.trim())
                 .filter(t => t!="");
@@ -210,7 +222,7 @@ const WordFill_Creator = (data_ = {}) => {
 
     var loadTaskFromSuper = self.loadTaskFrom;
     self.loadTaskFrom = (taskObject) => {
-        loadTaskFromSuper(taskObject); /*WordFill ma ten "content" jeszcze*/
+        loadTaskFromSuper(taskObject); /*" + self.taskName + " ma ten "content" jeszcze*/
         
         self.prepareLoadedTask();
     }
@@ -218,23 +230,14 @@ const WordFill_Creator = (data_ = {}) => {
     self.prepareLoadedTask = () => {
         
         /*ustawiam tagi*/
-        var tagsElem = $("#wordFillDivTaskTags");
-        tagsElem.val("");
-        var previousTags;
-        for (let i = 0; i < self.taskContent.tags.length; i++) {
-            var tag = self.taskContent.tags[i];
-
-            previousTags = tagsElem.val();
-            tagsElem.val(previousTags + 
-                (previousTags==""?"":", ") 
-                + tag);
-        }
+        var tagsElem = $("#" + self.taskName + "DivTaskTags");
+        tagsElem.val(self.taskContent.tags.join(", "));
 
         /*ustawiam insmtrukcje*/
-        $("#wordFillDivTaskInstruction").val(self.taskContent.instruction);
+        $("#" + self.taskName + "DivTaskInstruction").val(self.taskContent.instruction);
 
         /*wstawiam dla każdego zdania textarea i przyciski*/
-        var taskTextElem = $("#wordFillDivTaskText");
+        var taskTextElem = $("#" + self.taskName + "DivTaskText");
         taskTextElem.val("");
         var textString = "";
         var possibleAnswersClone = [...self.taskContent.content.possibleAnswers];
@@ -268,32 +271,25 @@ const WordFill_Creator = (data_ = {}) => {
 
 
         /*ustawiam dodatkowe słowa*/
-        var incorWordsElem = $("#wordFillDivIncorrectWords");
-        incorWordsElem.val("");
-        var incorWordsString;
-        for (let i = 0; i < possibleAnswersClone.length; i++) {
-            var incorWord = possibleAnswersClone[i];
-
-            incorWordsString = incorWordsElem.val();
-            incorWordsElem.val(incorWordsString + 
-                (incorWordsString==""?"":", ") 
-                + incorWord);
-        }
+        var incorWordsElem = $("#" + self.taskName + "DivIncorrectWords");
+        incorWordsElem.val(possibleAnswersClone.join(", "));
 
         /*ustawiam difficulty*/
-        $("#customRangeWordFill").val(self.taskContent.difficulty);
-        $("#customRangeLabelWordFill").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
-        // $("#wordFillDificulty").val(self.taskContent.difficulty);
+        $("#customRange" + self.taskName + "").val(self.taskContent.difficulty);
+        $("#customRange" + self.taskName + "").trigger("change");
+
+        $("#customRangeLabel" + self.taskName + "").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
+        // $("#" + self.taskName + "Dificulty").val(self.taskContent.difficulty);
 
         /*TODO ustawiam czcionkę*/
     }
 
     self.addNewIncorrectWord = ( ) => {
-        $("#wordFillDivIncorrectWords").focus();
+        $("#" + self.taskName + "DivIncorrectWords").focus();
     }
 
     self.addNewWord = (leftTag_, rightTag_ ) => {
-        var yourTextarea = $("#wordFillDivTaskText")[0];
+        var yourTextarea = $("#" + self.taskName + "DivTaskText")[0];
         //pomogło
         //https://stackoverflow.com/questions/11076975/how-to-insert-text-into-the-textarea-at-the-current-cursor-position 
         var insertAtCursor = (myField, leftTag, rightTag) => {
@@ -317,8 +313,8 @@ const WordFill_Creator = (data_ = {}) => {
 
                     if ( !part.includes(rightTag)) {
                         //oof zatrzymaj iw yświetl info że tagi się nie zgadzają
-                        $("#invalidWordFillAddWord").show();
-                        setTimeout(function(){$("#invalidWordFillAddWord").fadeOut()},5000);
+                        $("#invalid" + self.taskName + "AddWord").show();
+                        setTimeout(function(){$("#invalid" + self.taskName + "AddWord").fadeOut()},5000);
                         return;
                     }
                 }
@@ -328,8 +324,8 @@ const WordFill_Creator = (data_ = {}) => {
 
                     if ( !part.includes(leftTag)) {
                         //oof zatrzymaj iw yświetl info że tagi się nie zgadzają
-                        $("#invalidWordFillAddWord").show();
-                        setTimeout(function(){$("#invalidWordFillAddWord").fadeOut()},5000);
+                        $("#invalid" + self.taskName + "AddWord").show();
+                        setTimeout(function(){$("#invalid" + self.taskName + "AddWord").fadeOut()},5000);
                         return;
                     }
                 }
@@ -351,14 +347,29 @@ const WordFill_Creator = (data_ = {}) => {
         insertAtCursor(yourTextarea, leftTag_, rightTag_);
     }
     /* listeners */
-    if( $("#customRangeWordFill").length > 0 ) {
-        $("#customRangeWordFill").on("input",() => {
+    if( $("#customRange" + self.taskName + "").length > 0 ) {
+        $("#customRange" + self.taskName + "").on("input",() => {
 
-            self.taskContent.difficulty = $("#customRangeWordFill").val();
-            $("#customRangeLabelWordFill").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
+            self.taskContent.difficulty = $("#customRange" + self.taskName + "").val();
+            $("#customRangeLabel" + self.taskName + "").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
         })
     }
+
+    self.keyCombos = (e) =>{
+        let evtobj = window.event ? event : e;
+        //key combo for ctrl+b
+        if (evtobj.keyCode == 66 && evtobj.ctrlKey) {
+            e.preventDefault();
+            self.addNewWord("{[", "]}");
+        }
+    }
+    $("#" + self.taskName + "DivTaskText").keydown( self.keyCombos );
+
+    
     /*  Initialization */
-    wordFillCreatorInit();
+    WordFillCreatorInit();
     return self;
 }
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+    module.exports = {WordFill_Creator};

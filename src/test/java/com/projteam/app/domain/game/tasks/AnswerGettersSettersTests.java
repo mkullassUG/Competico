@@ -11,8 +11,7 @@ import com.projteam.app.domain.game.tasks.answers.ChronologicalOrderAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListChoiceWordFillAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListSentenceFormingAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListWordFillAnswer;
-import com.projteam.app.domain.game.tasks.answers.MultipleChoiceAnswer;
-import com.projteam.app.domain.game.tasks.answers.SingleChoiceAnswer;
+import com.projteam.app.domain.game.tasks.answers.OptionSelectAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordConnectAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 
@@ -97,26 +96,15 @@ public class AnswerGettersSettersTests
 		assertNotNull(lsfa.toString());
 	}
 	@Test
-	public void singleChoiceAnswerDataTests()
-	{
-		String answer = "Lorem ipsum dolor sit amet";
-		SingleChoiceAnswer sca = new SingleChoiceAnswer("");
-		sca.setAnswer(answer);
-		assertEquals(sca.getAnswer(), answer);
-		assertEquals(sca, sca);
-		assertNotEquals(sca, null);
-		assertNotNull(sca.toString());
-	}
-	@Test
-	public void multipleChoiceAnswerDataTests()
+	public void optionSelectAnswerDataTests()
 	{
 		List<String> answers = List.of("Lorem", "ipsum", "dolor", "sit", "amet");
-		MultipleChoiceAnswer mca = new MultipleChoiceAnswer(List.of());
-		mca.setAnswers(answers);
-		assertEquals(mca.getAnswers(), answers);
-		assertEquals(mca, mca);
-		assertNotEquals(mca, null);
-		assertNotNull(mca.toString());
+		OptionSelectAnswer osa = new OptionSelectAnswer(List.of());
+		osa.setAnswers(answers);
+		assertEquals(osa.getAnswers(), answers);
+		assertEquals(osa, osa);
+		assertNotEquals(osa, null);
+		assertNotNull(osa.toString());
 	}
 	@Test
 	public void wordConnectAnswerDataTests()

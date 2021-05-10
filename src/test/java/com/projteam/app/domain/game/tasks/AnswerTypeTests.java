@@ -7,8 +7,7 @@ import com.projteam.app.domain.game.tasks.answers.ChronologicalOrderAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListChoiceWordFillAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListSentenceFormingAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListWordFillAnswer;
-import com.projteam.app.domain.game.tasks.answers.MultipleChoiceAnswer;
-import com.projteam.app.domain.game.tasks.answers.SingleChoiceAnswer;
+import com.projteam.app.domain.game.tasks.answers.OptionSelectAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordConnectAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 
@@ -51,16 +50,10 @@ public class AnswerTypeTests
 		assertEquals(lsf.getAnswerType(), ListSentenceFormingAnswer.class);
 	}
 	@Test
-	public void singleChoiceConvertsToDTO()
+	public void optionSelectConvertsToDTO()
 	{
-		SingleChoice sc = new SingleChoice();
-		assertEquals(sc.getAnswerType(), SingleChoiceAnswer.class);
-	}
-	@Test
-	public void multipleChoiceConvertsToDTO()
-	{
-		MultipleChoice mc = new MultipleChoice();
-		assertEquals(mc.getAnswerType(), MultipleChoiceAnswer.class);
+		OptionSelect os = new OptionSelect();
+		assertEquals(os.getAnswerType(), OptionSelectAnswer.class);
 	}
 	@Test
 	public void wordConnectConvertsToDTO()

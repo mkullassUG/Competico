@@ -27,7 +27,7 @@ const TaskGameVariant = (taskData) => {
 //potrzebne tylko do tworzenia nowych wariantów, mock
 
 // const TaskVariantDemo = (taskData) => {
-//     var self = TaskVariant(taskData);
+//     var self = TaskGameVariant(taskData);
     
 //     var taskVariantInitSuper = self.taskVariantInit;
 //     self.taskVariantInit = (taskData) => {

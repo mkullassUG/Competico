@@ -4,13 +4,6 @@ info o możliwych, istniejących lub rozwiązanych bugach:
 Istniejący BUG:
 przy wybraniu opcji edycji taska pojawi się wiadomośc o nieudanym wstawieniu nowego wiersza, ponieważ na początku w inicie taskCreatora każdego wariantu który ma cośz listą próbuje wstawiać pierwszy wiersz, żeby nie było pusto
 
-2021-03-28:
-Naprawiony BUG:
-BUG z WordFillami odkryłem w kreatorze, jak są 2 obok siebie i nie ma odstępu pomiędzy nimi to jest dziwnie...
-
-Naprawiony BUG:
-ListChoiceWordFill źle tworzył odpowiedzi, prowizoryczny fix z pomocą jquery
-
 ISTNIEJĄCY BUG:
 ListChoiceWordFill pozwala na stworzenie choiceDiv'a z nie wpisanymi słowami i odpowiedziami, pewnei też pozwala na stworzenie takeigo bez poprawnej odpowiedzi z wszystkimi złymi...  można też spamowac przecinkami i miec puste niepoprawne
 
@@ -18,17 +11,19 @@ ListChoiceWordFill pozwala na stworzenie choiceDiv'a z nie wpisanymi słowami i 
 ISTNIEJĄCY BUG:
 -w ListChoiceWordFill możliwe że po zaznaczeniu odpowiedzi długiej, tekst przeciągnie się na tyle że przycisk będzie zasłaniał reszte odpowiedzi
 
-Naprawiony BUG (2021-04-12):
--w wordFill można kilka odpowiedzi na siebie nałożyć 
+-/*TODO  2021-03-20: zasłanianie gry przez przuciski:
 
-
-Naprawiony BUG (2021-04-12):
-------ogólnie jak task jest zadługi to rozjeżdża sięstrona, jest wykrywanie zrobione od tego ale jak to naprawiać?
-
-Naprawiony BUG (2021-04-12):
-- w ListChoiceWordFill nie da się wysłac pustej odpowiedzi, msuzą być wszystkie wypełnione!
-
-
+  moze się przydać detekcja czy przycisk jest niżej od gamediv'a żeby nie zasłaniać:
+  
+    console.log(
+        "is botton top ("
+            + $("#btnNextTask").offset().top + 
+        "px) lower than gamediv bottom ("+($("#GameDiv").offset().top + $("#GameDiv").height())+"px + 60 margin): " + (
+        ($("#btnNextTask").offset().top) >
+        ($("#GameDiv").offset().top + $("#GameDiv").height() + 60)
+        )
+    )
+*/
 
 ////////animacje:
 -bug z obiektem resizeObserver (zwłaszcza dla WordFill)

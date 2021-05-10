@@ -61,13 +61,7 @@ body {
       background-image: none;
 }
 
-@media (min-width: 1200px) {
-  #headline {
-      background-repeat: no-repeat;
-      background-position: right 30px bottom -40px;
-      background-image: url(../assets/Nerd-amico.svg);
-  }
-}
+
 
 .footer-text {
   color: rgba(255,255,255,.25);
@@ -101,6 +95,31 @@ body {
   body {
       background-repeat: no-repeat;
       background-position: center  bottom 20%;
+      background-image: url(../assets/Nerd-amico.svg);
+  }
+}
+
+@media (min-width: 725px) {
+  body {
+      background-repeat: no-repeat;
+      background-position: right bottom 20%;
+      background-image: url(../assets/Nerd-amico.svg);
+      background-size: 90%;
+  }
+}
+
+@media (min-width: 1000px) {
+  body {
+    background-size: 70%;
+  }
+}
+
+
+@media (min-width: 1200px) {
+  body {
+    background-size: 40%;
+      background-repeat: no-repeat;
+      background-position: right 30px bottom;
       background-image: url(../assets/Nerd-amico.svg);
   }
 }

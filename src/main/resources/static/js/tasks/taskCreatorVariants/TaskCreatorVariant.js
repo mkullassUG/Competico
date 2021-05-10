@@ -1,4 +1,10 @@
-const TaskCreatorVariant = (data_) =>{
+const TaskCreatorVariant = (data_, debug = false, $jq, myWindow) =>{
+
+    /* environment preparation */
+    if ( $jq && typeof $ == "undefined")
+        $ = $jq;
+    if ( myWindow && typeof window == "undefined")
+        window = myWindow;
 
     /*  Variables */
     var self = data_;
@@ -100,3 +106,6 @@ const TaskCreatorVariant = (data_) =>{
     taskCreatorInit();
     return self;
 }
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+    module.exports = {TaskCreatorVariant};

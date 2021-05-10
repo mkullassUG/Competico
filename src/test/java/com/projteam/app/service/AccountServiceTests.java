@@ -8,10 +8,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,7 +27,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mail.MailException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,7 +40,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.projteam.app.config.SecurityContextConfig;
 import com.projteam.app.dao.AccountDAO;
+import com.projteam.app.dao.EmailVerificationTokenDAO;
+import com.projteam.app.dao.PasswordResetTokenDAO;
 import com.projteam.app.domain.Account;
+import com.projteam.app.domain.EmailVerificationToken;
+import com.projteam.app.domain.PasswordResetToken;
+import com.projteam.app.domain.TokenStatus;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.RegistrationDTO;
 
@@ -45,6 +55,9 @@ public class AccountServiceTests
 	private @Mock PasswordEncoder passEnc;
 	private @Mock AuthenticationManager authManager;
 	private @Mock SecurityContextConfig secConConf;
+	private @Mock PasswordResetTokenDAO prtDao;
+	private @Mock EmailVerificationTokenDAO evtDao;
+	private @Mock EmailService emailServ;
 	
 	private @InjectMocks AccountService accountService;
 	
@@ -95,6 +108,7 @@ public class AccountServiceTests
 		try
 		{
 			accountService.register(req, mockRegDto, autoAuthenticate);
+			fail();
 		}
 		catch (NullPointerException | IllegalArgumentException exc)
 		{}
@@ -117,6 +131,7 @@ public class AccountServiceTests
 			.thenReturn(true);
 		when(accDao.findByEmailOrUsername(mockRegDto.getEmail(), mockRegDto.getEmail()))
 			.thenReturn(Optional.of(new Account.Builder()
+					.withID(UUID.randomUUID())
 					.withEmail(mockRegDto.getEmail())
 					.withUsername(mockRegDto.getUsername())
 					.withPassword(mockRegDto.getPassword().toString())
@@ -144,6 +159,7 @@ public class AccountServiceTests
 			.thenReturn(false);
 		when(accDao.findByEmailOrUsername(mockRegDto.getEmail(), mockRegDto.getEmail()))
 			.thenReturn(Optional.of(new Account.Builder()
+					.withID(UUID.randomUUID())
 					.withEmail(mockRegDto.getEmail())
 					.withUsername(mockRegDto.getUsername())
 					.withPassword(mockRegDto.getPassword().toString())
@@ -423,6 +439,478 @@ public class AccountServiceTests
 		assertDoesNotThrow(() -> accountService.changePassword(oldPassword, newPassword));
 	}
 	
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canRequestPasswordReset(Account acc)
+	{
+		String username = acc.getUsername();
+		when(accDao.findByEmailOrUsername(username, username)).thenReturn(Optional.of(acc));
+		when(prtDao.save(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		assertDoesNotThrow(() -> accountService.requestPasswordReset(username));
+	}
+	@Test
+	public void shouldNotifyWhenAccountNotPresent()
+	{
+		String username = "TestUsername";
+		when(accDao.findByEmailOrUsername(username, username)).thenReturn(Optional.empty());
+		when(prtDao.save(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.requestPasswordReset(username));
+	}
+	@Test
+	public void shouldNotifyWhenUsernameIsNull()
+	{
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.requestPasswordReset(null));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void shouldNotifyAboutMailErrorOnPasswordResetRequest(Account acc)
+	{
+		String username = acc.getUsername();
+		when(accDao.findByEmailOrUsername(username, username)).thenReturn(Optional.of(acc));
+		when(prtDao.save(any())).thenAnswer(inv -> inv.getArgument(0));
+		doThrow(Mockito.mock(MailException.class))
+			.when(emailServ).sendEmail(any(), any(), any());
+		
+		assertThrows(RuntimeException.class, () -> accountService.requestPasswordReset(username));
+	}
+	
+	@Test
+	public void canGetPasswordResetTokenStatus()
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = "testmail@mock.com";
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, 1);
+		Date expiryDate = cal.getTime();
+		
+		when(prtDao.findById(tokenID)).thenReturn(Optional.of(
+				new PasswordResetToken(tokenID, email, expiryDate)));
+		
+		assertEquals(accountService.getPasswordResetTokenStatus(token),
+				TokenStatus.VALID);
+	}
+	@Test
+	public void canGetExpiredPasswordResetTokenStatus()
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = "testmail@mock.com";
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, -1);
+		Date expiryDate = cal.getTime();
+		
+		when(prtDao.findById(tokenID)).thenReturn(Optional.of(
+				new PasswordResetToken(tokenID, email, expiryDate)));
+		
+		assertEquals(accountService.getPasswordResetTokenStatus(token),
+				TokenStatus.EXPIRED);
+	}
+	@Test
+	public void canGetInvalidPasswordResetTokenStatus()
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		
+		when(prtDao.findById(tokenID)).thenReturn(Optional.empty());
+		
+		assertEquals(accountService.getPasswordResetTokenStatus(token),
+				TokenStatus.INVALID);
+	}
+	@Test
+	public void returnsInvalidPasswordResetTokenStatusOnException()
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		
+		when(prtDao.findById(tokenID)).thenThrow(new RuntimeException());
+		
+		assertEquals(accountService.getPasswordResetTokenStatus(token),
+				TokenStatus.INVALID);
+	}
+	@Test
+	public void returnsInvalidPasswordResetTokenStatusWhenInvalid()
+	{
+		String token = "NotAuuidToken";
+		
+		assertEquals(accountService.getPasswordResetTokenStatus(token),
+				TokenStatus.INVALID);
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canResetPassword(Account acc)
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = acc.getEmail();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, 1);
+		Date expiryDate = cal.getTime();
+		CharSequence newPass = acc.getPassword() + "new";
+		
+		when(prtDao.findById(tokenID)).thenReturn(Optional.of(
+				new PasswordResetToken(tokenID, email, expiryDate)));
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		
+		assertDoesNotThrow(() -> accountService.resetPassword(token, newPass));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void cannotResetPasswordWithNullToken(Account acc)
+	{
+		String email = acc.getEmail();
+		CharSequence newPass = acc.getPassword() + "new";
+		
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.resetPassword(null, newPass));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void cannotResetPasswordWithInvalidToken(Account acc)
+	{
+		String token = "NotAuuidToken";
+		
+		String email = acc.getEmail();
+		CharSequence newPass = acc.getPassword() + "new";
+		
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.resetPassword(token, newPass));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void cannotResetPasswordWithUnknownToken(Account acc)
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = acc.getEmail();
+		CharSequence newPass = acc.getPassword() + "new";
+		
+		when(prtDao.findById(tokenID)).thenReturn(Optional.empty());
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.resetPassword(token, newPass));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void cannotResetPasswordWithExpiredToken(Account acc)
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = acc.getEmail();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, -1);
+		Date expiryDate = cal.getTime();
+		CharSequence newPass = acc.getPassword() + "new";
+		
+		when(prtDao.findById(tokenID)).thenReturn(Optional.of(
+				new PasswordResetToken(tokenID, email, expiryDate)));
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.resetPassword(token, newPass));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void cannotResetPasswordWhenAccountNotPresent(Account acc)
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = acc.getEmail();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, 1);
+		Date expiryDate = cal.getTime();
+		CharSequence newPass = acc.getPassword() + "new";
+		
+		when(prtDao.findById(tokenID)).thenReturn(Optional.of(
+				new PasswordResetToken(tokenID, email, expiryDate)));
+		when(accDao.findByEmail(email)).thenReturn(Optional.empty());
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.resetPassword(token, newPass));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void cannotResetPasswordWithNullPassword(Account acc)
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = acc.getEmail();
+		
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.resetPassword(token, null));
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canRequestEmailVerification(Account acc)
+	{
+		String username = acc.getUsername();
+		when(accDao.findByEmailOrUsername(username, username)).thenReturn(Optional.of(acc));
+		when(evtDao.save(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		assertDoesNotThrow(() -> accountService.requestEmailVerification(acc));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canRequestEmailVerificationWithAuth(Account acc)
+	{
+		String username = acc.getUsername();
+		when(accDao.findByEmailOrUsername(username, username)).thenReturn(Optional.of(acc));
+		when(evtDao.save(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		SecurityContext sc = mock(SecurityContext.class);
+		Authentication auth = mock(Authentication.class);
+		when(secConConf.getContext()).thenReturn(sc);
+		when(sc.getAuthentication()).thenReturn(auth);
+		when(auth.isAuthenticated()).thenReturn(true);
+		when(auth.getPrincipal()).thenReturn(acc);
+		
+		assertDoesNotThrow(() -> accountService.requestEmailVerification());
+	}
+	@Test
+	public void shouldNotifyWhenNotAuthenticated()
+	{
+		String username = "TestUsername";
+		when(accDao.findByEmailOrUsername(username, username)).thenReturn(Optional.empty());
+		when(evtDao.save(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.requestEmailVerification());
+	}
+	@Test
+	public void shouldNotifyWhenAccountIsNull()
+	{
+		assertThrows(NullPointerException.class,
+				() -> accountService.requestEmailVerification(null));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void shouldNotifyAboutMailErrorOnEmailVerificationRequest(Account acc)
+	{
+		String username = acc.getUsername();
+		when(accDao.findByEmailOrUsername(username, username)).thenReturn(Optional.of(acc));
+		when(evtDao.save(any())).thenAnswer(inv -> inv.getArgument(0));
+		doThrow(Mockito.mock(MailException.class))
+			.when(emailServ).sendEmail(any(), any(), any());
+		
+		assertThrows(RuntimeException.class, () -> accountService.requestEmailVerification(acc));
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canVerifyEmail(Account acc)
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = acc.getEmail();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, 1);
+		Date expiryDate = cal.getTime();
+		
+		when(evtDao.findById(tokenID)).thenReturn(Optional.of(
+				new EmailVerificationToken(tokenID, email, expiryDate)));
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		when(accDao.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		SecurityContext sc = mock(SecurityContext.class);
+		Authentication auth = mock(Authentication.class);
+		when(secConConf.getContext()).thenReturn(sc);
+		when(sc.getAuthentication()).thenReturn(auth);
+		when(auth.isAuthenticated()).thenReturn(true);
+		when(auth.getPrincipal()).thenReturn(acc);
+		
+		assertDoesNotThrow(() -> accountService.verifyEmail(token));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void cannotVerifyEmailWithNullToken(Account acc)
+	{
+		String email = acc.getEmail();
+		
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.verifyEmail(null));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void cannotVerifyEmailWithInvalidToken(Account acc)
+	{
+		String token = "NotAuuidToken";
+		String email = acc.getEmail();
+		
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.verifyEmail(token));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void cannotVerifyEmailWithUnknownToken(Account acc)
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = acc.getEmail();
+		
+		when(evtDao.findById(tokenID)).thenReturn(Optional.empty());
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		when(accDao.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.verifyEmail(token));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void cannotVerifyEmailWithExpiredToken(Account acc)
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = acc.getEmail();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, -1);
+		Date expiryDate = cal.getTime();
+		
+		when(evtDao.findById(tokenID)).thenReturn(Optional.of(
+				new EmailVerificationToken(tokenID, email, expiryDate)));
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		when(accDao.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.verifyEmail(token));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void cannotVerifyEmailWhenAccountNotPresent(Account acc)
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = acc.getEmail();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, 1);
+		Date expiryDate = cal.getTime();
+		
+		when(evtDao.findById(tokenID)).thenReturn(Optional.of(
+				new EmailVerificationToken(tokenID, email, expiryDate)));
+		when(accDao.findByEmail(email)).thenReturn(Optional.empty());
+		when(accDao.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		assertThrows(IllegalArgumentException.class,
+				() -> accountService.verifyEmail(token));
+	}
+	@ParameterizedTest
+	@MethodSource("mockAccount")
+	public void canVerifyEmailWhenNotAuthenticated(Account acc)
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = acc.getEmail();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, 1);
+		Date expiryDate = cal.getTime();
+		
+		when(evtDao.findById(tokenID)).thenReturn(Optional.of(
+				new EmailVerificationToken(tokenID, email, expiryDate)));
+		when(accDao.findByEmail(email)).thenReturn(Optional.of(acc));
+		when(accDao.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		SecurityContext sc = mock(SecurityContext.class);
+		Authentication auth = mock(Authentication.class);
+		when(secConConf.getContext()).thenReturn(sc);
+		when(sc.getAuthentication()).thenReturn(auth);
+		when(auth.isAuthenticated()).thenReturn(false);
+		when(auth.getPrincipal()).thenReturn(null);
+		
+		assertDoesNotThrow(() -> accountService.verifyEmail(token));
+	}
+	
+	@Test
+	public void canGetEmailVerificationTokenStatus()
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = "testmail@mock.com";
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, 1);
+		Date expiryDate = cal.getTime();
+		
+		when(evtDao.findById(tokenID)).thenReturn(Optional.of(
+				new EmailVerificationToken(tokenID, email, expiryDate)));
+		when(accDao.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		assertEquals(accountService.getEmailVerificationTokenStatus(token),
+				TokenStatus.VALID);
+	}
+	@Test
+	public void canGetExpiredEmailVerificationTokenStatus()
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		String email = "testmail@mock.com";
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, -1);
+		Date expiryDate = cal.getTime();
+		
+		when(evtDao.findById(tokenID)).thenReturn(Optional.of(
+				new EmailVerificationToken(tokenID, email, expiryDate)));
+		when(accDao.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		assertEquals(accountService.getEmailVerificationTokenStatus(token),
+				TokenStatus.EXPIRED);
+	}
+	@Test
+	public void canGetInvalidEmailVerificationTokenStatus()
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		
+		when(evtDao.findById(tokenID)).thenReturn(Optional.empty());
+		when(accDao.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		assertEquals(accountService.getEmailVerificationTokenStatus(token),
+				TokenStatus.INVALID);
+	}
+	@Test
+	public void returnsInvalidEmailVerificationTokenStatusOnException()
+	{
+		UUID tokenID = UUID.randomUUID();
+		String token = tokenID.toString();
+		
+		when(evtDao.findById(tokenID)).thenThrow(new RuntimeException());
+		when(accDao.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
+		
+		assertEquals(accountService.getEmailVerificationTokenStatus(token),
+				TokenStatus.INVALID);
+	}
+	
+	@Test
+	public void canDeleteExpiredTokens()
+	{
+		assertDoesNotThrow(() -> accountService.deleteExpiredTokens());
+	}
+	
 	//---Sources---
 	
 	public static List<Arguments> mockRegistrationData()
@@ -588,6 +1076,7 @@ public class AccountServiceTests
 		String username = "TestAccount";
 		return List.of(
 				Arguments.of(username, new Account.Builder()
+						.withID(UUID.randomUUID())
 						.withEmail("testAcc@test.pl")
 						.withUsername(username)
 						.withPassword("QWERTYuiop123")
@@ -597,6 +1086,7 @@ public class AccountServiceTests
 	{
 		return List.of(
 				Arguments.of(new Account.Builder()
+						.withID(UUID.randomUUID())
 						.withEmail("testAcc@test.pl")
 						.withUsername("TestAccount")
 						.withPassword("QWERTYuiop123")
@@ -608,10 +1098,12 @@ public class AccountServiceTests
 	}
 	public static List<Arguments> mockIdAndEmptyOrFullAccountOptional()
 	{
+		UUID id = UUID.randomUUID();
 		return List.of(
 				Arguments.of(UUID.randomUUID(), Optional.empty()),
-				Arguments.of(UUID.randomUUID(), Optional.of(
+				Arguments.of(id, Optional.of(
 					new Account.Builder()
+						.withID(id)
 						.withEmail("testAcc@test.pl")
 						.withUsername("TestAccount")
 						.withPassword("QWERTYuiop123")

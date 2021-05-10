@@ -1,0 +1,98 @@
+{
+
+    ".footer > .container.text-center > .footer-text.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    ".footer > .container.text-center> .text-muted.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    "#homepageHyperlink > a": {
+        "pl": "Strona Domowa",
+        "eng": "Home Page"
+    },
+    "#gameHyperlink > a": {
+        "pl": "Gra",
+        "eng": "Game"
+    },
+    "#helpHyperlink > a": {
+        "pl": "Wsparcie",
+        "eng": "Support"
+    },
+    "#registerHyperlink > a": {
+        "pl": "Rejestracja",
+        "eng": "Register"
+    },
+    "#loginHyperlink": {
+        "pl": "Zaloguj",
+        "eng": "Login"
+    },
+    "#dashboardHyperlink > a": {
+        "pl": "Rankingi",
+        "eng": "Dashboard"
+    },
+    "#profileHyperlink > a": {
+        "pl": "Profil",
+        "eng": "Profile"
+    },
+    "#logOutButton": {
+        "pl": "Wyloguj",
+        "eng": "Logout"
+    },
+
+    "#loginTextMain": {
+        "pl": "Zaloguj się",
+        "eng": "Log in"
+    },
+    "#forgotPasswordA": {
+        "pl": "Zapomniałem hasła.",
+        "eng": "I forgot my password."
+    },
+    "#noAccountA": {
+        "pl": "Nie mam konta.",
+        "eng": "I don't have an account."
+    },
+    "#rememberMeCB": {
+        "pl": "Zapamiętaj mnie",
+        "eng": "Remember me"
+    },
+    "#passwordLabel": {
+        "pl": "Hasło",
+        "eng": "Password"
+    },
+    "#emailLabel": {
+        "pl": "Adres email",
+        "eng": "Email address"
+    },
+    "#inputEmail": {
+        "ATTRIBUTE": "placeholder",
+        "pl": "Adres email",
+        "eng": "Email address"
+    },
+    "#inputPassword": {
+        "ATTRIBUTE": "placeholder",
+        "pl": "Hasło",
+        "eng": "Password"
+    },
+    "#loginSubmit": {
+        "pl": "Zaloguj się",
+        "eng": "Log In"
+    },
+    "#showHidePasswordButton":{
+        "ATTRIBUTE": "data-original-title",
+        "pl": "pokaż/ukryj hasło",
+        "eng": "show/hide password"
+    },
+    "#invalidFeedbackWrongCredentials": {
+        "pl": "Niepoprawna nazwa konta lub hasło.",
+        "eng": "Invalid username or password."
+    },
+
+    "OTHER_PAGE_ELEMENTS": {
+        "document.title": {
+            "pl": "Logowanie",
+            "eng": "Login"
+        }
+    }
+}

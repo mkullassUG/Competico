@@ -35,6 +35,7 @@ public class Account implements UserDetails, Initializable
 {
 	private @Id @Column(name = "id", unique = true, updatable = false) UUID id;
 	private @Column(name = "email", unique = true, updatable = true) String email;
+	private @Column(name = "emailVerified", updatable = true) boolean emailVerified;
 	private @Column(name = "username", unique = true, updatable = false) String username;
 	private @Column(name = "password", updatable = true) String password;
 	private @Column(name = "nickname", updatable = true) String nickname;
@@ -192,6 +193,11 @@ public class Account implements UserDetails, Initializable
 		public Builder withEmail(String email)
 		{
 			acc.setEmail(email);
+			return this;
+		}
+		public Builder withEmailVerified(boolean emailVerified)
+		{
+			acc.setEmailVerified(emailVerified);
 			return this;
 		}
 		public Builder withNickname(String nickname)

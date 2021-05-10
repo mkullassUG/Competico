@@ -1,0 +1,97 @@
+{
+
+    ".footer > .container.text-center > .footer-text.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    ".footer > .container.text-center> .text-muted.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    "#homepageHyperlink > a": {
+        "pl": "Strona Domowa",
+        "eng": "Home Page"
+    },
+    "#gameHyperlink > a": {
+        "pl": "Gra",
+        "eng": "Game"
+    },
+    "#helpHyperlink > a": {
+        "pl": "Wsparcie",
+        "eng": "Support"
+    },
+    "#registerHyperlink > a": {
+        "pl": "Rejestracja",
+        "eng": "Register"
+    },
+    "#loginHyperlink": {
+        "pl": "Zaloguj",
+        "eng": "Login"
+    },
+    "#dashboardHyperlink > a": {
+        "pl": "Rankingi",
+        "eng": "Dashboard"
+    },
+    "#profileHyperlink > a": {
+        "pl": "Profil",
+        "eng": "Profile"
+    },
+    "#logOutButton": {
+        "pl": "Wyloguj",
+        "eng": "Logout"
+    },
+
+    "#buttonHolder > div:nth-child(1) > h2": {
+        "pl": "Szukaj gry",
+        "eng": "Find game"
+    },
+    "#buttonHolder > div:nth-child(2) > h2": {
+        "pl": "Stwórz grę",
+        "eng": "Create game"
+    },
+    "#buttonHolder > div:nth-child(3) > h2": {
+        "pl": "Wprowadź kod",
+        "eng": "Apply code"
+    },
+    "#buttonHolder > div:nth-child(1) > button": {
+        "pl": "Szukaj",
+        "eng": "Search"
+    },
+    "#buttonHolder > div:nth-child(2) > button": {
+        "pl": "Stwórz",
+        "eng": "Create"
+    },
+    "#buttonHolder > div:nth-child(3) > input": {
+        "ATTRIBUTE": "placeholder",
+        "pl": "kod",
+        "eng": "code"
+    },
+
+    "#btnJoinCodeCollapse > button": {
+        "pl": "Dołącz",
+        "eng": "Join"
+    },
+
+    "OTHER_PAGE_ELEMENTS": {
+        "IncorrectCode" : {
+            "pl": "Kod nieprawidłowy",
+            "eng": "Incorrect code"
+        },
+        "NoAvailableLobby" : {
+            "pl": "Nie znaleziono wolnego lobby",
+            "eng": "Could not find any public lobby"
+        },
+        "LobbyNotCreated" : {
+            "pl": "Nie stworzono lobby",
+            "eng": "could not create lobby"
+        },
+        "LobbyFull" : {
+            "pl": "Lobby pełne",
+            "eng": "Lobby full"
+        },
+        "CouldNotFindGames" : {
+            "pl": "Nie znaleziono żadnych gier",
+            "eng": "Could not find any games"
+        }
+    }
+}

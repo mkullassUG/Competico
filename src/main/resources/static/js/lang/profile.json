@@ -1,0 +1,145 @@
+{
+
+    ".footer > .container.text-center > .footer-text.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    ".footer > .container.text-center> .text-muted.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    "#homepageHyperlink > a": {
+        "pl": "Strona Domowa",
+        "eng": "Home Page"
+    },
+    "#gameHyperlink > a": {
+        "pl": "Gra",
+        "eng": "Game"
+    },
+    "#helpHyperlink > a": {
+        "pl": "Wsparcie",
+        "eng": "Support"
+    },
+    "#registerHyperlink > a": {
+        "pl": "Rejestracja",
+        "eng": "Register"
+    },
+    "#loginHyperlink": {
+        "pl": "Zaloguj",
+        "eng": "Login"
+    },
+    "#dashboardHyperlink > a": {
+        "pl": "Rankingi",
+        "eng": "Dashboard"
+    },
+    "#profileHyperlink > a": {
+        "pl": "Profil",
+        "eng": "Profile"
+    },
+    "#logOutButton": {
+        "pl": "Wyloguj",
+        "eng": "Logout"
+    },
+
+    
+    "#nicknameH6Text": {
+        "pl": "Nazwa użytkownika:",
+        "eng": "Nickname:"
+    },
+    "#emailH6Text": {
+        "pl": "Adres email",
+        "eng": "Email Address"
+    },
+    "#changePoasswordButton": {
+        "pl": "Zmień hasło",
+        "eng": "Change password"
+    },
+    "#saveChangesButt": {
+        "pl": "Zapisz zmiany",
+        "eng": "Save changes"
+    },
+    "#editPasswordModalLongTitle": {
+        "pl": "Zmień swoje obecne hasło",
+        "eng": "Change current password"
+    },
+    "#editProfileModalLongTitle": {
+        "pl": "Czy napewno edytowac profil?",
+        "eng": "Are you sure you want to edit profile?"
+    },
+    "#editEmailModalLongTitle": {
+        "pl": "Zmień swój obecny email",
+        "eng": "Change your current email"
+    },
+    "#oldPasswordInputPasswordLabel": {
+        "pl": "Bieżące hasło",
+        "eng": "Current password"
+    },
+    ".cancelBtn": {
+        "pl": "Anuluj",
+        "eng": "Cancel"
+    },
+    ".changeBtn": {
+        "pl": "Zmień",
+        "eng": "Change"
+    },
+    "#newPasswordInputLabel": {
+        "pl": "Nowe hasło",
+        "eng": "New password"
+    },
+    "#invalidPasswordInfoPassword": {
+        "pl": "Nieprawidłowe hasło.",
+        "eng": "Incorrect password."
+    },
+    "#invalidNewPasswordInfoPasswordIdentical": {
+        "pl": "Identyczne hasło.",
+        "eng": "Identical password."
+    },
+    "#invalidNewPasswordInfoPassword": {
+        "pl": "Wprowadź poprawne hasło: minimum 8 znaków, conajmniej jedna duża litera, conajmniej jedna cyfra i conajmniej jeden znak specjalny.",
+        "eng": "Type correct pssword: minimum 8 symbols, at least one big letter, at least one number and at least one special symbol."
+    },
+    "#invalidEmailInfoBad": {
+        "pl": "Wprowadź poprawny adres email.",
+        "eng": "Type correct email address."
+    },
+    "#invalidEmailInfoUsed": {
+        "pl": "Zajęty email.",
+        "eng": "Email addres is already."
+    },
+    "#invalidEmailInfoIdentical": {
+        "pl": "Identyczny email.",
+        "eng": "Identical email address."
+    },
+    "#typeCurrentPasswordAndNewEmail": {
+        "pl": "Wprowadź swoje obecne hasło i nowy email.",
+        "eng": "Type current password and new email address."
+    },
+    "#newEmailInputLabel": {
+        "pl": "Nowy email",
+        "eng": "New email address"
+    },
+    "#oldPasswordInputEmailLabel": {
+        "pl": "Bieżące hasło",
+        "eng": "Current password"
+    },
+    "#invalidPasswordInfoEmail": {
+        "pl": "Nieprawidłowe hasło.",
+        "eng": "Incorrect password."
+    },
+    ".sendBtn": {
+        "pl": "Prześlij",
+        "eng": "Send"
+    },
+    "#typeCurrentPasswordAndNewPassword": {
+        "pl": "Wprowadź swoje obecne hasło i nowe hasło",
+        "eng": "Type current password and new password"
+    },
+
+    
+    "OTHER_PAGE_ELEMENTS": {
+        "document.title": {
+            "pl": "Profil",
+            "eng": "Profile"
+        }
+    }
+}

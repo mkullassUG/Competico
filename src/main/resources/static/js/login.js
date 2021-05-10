@@ -1,5 +1,10 @@
 
 $(document).ready(function(){
+
+    //NEW!!!!!!
+    if ( typeof PageLanguageChanger != "undefined")
+        PageLanguageChanger();
+
     $('form').on('submit',function(e){
         e.preventDefault();
         //console.log(this)
@@ -39,7 +44,22 @@ $(document).ready(function(){
         }
     });
 
-    $('[data-toggle="tooltip"]').tooltip();
-
+    var tooltipsUpdate = () => {
+        if ( $('[data-toggle="tooltip"]').tooltip !== null && $('[data-toggle="tooltip"]').tooltip !== undefined)
+            $('[data-toggle="tooltip"]').tooltip({
+                trigger : 'hover'
+            });  
+    }
+    tooltipsUpdate();
+    
     NavbarLogic.getInstance();
+
+    //new bug fix
+    var resizeWindow = () => {
+    
+        $("html").height("100%");
+        $("html").height($(document).height());
+    } 
+	window.onresize = resizeWindow;
+	resizeWindow();
 });

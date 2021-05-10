@@ -174,9 +174,35 @@ public class GameAPI
 	@GetMapping("api/v1/player/rating")
 	public Object getRating()
 	{
-		return gameService.getRating()
-				.map(rating -> Map.<String, Object>of("rating", rating))
-				.orElse(Map.of("isPlayer", false));
+		try
+		{
+			return gameService.getRating()
+					.map(rating -> Map.<String, Object>of("rating", rating))
+					.orElse(Map.of("hasRating", false));
+		}
+		catch (IllegalArgumentException e)
+		{
+			return Map.of("exists", false);
+		}
+	}
+	@ApiOperation(value = "Notify the server that the user is still in a game", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Server notified successfully")
+	})
+	@GetMapping("api/v1/player/{username}/rating")
+	public Object getRating(@PathVariable String username)
+	{
+		try
+		{
+			return gameService.getRatingByUsername(username)
+					.map(rating -> Map.<String, Object>of("rating", rating))
+					.orElse(Map.of("hasRating", false));
+		}
+		catch (IllegalArgumentException e)
+		{
+			return Map.of("exists", false);
+		}
 	}
 	
 	@ApiOperation(value = "Get top players from leaderboard", code = 200)

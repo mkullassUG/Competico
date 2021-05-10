@@ -1,0 +1,83 @@
+{
+
+    ".footer > .container.text-center > .footer-text.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    ".footer > .container.text-center> .text-muted.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    "#homepageHyperlink > a": {
+        "pl": "Strona Domowa",
+        "eng": "Home Page"
+    },
+    "#gameHyperlink > a": {
+        "pl": "Gra",
+        "eng": "Game"
+    },
+    "#helpHyperlink > a": {
+        "pl": "Wsparcie",
+        "eng": "Support"
+    },
+    "#registerHyperlink > a": {
+        "pl": "Rejestracja",
+        "eng": "Register"
+    },
+    "#loginHyperlink": {
+        "pl": "Zaloguj",
+        "eng": "Login"
+    },
+    "#dashboardHyperlink > a": {
+        "pl": "Rankingi",
+        "eng": "Dashboard"
+    },
+    "#profileHyperlink > a": {
+        "pl": "Profil",
+        "eng": "Profile"
+    },
+    "#logOutButton": {
+        "pl": "Wyloguj",
+        "eng": "Logout"
+    },
+
+    "#gameRankingsHyperlink": {
+        "pl": "Rankingi",
+        "eng": "Rankings"
+    },
+    "#groupsHyperlink": {
+        "pl": "Grupy",
+        "eng": "Groups"
+    },
+    "#gameHistoryHyperlink": {
+        "pl": "Historia gier",
+        "eng": "Game history"
+    },
+    
+    "OTHER_PAGE_ELEMENTS": {
+        "document.title": {
+            "pl": "Rankingi",
+            "eng": "Dashboard"
+        },
+        "ranksTable" : {
+            "pl": "Tablica rankingów:",
+            "eng": "Ranks table:"
+        },
+        "profile" : {
+            "pl": "Profil:",
+            "eng": "Profile:"
+        },
+        "players" : {
+            "pl": "Gracze:",
+            "eng": "Players:"
+        },
+        "score" : {
+            "pl": "Wyniki:",
+            "eng": "Score:"
+        },
+        "profiles" : {
+            "pl": "Profile:",
+            "eng": "Profiles:"
+        }
+    }
+}

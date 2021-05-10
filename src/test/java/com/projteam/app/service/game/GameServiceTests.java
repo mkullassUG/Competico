@@ -1050,6 +1050,19 @@ public class GameServiceTests
 		assertNotNull(ret.orElse(null));
 	}
 	
+	@ParameterizedTest
+	@MethodSource("mockPlayerHost")
+	public void shouldReturnPlayerDataByUsername(Account acc)
+	{
+		String username = acc.getUsername();
+		when(pdService.getPlayerData(acc)).thenReturn(Optional.of(new PlayerData()));
+		when(accountService.findByUsername(username)).thenReturn(Optional.of(acc));
+		
+		var ret = gameService.getRatingByUsername(username);
+		assertTrue(ret.isPresent());
+		assertNotNull(ret.orElse(null));
+	}
+	
 	//---Sources---
 	
 	public static List<Arguments> mockPlayerHost()

@@ -15,8 +15,7 @@ import com.projteam.app.domain.game.tasks.answers.ChronologicalOrderAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListChoiceWordFillAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListSentenceFormingAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListWordFillAnswer;
-import com.projteam.app.domain.game.tasks.answers.MultipleChoiceAnswer;
-import com.projteam.app.domain.game.tasks.answers.SingleChoiceAnswer;
+import com.projteam.app.domain.game.tasks.answers.OptionSelectAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordConnectAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 
@@ -173,22 +172,7 @@ public class AnswerAcceptTests
 		assertEquals(lsf.acceptAnswer(lsfa), 1);
 	}
 	@Test
-	public void singleChoiceAcceptsAnswer()
-	{
-		String content = "Lorem ipsum dolor sit amet";
-		String answer = "consectetur";
-		List<String> incorrectAnswers = List.of(
-				"adipiscing", "elit", "sed");
-		
-		SingleChoice sc = new SingleChoice(UUID.randomUUID(),
-				"Test instruction", List.of(),
-				content, answer, incorrectAnswers, 100);
-		SingleChoiceAnswer sca = new SingleChoiceAnswer(answer);
-		
-		assertEquals(sc.acceptAnswer(sca), 1);
-	}
-	@Test
-	public void multipleChoiceAcceptsAnswer()
+	public void optionSelectAcceptsAnswer()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		List<String> correctAnswers = List.of(
@@ -196,12 +180,12 @@ public class AnswerAcceptTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(),
+		OptionSelect os = new OptionSelect(UUID.randomUUID(),
 				"Test instruction", List.of(),
-				new MultipleChoiceElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 100);
-		MultipleChoiceAnswer mca = new MultipleChoiceAnswer(correctAnswers);
+				new OptionSelectElement(UUID.randomUUID(), content, correctAnswers, incorrectAnswers), 100);
+		OptionSelectAnswer osa = new OptionSelectAnswer(correctAnswers);
 		
-		assertEquals(mc.acceptAnswer(mca), 1);
+		assertEquals(os.acceptAnswer(osa), 1);
 	}
 	@Test
 	public void wordConnectAcceptsAnswer()

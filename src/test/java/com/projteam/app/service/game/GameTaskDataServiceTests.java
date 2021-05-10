@@ -25,6 +25,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projteam.app.domain.Account;
@@ -34,10 +37,9 @@ import com.projteam.app.domain.game.tasks.ChronologicalOrder;
 import com.projteam.app.domain.game.tasks.ListChoiceWordFill;
 import com.projteam.app.domain.game.tasks.ListSentenceForming;
 import com.projteam.app.domain.game.tasks.ListWordFill;
-import com.projteam.app.domain.game.tasks.MultipleChoice;
-import com.projteam.app.domain.game.tasks.MultipleChoiceElement;
+import com.projteam.app.domain.game.tasks.OptionSelect;
+import com.projteam.app.domain.game.tasks.OptionSelectElement;
 import com.projteam.app.domain.game.tasks.SentenceFormingElement;
-import com.projteam.app.domain.game.tasks.SingleChoice;
 import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.WordFill;
 import com.projteam.app.domain.game.tasks.WordFillElement;
@@ -50,10 +52,9 @@ import com.projteam.app.dto.game.tasks.create.ChronologicalOrderDTO;
 import com.projteam.app.dto.game.tasks.create.ListChoiceWordFillDTO;
 import com.projteam.app.dto.game.tasks.create.ListSentenceFormingDTO;
 import com.projteam.app.dto.game.tasks.create.ListWordFillDTO;
-import com.projteam.app.dto.game.tasks.create.MultipleChoiceDTO;
-import com.projteam.app.dto.game.tasks.create.MultipleChoiceElementDTO;
+import com.projteam.app.dto.game.tasks.create.OptionSelectDTO;
+import com.projteam.app.dto.game.tasks.create.OptionSelectElementDTO;
 import com.projteam.app.dto.game.tasks.create.SentenceFormingElementDTO;
-import com.projteam.app.dto.game.tasks.create.SingleChoiceDTO;
 import com.projteam.app.dto.game.tasks.create.TaskDTO;
 import com.projteam.app.dto.game.tasks.create.WordConnectDTO;
 import com.projteam.app.dto.game.tasks.create.WordFillDTO;
@@ -65,8 +66,7 @@ import com.projteam.app.service.game.tasks.ChronologicalOrderService;
 import com.projteam.app.service.game.tasks.ListChoiceWordFillService;
 import com.projteam.app.service.game.tasks.ListSentenceFormingService;
 import com.projteam.app.service.game.tasks.ListWordFillService;
-import com.projteam.app.service.game.tasks.MultipleChoiceService;
-import com.projteam.app.service.game.tasks.SingleChoiceService;
+import com.projteam.app.service.game.tasks.OptionSelectService;
 import com.projteam.app.service.game.tasks.WordConnectService;
 import com.projteam.app.service.game.tasks.WordFillService;
 import com.projteam.app.service.game.tasks.mappers.GenericTaskMapper;
@@ -75,8 +75,7 @@ import com.projteam.app.service.game.tasks.mappers.create.ChronologicalOrderMapp
 import com.projteam.app.service.game.tasks.mappers.create.ListChoiceWordFillMapper;
 import com.projteam.app.service.game.tasks.mappers.create.ListSentenceFormingMapper;
 import com.projteam.app.service.game.tasks.mappers.create.ListWordFillMapper;
-import com.projteam.app.service.game.tasks.mappers.create.MultipleChoiceMapper;
-import com.projteam.app.service.game.tasks.mappers.create.SingleChoiceMapper;
+import com.projteam.app.service.game.tasks.mappers.create.OptionSelectMapper;
 import com.projteam.app.service.game.tasks.mappers.create.WordConnectMapper;
 import com.projteam.app.service.game.tasks.mappers.create.WordFillMapper;
 
@@ -87,8 +86,7 @@ class GameTaskDataServiceTests
 	private @Mock ListChoiceWordFillService lcwfServ;
 	private @Mock ListSentenceFormingService lsfServ;
 	private @Mock ListWordFillService lwfServ;
-	private @Mock MultipleChoiceService mcServ;
-	private @Mock SingleChoiceService scServ;
+	private @Mock OptionSelectService osServ;
 	private @Mock WordConnectService wcServ;
 	private @Mock WordFillService wfServ;
 	
@@ -99,8 +97,7 @@ class GameTaskDataServiceTests
 	private @Spy ListChoiceWordFillMapper lcwfMapper;
 	private @Spy ListSentenceFormingMapper lsfMapper;
 	private @Spy ListWordFillMapper lwfMapper;
-	private @Spy MultipleChoiceMapper mcMapper;
-	private @Spy SingleChoiceMapper scMapper;
+	private @Spy OptionSelectMapper osMapper;
 	private @Spy WordConnectMapper wcMapper;
 	private @Spy WordFillMapper wfMapper;
 	
@@ -117,13 +114,13 @@ class GameTaskDataServiceTests
 		
 		taskMapper = new GenericTaskMapper(List.of(
 				cwfMapper, coMapper, lcwfMapper,
-				lsfMapper, lwfMapper, mcMapper,
-				scMapper, wcMapper, wfMapper));
+				lsfMapper, lwfMapper, osMapper,
+				wcMapper, wfMapper));
 		
 		gtdServ = new GameTaskDataService(List.of(
 					cwfServ, coServ, lcwfServ,
-					lsfServ, lwfServ, mcServ,
-					scServ, wcServ, wfServ),
+					lsfServ, lwfServ, osServ,
+					wcServ, wfServ),
 				aServ, taskMapper);
 	}
 	
@@ -146,16 +143,14 @@ class GameTaskDataServiceTests
 			.thenReturn(List.of(mockListSentenceForming()));
 		when(lwfServ.genericFindAll())
 			.thenReturn(List.of(mockListWordFill()));
-		when(mcServ.genericFindAll())
-			.thenReturn(List.of(mockMultipleChoice()));
-		when(scServ.genericFindAll())
-			.thenReturn(List.of(mockSingleChoice()));
+		when(osServ.genericFindAll())
+			.thenReturn(List.of(mockOptionSelect()));
 		when(wcServ.genericFindAll())
 			.thenReturn(List.of(mockWordConnect()));
 		when(wfServ.genericFindAll())
 			.thenReturn(List.of(mockWordFill()));
 		
-		int mockedTaskCount = 9;
+		int mockedTaskCount = 8;
 		
 		List<TaskDTO> res = gtdServ.getAllTasks();
 		assertNotNull(res);
@@ -172,14 +167,14 @@ class GameTaskDataServiceTests
 		when(lcwfServ.canAccept(task)).thenReturn(false);
 		when(lsfServ.canAccept(task)).thenReturn(false);
 		when(lwfServ.canAccept(task)).thenReturn(false);
-		when(mcServ.canAccept(task)).thenReturn(false);
-		when(scServ.canAccept(task)).thenReturn(false);
+		when(osServ.canAccept(task)).thenReturn(false);
 		when(wcServ.canAccept(task)).thenReturn(false);
 		when(wfServ.canAccept(task)).thenReturn(false);
 		
 		assertThrows(IllegalStateException.class, () ->
 				gtdServ.saveTask(task));
 	}
+	
 	@ParameterizedTest
 	@MethodSource("mockTaskDTOsWithNames")
 	public void shouldImportGlobalTask(JsonNode taskDtoWithName)
@@ -207,6 +202,35 @@ class GameTaskDataServiceTests
 		
 		assertEquals(gtdServ.getImportedGlobalTaskCount(), taskCount + 1);
 	}
+	
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOfile")
+	public void shouldImportGlobalTasksFromJsonFile(MultipartFile taskDtoFile)
+			throws ClassNotFoundException, IOException
+	{
+		Account admin = mockTaskDataAdmin();
+		
+		int taskCount = gtdServ.getImportedGlobalTaskCount(admin);
+		
+		gtdServ.importGlobalTasks(taskDtoFile, admin);
+		
+		assertTrue(gtdServ.getImportedGlobalTaskCount(admin) > taskCount);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOfile")
+	public void shouldImportGlobalTasksFromJsonFileWithAuthenticatedAdmin(MultipartFile taskDtoFile)
+			throws ClassNotFoundException, IOException
+	{
+		when(aServ.getAuthenticatedAccount())
+			.thenReturn(Optional.of(mockTaskDataAdmin()));
+		
+		int taskCount = gtdServ.getImportedGlobalTaskCount();
+		
+		gtdServ.importGlobalTasks(taskDtoFile);
+		
+		assertTrue(gtdServ.getImportedGlobalTaskCount() > taskCount);
+	}
+	
 	@Test
 	public void shouldGetImportedGlobalTasks()
 	{
@@ -495,8 +519,7 @@ class GameTaskDataServiceTests
 				Arguments.of(mockListChoiceWordFillDTO()),
 				Arguments.of(mockChronologicalOrderDTO()),
 				Arguments.of(mockListSentenceFormingDTO()),
-				Arguments.of(mockSingleChoiceDTO()),
-				Arguments.of(mockMultipleChoiceDTO()),
+				Arguments.of(mockOptionSelectDTO()),
 				Arguments.of(mockWordConnectDTO()));
 	}
 	public static List<Arguments> mockTaskDTOsWithNames()
@@ -521,11 +544,8 @@ class GameTaskDataServiceTests
 								"taskName", "ListSentenceForming",
 								"taskContent", mockListSentenceFormingDTO()),
 						Map.of(
-								"taskName", "SingleChoice",
-								"taskContent", mockSingleChoiceDTO()),
-						Map.of(
-								"taskName", "MultipleChoice",
-								"taskContent", mockMultipleChoiceDTO()),
+								"taskName", "OptionSelect",
+								"taskContent", mockOptionSelectDTO()),
 						Map.of(
 								"taskName", "WordConnect",
 								"taskContent", mockWordConnectDTO()));
@@ -557,11 +577,8 @@ class GameTaskDataServiceTests
 						"taskName", "ListSentenceForming",
 						"taskContent", mockListSentenceFormingDTO()),
 				Map.of(
-						"taskName", "SingleChoice",
-						"taskContent", mockSingleChoiceDTO()),
-				Map.of(
-						"taskName", "MultipleChoice",
-						"taskContent", mockMultipleChoiceDTO()),
+						"taskName", "OptionSelect",
+						"taskContent", mockOptionSelectDTO()),
 				Map.of(
 						"taskName", "WordConnect",
 						"taskContent", mockWordConnectDTO()));
@@ -581,6 +598,39 @@ class GameTaskDataServiceTests
 		}
 		
 		return ret;
+	}
+	public static List<Arguments> mockTaskDTOfile()
+	{
+		var ret = List.of(
+				Map.of(
+						"taskName", "WordFill",
+						"taskContent", mockWordFillDTO()),
+				Map.of(
+						"taskName", "ChoiceWordFill",
+						"taskContent", mockChoiceWordFillDTO()),
+				Map.of(
+						"taskName", "ListWordFill",
+						"taskContent", mockListWordFillDTO()),
+				Map.of(
+						"taskName", "ListChoiceWordFill",
+						"taskContent", mockListChoiceWordFillDTO()),
+				Map.of(
+						"taskName", "ChronologicalOrder",
+						"taskContent", mockChronologicalOrderDTO()),
+				Map.of(
+						"taskName", "ListSentenceForming",
+						"taskContent", mockListSentenceFormingDTO()),
+				Map.of(
+						"taskName", "OptionSelect",
+						"taskContent", mockOptionSelectDTO()),
+				Map.of(
+						"taskName", "WordConnect",
+						"taskContent", mockWordConnectDTO()));
+
+		return List.of(Arguments.of(new MockMultipartFile(
+				"file", "data.json",
+				MediaType.TEXT_PLAIN_VALUE,
+				mapper.valueToTree(ret).toString().getBytes())));
 	}
 	
 	private static Account mockTaskDataAdmin()
@@ -724,29 +774,18 @@ class GameTaskDataServiceTests
 				"Test instruction", List.of(),
 				lsfWordFillElemList, 100);
 	}
-	public static SingleChoice mockSingleChoice()
+	public static OptionSelect mockOptionSelect()
 	{
-		String scContent = "Lorem ipsum dolor sit amet";
-		String scAnswer = "consectetur";
-		List<String> scIncorrectAnswers = List.of(
-				"adipiscing", "elit", "sed");
-		
-		return new SingleChoice(UUID.randomUUID(), 
-				"Test instruction", List.of(),
-				scContent, scAnswer, scIncorrectAnswers, 100);
-	}
-	public static MultipleChoice mockMultipleChoice()
-	{
-		String mcContent = "Lorem ipsum dolor sit amet";
-		List<String> mcCorrectAnswers = List.of(
+		String osContent = "Lorem ipsum dolor sit amet";
+		List<String> osCorrectAnswers = List.of(
 				"eiusmod", "tempor", "incididunt ut");
-		List<String> mcIncorrectAnswers = List.of(
+		List<String> osIncorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		return new MultipleChoice(UUID.randomUUID(),
+		return new OptionSelect(UUID.randomUUID(),
 				"Test instruction", List.of(),
-				new MultipleChoiceElement(UUID.randomUUID(),
-						mcContent, mcCorrectAnswers, mcIncorrectAnswers), 100);
+				new OptionSelectElement(UUID.randomUUID(),
+						osContent, osCorrectAnswers, osIncorrectAnswers), 100);
 	}
 	public static WordConnect mockWordConnect()
 	{
@@ -890,29 +929,18 @@ class GameTaskDataServiceTests
 				"Test instruction", List.of(), 100,
 				lsfWordFillElemList);
 	}
-	public static SingleChoiceDTO mockSingleChoiceDTO()
+	public static OptionSelectDTO mockOptionSelectDTO()
 	{
-		String scContent = "Lorem ipsum dolor sit amet";
-		String scAnswer = "consectetur";
-		List<String> scIncorrectAnswers = List.of(
-				"adipiscing", "elit", "sed");
-		
-		return new SingleChoiceDTO(
-				"Test instruction", List.of(), 100,
-				scContent, scAnswer, scIncorrectAnswers);
-	}
-	public static MultipleChoiceDTO mockMultipleChoiceDTO()
-	{
-		String mcContent = "Lorem ipsum dolor sit amet";
-		List<String> mcCorrectAnswers = List.of(
+		String osContent = "Lorem ipsum dolor sit amet";
+		List<String> osCorrectAnswers = List.of(
 				"eiusmod", "tempor", "incididunt ut");
-		List<String> mcIncorrectAnswers = List.of(
+		List<String> osIncorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		return new MultipleChoiceDTO(
+		return new OptionSelectDTO(
 				"Test instruction", List.of(), 100,
-				new MultipleChoiceElementDTO(
-						mcContent, mcCorrectAnswers, mcIncorrectAnswers));
+				new OptionSelectElementDTO(
+						osContent, osCorrectAnswers, osIncorrectAnswers));
 	}
 	public static WordConnectDTO mockWordConnectDTO()
 	{

@@ -20,60 +20,121 @@
     <div class="container">
         <div class="main-body">
             
-            <!-- Breadcrumb -->
-            <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top fixed-top">
-                <div class="container-xl">
-                  <a class="navbar-brand" href="/">
-                    <img src="assets/myIcons/iconbig.svg" class="d-block mx-auto iconbig">
-                  </a>
-                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                  </button>
-                
-                  <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
-                    <ul class="navbar-nav">
-                      <li class="nav-item">
-                        <a class="nav-link" href="/">Strona Domowa</a>
-                      </li>
-                      <li class="nav-item collapse" id="gameHyperlink">
-                        <a class="nav-link" href="/lobby">Gra</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link disabled" href="#" id="helpHyperlink">Wsparcie</a>
-                      </li>
-                      <li class="nav-item" id="registerHyperlink">
-                        <a class="nav-link" href="/register">Rejestracja</a>
-                      </li>
-                      <li class="nav-item " id="loginHyperlink">
-                        <a class="nav-link mr-auto " href="/login" >Zaloguj</a>
-                      </li>
-                      <li class="nav-item collapse" id="dashboardHyperlink">
-                        <a class="nav-link" href="/dashboard" >Rankingi</a>
-                      </li>
-                      <li class="nav-item collapse" id="swaggerHyperlink">
-                        <a class="nav-link " href="/swagger-ui/">Swagger</a>
-                      </li>
-                      <li class="nav-item collapse" id="taskDataHyperlink">
-                        <a class="nav-link " href="/tasks/import/global">Task Manager</a>
-                      </li>
-                      <li class="nav-item collapse" id="actuatorHyperlink">
-                        <a class="nav-link " href="/actuator">Actuator</a>
-                      </li>
-                      <li class="nav-item mr-auto collapse active" id="profileHyperlink">
-                        <a class="nav-link active" href="/profile">Profil</a>
-                      </li>
-                    </ul>
-                    <a class="nav-link mr-r pl-0 collapse" id="logOutButton" href="/logout">Wyloguj</a>
+          <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top fixed-top">
+            <div class="container-xl">
+              <a class="navbar-brand pb-0 pt-0" href="/">
+                Competico
+                <img src="/assets/myIcons/iconbig.svg" class="d-inline-block mx-auto iconbig2" alt="logo">
+              </a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            
+              <div class="navbar-collapse justify-content-md-center collapse" id="navbarsExample08" >
+                <ul class="navbar-nav ml-auto">
+                  <li class="nav-item" id="homepageHyperlink">
+                    <a class="nav-link" href="/">Strona Domowa</a>
+                  </li>
+                  <li class="nav-item collapse" id="taskDataHyperlink">
+                    
+                    <div  id="main_nav">
+                      <ul class="navbar-nav">
+                        <li class="nav-item dropdown noselect">
+                          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">Task Manager</a>
+                          <ul class="dropdown-menu">
+                            <h6 class="text-center"><a href="/tasks/import/global/">Wybór wariantu nowego zadania.</a></h6>
+                            <hr>
+                            <li>
+                              <a class="dropdown-item"> Wypełnianie luk w tekście. &raquo </a>
+                              <ul class="submenu dropdown-menu">
+                                <li><a class="dropdown-item" href="/tasks/import/global/#WordFill" id="btnWordFill"> Jeden wielozdaniowy tekst,<br> jedna pula odpowiedzi.</a></li>
+                                
+                                <li><a class="dropdown-item" href="/tasks/import/global/#ListWordFill" id="btnListWordFill"> Oddzielne zdania ułożone w wierszach,<br> jedna pula odpowiedzi na wiersz. </a></li>
+              
+                                <li><a class="dropdown-item" href="/tasks/import/global/#ListChoiceWordFill" id="btnListChoiceWordFill"> Oddzielne zdania ułożone w wierszach,<br> wybór słowa dla każdej luki.</a></li> 
+              
+                                <li><a class="dropdown-item disabled" href="#"> Jeden wielozdaniowy tekst,<br> wybór słowa dla każdej luki. </a></li>
+                              </ul>
+                            </li>
+                            <li>
+                              <a class="dropdown-item">Łączenie słów i zwrotów z dwóch kolumn. &raquo</a>
+                              <ul class="submenu dropdown-menu">
+                                <li>
+                                  <a class="dropdown-item" href="/tasks/import/global/#WordConnect" id="btnWordConnect">Łączenie linią.</a></li>
+              
+                                <li>
+                                  <a class="dropdown-item disabled" href="/tasks/import/global/#WordConnectAnswerType" id="btnWordConnectAnswerType"> Dopasowanie drugiej kolumny przez ręczne wpisywanie odpowedzi.</a></li>
+              
+                                <li>
+                                  <a class="dropdown-item disabled" href="/tasks/import/global/#WordConnectAnswerPool" id="btnWordConnectAnswerPool"> Dopasowanie drugiej kolumny z podanego zestawu.</a></li>
+                              </ul>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" href="/tasks/import/global/#ChronologicalOrder" id="btnChronologicalOrder"> Układanie zdań w porządek chronologiczny. </a></li>
+                            <li>
+                              <a class="dropdown-item" href="/tasks/import/global/#ListSentenceForming" id="btnListSentenceForming"> Układanie zdań z podanych wyrazów. </a></li>
+                            <li>
+                              <a class="dropdown-item disabled" href="/tasks/import/global/#OptionSelect" id="btnOptionSelect"> Wybór odpowiedzi (pytanie zamknięte)</a>
+                            </li>
+              
+                            <li>
+                              <a class="dropdown-item disabled"> Warianty z obrazkami. &raquo</a>
+                              <ul class="submenu dropdown-menu">
+                                <li><a class="dropdown-item disabled" href="/tasks/import/global/#PictureToManyWords" id="btnPictureToManyWords"> Jeden obrazek i wiele odpowiedzi.</a></li>
+              
+                                <li><a class="dropdown-item disabled" href="/tasks/import/global/#SentenceToManyPictures" id="btnSentenceToManyPictures"> Jeden tekst i wiele obrazków. </a></li>
+              
+                                <li><a class="dropdown-item disabled" href="/tasks/import/global/#ManyPicturesManyWords" id="btnManyPicturesManyWords"> Wiele obrazków i wiele słów. </a></li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                  <li class="nav-item collapse" id="gameHyperlink">
+                    <a class="nav-link" href="/lobby">Gra</a>
+                  </li>
+                  <!-- <li class="nav-item" id="helpHyperlink">
+                    <a class="nav-link disabled" href="#" >Wsparcie</a>
+                  </li> -->
+                  <li class="nav-item" id="registerHyperlink">
+                    <a class="nav-link" href="/register">Rejestracja</a>
+                  </li>
+                  <li class="nav-item collapse" id="dashboardHyperlink">
+                    <a class="nav-link" href="/dashboard" >Rankingi</a>
+                  </li>
+                  <li class="nav-item collapse" id="swaggerHyperlink">
+                    <a class="nav-link " href="/swagger-ui/">Swagger</a>
+                  </li>
+                  <li class="nav-item collapse" id="actuatorHyperlink">
+                    <a class="nav-link " href="/actuator">Actuator</a>
+                  </li>
+                  <li class="nav-item mr-lg-auto collapse active" id="profileHyperlink">
+                    <a class="nav-link active" href="#">Profil</a>
+                  </li>
+                  
+                </ul>
+                <a class="nav-link mr-r pl-0 collapse" id="logOutButton" href="/logout">Wyloguj</a>
+                <a class="nav-link mr-r pl-0" id="loginHyperlink" href="/login" >Zaloguj</a>
+                <div class="nav-item dropdown" id="languageDropdown">
+                  <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="languageSelected"><img alt="🇵🇱" class="imga" style="width: 16px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAMAAABiM0N1AAACxFBMVEUAAAD/AAD///+2JCS/ICDhJC/cIizVFSvbHyrt7e3////UHCXgJC/fJC7aICnv7+/z8/PRFy7VHCbfICvlIyz09PTv7+/y8vLeIyz/AADz8/P19fXWHCfVGiLVHSbhJTDVHCfXHSfbJC3dIi/bHCjt7e3VHCb39/f09PTZHSnYISzu7u7v7+/VHCvjJS/cIivcIyzZICrWHCbx8fHfIy309PTYICfZHyj09PT////XIij29vby8vLy8vLaHyv29vbx8fHdIi309PTu7u7z8/Pz8/Pz8/Py8vLx8fHv7+/jJi/z8/PeISnXHin39/fu7u7bHSjWICbXHij19fXx8fHx8fHYHyny8vLv7+/v7+/jJi/09PTz8/P09PT19fXcIiz29vbjJjDjJS/x8fHhJSzgIy/hJy7aICrZHynjIy7hJTD39/fZHirbICriJS/gJS/hJC/fJjDWHCfkJTD09PTXHSjfJC3cIy719fXZICrdIi3fIy/jJi/iJTD19fXXHijVKyvdIiv19fX////19fXx8fH19fXXHinVHCX29vb09PT19fXdISzZHiv////29vb09PTcISzkJC7bISreIizz8/PgJC/y8vLZHCb09PT19fX09PT39/ffJCzaICrUHCb39/fYHif09PT09PTbICj09PTVHSbZHyn29vb29vb19fX29vb29vb09PTXHij19fXZHyn29vb19fX19fX39/f4+PjXHijbICr09PTWHiXXHyjVHSfWHSf29vb19fXx8fH19fXVHCb29vb////RFyP19fXWHSX29vb29vb29vb29vb19fXOGCT29vbVHCf09PTUGyb19fXw8PD39/f19fX29vb09PTx8fHz8/PfJC7cIizaICrw8PDZHyneIy3dIy3XHijv7+/gJC7WHSfVHSfUHCbhJS/y8vLjJjD19fX29vb09PRBLbWNAAAA13RSTlMAAwMHCKL9DDFGBL+U+va9+wv6GB39MeRzAuytox6w5aXqOTw/HbYec1guHh82bcTs8WST5XRvxBcNLXPn5opyuNH2D/oVZmGncRvFH9KDSUZx/pORpMN4sa+9W1bw9ur7r6SibpJw5uRIRR+G5eOno2ZjYBhZtxa37VtXvLGD5QZ47QzsberMbh3R/dA8BTmKhRzB58Sz5Rsu5/E9QO+UPzvt70At5OgcxM/DG4b8/o42zNI8cevus29s5X1ZtqPltVgHFmSm5W3kpWMVokhvlea8vZRuRiejyDoAAAKjSURBVHhe1NQ7ysJAFIZhSWkfmyzAwloQ/kLQUrCxVtLbWvyVhYqggrGx8FIERfCKqLFUgkE0kSCSmD3MzCasEyfJzHQ+C3jhwMeJ/Jiy87ZNwbIEs3B34oyRytW4QRfdeKRoK9rpX4QY4vmiUWTqaRX6alazhJnoXw0Gahw5ks5uD0MdlNAMl+8AAlu7G9xpLQCh1TyoM9MBsWHMvyNNAIWi7NeRS4BKZozvDKaI0gh7XeKFqKlrzAxziEH/e5o9xGTj7Sg8YMJLnkG3AaOl+7gkYvZ0/Y0PafWKwyAQQFEUiwLXZDwJAlfVpE0q+CoMhF8dW+gWWANbqUPMDjCMqKmabTR5mQxo3l3AsVeo04nbAWoUUbg78s5AD2mhQVG9LPTUVB/7C5+D4sRAqSbLDJSz0GKgmYUuDoo2ugBQyUMuoIKHJkBXHqoA1V+6EVDLQx0g70e3Aur/pMy7DUBQGAXgv6BzK3obqIxhCRISCo9ISDwSdhC7aRQKMYbkuO4C5xvge2gTopmPYkQJH9mIHD5KEWU3LUCU81GBKOIjT8Bnn1I+FRvVOmouUqsjVx0U1YvWcdEuv4GLRhNZ20kIFzFWJnqrmX+XBKIADuDfR4cdHBwoDSfcHVoRGIg/BoOGoFUQtMG1RbBBl6ChqbEGG6zFxSIQ3cTJUFsCcRJxVkSh+j8cvbvunu+9zc8f8NGwsR9fCrv2w0ITjwqwIpczQRUCmyOf2OM7hMOFWFSFU/B1LiBG8M9Bkf8pp+Hi9JP3SchwVVcXXNRjePi453neGvB0fsP+tGRQvJytGOVroCKlNktz1SHYJvq4/ck8gwHJdX+owqkg2Ej9B0rz5Qc76e4k8Osi8B3ZA6dhcjT4s2mGbscQY0x6U91UFFN/f8oa2C1rNdZA8W7uzHUAAAAASUVORK5CYII="></a>
+                  <div class="dropdown-menu" id="languageDropdown-inner">
+                      <a class="dropdown-item bg-light" id="languageOption1"><img alt="🇵🇱" class="imga" style="width: 16px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAMAAABiM0N1AAACxFBMVEUAAAD/AAD///+2JCS/ICDhJC/cIizVFSvbHyrt7e3////UHCXgJC/fJC7aICnv7+/z8/PRFy7VHCbfICvlIyz09PTv7+/y8vLeIyz/AADz8/P19fXWHCfVGiLVHSbhJTDVHCfXHSfbJC3dIi/bHCjt7e3VHCb39/f09PTZHSnYISzu7u7v7+/VHCvjJS/cIivcIyzZICrWHCbx8fHfIy309PTYICfZHyj09PT////XIij29vby8vLy8vLaHyv29vbx8fHdIi309PTu7u7z8/Pz8/Pz8/Py8vLx8fHv7+/jJi/z8/PeISnXHin39/fu7u7bHSjWICbXHij19fXx8fHx8fHYHyny8vLv7+/v7+/jJi/09PTz8/P09PT19fXcIiz29vbjJjDjJS/x8fHhJSzgIy/hJy7aICrZHynjIy7hJTD39/fZHirbICriJS/gJS/hJC/fJjDWHCfkJTD09PTXHSjfJC3cIy719fXZICrdIi3fIy/jJi/iJTD19fXXHijVKyvdIiv19fX////19fXx8fH19fXXHinVHCX29vb09PT19fXdISzZHiv////29vb09PTcISzkJC7bISreIizz8/PgJC/y8vLZHCb09PT19fX09PT39/ffJCzaICrUHCb39/fYHif09PT09PTbICj09PTVHSbZHyn29vb29vb19fX29vb29vb09PTXHij19fXZHyn29vb19fX19fX39/f4+PjXHijbICr09PTWHiXXHyjVHSfWHSf29vb19fXx8fH19fXVHCb29vb////RFyP19fXWHSX29vb29vb29vb29vb19fXOGCT29vbVHCf09PTUGyb19fXw8PD39/f19fX29vb09PTx8fHz8/PfJC7cIizaICrw8PDZHyneIy3dIy3XHijv7+/gJC7WHSfVHSfUHCbhJS/y8vLjJjD19fX29vb09PRBLbWNAAAA13RSTlMAAwMHCKL9DDFGBL+U+va9+wv6GB39MeRzAuytox6w5aXqOTw/HbYec1guHh82bcTs8WST5XRvxBcNLXPn5opyuNH2D/oVZmGncRvFH9KDSUZx/pORpMN4sa+9W1bw9ur7r6SibpJw5uRIRR+G5eOno2ZjYBhZtxa37VtXvLGD5QZ47QzsberMbh3R/dA8BTmKhRzB58Sz5Rsu5/E9QO+UPzvt70At5OgcxM/DG4b8/o42zNI8cevus29s5X1ZtqPltVgHFmSm5W3kpWMVokhvlea8vZRuRiejyDoAAAKjSURBVHhe1NQ7ysJAFIZhSWkfmyzAwloQ/kLQUrCxVtLbWvyVhYqggrGx8FIERfCKqLFUgkE0kSCSmD3MzCasEyfJzHQ+C3jhwMeJ/Jiy87ZNwbIEs3B34oyRytW4QRfdeKRoK9rpX4QY4vmiUWTqaRX6alazhJnoXw0Gahw5ks5uD0MdlNAMl+8AAlu7G9xpLQCh1TyoM9MBsWHMvyNNAIWi7NeRS4BKZozvDKaI0gh7XeKFqKlrzAxziEH/e5o9xGTj7Sg8YMJLnkG3AaOl+7gkYvZ0/Y0PafWKwyAQQFEUiwLXZDwJAlfVpE0q+CoMhF8dW+gWWANbqUPMDjCMqKmabTR5mQxo3l3AsVeo04nbAWoUUbg78s5AD2mhQVG9LPTUVB/7C5+D4sRAqSbLDJSz0GKgmYUuDoo2ugBQyUMuoIKHJkBXHqoA1V+6EVDLQx0g70e3Aur/pMy7DUBQGAXgv6BzK3obqIxhCRISCo9ISDwSdhC7aRQKMYbkuO4C5xvge2gTopmPYkQJH9mIHD5KEWU3LUCU81GBKOIjT8Bnn1I+FRvVOmouUqsjVx0U1YvWcdEuv4GLRhNZ20kIFzFWJnqrmX+XBKIADuDfR4cdHBwoDSfcHVoRGIg/BoOGoFUQtMG1RbBBl6ChqbEGG6zFxSIQ3cTJUFsCcRJxVkSh+j8cvbvunu+9zc8f8NGwsR9fCrv2w0ITjwqwIpczQRUCmyOf2OM7hMOFWFSFU/B1LiBG8M9Bkf8pp+Hi9JP3SchwVVcXXNRjePi453neGvB0fsP+tGRQvJytGOVroCKlNktz1SHYJvq4/ck8gwHJdX+owqkg2Ej9B0rz5Qc76e4k8Osi8B3ZA6dhcjT4s2mGbscQY0x6U91UFFN/f8oa2C1rNdZA8W7uzHUAAAAASUVORK5CYII="></a>
+                      <a class="dropdown-item" id="languageOption2"><img alt="🇬🇧" class="imga" style="width: 16px;"   src="data:image/png;base64,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"></a>
                   </div>
                 </div>
-              </nav>
+              </div>
+            </div>
+          </nav>
+              
             <!-- /Breadcrumb -->
             <div class="container row gutters-sm fill m-auto">
                 <div class="col-md-4 mb-3">
                 <div class="card shadow-lg">
                     <div class="card-body">
                     <div class="d-flex flex-column align-items-center text-center">
-                        <img src="/assets/user-icon.png" alt="Admin" class="rounded-circle" width="150">
+                        <img src="/assets/user-icon.png" class="rounded-circle" width="150" alt="user icon">
                         <div class="mt-3">
                         <h4 id="usernameDiv">username</h4>
                         <p class="text-secondary mb-1" id="roleDiv"></p>
@@ -119,9 +180,9 @@
                     <div class="card-body">
                     <div class="row" id="nicknameRow">
                         <div class="col-sm-4 col-10">
-                            <h6 class="mb-0">Nickname:</h6>
+                            <h6 class="mb-0" id="nicknameH6Text">Nickname:</h6>
                         </div>
-                        <div class="col-sm-1 col-2 text-center">
+                        <div class="col-sm-1 col-2 text-center editIconClassDiv">
                             <h6><i class="fa fa-pencil-square-o collapse editIconClass" aria-hidden="true" id="nicknameEditButt"></i></h6> 
                         </div>
                         <div id="nicknameDiv" class="col-sm-7 text-secondary">
@@ -130,9 +191,9 @@
                     <hr>
                     <div class="row" id="emailRow">
                         <div class="col-sm-4 col-10">
-                            <h6 class="mb-0">Email</h6>
+                            <h6 class="mb-0" id="emailH6Text">Email</h6>
                         </div>
-                        <div class="col-sm-1 col-2 text-center">
+                        <div class="col-sm-1 col-2 text-center editIconClassDiv">
                             <h6><i class="fa fa-pencil-square-o collapse editIconClass" data-toggle="modal" data-target="#saveChangesEmailModal" aria-hidden="true" id="emailEditButt"></i></h6> 
                         </div>
                         <div id="emailDiv" class="col-sm-7 text-secondary">
@@ -141,7 +202,7 @@
                     <hr>
                     <div class="row" id="passwordRow">
                       <div class="col-sm-4 col-10">
-                          <button class="btn btn-primary" data-toggle="modal" data-target="#saveChangesPasswordModal">Zmień hasło</button>
+                          <button class="btn btn-primary" data-toggle="modal" data-target="#saveChangesPasswordModal" id="changePoasswordButton">Zmień hasło</button>
                       </div>
                     </div>
                     <div id="saveChangesDiv" class="collapse">
@@ -287,14 +348,14 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title" id="saveTaskModalLongTitle">Czy napewno edytowac profil?</h4>
+            <h4 class="modal-title" id="editProfileModalLongTitle">Czy napewno edytowac profil?</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnSendChanges">Prześlij</button>
+            <button type="button" class="btn btn-secondary cancelBtn" data-dismiss="modal">Anuluj</button>
+            <button type="button" class="btn btn-primary sendBtn" data-dismiss="modal" id="btnSendChanges">Prześlij</button>
           </div>
         </div>
       </div>
@@ -304,22 +365,22 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title" id="saveTaskModalLongTitle">Zmień swój obecny email</h4>
+            <h4 class="modal-title" id="editEmailModalLongTitle">Zmień swój obecny email</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body"> 
-            <h6>Wprowadź swoje obecne hasło i nowy email</h6>
+            <h6 id="typeCurrentPasswordAndNewEmail">Wprowadź swoje obecne hasło i nowy email</h6>
             <div class="form-group">
-              <label for="oldPasswordInputEmail">Bieżące hasło</label>
+              <label for="oldPasswordInputEmail" id="oldPasswordInputEmailLabel">Bieżące hasło</label>
               <input type="password" class="form-control" id="oldPasswordInputEmail">
               <div class="invalid-feedback" id="invalidPasswordInfoEmail">
                 Nieprawidłowe hasło.
               </div>
             </div>
             <div class="form-group">
-              <label for="newEmailInput">Nowy email</label>
+              <label for="newEmailInput" id="newEmailInputLabel">Nowy email</label>
               <input type="email" class="form-control" id="newEmailInput">
               <div class="invalid-feedback" id="invalidEmailInfoBad">
                 Wprowadź poprawny adres email.
@@ -333,8 +394,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
-            <button type="button" class="btn btn-primary"  id="btnSendChangesEmail">Zmień</button>
+            <button type="button" class="btn btn-secondary cancelBtn" data-dismiss="modal">Anuluj</button>
+            <button type="button" class="btn btn-primary changeBtn"  id="btnSendChangesEmail">Zmień</button>
           </div>
         </div>
       </div>
@@ -344,22 +405,22 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title" id="saveTaskModalLongTitle">Zmień swoje obecne hasło</h4>
+            <h4 class="modal-title" id="editPasswordModalLongTitle">Zmień swoje obecne hasło</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body"> 
-            <h6>Wprowadź swoje obecne hasło i nowe hasło</h6>
+            <h6 id="typeCurrentPasswordAndNewPassword">Wprowadź swoje obecne hasło i nowe hasło</h6>
             <div class="form-group">
-              <label for="oldPasswordInputPassword">Bieżące hasło</label>
+              <label for="oldPasswordInputPassword" id="oldPasswordInputPasswordLabel">Bieżące hasło</label>
               <input type="password" class="form-control" id="oldPasswordInputPassword">
               <div class="invalid-feedback" id="invalidPasswordInfoPassword">
                 Nieprawidłowe hasło.
               </div>
             </div>
             <div class="form-group">
-              <label for="newPasswordInput">Nowe hasło</label>
+              <label for="newPasswordInput" id="newPasswordInputLabel">Nowe hasło</label>
               <input type="password" class="form-control" id="newPasswordInput">
               <div class="invalid-feedback" id="invalidNewPasswordInfoPasswordIdentical">
                 Identyczne hasło.
@@ -376,17 +437,22 @@
         </div>
       </div>
     </div>
+    <script>
+      const isClientSide = true;
+    </script>
     <script src="js/jquery/jquery-3.5.1.min.js"></script>
     <script src="js/bootstrap/popper.min.js"></script>
     <script src="js/bootstrap/bootstrap.min.js"></script>
     <script>
     window.jQuery || document.write('<script src="assets/js/vendor/jquery.slim.min.js"><\/script>')
     </script>
-    <script src="js/bootstrap/bootstrap.bundle.min.js"></script>
+    <!-- <script src="js/bootstrap/bootstrap.bundle.min.js"></script> -->
+    <script src="js/accountValidation.js"></script>
     <script src="js/profile.js"></script>
     <script src="/js/navbar.js"></script>
+    <script src="/js/lang/PageLanguageChanger.js"></script>
     <script>
-        var debug = ProfileLogic.getInstance(debug = true);
+        var debug = ProfileLogic.getInstance(debug = false);
     </script>
 </body>
 </html>

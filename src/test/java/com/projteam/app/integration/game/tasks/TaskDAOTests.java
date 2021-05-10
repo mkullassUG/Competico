@@ -19,10 +19,9 @@ import com.projteam.app.dao.game.tasks.ChronologicalOrderDAO;
 import com.projteam.app.dao.game.tasks.ListChoiceWordFillDAO;
 import com.projteam.app.dao.game.tasks.ListSentenceFormingDAO;
 import com.projteam.app.dao.game.tasks.ListWordFillDAO;
-import com.projteam.app.dao.game.tasks.MultipleChoiceDAO;
-import com.projteam.app.dao.game.tasks.MultipleChoiceElementDAO;
+import com.projteam.app.dao.game.tasks.OptionSelectDAO;
+import com.projteam.app.dao.game.tasks.OptionSelectElementDAO;
 import com.projteam.app.dao.game.tasks.SentenceFormingElementDAO;
-import com.projteam.app.dao.game.tasks.SingleChoiceDAO;
 import com.projteam.app.dao.game.tasks.WordConnectDAO;
 import com.projteam.app.dao.game.tasks.WordFillDAO;
 import com.projteam.app.dao.game.tasks.WordFillElementDAO;
@@ -33,10 +32,9 @@ import com.projteam.app.domain.game.tasks.ChronologicalOrder;
 import com.projteam.app.domain.game.tasks.ListChoiceWordFill;
 import com.projteam.app.domain.game.tasks.ListSentenceForming;
 import com.projteam.app.domain.game.tasks.ListWordFill;
-import com.projteam.app.domain.game.tasks.MultipleChoice;
-import com.projteam.app.domain.game.tasks.MultipleChoiceElement;
+import com.projteam.app.domain.game.tasks.OptionSelect;
+import com.projteam.app.domain.game.tasks.OptionSelectElement;
 import com.projteam.app.domain.game.tasks.SentenceFormingElement;
-import com.projteam.app.domain.game.tasks.SingleChoice;
 import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.WordFill;
 import com.projteam.app.domain.game.tasks.WordFillElement;
@@ -55,9 +53,8 @@ public class TaskDAOTests
 	private @Autowired ChoiceWordFillElementDAO cwfeDAO;
 	private @Autowired ChoiceWordFillElementWordChoiceDAO cfwewcDAO;
 	private @Autowired ListChoiceWordFillDAO lcwfDAO;
-	private @Autowired SingleChoiceDAO scDAO;
-	private @Autowired MultipleChoiceDAO mcDAO;
-	private @Autowired MultipleChoiceElementDAO mceDAO;
+	private @Autowired OptionSelectDAO osDAO;
+	private @Autowired OptionSelectElementDAO oseDAO;
 	private @Autowired WordConnectDAO wcDAO;
 	private @Autowired ChronologicalOrderDAO coDAO;
 	private @Autowired ListSentenceFormingDAO lsfDAO;
@@ -270,28 +267,7 @@ public class TaskDAOTests
 	}
 	@Test
 	@Transactional
-	public void shouldSaveAndRetrieveSingleChoice()
-	{
-		String content = "Lorem ipsum dolor sit amet";
-		String answer = "consectetur";
-		List<String> incorrectAnswers = List.of(
-				"adipiscing", "elit", "sed");
-		
-		SingleChoice sc = new SingleChoice(UUID.randomUUID(),
-				"Test instruction", List.of(),
-				content, answer, incorrectAnswers, 1);
-		
-		SingleChoice sc2 = scDAO.saveAndFlush(sc);
-		scDAO.flush();
-		SingleChoice sc3 = scDAO.findById(sc.getId()).orElse(null);
-		
-		assertEquals(sc, sc2);
-		assertEquals(sc2, sc3);
-		assertEquals(sc, sc3);
-	}
-	@Test
-	@Transactional
-	public void shouldSaveAndRetrieveMultipleChoice()
+	public void shouldSaveAndRetrieveOptionSelect()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		List<String> correctAnswers = List.of(
@@ -299,20 +275,20 @@ public class TaskDAOTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(),
+		OptionSelect os = new OptionSelect(UUID.randomUUID(),
 				"Test instruction", List.of(),
-				new MultipleChoiceElement(UUID.randomUUID(),
+				new OptionSelectElement(UUID.randomUUID(),
 						content, correctAnswers, incorrectAnswers), 1);
 		
-		mceDAO.save(mc.getContent());
-		mceDAO.flush();
-		MultipleChoice mc2 = mcDAO.saveAndFlush(mc);
-		mcDAO.flush();
-		MultipleChoice mc3 = mcDAO.findById(mc.getId()).orElse(null);
+		oseDAO.save(os.getContent());
+		oseDAO.flush();
+		OptionSelect os2 = osDAO.saveAndFlush(os);
+		osDAO.flush();
+		OptionSelect os3 = osDAO.findById(os.getId()).orElse(null);
 		
-		assertEquals(mc, mc2);
-		assertEquals(mc2, mc3);
-		assertEquals(mc, mc3);
+		assertEquals(os, os2);
+		assertEquals(os2, os3);
+		assertEquals(os, os3);
 	}
 	@Test
 	@Transactional

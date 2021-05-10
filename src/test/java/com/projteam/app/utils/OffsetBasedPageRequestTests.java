@@ -98,6 +98,31 @@ class OffsetBasedPageRequestTests
 		assertNotNull(OffsetBasedPageRequest.of(0, 5, null).toString());
 	}
 	
+	@ParameterizedTest
+	@MethodSource("equalObjects")
+	public void canCompareEqual(
+			OffsetBasedPageRequest obpr1,
+			OffsetBasedPageRequest obpr2)
+	{
+		assertEquals(obpr1, obpr2);
+	}
+	@ParameterizedTest
+	@MethodSource("unequalObjects")
+	public void canCompareUnequal(
+			OffsetBasedPageRequest obpr1,
+			OffsetBasedPageRequest obpr2)
+	{
+		assertNotEquals(obpr1, obpr2);
+	}
+	@ParameterizedTest
+	@MethodSource("equalObjects")
+	public void shouldHaveEqualHashCode(
+			OffsetBasedPageRequest obpr1,
+			OffsetBasedPageRequest obpr2)
+	{
+		assertEquals(obpr1.hashCode(), obpr2.hashCode());
+	}
+	
 	//---Sources---
 	
 	public static List<Arguments> sorts()
@@ -106,5 +131,43 @@ class OffsetBasedPageRequestTests
 				Arguments.of(Sort.by(Order.asc("prop"))),
 				Arguments.of(Sort.by(Order.desc("prop"))),
 				Arguments.of((Sort) null));
+	}
+	public static List<Arguments> equalObjects()
+	{
+		return List.of(Arguments.of(
+					OffsetBasedPageRequest.of(0, 5, null),
+					OffsetBasedPageRequest.of(0, 5, null)
+				),
+				Arguments.of(
+						OffsetBasedPageRequest.of(1, 3, null),
+						OffsetBasedPageRequest.of(1, 3, null)
+				),
+				Arguments.of(
+						OffsetBasedPageRequest.of(2, 8, Sort.by(Order.asc("prop"))),
+						OffsetBasedPageRequest.of(2, 8, Sort.by(Order.asc("prop")))
+				),
+				Arguments.of(
+						OffsetBasedPageRequest.of(2, 8, Sort.by(Order.desc("prop"))),
+						OffsetBasedPageRequest.of(2, 8, Sort.by(Order.desc("prop")))
+				));
+	}
+	public static List<Arguments> unequalObjects()
+	{
+		return List.of(Arguments.of(
+					OffsetBasedPageRequest.of(0, 5, null),
+					OffsetBasedPageRequest.of(1, 5, null)
+				),
+				Arguments.of(
+						OffsetBasedPageRequest.of(1, 3, null),
+						OffsetBasedPageRequest.of(1, 7, null)
+				),
+				Arguments.of(
+						OffsetBasedPageRequest.of(2, 8, Sort.by(Order.asc("prop"))),
+						OffsetBasedPageRequest.of(2, 8, null)
+				),
+				Arguments.of(
+						OffsetBasedPageRequest.of(2, 8, null),
+						OffsetBasedPageRequest.of(2, 8, Sort.by(Order.desc("prop")))
+				));
 	}
 }

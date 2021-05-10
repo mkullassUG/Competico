@@ -9,7 +9,7 @@ body {
 
 body {
   background-repeat: no-repeat;
-  background-position: calc(50% + 7px) 50%;
+  background-position: calc(50% + 7px) -25px;
   /* background-position: center; */
   background-image: url(../assets/devices-animate.svg);
 }
@@ -127,7 +127,7 @@ h2 {
 }
 
 /*sorry not found elements*/
-.failInfo {
+.failSuccessInfo {
   position: absolute;
   top: 10%;
   right: 0;
