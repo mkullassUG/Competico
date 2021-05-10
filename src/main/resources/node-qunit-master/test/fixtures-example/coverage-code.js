@@ -1,0 +1,17 @@
+exports.myMethod = function() {
+    return 123;
+};
+
+exports.myAsyncMethod = function(callback) {
+    setTimeout(function() {
+        callback(123);
+    }, 100);
+};
+
+exports.myOtherMethod = function() {
+    return 321;
+};
+
+exports.return1 = function() {
+    return 1;
+}

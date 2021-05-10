@@ -45,7 +45,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		                "/register",
 		                "/api/v1/login/",
 		                "/api/v1/register/",
-		                "/api/v1/authenticated/")
+		                "/api/v1/authenticated/",
+		                "/api/v1/forgotpassword",
+		                "/api/v1/resetpassword/**",
+		                "/api/v1/emailverification",
+		                "/forgotpassword",
+		                "/resetpassword/**",
+		                "/verifyemail/**")
 			.permitAll()
 			.antMatchers("/actuator/**").hasAuthority(ACTUATOR_ADMIN)
 			.antMatchers(

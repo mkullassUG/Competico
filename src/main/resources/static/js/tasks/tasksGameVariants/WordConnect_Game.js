@@ -1,6 +1,7 @@
 //WordConnect (nie działa na mobilnym?)
 const WordConnect_Game = (taskData) => {
     var self = TaskGameVariant(taskData);
+    self.taskName = "WordConnect";
 
     self.JsPlumb;
 
@@ -15,23 +16,37 @@ const WordConnect_Game = (taskData) => {
       self.words = taskData.leftWords;
       self.definitions = taskData.rightWords;
   
-      var taskContentReady= $(`<div class="containerC">`);
       var taskContentLeft = $(`<div class="leftSideC">`);
       var taskContentRight = $(`<div class="rightSideC">`);
+
+      $("#GameDiv").html(``);
       for (let i = 0; i < self.words.length; i++) {
-        var word = self.words[i];
-        var definition = self.definitions[i];
+        var word = document.createTextNode(self.words[i]);
+        var definition = document.createTextNode(self.definitions[i]);
         
-        taskContentLeft.append(`<div class="leftLineC"><div class="word" data-order="`+i+`">` + word+ `</div></div>`);
-  
-        taskContentRight.append(`</div><div class="rightLineC"><div class="definition" data-order="`+i+`">` + definition + `</div></div>`);
+        var leftLineC = $(`<div class="leftLineC">`);
+        var wordNode = $(`<div class="word" data-order="`+i+`">`);
+        wordNode.append(word);
+        leftLineC.append(wordNode);
+
+        taskContentLeft.append(leftLineC);
+
+        var rightLineC = $(`<div class="rightLineC">`);
+        var definitionNode = $(`<div class="definition" data-order="`+i+`">`);
+        definitionNode.append(definition);
+        rightLineC.append(definitionNode);
+
+        taskContentRight.append(rightLineC);
       }
-      taskContentReady.append(taskContentLeft);
-      taskContentReady.append(taskContentRight);
-  
-      $("#GameDiv").html(`<h6 class="border-bottom border-gray pb-2 mb-0 text-dark"> Content: </h6>
-      <div id="taskContent">`+ taskContentReady.html() +`</div>
-      `);
+
+      var taskContentDiv = $(`<div id="taskContent">`);
+      taskContentDiv.append(taskContentLeft);
+      taskContentDiv.append(taskContentRight);
+
+      
+      $("#GameDiv").append(`<h6 class="border-bottom border-gray pb-2 mb-0 text-dark"> Content: </h6>`);
+      $("#GameDiv").append(taskContentDiv);
+      
       var wordDivs = $(".word"),
       definitionDivs = $(".definition");
       

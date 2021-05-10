@@ -1,38 +1,124 @@
 const TaskGameCore = (data) => {
+
+    if (TaskGameCore.singleton)
+        return TaskGameCore.singleton;
     var self = {};
+    if (!TaskGameCore.singleton)
+        TaskGameCore.singleton = self;
+
+
     self.resizeVariantObserver;
+    self.variantObject;
+    self.tablicaPolskichNazwTaskow = {
+        'WordFill': 
+        'Wypełnianie luk w tekście\n <br> <small>Jeden wielozdaniowy tekst, jedna pula odpowiedzi</small>',
+
+        'WordConnect': 
+        'Łączenie słów i zwrotów z dwóch kolumn,\n <br> <small>Łączenie linią</small>',
+
+        'WordDrag': 
+        'Łączenie słów i zwrotów z dwóch kolumn,\n <br> <small>Dopasowanie drugiej kolumny z podanego zestawu</small>',
+
+        'WordWrite': 
+        'Łączenie słów i zwrotów z dwóch kolumn,\n <br> <small>Dopasowanie drugiej kolumny przez ręczne wpisanie odpowedzi</small>',
+
+        'ChronologicalOrder': 
+        'Układanie zdań w porządek chronologiczny',
+
+        'ListWordFill':
+        "Wypełnianie luk w tekście\n <br> <small>Oddzielne zdania ułożone w wierszach, jedna pula odpowiedzi na wiersz</small>",
+
+        "ListChoiceWordFill":
+        "Wypełnianie luk w tekście\n <br> <small>Oddzielne zdania ułożone w wierszach, wybór słowa dla każdej luki</small>",
+
+        'ListSentenceForming' : 
+        "Układanie zdań z podanych wyrazów.",
+
+        'OptionSelect': 
+        "Zaznaczanie poprawnych odpowiedzi (Kahoot)",
+
+        'PictureToManyWords': 
+        "Jeden obrazek i wiele odpowiedzi. <br> <small>Warianty z obrazkami.</small>",
+
+        'SentenceToManyPictures': 
+        "Jeden tekst i wiele obrazków. <br> <small>Warianty z obrazkami.</small>",
+
+        'ManyPicturesManyWords': 
+        "Wiele obrazków i wiele słów. <br> <small>Warianty z obrazkami.</small>",
+
+    };
 
     var init = (initData) => {
 
     }
+    
     //game
-    self.getVariant = (variantString, task) => {
+    self.getVariant = (variantString, task, instruction) => {
+
+        //jeśli niepodano nazwy i obiektu taska to wysyłam obecny variant
+        if ( !variantString || !task)
+            if ( self.variantObject )
+                return self.variantObject
+            else {
+                console.warn("To nie powinno się wydarzyć!")
+                return false;
+            }
+
         variantString = JSON.parse(JSON.stringify(variantString));
         task = JSON.parse(JSON.stringify(task));
 
-        var variantObject;
-
+        self.variantObject = {};
+        
+        $("#gameInstruction").html(``);
+        $("#gameInstruction").append(document.createTextNode(instruction));
+        
         //wybieranie odpowiedniej logiki dla konkretnego template'a
         switch (variantString) {
             case "WordFill":
-                variantObject = WordFill_Game(task);
+                self.variantObject = WordFill_Game(task);
             break;
             case "WordConnect":
-                variantObject = WordConnect_Game(task);
+                self.variantObject = WordConnect_Game(task);
             break;
             case "ChronologicalOrder":
-                variantObject = ChronologicalOrder_Game(task);
+                self.variantObject = ChronologicalOrder_Game(task);
             break;
             case "ListWordFill":
-                variantObject = ListWordFill_Game(task);
+                self.variantObject = ListWordFill_Game(task);
             break;
             case "ListSentenceForming":
-                //TODO: not finished!!!
-                variantObject = ListSentenceForming_Game(task);
+                self.variantObject = ListSentenceForming_Game(task);
             break;
             case "ListChoiceWordFill":
+                self.variantObject = ListChoiceWordFill_Game(task);
+            break;
+            // case "SingleChoice":
+            //     //TODO: not finished!!!
+            //     self.variantObject = SingleChoice_Game(task);
+            // break;
+            case "OptionSelect":
                 //TODO: not finished!!!
-                variantObject = ListChoiceWordFill_Game(task);
+                self.variantObject = OptionSelect_Game(task);
+            break;
+            case "SentenceToManyPictures":
+                //TODO: not finished!!!
+                self.variantObject = SentenceToManyPictures_Game(task);
+            break;
+            case "PictureToManyWords":
+                //TODO: not finished!!!
+                self.variantObject = PictureToManyWords_Game(task);
+            break;
+            case "ManyPicturesManyWords":
+                //TODO: not finished!!!
+                self.variantObject = ManyPicturesManyWords_Game(task);
+            break;
+            case "WordDrag":
+                //TODO: not finished!!!
+                self.variantObject = WordDrag_Game(task);
+            break;
+            case "WordConnectAnswerType":
+                //TODO: not finished!!!
+                self.variantObject = WordConnectAnswerType_Game(task);
             break;
             default:
                 console.warn("To pole jest tylko dla jeszcze nie zaimplementowancyh tasków, w produkcji nie powinno się nigdy wykonać!");
@@ -40,10 +126,10 @@ const TaskGameCore = (data) => {
             break;
         }
 
-        if (variantObject)
-            self.setupResizeVariantObserver(variantObject);
+        if (self.variantObject)
+            self.setupResizeVariantObserver(self.variantObject);
 
-        return variantObject;
+        return self.variantObject;
     }
 
     self.setupResizeVariantObserver = (variantObject) => {
@@ -64,3 +150,6 @@ const TaskGameCore = (data) => {
     init(data);
     return self;
 }
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+    module.exports = {TaskGameCore};

@@ -25,7 +25,12 @@ console.log(
 const GameLogic = ( lobby, _task) => {
 
   /*       logic variables          */
+  if (GameLogic.singleton)
+      return GameLogic.singleton;
   var self = lobby;
+  if (!GameLogic.singleton)
+      GameLogic.singleton = self;
+
   self.currentTask = _task;
   self.currentTaskVariant;
   self.gameID; //dostaje z LobbyLogic whoami lub checkUpdateLobby
@@ -197,22 +202,21 @@ const GameLogic = ( lobby, _task) => {
     if (self.debug) 
       console.log(task);
     
-    self.currentTaskVariant = self.GameCore.getVariant(task.taskName, task.task);
+    self.currentTaskVariant = self.GameCore.getVariant(task.taskName, task.task, task.instruction);
     self.setupResizeGameObserver();
 
     //ustawianie kropeczek
     self.buildCy(task.taskCount,task.currentTaskNumber);
 
-    $("#gameTimer").html(task.instruction);
     if ( self.KropeczkiObserver )
-      self.KropeczkiObserver.unobserve(document.querySelector("#gameTimer"));
+      self.KropeczkiObserver.unobserve(document.querySelector("#gameInstruction"));
     
     self.KropeczkiObserver = new ResizeObserver(function(entries) {
 
       self.buildCy(task.taskCount,task.currentTaskNumber);
     });
     
-    self.KropeczkiObserver.observe(document.querySelector("#gameTimer"));
+    self.KropeczkiObserver.observe(document.querySelector("#gameInstruction"));
 
     self.taskComeAnimation();
   }

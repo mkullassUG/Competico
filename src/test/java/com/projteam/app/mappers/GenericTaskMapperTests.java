@@ -21,10 +21,9 @@ import com.projteam.app.domain.game.tasks.ChronologicalOrder;
 import com.projteam.app.domain.game.tasks.ListChoiceWordFill;
 import com.projteam.app.domain.game.tasks.ListSentenceForming;
 import com.projteam.app.domain.game.tasks.ListWordFill;
-import com.projteam.app.domain.game.tasks.MultipleChoice;
-import com.projteam.app.domain.game.tasks.MultipleChoiceElement;
+import com.projteam.app.domain.game.tasks.OptionSelect;
+import com.projteam.app.domain.game.tasks.OptionSelectElement;
 import com.projteam.app.domain.game.tasks.SentenceFormingElement;
-import com.projteam.app.domain.game.tasks.SingleChoice;
 import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.WordFill;
@@ -37,10 +36,9 @@ import com.projteam.app.dto.game.tasks.create.ChronologicalOrderDTO;
 import com.projteam.app.dto.game.tasks.create.ListChoiceWordFillDTO;
 import com.projteam.app.dto.game.tasks.create.ListSentenceFormingDTO;
 import com.projteam.app.dto.game.tasks.create.ListWordFillDTO;
-import com.projteam.app.dto.game.tasks.create.MultipleChoiceDTO;
-import com.projteam.app.dto.game.tasks.create.MultipleChoiceElementDTO;
+import com.projteam.app.dto.game.tasks.create.OptionSelectDTO;
+import com.projteam.app.dto.game.tasks.create.OptionSelectElementDTO;
 import com.projteam.app.dto.game.tasks.create.SentenceFormingElementDTO;
-import com.projteam.app.dto.game.tasks.create.SingleChoiceDTO;
 import com.projteam.app.dto.game.tasks.create.TaskDTO;
 import com.projteam.app.dto.game.tasks.create.WordConnectDTO;
 import com.projteam.app.dto.game.tasks.create.WordFillDTO;
@@ -202,25 +200,10 @@ class GenericTaskMapperTests
 		assertEquals(dto.getSentences(), entity.getSentences());
 	}
 	@Test
-	public void canMapSingleChoiceToDTO()
+	public void canMapOptionSelectToDTO()
 	{
-		SingleChoice entity = mockSingleChoice();
-		SingleChoiceDTO dto = (SingleChoiceDTO) mapper.toDTO(entity);
-		
-		assertNotNull(dto);
-		assertEquals(dto.getInstruction(), entity.getInstruction());
-		assertEquals(dto.getTags(), entity.getTags());
-		assertEquals(dto.getDifficulty(), entity.getDifficulty());
-		
-		assertEquals(dto.getContent(), entity.getContent());
-		assertEquals(dto.getAnswer(), entity.getAnswer());
-		assertEquals(dto.getIncorrectAnswers(), entity.getIncorrectAnswers());
-	}
-	@Test
-	public void canMapMultipleChoiceToDTO()
-	{
-		MultipleChoice entity = mockMultipleChoice();
-		MultipleChoiceDTO dto = (MultipleChoiceDTO) mapper.toDTO(entity);
+		OptionSelect entity = mockOptionSelect();
+		OptionSelectDTO dto = (OptionSelectDTO) mapper.toDTO(entity);
 		
 		assertNotNull(dto);
 		assertEquals(dto.getInstruction(), entity.getInstruction());
@@ -395,26 +378,10 @@ class GenericTaskMapperTests
 		assertEquals(entity.getSentences(), dto.getSentences());
 	}
 	@Test
-	public void canMapSingleChoiceToEntity()
+	public void canMapOptionSelectToEntity()
 	{
-		SingleChoiceDTO dto = mockSingleChoiceDTO();
-		SingleChoice entity = (SingleChoice) mapper.toEntity(dto);
-		
-		assertNotNull(entity);
-		assertEquals(entity.getInstruction(), dto.getInstruction());
-		assertEquals(entity.getTags(), dto.getTags());
-		assertEquals(entity.getDifficulty(), dto.getDifficulty());
-		
-		assertNotNull(entity.getId());
-		assertEquals(entity.getContent(), dto.getContent());
-		assertEquals(entity.getAnswer(), dto.getAnswer());
-		assertEquals(entity.getIncorrectAnswers(), dto.getIncorrectAnswers());
-	}
-	@Test
-	public void canMapMultipleChoiceToEntity()
-	{
-		MultipleChoiceDTO dto = mockMultipleChoiceDTO();
-		MultipleChoice entity = (MultipleChoice) mapper.toEntity(dto);
+		OptionSelectDTO dto = mockOptionSelectDTO();
+		OptionSelect entity = (OptionSelect) mapper.toEntity(dto);
 		
 		assertNotNull(entity);
 		assertEquals(entity.getInstruction(), dto.getInstruction());
@@ -697,53 +664,31 @@ class GenericTaskMapperTests
 				"Test instruction", List.of(), 100,
 				lsfWordFillElemList);
 	}
-	public static SingleChoice mockSingleChoice()
+	public static OptionSelect mockOptionSelect()
 	{
-		String scContent = "Lorem ipsum dolor sit amet";
-		String scAnswer = "consectetur";
-		List<String> scIncorrectAnswers = List.of(
-				"adipiscing", "elit", "sed");
-		
-		return new SingleChoice(UUID.randomUUID(),
-				"Test instruction", List.of(),
-				scContent, scAnswer, scIncorrectAnswers, 100);
-	}
-	public static SingleChoiceDTO mockSingleChoiceDTO()
-	{
-		String scContent = "Lorem ipsum dolor sit amet";
-		String scAnswer = "consectetur";
-		List<String> scIncorrectAnswers = List.of(
-				"adipiscing", "elit", "sed");
-		
-		return new SingleChoiceDTO(
-				"Test instruction", List.of(), 100,
-				scContent, scAnswer, scIncorrectAnswers);
-	}
-	public static MultipleChoice mockMultipleChoice()
-	{
-		String mcContent = "Lorem ipsum dolor sit amet";
-		List<String> mcCorrectAnswers = List.of(
+		String osContent = "Lorem ipsum dolor sit amet";
+		List<String> osCorrectAnswers = List.of(
 				"eiusmod", "tempor", "incididunt ut");
-		List<String> mcIncorrectAnswers = List.of(
+		List<String> osIncorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		return new MultipleChoice(UUID.randomUUID(), 
+		return new OptionSelect(UUID.randomUUID(), 
 				"Test instruction", List.of(),
-				new MultipleChoiceElement(UUID.randomUUID(),
-						mcContent, mcCorrectAnswers, mcIncorrectAnswers), 100);
+				new OptionSelectElement(UUID.randomUUID(),
+						osContent, osCorrectAnswers, osIncorrectAnswers), 100);
 	}
-	public static MultipleChoiceDTO mockMultipleChoiceDTO()
+	public static OptionSelectDTO mockOptionSelectDTO()
 	{
-		String mcContent = "Lorem ipsum dolor sit amet";
-		List<String> mcCorrectAnswers = List.of(
+		String osContent = "Lorem ipsum dolor sit amet";
+		List<String> osCorrectAnswers = List.of(
 				"eiusmod", "tempor", "incididunt ut");
-		List<String> mcIncorrectAnswers = List.of(
+		List<String> osIncorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		return new MultipleChoiceDTO(
+		return new OptionSelectDTO(
 				"Test instruction", List.of(), 100,
-				new MultipleChoiceElementDTO(
-						mcContent, mcCorrectAnswers, mcIncorrectAnswers));
+				new OptionSelectElementDTO(
+						osContent, osCorrectAnswers, osIncorrectAnswers));
 	}
 	public static WordConnect mockWordConnect()
 	{

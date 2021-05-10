@@ -34,7 +34,11 @@
   top: -10px;
   line-height: 1;
 }
-.draggable { position: absolute; padding: 0.3em; float: left; margin: 10px 10px 10px 0; 
+.draggable { 
+  position: absolute; 
+  padding: 0.3em; 
+  /* float: left;  */
+  margin: 10px 10px 10px 0; 
   /*double word answer wrap fix*/
   display: inline-block;
   white-space: nowrap;
@@ -61,6 +65,9 @@
   height: 30px; 
   padding: 0.5em;  
   margin: 10px; 
+}
+
+.answerHolderWrapper:not(.startHolder) {
   border: 4px dotted rgba(0, 0, 0, 0.534);
   border-radius: 5px;
 }
@@ -216,11 +223,12 @@ svg.fs-connector-hover path {
 .leftSideC {
   width:50%;
   display: inline-block;
-  float: left;
+  /* float: left; */
 }
 .rightLineC{
   display: block;
   min-height: 10%;
+  /* nie prawda że błędnie wstawione bo robi różnice */
   float: right;
   width: 100%;
 }
@@ -244,6 +252,7 @@ svg.fs-connector-hover path {
   border: 2px solid blue;
   border-radius: 20%;
   display: inline-block;
+  /* nie prawda że błędnie wstawione bo robi różnice */
   float: right;
   width: 80%;
   min-height: 10%;
@@ -251,6 +260,10 @@ svg.fs-connector-hover path {
 
 /*css template'a od chronological orderu*/
 
+
+#sortable:last-child {
+  margin-bottom: 15px;
+}
 .ui-icon {
   filter: invert(0%) sepia(90%) saturate(6554%) hue-rotate(575deg) brightness(119%) contrast(141%);
 }
@@ -301,7 +314,7 @@ svg.fs-connector-hover path {
 }
 
 /*Template 3 ListWordFill*/
-.answerLWF {
+.answerListWordFill {
   background-color: rgb(255, 255, 255);
   border: 3px solid rgb(10, 108, 255);
   border-radius: 10px;
@@ -309,23 +322,23 @@ svg.fs-connector-hover path {
   margin-left: 5px;
   margin-right: 5px;
 }
-.answerLWF:hover {
+.answerListWordFill:hover {
   background-color: blue!important;
   border: 3px solid blue!important;
   color: white!important;
 }
-.answerLWF:active {
+.answerListWordFill:active {
   background-color: cyan!important;
   border: 3px solid cyan!important;
   color: black!important;
 }
-.answerLWFselected {
+.answerListWordFillselected {
   background-color: cyan!important;
   border: 3px solid cyan!important;
   color: black!important;
 }
 
-.answerHolderLWF {
+.answerHolderListWordFill {
   background-color: rgba(100,100,100,0.5);
   width: calc(100% + 20px);
   text-align: center;
@@ -333,7 +346,7 @@ svg.fs-connector-hover path {
   margin-top: -10px;
 }
 
-.answerHolderWrapperLWF { 
+.answerHolderWrapperListWordFill { 
   display:inline-block;
   vertical-align: middle; 
   height: 30px; 
@@ -353,7 +366,7 @@ svg.fs-connector-hover path {
   color: white;
 }
 
-.LSFword {
+.ListSentenceFormingword {
   display: inline-block;
   border: 3px solid rgb(10, 108, 255);
   border-radius: 10px;
@@ -382,6 +395,10 @@ w game edytorze to jest zależne od
 {
   /*tutaj się obchodzi dobrze pez relativa... ale nadal inaczej*/
   /* position:relative; */
+  width: 90%;
+  display: inline-block;
+}
+#gameCenter > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivOrderedWords {
   background: 
     radial-gradient(
       circle at 5px 37px,
@@ -391,9 +408,8 @@ w game edytorze to jest zależne od
     )
     0 0 / 8px 38px;
   background-blend-mode: multiply, normal, normal, normal;
-  width: 90%;
-  display: inline-block;
 }
+
 #gameCenter > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivRandomizedWords > li.ui-sortable-helper,
 #gameCenter > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivOrderedWords > li.ui-sortable-helper
 {
@@ -409,6 +425,10 @@ w game edytorze to jest zależne od
 #Center > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivOrderedWords
 {
   position:relative;
+  width: 98%;
+  display: inline-block;
+}
+#Center > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivOrderedWords {
   background: 
     radial-gradient(
       circle at 5px 37px,
@@ -418,10 +438,9 @@ w game edytorze to jest zależne od
     )
     0 0 / 8px 38px;
   background-blend-mode: multiply, normal, normal, normal;
-  width: 90%;
-  display: inline-block;
-  /* background: repeating-linear-gradient(#ffffff, #ffffff 35px, #9198e5 36px, rgb(10, 108, 255) 38px); */
 }
+
+
 #Center > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivRandomizedWords > li.ui-sortable-helper,
 #Center > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivOrderedWords > li.ui-sortable-helper
 {
@@ -430,14 +449,18 @@ w game edytorze to jest zależne od
   color: white;
 }
 
-.DivRandomizedWords > li.ui-sortable-placeholder, .DivOrderedWords > li.ui-sortable-placeholder {
+.DivRandomizedWords > li.ui-sortable-placeholder, 
+.DivOrderedWords > li.ui-sortable-placeholder {
   background-color: yellow!important;
   text-align: center;
-  min-width:20px;
-  min-height:20px;
   display: inline-block;
 }
-.DivRandomizedWords > li.ui-sortable-placeholder::before, .DivOrderedWords > li.ui-sortable-placeholder::before{
+.DivOrderedWords > li.ui-sortable-placeholder  {
+  min-width:20px;
+  min-height:20px;
+}
+/* .DivRandomizedWords > li.ui-sortable-placeholder::before,  */
+.DivOrderedWords > li.ui-sortable-placeholder::before{
   content:"+";
 }
 
@@ -451,7 +474,7 @@ w game edytorze to jest zależne od
 }
 /*Template 6 ListChoiceWordFill*/
 
-.answerLCWF {
+.answerListChoiceWordFillF {
   background-color: rgb(255, 255, 255);
   border: 3px solid rgb(10, 108, 255);
   border-radius: 10px;
@@ -460,13 +483,13 @@ w game edytorze to jest zależne od
   margin-right: 5px;
   cursor: pointer;
 }
-.answerLCWF:hover {
+.answerListChoiceWordFillF:hover {
   background-color: blue!important;
   border: 3px solid blue!important;
   color: white!important;
   text-decoration: none;
 }
-.answerLCWF:active {
+.answerListChoiceWordFillF:active {
   background-color: cyan!important;
   border: 3px solid cyan!important;
   color: black!important;
@@ -475,11 +498,77 @@ w game edytorze to jest zależne od
   display: inline-block;
 }
 
-.unusedLCWF {
+.unusedListChoiceWordFillF {
   text-decoration: line-through;
   border: none!important;
   color: gray;
 }
 
+/*Template SingleChoice*/
+.answerSingle { 
+  background-color: rgb(255, 255, 255);
+  border: 3px solid rgb(10, 108, 255);
+  border-radius: 10px;
+  padding: 9px!important;
+  display: inline-block;
+  width: 45%;
+  margin: 5px;
+}
+
+/*wordConnect*/
+/* :not(.ui-droppable-active) */
+
+._jsPlumb_endpoint._jsPlumb_endpoint_anchor_.ui-draggable.ui-draggable-handle.ui-droppable.endpointDrag.ui-draggable-dragging,
+._jsPlumb_endpoint._jsPlumb_endpoint_anchor_.ui-draggable.ui-draggable-handle.ui-droppable._jsPlumb_dragging._jsPlumb_endpoint_connected._jsPlumb_endpoint_full,
+._jsPlumb_endpoint._jsPlumb_endpoint_anchor_.ui-draggable.ui-draggable-handle.ui-droppable._jsPlumb_endpoint_connected._jsPlumb_endpoint_full._jsPlumb_dragging {
+  width:20px!important;
+  background-color: rgb(0, 0, 0,0);
+}
+
+.rightLineC > ._jsPlumb_endpoint._jsPlumb_endpoint_anchor_.ui-draggable.ui-draggable-handle.ui-droppable:not(._jsPlumb_dragging):not(.ui-draggable-dragging),
+.rightLineC > ._jsPlumb_endpoint._jsPlumb_endpoint_anchor_.ui-draggable.ui-draggable-handle.ui-droppable.endpointDrag:not(._jsPlumb_dragging):not(.ui-draggable-dragging),
+.rightLineC > ._jsPlumb_endpoint._jsPlumb_endpoint_anchor_.ui-draggable.ui-draggable-handle.ui-droppable._jsPlumb_endpoint_connected._jsPlumb_endpoint_full:not(._jsPlumb_dragging):not(.ui-draggable-dragging) {
+  background-color: rgb(0, 0, 0,0);
+  width: 40%!important;
+  padding-top:18px;
+  padding-bottom:19px;
+  transform: translateY(-10px);
+}
+
+/*optionSelect*/
+.optionSelectAnswer:active {
+  background-color: rgb(10, 186, 255);
+}
+.optionSelectAnswer {
+  background-color: rgb(255, 255, 255);
+  border: 3px solid rgb(10, 108, 255);
+  border-radius: 10px;
+  padding: 9px!important;
+  display: inline-block;
+  width: 45%;
+  margin: 5px;
+  cursor: pointer;
+}
+.optionSelectAnswer:hover {
+  animation: optionSelectAnim 1s ease-in-out forwards;
+}
+
+.answerListWordFill:not(.bg-primary):hover { /*listwordFill*/
+  animation: optionSelectAnim 1s ease-in-out forwards;
+}
+
+.selectedOption {
+  background-color: rgb(21, 115, 255);
+  color: white!important;
+}
+@keyframes optionSelectAnim {
+  50% {box-shadow: 0px 0px 10px blue;}
+  100% {box-shadow: 0px 0px 10px blue;}
+}
+
+.rightLineC > div > svg {
+  top: 50%!important;
+  transform: translateY(-50%);
+}
 
 /*other global.css*/

@@ -1,15 +1,25 @@
 package com.projteam.app.api;
 
+import static com.projteam.app.domain.Account.PLAYER_ROLE;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import com.projteam.app.domain.Account;
+import com.projteam.app.domain.TokenStatus;
 import com.projteam.app.service.AccountService;
 import com.projteam.app.service.game.GameService;
 import com.projteam.app.service.game.GameTaskDataService;
@@ -47,10 +57,59 @@ class TemplateTests
 			.andExpect(status().isOk());
 	}
 	@Test
+	public void shouldReturnProfilePageOfUser() throws Exception
+	{
+		UUID id = UUID.randomUUID();
+		String email = "testAcc@test.pl";
+		String username = "TestAccount";
+		String nickname = "TestAccount";
+		String password = "QWERTY";
+		List<String> roles = List.of(PLAYER_ROLE);
+		
+		when(accountService.findByUsername(username))
+			.thenReturn(Optional.of(new Account.Builder()
+					.withID(id)
+					.withEmail(email)
+					.withUsername(username)
+					.withNickname(nickname)
+					.withPassword(password)
+					.withRoles(roles)
+					.build()));
+		
+		mvc.perform(get("/profile/" + username))
+			.andExpect(status().isOk());
+	}	
+	@Test
 	public void shouldReturnLobbyJoinPage() throws Exception
 	{
+		UUID id = UUID.randomUUID();
+		String email = "testAcc@test.pl";
+		String username = "TestAccount";
+		String nickname = "TestAccount";
+		String password = "QWERTY";
+		List<String> roles = List.of(PLAYER_ROLE);
+		
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.of(new Account.Builder()
+					.withID(id)
+					.withEmail(email)
+					.withUsername(username)
+					.withNickname(nickname)
+					.withPassword(password)
+					.withRoles(roles)
+					.build()));
+		
 		mvc.perform(get("/lobby"))
 			.andExpect(status().isOk());
+	}
+	@Test
+	public void shouldRedirectWhenNotLoggedInOnLobbyJoinPage() throws Exception
+	{
+		when(accountService.getAuthenticatedAccount())
+			.thenReturn(Optional.empty());
+		
+		mvc.perform(get("/lobby"))
+			.andExpect(redirectedUrl("login"));
 	}
 	@Test
 	public void shouldReturnGamePage() throws Exception
@@ -58,11 +117,39 @@ class TemplateTests
 		mvc.perform(get("/game/gameCode"))
 			.andExpect(status().isOk());
 	}
-	@Disabled
 	@Test
 	public void shouldReturnTaskManagerPage() throws Exception
 	{
 		mvc.perform(get("/tasks/import/global"))
+			.andExpect(status().isOk());
+	}
+	@Test
+	public void shouldReturnForgotPasswordPage() throws Exception
+	{
+		mvc.perform(get("/forgotpassword"))
+			.andExpect(status().isOk());
+	}
+	@ParameterizedTest
+	@EnumSource(TokenStatus.class)
+	public void shouldReturnPasswordResetOrInvalidTokenPage(TokenStatus status) throws Exception
+	{
+		String token = UUID.randomUUID().toString();
+		when(accountService.getPasswordResetTokenStatus(token))
+			.thenReturn(status);
+		
+		mvc.perform(get("/resetpassword/" + token))
+			.andExpect(status().isOk());
+	}
+	@Disabled("Disabled until templates are available")
+	@ParameterizedTest
+	@EnumSource(TokenStatus.class)
+	public void shouldReturnEmailVerifiedOrInvalidTokenPage(TokenStatus status) throws Exception
+	{
+		String token = UUID.randomUUID().toString();
+		when(accountService.getEmailVerificationTokenStatus(token))
+			.thenReturn(status);
+		
+		mvc.perform(get("/verifyemail/" + token))
 			.andExpect(status().isOk());
 	}
 }

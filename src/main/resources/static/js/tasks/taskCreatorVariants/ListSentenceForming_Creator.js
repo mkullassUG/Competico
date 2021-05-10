@@ -8,12 +8,12 @@ const ListSentenceForming_Creator = (data_ = {}) => {
     self.taskContent.rows = [];
 
     /*  Logic functions */
-    var listSentenceFormingInit = () => {
+    var ListSentenceFormingInit = () => {
         self.hideAllTaskDivsExceptGiven(self.taskName);
         
         /*pozbywam się even listenerów z przycisków przez klonowanie*/
 
-        var buttonAddSentence = $("#LSFAddSentence"),
+        var buttonAddSentence = $("#" + self.taskName+ "AddSentence"),
         buttonAddSentenceClone = buttonAddSentence.clone();
         buttonAddSentence.replaceWith( buttonAddSentenceClone );
 
@@ -22,7 +22,7 @@ const ListSentenceForming_Creator = (data_ = {}) => {
                 self.addNewSentence();
             });
         
-        buttonAddSentenceClone.click();
+        self.checkAndClickOnAddButt();
     }
 
     var checkIfTaskReadySuper = self.checkIfTaskReady;
@@ -40,15 +40,13 @@ const ListSentenceForming_Creator = (data_ = {}) => {
 
         //czy można pobrać difficulty
         //slider
-        if ($("#customRangeLSF").length > 0) {
-            self.taskContent.difficulty = $("#customRangeLSF").val();
+        if ($("#customRange" + self.taskName+ "").length > 0) {
+            self.taskContent.difficulty = $("#customRange" + self.taskName+ "").val();
         }
-        // if ($("#LSFDificulty").length) {
-        //     self.taskContent.difficulty = $("#LSFDificulty").val();
-        // }
+
         //czy można pograc tagi
-        if ($("#LSFDivTaskTags").length) {
-            var tagsString = $("#LSFDivTaskTags").val();
+        if ($("#" + self.taskName+ "DivTaskTags").length) {
+            var tagsString = $("#" + self.taskName+ "DivTaskTags").val();
             var tags = tagsString.split(",")
                 .map(t=> t.trim())
                 .filter(t => t!="");
@@ -58,14 +56,14 @@ const ListSentenceForming_Creator = (data_ = {}) => {
             }
         }
         //czy można pobrać instrukcje
-        if ( $("#LSFDivTaskInstruction").length ) {
-            self.taskContent.instruction = $("#LSFDivTaskInstruction").val().trim();
+        if ( $("#" + self.taskName+ "DivTaskInstruction").length ) {
+            self.taskContent.instruction = $("#" + self.taskName+ "DivTaskInstruction").val().trim();
         }   
         
         //czy można pobrać zdania
-        if ( $("#LSFSentences").length ) {
+        if ( $("#" + self.taskName+ "Sentences").length ) {
             self.taskContent.rows = [];
-            var sentenceTextareas = $("#LSFSentences").find(".taskTextTextarea");
+            var sentenceTextareas = $("#" + self.taskName+ "Sentences").find(".taskTextTextarea");
             for (let i = 0; i < sentenceTextareas.length; i++) {
                 var sentenceTextarea = $(sentenceTextareas[i]);
                 var sentence = sentenceTextarea.val().split(" ").filter(s=> s != "");
@@ -107,26 +105,21 @@ const ListSentenceForming_Creator = (data_ = {}) => {
     self.loadTaskFrom = (taskObject) => {
         loadTaskFromSuper(taskObject);
         self.prepareLoadedTask();
+        self.checkAndClickOnAddButt();
+
     }
 
     /*TODO: */
     self.prepareLoadedTask = () => {
         /*ustawiam tagi*/
-        var tagsElem = $("#LSFDivTaskTags");
-        tagsElem.val("");
-        var previousTags;
-        for (let i = 0; i < self.taskContent.tags.length; i++) {
-            var tag = self.taskContent.tags[i];
-
-            previousTags = tagsElem.val();
-            tagsElem.val(previousTags + ", " + tag);
-        }
+        var tagsElem = $("#" + self.taskName+ "DivTaskTags");
+        tagsElem.val(self.taskContent.tags.join(", "));
 
         /*ustawiam insmtrukcje*/
-        $("#LSFDivTaskInstruction").val(self.taskContent.instruction);
+        $("#" + self.taskName+ "DivTaskInstruction").val(self.taskContent.instruction);
 
         /*wstawiam dla każdego zdania textarea i przyciski*/
-        var sentenceDiv = $("#LSFSentences");
+        var sentenceDiv = $("#" + self.taskName+ "Sentences");
         sentenceDiv.empty();
         for (let i = 0; i < self.taskContent.rows.length; i++) {
             var row = self.taskContent.rows[i];
@@ -136,9 +129,16 @@ const ListSentenceForming_Creator = (data_ = {}) => {
         }
 
         /*ustawiam difficulty*/
-        $("#customRangeLSF").val(self.taskContent.difficulty);
-        $("#customRangeLabelLSF").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
-        // $("#LSFDificulty").val(self.taskContent.difficulty);
+        $("#customRange" + self.taskName+ "").val(self.taskContent.difficulty);
+        $("#customRange" + self.taskName+ "").trigger("change");
+        $("#customRangeLabel" + self.taskName+ "").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
+        // $("#" + self.taskName+ "Dificulty").val(self.taskContent.difficulty);
+    }
+
+    self.checkAndClickOnAddButt = () => {
+        var buttonAddSentence = $("#" + self.taskName+ "AddSentence");
+        if ( buttonAddSentence.length && !$("#" + self.taskName+ "Sentences").children().length)
+            buttonAddSentence.click();
     }
 
     /*TODO: */
@@ -147,12 +147,12 @@ const ListSentenceForming_Creator = (data_ = {}) => {
         var doMakeNewSentence = () => {
             
             /* sprawdź czy nie ma już connection, jak jest to czy ma oba pola puste  */
-            var sentences = $("#LSFSentences").children();
+            var sentences = $("#" + self.taskName+ "Sentences").children();
             if (sentences.length > 0) {
                 for (let i = 0; i < sentences.length; i++) {
 
                     //zakładam że w kolejności po id
-                    var sentenceTextarea = $("#LSFDivTaskText" + (i+1)); 
+                    var sentenceTextarea = $("#" + self.taskName+ "DivTaskText" + (i+1)); 
                     var sentenceTextareaText = sentenceTextarea.val(); 
 
                     if ( sentenceTextareaText == "") {
@@ -166,13 +166,13 @@ const ListSentenceForming_Creator = (data_ = {}) => {
         
         if (doMakeNewSentence()) {
             //add new and focus
-            var sentenceDivindex = $("#LSFSentences").children().length + 1;
+            var sentenceDivindex = $("#" + self.taskName+ "Sentences").children().length + 1;
             var sentendeElement = self.createSentence(sentenceDivindex);
             sentendeElement.find("textarea").focus();
         } else {
             //display a message about awaiting empty sentences
-            $("#invalidLSFAddSentence").show();
-            setTimeout(function(){$("#invalidLSFAddSentence").fadeOut()},5000);
+            $("#invalid" + self.taskName+ "AddSentence").show();
+            setTimeout(function(){$("#invalid" + self.taskName+ "AddSentence").fadeOut()},5000);
         }
         //scroll to bottom of the div after adding new
         function gotoBottom(id){
@@ -187,47 +187,59 @@ const ListSentenceForming_Creator = (data_ = {}) => {
         //console.log(sentence);
 
         
-        var htmlString = `<div class="form-group blue-border-focus" id="LSFSentence`+i+`">
-                <label for="LSFDivTaskText`+i+`">`+i+`</label>
-                <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="LSFDivTaskText`+i+`" rows="2" placeholder="Wstaw zdanie nr `+i+`">`+sentence+`</textarea>
-                <button class="d-inline-block btn btn-danger btn-sm" id="btnLSFRemoveSentence`+i+`">-</button>
+        var htmlString = `<div class="form-group blue-border-focus" id="` + self.taskName+ `Sentence`+i+`">
+                <label for="` + self.taskName+ `DivTaskText`+i+`">`+i+`</label>
+                <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="` + self.taskName+ `DivTaskText`+i+`" rows="2" placeholder="Wstaw zdanie nr `+i+`">`+sentence+`</textarea>
+                <button class="d-inline-block btn btn-danger btn-sm" id="btn` + self.taskName+ `RemoveSentence`+i+`" data-toggle="tooltip" data-placement="top" title="Usuń zdanie.">-</button>
             </div>`;
 
-        var sentenceDiv = $("#LSFSentences");
+        var sentenceDiv = $("#" + self.taskName+ "Sentences");
         var element = $(htmlString);
         sentenceDiv.append(element);
         
-        $("#btnLSFRemoveSentence"+i).on('click', (e) => {
+        $("#btn" + self.taskName+ "RemoveSentence"+i).on('click', (e) => {
+            $('.tooltip').tooltip('dispose');
             self.removeSentence(i);
         });
 
+        tooltipsUpdate();
+            
         return element;
     }
+
+    var tooltipsUpdate = () => {
+
+        if ( $('[data-toggle="tooltip"]').tooltip !== null && $('[data-toggle="tooltip"]').tooltip !== undefined)
+            $('[data-toggle="tooltip"]').tooltip({
+                trigger : 'hover'
+            });  
+    }
+
     /*TODO: */
     self.removeSentence = (index) => {
 
         /*robione w podobne sposób jak w wordConnectCreator*/
-        var sentences = $("#LSFSentences").children();
+        var sentences = $("#" + self.taskName+ "Sentences").children();
         for ( let i = index; i < sentences.length; i++) {
             
-            var currentSentence = $("#LSFDivTaskText"+(i));
+            var currentSentence = $("#" + self.taskName+ "DivTaskText"+(i));
 
-            var nextSentence = $("#LSFDivTaskText"+(i+1));
+            var nextSentence = $("#" + self.taskName+ "DivTaskText"+(i+1));
 
             currentSentence.val(nextSentence.val())
         }
 
-        $(`#LSFSentence`+sentences.length).remove();
+        $(`#` + self.taskName+ `Sentence`+sentences.length).remove();
     }
     /* listeners */
-    if( $("#customRangeLSF").length > 0 ) {
-        $("#customRangeLSF").on("input",() => {
+    if( $("#customRange" + self.taskName+ "").length > 0 ) {
+        $("#customRange" + self.taskName+ "").on("input",() => {
 
-            self.taskContent.difficulty = $("#customRangeLSF").val();
-            $("#customRangeLabelLSF").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
+            self.taskContent.difficulty = $("#customRange" + self.taskName+ "").val();
+            $("#customRangeLabel" + self.taskName+ "").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
         })
     }
     /*  Initialization */
-    listSentenceFormingInit();
+    ListSentenceFormingInit();
     return self;
 }

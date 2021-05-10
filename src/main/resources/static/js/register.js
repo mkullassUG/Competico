@@ -1,5 +1,10 @@
 
 $(document).ready(function(){
+
+    //NEW!!!!!!
+    if ( typeof PageLanguageChanger != "undefined")
+        PageLanguageChanger();
+        
     $('form').on('submit',function(e){
 
         e.preventDefault();
@@ -20,8 +25,8 @@ $(document).ready(function(){
         $("#passwordfeedback").hide();
         $("#emailfeedback").hide(); 
         
-        //taką samąwalicaje musze mieć w profilu, przydał by się osobny obiekt od tego
-        let validation = validateData(send);
+        //taką samąwalicaje musze mieć w profilu, przydał by się osobny obiekt od tego [AccountValidation w pliku accountValidation]
+        let validation = AccountValidation().validateData(send);
         $("#accountExistValidation").hide();
         $("#passwordValidation").hide();
         $("#emailValidation").hide();
@@ -54,71 +59,32 @@ $(document).ready(function(){
         }
         
     });
-  
-    $('[data-toggle="tooltip"]').tooltip();
+
+    var tooltipsUpdate = () => {
+        if ( $('[data-toggle="tooltip"]').tooltip !== null && $('[data-toggle="tooltip"]').tooltip !== undefined)
+            $('[data-toggle="tooltip"]').tooltip({
+                trigger : 'hover'
+            });  
+    }
     
+    tooltipsUpdate();
+    
+    
+
     NavbarLogic.getInstance();
+
+    //new bug fix
+    var resizeWindow = () => {
+    
+        $("html").height("100%");
+        $("html").height($(document).height());
+    } 
+	window.onresize = resizeWindow;
+	resizeWindow();
 });
 
 //taką samąwalicaje musze mieć w profilu, przydał by się osobny obiekt od tego
-var validateData = (data) => {
 
-  //https://getbootstrap.com/docs/4.0/components/popovers/
-  
-  let emailValid = (data) => {
-    if (!data.match(/(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-z0-9-]*[a-zA-Z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-zA-Z0-9-]*[a-zA-Z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/)) 
-      return false;
-    else
-      return true;
-  }
-  let username = password = password2 =  email = valid = true;
-
-  let usernameValid = (data) => {
-    if (data.match(/^(?=.{4,32}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)) 
-      return true
-    else 
-      return false
-
-  }
-
-  let passwordValid = (data) => {
-    if (data.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/))
-      return true;
-    else
-      return false;
-  }
-
-  let password2Valid = (pass1, pass2) => {
-    if (pass1 === pass2)
-      return true;
-    else
-      return false;
-  }
-
-  
-  if (!emailValid(data.email)) {
-    email = false;//"Niepoprawny email";
-    valid = false;
-  }
-
-  if (!usernameValid(data.username)) {
-    username = false;//"Niepoprawny username, min 8 znaków, max 32, bez znaków specjalnych";
-    valid = false;
-  }
-
-  if (!passwordValid(data.password)) {
-    password = false;//"Niepoprawne hasło, wzór: minimum 8 znaków, conajmniej jedna duża litera i conajmniej jedna cyfra";
-    valid = false;
-  }
-
-  if (!password2Valid(data.password,data.password2)) {
-    password2 = false;//"Hasła nie są identyczne"});
-    valid = false;
-  }
-
-  return {valid: valid, username: username, password: password, password2: password2, email: email};
-  
-}
 
 var registerAction = (data) => {
 

@@ -1,18 +1,51 @@
-const TaskCreatorCore = (data) => {
+const TaskCreatorCore = (debug = false, $jq, myWindow, deps = {}, cbTest) => {
+
+    /* singleton */
+    if (TaskCreatorCore.singleton)
+        return TaskCreatorCore.singleton;
     var self = {};
-    self.GameCore = TaskGameCore();
+    if (!TaskCreatorCore.singleton)
+        TaskCreatorCore.singleton = self;
+        
+    /* environment preparation */
+    if ( $jq && typeof $ == "undefined")
+        $ = $jq;
+    if ( myWindow && typeof window == "undefined")
+        window = myWindow;
+    if ( deps.TaskGameCore && typeof TaskGameCore == "undefined")
+        TaskGameCore = deps.TaskGameCore;
 
-    var init = (initData) => {
+    /*       logic variables          */
+    self.GameCore;
+    self.variantObject;
 
+    /*       logic functions          */
+    var TaskCreatorCoreInit = (initDeps) => {
+        
+        if (debug)
+            console.log("TaskCreatorCore init");
+
+        self.GameCore = TaskGameCore();
+
+        if ( cbTest )
+            cbTest("success");
     }
 
     self.getVariant = (variantString) => {
-        var variantObject;
+
+        //jeśli niepodano nazwy to wysyłam obecny variant
+        if ( !variantString)
+            if ( self.variantObject )
+                return self.variantObject
+            else
+                return false;
+
+        self.variantObject = {};
 
         //sprawdzanie
         switch (variantString) {
             case "WordFill":
-                variantObject = WordFill_Creator();
+                self.variantObject = WordFill_Creator();
                 // variantObject.loadTaskFrom({
                 //     "taskName" : "WordFill",
                 //     "taskContent" : {
@@ -41,7 +74,7 @@ const TaskCreatorCore = (data) => {
                 // });
                 break;
             case "ChronologicalOrder":
-                variantObject = ChronologicalOrder_Creator();
+                self.variantObject = ChronologicalOrder_Creator();
                 // variantObject.loadTaskFrom({
                 //     "taskName" : "ChronologicalOrder",
                 //     "taskContent" : {
@@ -53,7 +86,7 @@ const TaskCreatorCore = (data) => {
                 // });
                 break;
             case "WordConnect":
-                variantObject = WordConnect_Creator();
+                self.variantObject = WordConnect_Creator();
                 // variantObject.loadTaskFrom({
                 //     "taskName" : "WordConnect",
                 //     "taskContent" : {
@@ -78,7 +111,7 @@ const TaskCreatorCore = (data) => {
                 // });
                 break;
             case "ListWordFill":
-                variantObject = ListWordFill_Creator();
+                self.variantObject = ListWordFill_Creator();
                 // variantObject.loadTaskFrom({
                 //     "taskName" : "ListWordFill",
                 //     "taskContent" : {
@@ -139,7 +172,7 @@ const TaskCreatorCore = (data) => {
                 //     });
                 break;
             case "ListChoiceWordFill":
-                variantObject = ListChoiceWordFill_Creator();
+                self.variantObject = ListChoiceWordFill_Creator();
                 // variantObject.loadTaskFrom({
                 //     "taskName" : "ListChoiceWordFill",
                 //     "taskContent" : {
@@ -226,7 +259,7 @@ const TaskCreatorCore = (data) => {
                 // variantObject.loadTaskFrom({});
                 break;
             case "ListSentenceForming":
-                variantObject = ListSentenceForming_Creator();
+                self.variantObject = ListSentenceForming_Creator();
                 // variantObject.loadTaskFrom({
                 //     "taskName" : "ListSentenceForming",
                 //     "taskContent" : {
@@ -258,15 +291,154 @@ const TaskCreatorCore = (data) => {
                 // TODO
                 // variantObject.loadTaskFrom({});
                 break;
+            // case "SingleChoice":
+            //     // TODO
+            //     self.variantObject = SingleChoice_Creator();
+            //     self.variantObject.loadTaskFrom({
+            //         "taskName" : "SingleChoice",
+            //         "taskContent" : {
+            //             "instruction" : "Put cos tam cos tam:",
+            //             "tags" : [ ],
+            //             "content": "dw adawd awdaw daw",
+            //             "answer": "awd",
+            //             "incorrectAnswers": ["awdawd","dwadwa"," dwa"],
+            //             "difficulty" : 100.0
+            //         }
+            //     });
+            //     break;
+            case "OptionSelect":
+                // TODO
+                self.variantObject = OptionSelect_Creator();
+                // self.variantObject.loadTaskFrom({
+                //     "taskName" : "OptionSelect",
+                //     "taskContent" : {
+                //         "instruction" : " cos tam cos tam:",
+                //         "tags" : [ ],
+                //         "content" : {
+                //             "content": "wda dawdawd ad",
+                //             "correctAnswers": ["awd", "awa"],
+                //             "incorrectAnswers": ["awdada", "dwadwa"]
+                //         },
+                //         "difficulty" : 100.0
+                //     }
+                // });
+                break;
+            case "SentenceToManyPictures":
+                // TODO
+                self.variantObject = SentenceToManyPictures_Creator();
+                self.variantObject.loadTaskFrom({
+                    "taskName" : "SentenceToManyPictures",
+                    "taskContent" : {
+                        "instruction" : " cos tam cos tam:",
+                        "tags" : [ ],
+                        "sentence": "wda dawdawd ad",
+                        "correctAnswers": ["img1", "img2"],
+                        "incorrectAnswers": ["img3", "img4"],
+                        "difficulty" : 100.0
+                    }
+                });
+                break;
+            case "PictureToManyWords":
+                // TODO
+                self.variantObject = PictureToManyWords_Creator();
+                self.variantObject.loadTaskFrom({
+                    "taskName" : "PictureToManyWords",
+                    "taskContent" : {
+                        "instruction" : " cos tam cos tam:",
+                        "tags" : [ ],
+                        "correctAnswers": ["wda1","dawdawd ad1"],
+                        "incorrectAnswers": ["wda2","dawdawd ad2"],
+                        "picture": "img",
+                        "text": "wda dawdawd ad",
+                        "difficulty" : 100.0
+                    }
+                });
+                break;
+            case "ManyPicturesManyWords":
+                // TODO
+                self.variantObject = ManyPicturesManyWords_Creator();
+                self.variantObject.loadTaskFrom({
+                    "taskName" : "ManyPicturesManyWords",
+                    "taskContent" : {
+                        "instruction" : " cos tam cos tam:",
+                        "tags" : [ ],
+                        "words": ["wda","dawdawd ad"],
+                        "pictures": ["img1", "img2"],
+                        "difficulty" : 100.0
+                    }
+                });
+                break;
+            case "WordDrag":
+                // TODO
+                self.variantObject = WordDrag_Creator();
+                // variantObject.loadTaskFrom({
+                //     "taskName" : "WordDrag",
+                //     "taskContent" : {
+                //         "instruction" : "Match the words with their translations:",
+                //         "tags" : [ ],
+                //         "leftWords" : [ "data mining", "pattern identification", "quantitative modelling", "class label", "class membership", "explanatory variable", "variable", "fault-tolerant", "spurious pattern", "outlier" ],
+                //         "rightWords" : [ "eksploracja danych", "identyfikacja wzorca", "modelowanie ilościowe", "etykieta klasy", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna" ],
+                //         "correctMapping" : {
+                //             "0" : 0,
+                //             "1" : 1,
+                //             "2" : 2,
+                //             "3" : 3,
+                //             "4" : 4,
+                //             "5" : 5,
+                //             "6" : 6,
+                //             "7" : 7,
+                //             "8" : 8,
+                //             "9" : 9
+                //         },
+                //         "difficulty" : 100.0
+                //     }
+                // });
+                break;
+            case "WordConnectAnswerType":
+                    // TODO
+                    self.variantObject = WordConnectAnswerType_Creator();
+                    // variantObject.loadTaskFrom({
+                    //     "taskName" : "WordConnectAnswerType",
+                    //     "taskContent" : {
+                    //         "instruction" : "Match the words with their translations:",
+                    //         "tags" : [ ],
+                    //         "leftWords" : [ "data mining", "pattern identification", "quantitative modelling", "class label", "class membership", "explanatory variable", "variable", "fault-tolerant", "spurious pattern", "outlier" ],
+                    //         "rightWords" : [ "eksploracja danych", "identyfikacja wzorca", "modelowanie ilościowe", "etykieta klasy", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna" ],
+                    //         "correctMapping" : {
+                    //             "0" : 0,
+                    //             "1" : 1,
+                    //             "2" : 2,
+                    //             "3" : 3,
+                    //             "4" : 4,
+                    //             "5" : 5,
+                    //             "6" : 6,
+                    //             "7" : 7,
+                    //             "8" : 8,
+                    //             "9" : 9
+                    //         },
+                    //         "difficulty" : 100.0
+                    //     }
+                    // });
+                    break;
             default:
                 console.warn("TODO, to nie powinno się wydarzyć!")
                 break;
         }
 
-        return variantObject;
+        return self.variantObject;
     }
 
     self.getVariant_GameCore = (variantString, taskToSetup) => {
+
+        //jeśli niepodano nazwy i obiektu taska to wysyłam obecny variant
+        if ( !variantString || !taskToSetup)
+            if ( self.GameCore.getVariant() )
+                return self.GameCore.getVariant();
+            else {
+                console.warn("To nie powinno się wydarzyć!")
+                return false;
+            }
+
         variantString = JSON.parse(JSON.stringify(variantString));
         taskToSetup = JSON.parse(JSON.stringify(taskToSetup));
 
@@ -290,15 +462,17 @@ const TaskCreatorCore = (data) => {
                 var task;
                 task = taskToSetup.taskContent.content;
                 task.emptySpaceCount = taskToSetup.taskContent.content.emptySpaces.length;
+                var instruction = taskToSetup.taskContent.instruction;
 
-                variantObject = self.GameCore.getVariant(variantString, task);
-                
+                variantObject = self.GameCore.getVariant(variantString, task, instruction);
                 break;
             case "WordConnect":
             case "ChronologicalOrder":
                 var task;
                 task = taskToSetup.taskContent;
-                variantObject = self.GameCore.getVariant(variantString, task);
+                var instruction = taskToSetup.taskContent.instruction;
+
+                variantObject = self.GameCore.getVariant(variantString, task, instruction);
                 break;
             case "ListWordFill":    
                 var task;
@@ -312,8 +486,9 @@ const TaskCreatorCore = (data) => {
                 task.text = text;
                 task.emptySpaceCount = emptySpaceCount;
                 task.startWithText = startWithText;
+                var instruction = taskToSetup.taskContent.instruction;
 
-                variantObject = self.GameCore.getVariant(variantString, task);
+                variantObject = self.GameCore.getVariant(variantString, task, instruction);
                 break;
             case "ListChoiceWordFill":
                 var task;
@@ -326,31 +501,70 @@ const TaskCreatorCore = (data) => {
                 //var wordChoices = task.rows.map((row) => [...row.wordChoices.incorrectAnswers, row.wordChoices.correctAnswer]);
                 var startWithText = task.rows.map((row) => row.startWithText);
 
-                console.log(text)
-                console.log(wordChoices)
-                console.log(startWithText)
                 task.text = text;
                 task.wordChoices = wordChoices;
                 task.startWithText = startWithText;
 
-                console.log(task)
-                variantObject = self.GameCore.getVariant(variantString, task);
+                var instruction = taskToSetup.taskContent.instruction;
+
+                variantObject = self.GameCore.getVariant(variantString, task, instruction);
                 break;
             case "ListSentenceForming":
-                //TODO
                 var task;
                 task = taskToSetup.taskContent;
                 task.words = task.rows.map(r => r.words);
-                console.log(task);
+                var instruction = taskToSetup.taskContent.instruction;
 
-                variantObject = self.GameCore.getVariant(variantString, task);
+                variantObject = self.GameCore.getVariant(variantString, task, instruction);
+                break;
+            // case "SingleChoice":
+            //     var task;
+            //     task = taskToSetup.taskContent;
+            //     task.possibleAnswers = [...task.incorrectAnswers, task.answer];
+            //     delete task.incorrectAnswers;
+            //     delete task.answer;
+            //     console.log(task);
+
+            //     variantObject = self.GameCore.getVariant(variantString, task);
+            //     break;
+            case "OptionSelect":
+                var task;
+                task = taskToSetup.taskContent;
+                task.possibleAnswers = [...task.content.incorrectAnswers, ...task.content.correctAnswers];
+                task.content = task.content.content; // -.-
+                delete task.content.incorrectAnswers;
+                delete task.content.correctAnswers;
+                delete task.content.content;
+                var instruction = taskToSetup.taskContent.instruction;
+
+                variantObject = self.GameCore.getVariant(variantString, task, instruction);
+                break;
+            case "SentenceToManyPictures":
+                var task;
+                task = taskToSetup.taskContent;
+                var instruction = taskToSetup.taskContent.instruction;
+
+                variantObject = self.GameCore.getVariant(variantString, task, instruction);
+                break;
+            case "PictureToManyWords":
+                var task;
+                task = taskToSetup.taskContent;
+                var instruction = taskToSetup.taskContent.instruction;
+
+                variantObject = self.GameCore.getVariant(variantString, task, instruction);
+                break;
+            case "ManyPicturesManyWords":
+                var task;
+                task = taskToSetup.taskContent;
+                var instruction = taskToSetup.taskContent.instruction;
+
+                variantObject = self.GameCore.getVariant(variantString, task, instruction);
                 break;
             default:
                 console.warn("To pole jest tylko dla jeszcze nie zaimplementowancyh tasków, w produkcji nie powinno się nigdy wykonać!");
                 variantObject = {};
                 //ListWordFill answers
                 variantObject.getAnswers = () => { 
-                    console.log("hello ListWordFill");
                     return {answers: [["test"]]} 
                 }
                 break;
@@ -359,6 +573,9 @@ const TaskCreatorCore = (data) => {
         return variantObject;
     }
 
-    init(data);
+    TaskCreatorCoreInit(deps);
     return self;
 }
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+    module.exports = {TaskCreatorCore};

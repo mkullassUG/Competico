@@ -56,20 +56,38 @@ const IndexLogic = (accountInfo_) => {
     
         self.roles = accountInfo.roles?accountInfo.roles:[];
 
-        if (self.authenticated) {
-            //wyświetl przycisk od gry na środku ekranu
-            $("#indexHelloPlayer").text('Witaj ' + self.nickname + '!')
-            $("#indexJoinGame").show();
-        } else {
-            $("#indexHelloPlayer").text('Dołącz do nas!');
-            $("#indexLogin").show();
-            //wyświetl przycisk od zalogowania się na środku ekranu
-            //nie pokazuj navbara
-        }
         //navbar preparation
         NavbarLogic.singleton = NavbarLogic(accountInfo, debug);
+
+        //NEW!!!!!!
+        if ( typeof PageLanguageChanger != "undefined")
+            PageLanguageChanger(self.InitWithPageLanguageChanger);
+
     }
-  
+    
+    self.InitWithPageLanguageChanger = (data, lang) => {
+      //prepare when data comes
+      //NEW 2021-04-27 wymyslec jak
+      if (self.authenticated) {
+        //wyświetl przycisk od gry na środku ekranu
+        $("#indexHelloPlayer").text(
+          data.OTHER_PAGE_ELEMENTS["#indexHelloPlayer"][lang][1] + 
+          self.nickname + 
+          data.OTHER_PAGE_ELEMENTS["#indexHelloPlayer"][lang][2]
+        )
+
+        $("#indexJoinGame").show();
+      } else {
+        $("#indexHelloPlayer").text(
+          data.OTHER_PAGE_ELEMENTS["#indexHelloPlayer"][lang][0]
+        );
+
+        $("#indexLogin").show();
+        //wyświetl przycisk od zalogowania się na środku ekranu
+        //nie pokazuj navbara
+      }
+    }
+
     /*       event listeners          */
     if ( $("#indexJoinGame").length > 0 )
         $("#indexJoinGame").on("click",()=> {

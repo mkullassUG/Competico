@@ -8,11 +8,11 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
     self.taskContent.rows = [];
 
     /*  Logic functions */
-    var wordFillCreatorInit = () => {
+    var WordFillCreatorInit = () => {
 
         self.hideAllTaskDivsExceptGiven(self.taskName);
 
-        var btnAddSingleChoiceWordFill = $("#ListChoiceWordFillAddWordFill");
+        var btnAddSingleChoiceWordFill = $("#" + self.taskName+ "AddWordFill");
         btnAddSingleChoiceWordFill.on('click',(e)=> {
             var createdElement = self.addSingleChoiceWordFill();
 
@@ -31,7 +31,7 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
 
         });
 
-        btnAddSingleChoiceWordFill.click();
+        self.checkAndClickOnAddButt();
     }
 
     var checkIfTaskReadySuper = self.checkIfTaskReady;
@@ -49,15 +49,15 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
 
         //czy można pobrać difficulty
         //slider
-        if ($("#customRangeLCW").length > 0) {
-            self.taskContent.difficulty = $("#customRangeLCW").val();
+        if ($("#customRange" + self.taskName+ "").length > 0) {
+            self.taskContent.difficulty = $("#customRange" + self.taskName+ "").val();
         }
-        // if ($("#ListChoiceWordFillDificulty").length) {
-        //     self.taskContent.difficulty = $("#ListChoiceWordFillDificulty").val();
+        // if ($("#" + self.taskName+ "Dificulty").length) {
+        //     self.taskContent.difficulty = $("#" + self.taskName+ "Dificulty").val();
         // }
         //czy można pograc tagi
-        if ($("#ListChoiceWordFillDivTaskTags").length) {
-            var tagsString = $("#ListChoiceWordFillDivTaskTags").val();
+        if ($("#" + self.taskName+ "DivTaskTags").length) {
+            var tagsString = $("#" + self.taskName+ "DivTaskTags").val();
             var tags = tagsString.split(",")
                 .map(t=> t.trim())
                 .filter(t => t!="");
@@ -67,8 +67,8 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
             }
         }
         //czy można pobrać instrukcje
-        if ( $("#ListChoiceWordFillDivTaskInstruction").length ) {
-            self.taskContent.instruction = $("#ListChoiceWordFillDivTaskInstruction").val().trim();
+        if ( $("#" + self.taskName+ "DivTaskInstruction").length ) {
+            self.taskContent.instruction = $("#" + self.taskName+ "DivTaskInstruction").val().trim();
         }   
         
         //czy można pobrać zdania
@@ -86,7 +86,7 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
 
                 var singleChoiceWordFill = $(singleChoiceWordFills[i]);
 
-                var textString = singleChoiceWordFill.find(".LCWFTextArea").val();
+                var textString = singleChoiceWordFill.find("." + self.taskName+ "FTextArea").val();
                 var tagsWithWords = textString.match(/\{\[[^]+?\]\}/g);
                 if (tagsWithWords != null){ //BUG 2021-02-08
                     var correctWords = tagsWithWords.map(w=> w.replace("{[",'').replace("]}",'').split("][")[0]);
@@ -164,27 +164,46 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
     var loadTaskFromSuper = self.loadTaskFrom;
     self.loadTaskFrom = (taskObject) => {
         loadTaskFromSuper(taskObject); /*WordFill ma ten "content" jeszcze*/
-        
         self.prepareLoadedTask();
+        self.checkAndClickOnAddButt();
     }
+
+    self.checkAndClickOnAddButt = () => {
+        var btnAddSingleChoiceWordFill = $("#" + self.taskName+ "AddWordFill");
+        if ( btnAddSingleChoiceWordFill.length && !$("#ChoiceWordFills").children().length)
+            btnAddSingleChoiceWordFill.click();
+    }
+
+    var newChoiceElement = (index, text = "") =>  $(`
+            <div class="form-group blue-border-focus singleChoiceWordFillDiv">
+                <hr class="border border-primary">
+                
+                <label class="` + self.taskName+ `FDivTaskText">`+(index+1)+`</label>
+                <div class="align-middle w-75 d-inline-block ` + self.taskName+ `FTextBlock">
+                    <div class="form-label-group ` + self.taskName+ `F-flg-mb-0">
+                        <textarea class="form-control taskTextTextarea ` + self.taskName+ `FTextArea"  id="` + self.taskName+ `FDivTaskTextArea`+index+`" placeholder=" " rows="4" data-toggle="tooltip" data-placement="top" title="Kolejne pola wyboru wstawiaj wezług wzoru: {[poprawna odpowiedź][niepoprawne odpowiedzi oddzielone przecinkami ',']} lub użyj skrótu Ctrl + B">`+text+`</textarea>
+                        <label for="` + self.taskName+ `FDivTaskTextArea">Treść</label>
+                    </div>
+                </div>
+                
+                <button class="align-middle d-inline-block btn btn-danger btn-sm ` + self.taskName+ `FDeleteButton" id="btn` + self.taskName+ `FRemoveWordFill`+index+`" data-toggle="tooltip" data-placement="top" title="Usuń cały wiersz">-</button>
+
+                <div class="form-inline">
+                    <button class="m-auto btn btn-primary btn-sm ` + self.taskName+ `FAddWord" id="` + self.taskName+ `FAddWord`+index+`">Wstaw wybór odpowiedzi</button>
+                    <div class="invalid-feedback invalid` + self.taskName+ `FAddWord" id="invalid` + self.taskName+ `FAddWord`+index+`">
+                    Nie zgadza się umiejscowienie tagów {[ ][ ]}.
+                    </div>
+                </div>
+            </div>`);
 
     self.prepareLoadedTask = () => {
         
         /*ustawiam tagi*/
-        var tagsElem = $("#ListChoiceWordFillDivTaskTags");
-        tagsElem.val("");
-        var previousTags;
-        for (let i = 0; i < self.taskContent.tags.length; i++) {
-            var tag = self.taskContent.tags[i];
-
-            previousTags = tagsElem.val();
-            tagsElem.val(previousTags + 
-                (previousTags==""?"":", ") 
-                + tag);
-        }
+        var tagsElem = $("#" + self.taskName+ "DivTaskTags");
+        tagsElem.val(self.taskContent.tags.join(", "));
 
         /*ustawiam instrukcje*/
-        $("#ListChoiceWordFillDivTaskInstruction").val(self.taskContent.instruction);
+        $("#" + self.taskName+ "DivTaskInstruction").val(self.taskContent.instruction);
 
 
         $("#ChoiceWordFills").html(``);
@@ -224,37 +243,31 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
             }
 
 
-            var ChoiceWordFillElement = $(`
-            <div class="form-group blue-border-focus singleChoiceWordFillDiv">
-                <hr class="border border-primary">
-                <div class="form-inline">
-                    <button class="m-auto btn btn-primary btn-sm LCWFAddWord" id="LCWFAddWord`+i+`">Wstaw wybór odpowiedzi</button>
-                    <div class="invalid-feedback invalidLCWFAddWord" id="invalidLCWFAddWord`+i+`">
-                    Nie zgadza się umiejscowienie tagów {[]}.
-                    </div>
-                </div>
-                <label class="LCWFDivTaskText">`+(i+1)+`</label>
-                <div class="align-middle w-75 d-inline-block LCWFTextBlock">
-                    <div class="form-label-group">
-                        <textarea class="form-control taskTextTextarea LCWFTextArea"  id="LCWFDivTaskTextArea`+i+`" placeholder="cos" rows="4" >`+textWithChoices+`</textarea>
-                        <label for="LCWFDivTaskTextArea">Treść</label>
-                    </div>
-                </div>
-                <button class="align-middle d-inline-block btn btn-danger btn-sm LCWFDeleteButton" id="btnLCWFRemoveWordFill`+i+`">-</button>
-            </div>`);
+            var ChoiceWordFillElement = newChoiceElement(i,textWithChoices);
 
             $("#ChoiceWordFills").append(ChoiceWordFillElement);
+
+            
         }
 
         self.setupListenersAndIndexesFromPosition(0);
-
+        tooltipsUpdate();
         /*ustawiam difficulty*/
-        $("#customRangeLCW").val(self.taskContent.difficulty);
-        $("#customRangeLabelLCW").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
-        // $("ListChoiceWordFillDificulty").val(self.taskContent.difficulty);
+        $("#customRange" + self.taskName+ "").val(self.taskContent.difficulty);
+        $("#customRange" + self.taskName+ "").trigger("change");
+        $("#customRangeLabel" + self.taskName+ "").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
+        // $("" + self.taskName+ "Dificulty").val(self.taskContent.difficulty);
 
         
         /*TODO ustawiam czcionkę*/
+    }
+
+    var tooltipsUpdate = () => {
+
+        if ( $('[data-toggle="tooltip"]').tooltip !== null && $('[data-toggle="tooltip"]').tooltip !== undefined)
+            $('[data-toggle="tooltip"]').tooltip({
+                trigger : 'hover'
+            });  
     }
 
     self.addSingleChoiceWordFill = () => {
@@ -280,39 +293,25 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
 
         var index = singleChoiceWordFills.length;
 
-        var ChoiceWordFillElement = $(`
-            <div class="form-group blue-border-focus singleChoiceWordFillDiv">
-                <hr class="border border-primary">
-                <div class="form-inline">
-                    <button class="m-auto btn btn-primary btn-sm LCWFAddWord" id="LCWFAddWord`+index+`">Wstaw wybór odpowiedzi</button>
-                    <div class="invalid-feedback invalidLCWFAddWord" id="invalidLCWFAddWord`+index+`">
-                    Nie zgadza się umiejscowienie tagów {[]}.
-                    </div>
-                </div>
-                <label class="LCWFDivTaskText">`+(index+1)+`</label>
-                <div class="align-middle w-75 d-inline-block LCWFTextBlock">
-                    <div class="form-label-group">
-                        <textarea class="form-control taskTextTextarea LCWFTextArea"  id="LCWFDivTaskTextArea`+index+`" placeholder="cos" rows="4" ></textarea>
-                        <label for="LCWFDivTaskTextArea">Treść</label>
-                    </div>
-                </div>
-                <button class="align-middle d-inline-block btn btn-danger btn-sm LCWFDeleteButton" id="btnLCWFRemoveWordFill`+index+`">-</button>
-            </div>`);
+        
+        var ChoiceWordFillElement = newChoiceElement(index,"");
 
         $("#ChoiceWordFills").append(ChoiceWordFillElement);
         self.setupListenersAndIndexesFromPosition(index);
 
+        tooltipsUpdate();
+            
         return ChoiceWordFillElement;
     }
 
     self.setupListenersAndIndexesFromPosition = (elemPosition) => {
 
         
-        var ChildrenAddWord = $(".LCWFAddWord");
-        var ChildrenTextArea = $(".LCWFTextArea");
+        var ChildrenAddWord = $("." + self.taskName+ "FAddWord");
+        var ChildrenTextArea = $("." + self.taskName+ "FTextArea");
 
         for (let i = elemPosition; i < ChildrenAddWord.length; i ++) {
-            var indexLabel = $($(".LCWFDivTaskText")[i]);
+            var indexLabel = $($("." + self.taskName+ "FDivTaskText")[i]);
             indexLabel.text(i+1);
 
             var currentChildAddWord = $(ChildrenAddWord[i]);
@@ -332,11 +331,15 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
                         //TODO:
                         self.addNewWordForChoiceWordFill("{[", "][", "]}", parentElem);
                     });
-                    
+
                     buttonClone.mousedown(function(e) { // handle the mousedown event
                         e.preventDefault(); // prevent the textarea to loose focus!
                     });    
-    
+                    
+                    var TextArea = currentChildTextArea,
+                    TextAreaClone = TextArea.clone();
+                    TextArea.replaceWith( TextAreaClone );
+
                     if (currentChildTextArea.length > 0) {
                         /*wyłaczanie przycisku jeśli nie mam focusa na textarea*/
                         
@@ -353,11 +356,13 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
 
                             parentElem.find(".LWFAddWord").removeAttr("disabled");
                         });
+
+                        TextAreaClone.keydown( self.keyCombos );
                     }
                 }
             }
 
-            var btnRemove = $("#btnLCWFRemoveWordFill"+i);
+            var btnRemove = $("#btn" + self.taskName+ "FRemoveWordFill"+i);
             if ( btnRemove.length > 0 ) {
                 var button = btnRemove,
                 buttonClone = button.clone();
@@ -366,6 +371,7 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
                 if ( buttonClone.length ) {
                     buttonClone.on('click', (e) => {
                         var parentElem = $(e.target).closest(".singleChoiceWordFillDiv");
+                        $('.tooltip').tooltip('dispose');
                         self.deleteSingleChoiceWordFillParent(parentElem);
                     });
                 }
@@ -376,6 +382,7 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
     self.deleteSingleChoiceWordFillParent = (parentElem) => {
         //ogarnąc który z kolei jest to element i delete, wszystkie wyżej elementy przesunać i pozmieniać listenery.
         //array.index(parentElem)
+
         var WordFillsDiv = parentElem.closest("#ChoiceWordFills");
         var allSingleChoiceWordFills = WordFillsDiv.find(".singleChoiceWordFillDiv");
 
@@ -386,10 +393,21 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
         self.setupListenersAndIndexesFromPosition(currentAtPosition);
     }
 
+    self.keyCombos = (e) =>{
+        let evtobj = window.event ? event : e;
+        //key combo for ctrl+b
+        if (evtobj.keyCode == 66 && evtobj.ctrlKey) {
+            e.preventDefault();
+            var parentElem = $(e.target).closest(".form-group");
+
+            self.addNewWordForChoiceWordFill("{[", "][", "]}", parentElem);
+        }
+    }
+
     //TODO: przerobić to na Choice czyli {[dobra_odpowiedz][zła1,zła2,zła3]}
 
     self.addNewWordForChoiceWordFill = (leftTag_, middleTag_, rightTag_, forElement) => {
-        var yourTextarea = forElement.find(".LCWFTextArea")[0];
+        var yourTextarea = forElement.find("." + self.taskName+ "FTextArea")[0];
         //pomogło
         //https://stackoverflow.com/questions/11076975/how-to-insert-text-into-the-textarea-at-the-current-cursor-position 
         var insertAtCursor = (myField, leftTag, rightTag) => {
@@ -408,8 +426,6 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
                 var rightSide = myField.value.substring(endPos, myField.value.length);
 
                 /*sprawdzam jeszcze czy nie znajduje się czasem już wewnątrz takiego {[]}*/
-                console.log(leftSide);
-                console.log(rightSide);
                 var partsL = leftSide.split(leftTag);
                 for ( let i = 1 ; i < partsL.length; i++) {
                     var part = partsL[i];
@@ -418,8 +434,8 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
                         //BUG, nie pozwala umieszczać za tagami następnych
                         console.log("1");
 
-                        forElement.find(".invalidLCWFAddWord").show();
-                        setTimeout(function(){forElement.find(".invalidLCWFAddWord").fadeOut()},5000);
+                        forElement.find(".invalid" + self.taskName+ "FAddWord").show();
+                        setTimeout(function(){forElement.find(".invalid" + self.taskName+ "FAddWord").fadeOut()},5000);
                         return;
                     }
                 }
@@ -430,8 +446,8 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
                     if ( !part.includes(leftTag)) {
                         //BUG 2, pozwala umieszczać wewnatrz tagu jaśli jest tam jakiś tekst
                         console.log("2");
-                        forElement.find(".invalidLCWFAddWord").show();
-                        setTimeout(function(){forElement.find(".invalidLCWFAddWord").fadeOut()},5000);
+                        forElement.find(".invalid" + self.taskName+ "FAddWord").show();
+                        setTimeout(function(){forElement.find(".invalid" + self.taskName+ "FAddWord").fadeOut()},5000);
                         return;
                     }
                 }
@@ -450,15 +466,15 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
     }
 
     /* listeners */
-    if( $("#customRangeLCW").length > 0 ) {
-        $("#customRangeLCW").on("input",() => {
+    if( $("#customRange" + self.taskName+ "").length > 0 ) {
+        $("#customRange" + self.taskName+ "").on("input",() => {
 
-            self.taskContent.difficulty = $("#customRangeLCW").val();
-            $("#customRangeLabelLCW").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
+            self.taskContent.difficulty = $("#customRange" + self.taskName+ "").val();
+            $("#customRangeLabel" + self.taskName+ "").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
         })
     }
 
     /*  Initialization */
-    wordFillCreatorInit();
+    WordFillCreatorInit();
     return self;
 }

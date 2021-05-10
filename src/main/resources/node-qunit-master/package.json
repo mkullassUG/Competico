@@ -1,0 +1,64 @@
+{
+  "name": "node-qunit",
+  "description": "QUnit testing framework for Node.js",
+  "version": "2.0.0",
+  "author": "Oleg Slobodskoi <oleg008@gmail.com>",
+  "contributors": [
+    {
+      "name": "Jonathan Buchanan"
+    },
+    {
+      "name": "Ashar Voultoiz"
+    },
+    {
+      "name": "Drew Fyock"
+    },
+    {
+      "name": "Timo Tijhof"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qunitjs/node-qunit.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "TDD",
+    "QUnit",
+    "unit",
+    "testing",
+    "tests",
+    "async"
+  ],
+  "bin": {
+    "qunit": "./bin/cli.js"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "test2": "node test/testrunner.js && eslint .",
+    "test": "node test/testrunner.js --trace-warnings",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "argsparser": "^0.0.7",
+    "cli-table": "^0.3.1",
+    "co": "^4.6.0",
+    "jquery": "^3.6.0",
+    "jquery-mockjax": "^2.6.0",
+    "jsdom": "^16.5.3",
+    "qunit": "^2.11.2",
+    "tracejs": "^0.1.8",
+    "underscore": "^1.11.0"
+  },
+  "devDependencies": {
+    "chainer": "^0.0.5",
+    "eslint": "^7.8.1",
+    "nyc": "^15.1.0",
+    "timekeeper": "^2.0.0"
+  },
+  "optionalDependencies": {
+    "istanbul": "0.4.5"
+  }
+}

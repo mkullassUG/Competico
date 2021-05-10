@@ -343,6 +343,59 @@ public class GameAPITests
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.rating", is(rating)));
 	}
+	@Test
+	public void shouldNotifyWhenCurrentPlayerDoesNotHaveRating() throws Exception
+	{
+		when(gameService.getRating()).thenReturn(Optional.empty());
+		
+		mvc.perform(get("/api/v1/player/rating"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.hasRating", is(false)));
+	}
+	@Test
+	public void shouldNotifyWhenCurrentPlayerDoesNotExist() throws Exception
+	{
+		when(gameService.getRating()).thenThrow(new IllegalArgumentException());
+		
+		mvc.perform(get("/api/v1/player/rating"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.exists", is(false)));
+	}
+	
+	@ParameterizedTest
+	@ValueSource(ints = {-5, -1, 0, 1, 2, 5, 25, 100, 9999})
+	public void shouldGetRatingByUsernameSuccessfully(int rating) throws Exception
+	{
+		String username = "TestAccount";
+		when(gameService.getRatingByUsername(username))
+			.thenReturn(Optional.of(rating));
+		
+		mvc.perform(get("/api/v1/player/" + username + "/rating"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.rating", is(rating)));
+	}
+	@Test
+	public void shouldNotifyWhenPlayerDoesNotHaveRating() throws Exception
+	{
+		String username = "TestAccount";
+		when(gameService.getRatingByUsername(username))
+			.thenReturn(Optional.empty());
+		
+		mvc.perform(get("/api/v1/player/" + username + "/rating"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.hasRating", is(false)));
+	}
+	@Test
+	public void shouldNotifyWhenPlayerDoesNotExist() throws Exception
+	{
+		String username = "TestAccount";
+		when(gameService.getRatingByUsername(username))
+			.thenThrow(new IllegalArgumentException());
+		
+		mvc.perform(get("/api/v1/player/" + username + "/rating"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.exists", is(false)));
+	}
 	
 	@Test
 	public void shouldGetTopLeaderboardSuccessfully() throws Exception

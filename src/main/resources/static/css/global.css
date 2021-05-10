@@ -1,33 +1,141 @@
+#main_nav{
+	/* border: 1px solid gray;
+    border-radius: 5px;
+	margin-top: -10px; */
+}
+
+a.dropdown-item {
+  cursor: pointer!important;
+}
+.active:not(.taskManagerHoverClass):not(a.dropdown-item) {
+  cursor: default;
+}
+
+div > .nav-link.active {
+  color: #fff;
+}
+
+/*  dropdown menu   */
+@media (min-width: 992px){
+	.dropdown-menu:not(.dropdownButSideNavOpen) .dropdown-toggle:after{
+		border-top: .3em solid transparent;
+	    border-right: 0;
+	    border-bottom: .3em solid transparent;
+	    border-left: .3em solid;
+	}
+	.dropdown-menu:not(.dropdownButSideNavOpen) .dropdown-menu{
+		margin-left:0; margin-right: 0;
+	}
+	.dropdown-menu:not(.dropdownButSideNavOpen) li{
+		position: relative;
+	}
+	.nav-item .submenu:not(.dropdownButSideNavOpen){
+		display: none;
+		position: absolute;
+		left:100%; top:-7px;
+	}
+	.nav-item .submenu-left:not(.dropdownButSideNavOpen){
+		right:100%; left:auto;
+	}
+	.dropdown-menu:not(.dropdownButSideNavOpen) > li:hover{ background-color: #f1f1f1 }
+	.dropdown-menu:not(.dropdownButSideNavOpen) > li:hover > .submenu{
+		display: block;
+	}
+}
+
+/*navbar lang*/
+#languageSelected{
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  display: inline-block!important;
+  padding-right: 0px;
+}
+
+#languageSelected:hover {
+  color: rgba(255,255,255,0.5);
+}
+
+#languageDropdown-inner {
+  min-width: initial;
+  left: initial!important;
+  right: 0px;
+}
+
+#languageDropdown{
+  text-align: right;
+}
+
+@media (min-width: 992px) {
+
+  #languageDropdown {
+    
+    transform: translate(-55px, 0);
+  }
+
+  #logOutButton {
+    transform: translate(75px, 0);
+  }
+
+  #loginHyperlink {
+    transform: translate(75px, 0);
+
+  }
+
+  /* .navbar-nav.ml-auto {
+    transform: translateX(30px);
+  } */
+}
+
+/* @media (min-width:1300px) {
+
+  #languageDropdown {
+    
+    transform: translate(90px, 0);
+  }
+} */
+
+
 #logOutButton {
-    color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.5);
 }
   
 #logOutButton:hover {
-    color: rgba(255,255,255,1);
+  color: rgba(255,255,255,1);
 }
 
+#loginHyperlink:not(.active) {
+  color: rgba(255,255,255,0.5);
+}
+
+#loginHyperlink:hover  {
+  color: rgba(255,255,255,1);
+}
+
+.iconbig2 {
+  height: 38px;
+}
 .iconbig {
-    height: 30px;
+  height: 30px;
 }
 
 .bd-placeholder-img {
-    font-size: 1.125rem;
-    text-anchor: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
   
 @media (min-width: 768px) {
-    .bd-placeholder-img-lg {
-      font-size: 3.5rem;
-    }
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
 }
 
 .border-bottom-dotted{
-    border-bottom-width: 1px !important;
-    border-bottom-style: dotted !important;
+  border-bottom-width: 1px !important;
+  border-bottom-style: dotted !important;
 }
 
 /*navbar fix ale nie moge tak po prostuy dać wszystkim bo niektóre są wyłączone*/
@@ -38,11 +146,20 @@
 .navbar-collapse > a{
     margin-left: auto;
 }
-@media (min-width: 990px) {
+@media (min-width: 992px) {
   .navbar-collapse > ul > li:not(.navbar-collapse > ul > li:first-child) {
       border-left: 1px solid #0062cc;
   }
+  /* .navbarMarginFix {
+    margin-left: 7%!important;
+  } */
 }
+@media (max-width: 991px) {
+  .navbar-collapse > ul > li {
+      border-bottom: 1px solid #0062cc;
+  }
+}
+
   /*@media (min-width: 992px){
     ul {
       flex-grow: 1;
@@ -75,7 +192,11 @@
 
 #GameDiv, 
 #endGameDiv {
-  border-radius: 90px;
+  /* border-radius: 90px; */
+  border-top-left-radius: 90px 40px;
+	border-top-right-radius: 90px 40px;
+	border-bottom-left-radius: 90px 40px;
+	border-bottom-right-radius: 90px 40px;
   overflow: hidden;
   padding: 30px;
   transform: translate(-30px);
@@ -98,3 +219,26 @@
   display:inline-block;
 }
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+@media (max-width: 576px) {
+  .pt-xs-30 {
+    padding-top: 30px;
+  }
+}
+
+#languageOption1:not(.bg-light),#languageOption2:not(.bg-light) {
+  cursor: pointer;
+}
+
+#languageOption1.bg-light,#languageOption2.bg-light {
+  cursor: default;
+}

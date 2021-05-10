@@ -5,6 +5,8 @@ import static com.projteam.app.domain.Account.SWAGGER_ADMIN;
 import static com.projteam.app.domain.Account.TASK_DATA_ADMIN;
 import static com.projteam.app.domain.Account.ACTUATOR_ADMIN;
 import static com.projteam.app.domain.Account.LECTURER_ROLE;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -17,6 +19,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +34,12 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.stereotype.Service;
 import com.projteam.app.config.SecurityContextConfig;
 import com.projteam.app.dao.AccountDAO;
+import com.projteam.app.dao.EmailVerificationTokenDAO;
+import com.projteam.app.dao.PasswordResetTokenDAO;
 import com.projteam.app.domain.Account;
+import com.projteam.app.domain.EmailVerificationToken;
+import com.projteam.app.domain.PasswordResetToken;
+import com.projteam.app.domain.TokenStatus;
 import com.projteam.app.dto.LoginDTO;
 import com.projteam.app.dto.RegistrationDTO;
 import com.projteam.app.utils.Initializable;
@@ -42,21 +50,36 @@ import lombok.extern.slf4j.Slf4j;
 public class AccountService implements UserDetailsService
 {
 	private AccountDAO accDao;
+	private PasswordResetTokenDAO prtDao;
+	private EmailVerificationTokenDAO evtDao;
 	private PasswordEncoder passEnc;
 	private AuthenticationManager authManager;
 	private SecurityContextConfig secConConf;
+	private EmailService emailServ;
+	
+	//TODO replace by env variable
+	private static final String APP_URL = "localhost";
+	
+	private static final int TOKEN_VALIDITY_TIME = 7;
+	private static final int TOKEN_REMOVAL_WAITING_TIME = 7;
 	
 	@Autowired
 	public AccountService(
 			AccountDAO accDao,
+			PasswordResetTokenDAO prtDao,
+			EmailVerificationTokenDAO evtDao,
 			PasswordEncoder passEnc,
 			AuthenticationManager authManager,
-			SecurityContextConfig secConConf)
+			SecurityContextConfig secConConf,
+			EmailService emailServ)
 	{
 		this.accDao = accDao;
 		this.passEnc = passEnc;
 		this.authManager = authManager;
 		this.secConConf = secConConf;
+		this.prtDao = prtDao;
+		this.emailServ = emailServ;
+		this.evtDao = evtDao;
 	}
 	@EventListener(ContextRefreshedEvent.class)
 	@Transactional
@@ -90,6 +113,7 @@ public class AccountService implements UserDetailsService
 						.withNickname("Admin")
 						.withPassword(passEnc.encode(password))
 						.withRoles(List.of(ACTUATOR_ADMIN, SWAGGER_ADMIN, TASK_DATA_ADMIN, LECTURER_ROLE))
+						.withEmailVerified(false)
 						.enabled(true)
 						.nonExpired(true)
 						.nonLocked(true)
@@ -256,6 +280,7 @@ public class AccountService implements UserDetailsService
 			throw new IllegalArgumentException("NOT_AUTHENTICATED");
 		
 		Initializable.init(acc);
+		acc.setEmailVerified(false);
 		acc.setEmail(newEmail);
 		acc = accDao.saveAndFlush(acc);
 		
@@ -313,15 +338,192 @@ public class AccountService implements UserDetailsService
 		if ((currPassword != null) && passEnc.matches(newPassword, currPassword))
 			throw new IllegalArgumentException("SAME_PASSWORD");
 		
-		acc = accDao.findByUsername(acc.getUsername()).orElse(null);
-		if (acc == null)
-			throw new IllegalArgumentException("NOT_AUTHENTICATED");
+		acc = accDao.findByUsername(acc.getUsername())
+				.orElseThrow(() -> new IllegalArgumentException("ACCOUNT_NOT_PRESENT"));
 
 		Initializable.init(acc);
 		acc.setPassword(passEnc.encode(newPassword));
 		acc = accDao.saveAndFlush(acc);
 		
 		refreshAuth(acc.getUsername(), newPassword);
+	}
+	
+	@Transactional
+	public void requestPasswordReset(String emailOrUsername)
+	{
+		if (emailOrUsername == null)
+			throw new IllegalArgumentException("ACCOUNT_NOT_PRESENT");
+		Account acc = selectByEmailOrUsername(emailOrUsername)
+				.orElseThrow(() -> new IllegalArgumentException("ACCOUNT_NOT_PRESENT"));
+		
+		String email = acc.getEmail();
+		
+		prtDao.deleteByEmail(email);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, TOKEN_VALIDITY_TIME);
+		Date expiryDate = cal.getTime();
+		
+		PasswordResetToken token = new PasswordResetToken(UUID.randomUUID(), email, expiryDate);
+		prtDao.flush();
+		token = prtDao.save(token);
+		
+		String link = APP_URL + "/resetpassword/" + token.getId();
+		
+		String subject = "Password reset";
+		String message = "Reset your password by clicking the link below:\r\n" + link;
+		
+		try
+		{
+			emailServ.sendEmail(email, subject, message);
+		}
+		catch (Exception e)
+		{
+			log.error(e.getClass().getTypeName() + ": " + e.getMessage());
+			throw new RuntimeException("MAIL_ERROR");
+		}
+	}
+	@Transactional
+	public TokenStatus getPasswordResetTokenStatus(String token)
+	{
+		try
+		{
+			return prtDao.findById(UUID.fromString(token))
+					.map(tok -> tok.getExpiryDate().before(new Date())?
+							TokenStatus.EXPIRED:TokenStatus.VALID)
+					.orElse(TokenStatus.INVALID);
+		}
+		catch (Exception e)
+		{
+			return TokenStatus.INVALID;
+		}
+	}
+	@Transactional
+	public void resetPassword(String token, CharSequence newPassword)
+	{
+		if (token == null)
+			throw new IllegalArgumentException("INVALID_TOKEN");
+		if (!validatePassword(newPassword))
+			throw new IllegalArgumentException("BAD_NEW_PASSWORD");
+		
+		UUID tokenId = null;
+		try
+		{
+			tokenId = UUID.fromString(token);
+		}
+		catch (Exception e)
+		{
+			throw new IllegalArgumentException("INVALID_TOKEN");
+		}
+		PasswordResetToken prt = prtDao.findById(tokenId)
+				.orElseThrow(() -> new IllegalArgumentException("INVALID_TOKEN"));
+		if (prt.getExpiryDate().before(new Date()))
+			throw new IllegalArgumentException("EXPIRED_TOKEN");
+		String email = prt.getEmail();
+		
+		Account acc = accDao.findByEmail(email)
+				.orElseThrow(() -> new IllegalArgumentException("ACCOUNT_NOT_PRESENT"));
+
+		secConConf.clearContext();
+		
+		Initializable.init(acc);
+		acc.setPassword(passEnc.encode(newPassword));
+		acc = accDao.saveAndFlush(acc);
+		
+		prtDao.deleteById(tokenId);
+	}
+	
+	@Transactional
+	public void requestEmailVerification()
+	{
+		requestEmailVerification(getAuthenticatedAccount()
+			.orElseThrow(() -> new IllegalArgumentException("NOT_AUTHENTICATED")));
+	}
+	@Transactional
+	public void requestEmailVerification(Account acc)
+	{
+		String email = acc.getEmail();
+		
+		evtDao.deleteByEmail(email);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, TOKEN_VALIDITY_TIME);
+		Date expiryDate = cal.getTime();
+		
+		EmailVerificationToken token = new EmailVerificationToken(UUID.randomUUID(), email, expiryDate);
+		evtDao.flush();
+		token = evtDao.save(token);
+		
+		String link = APP_URL + "/verifyemail/" + token.getId();
+		
+		String subject = "Email verification";
+		String message = "Verify your email by clicking the link below:\r\n" + link;
+		
+		try
+		{
+			emailServ.sendEmail(email, subject, message);
+		}
+		catch (Exception e)
+		{
+			log.error(e.getClass().getTypeName() + ": " + e.getMessage());
+			throw new IllegalArgumentException("MAIL_ERROR");
+		}
+	}
+	@Transactional
+	public TokenStatus getEmailVerificationTokenStatus(String token)
+	{
+		try
+		{
+			return evtDao.findById(UUID.fromString(token))
+					.map(tok -> tok.getExpiryDate().before(new Date())?
+							TokenStatus.EXPIRED:TokenStatus.VALID)
+					.orElse(TokenStatus.INVALID);
+		}
+		catch (Exception e)
+		{
+			return TokenStatus.INVALID;
+		}
+	}
+	@Transactional
+	public void verifyEmail(String token)
+	{
+		if (token == null)
+			throw new IllegalArgumentException("INVALID_TOKEN");
+		
+		UUID tokenId = null;
+		try
+		{
+			tokenId = UUID.fromString(token);
+		}
+		catch (Exception e)
+		{
+			throw new IllegalArgumentException("INVALID_TOKEN");
+		}
+		EmailVerificationToken evt = evtDao.findById(tokenId)
+				.orElseThrow(() -> new IllegalArgumentException("INVALID_TOKEN"));
+		if (evt.getExpiryDate().before(new Date()))
+			throw new IllegalArgumentException("EXPIRED_TOKEN");
+		String email = evt.getEmail();
+		
+		Account acc = accDao.findByEmail(email)
+				.orElseThrow(() -> new IllegalArgumentException("ACCOUNT_NOT_PRESENT"));
+		
+		Initializable.init(acc);
+		acc.setEmailVerified(true);
+		acc = accDao.saveAndFlush(acc);
+		Account currAcc = acc;
+		
+		if (getAuthenticatedAccount()
+				.map(a -> a.getId().equals(currAcc.getId()))
+				.orElse(false))
+			refreshAuth(acc);
+		else
+			secConConf.clearContext();
+		
+		evtDao.deleteById(tokenId);
+		evtDao.flush();
 	}
 	
 	@Override
@@ -370,6 +572,20 @@ public class AccountService implements UserDetailsService
 		return Pattern.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$", password);
 	}
 
+	@Scheduled(cron = "0 0 3 * * *")
+	public void deleteExpiredTokens()
+	{
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DATE, -TOKEN_REMOVAL_WAITING_TIME);
+		Date date = cal.getTime();
+		
+		prtDao.deleteByExpiryDateLessThan(date);
+		prtDao.flush();
+		evtDao.deleteByExpiryDateLessThan(date);
+		evtDao.flush();
+	}
+	
 	private static <T extends Initializable> Optional<T> init(Optional<T> in)
 	{
 		in.ifPresent(i -> i.initialize());

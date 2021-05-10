@@ -5,8 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.servlet.ModelAndView;
-
 import com.projteam.app.domain.Account;
 import com.projteam.app.service.AccountService;
 
@@ -30,7 +28,7 @@ public class LobbyController
 		Account acc = accServ.getAuthenticatedAccount().orElse(null);
 		
 		if ( acc == null)
-			return "login";
+			return "redirect:login";
 		
 		model.addAttribute("roles", acc.getRoles());
 		model.addAttribute("authenticated", true);

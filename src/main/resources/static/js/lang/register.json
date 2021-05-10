@@ -1,0 +1,139 @@
+{
+
+    ".footer > .container.text-center > .footer-text.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    ".footer > .container.text-center> .text-muted.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    "#homepageHyperlink > a": {
+        "pl": "Strona Domowa",
+        "eng": "Home Page"
+    },
+    "#gameHyperlink > a": {
+        "pl": "Gra",
+        "eng": "Game"
+    },
+    "#helpHyperlink > a": {
+        "pl": "Wsparcie",
+        "eng": "Support"
+    },
+    "#registerHyperlink > a": {
+        "pl": "Rejestracja",
+        "eng": "Register"
+    },
+    "#loginHyperlink": {
+        "pl": "Zaloguj",
+        "eng": "Login"
+    },
+    "#dashboardHyperlink > a": {
+        "pl": "Rankingi",
+        "eng": "Dashboard"
+    },
+    "#profileHyperlink > a": {
+        "pl": "Profil",
+        "eng": "Profile"
+    },
+    "#logOutButton": {
+        "pl": "Wyloguj",
+        "eng": "Logout"
+    },
+
+    "#signinTextMain": {
+        "pl": "Zarejestruj się",
+        "eng": "Sign up"
+    },
+    "#inputEmailLabel": {
+        "pl": "Adres email",
+        "eng": "Email address"
+    },
+    "#emailfeedback": {
+        "pl": "Wprowadź poprawny adres email.",
+        "eng": "Type valid email address."
+    },
+    "#inputUsernameLabel": {
+        "pl": "Nazwa użytkownika",
+        "eng": "Username"
+    },
+    "#usernamefeedback": {
+        "pl": "Wprowadż poprawny username: min 4 znaki, max 32, bez znaków specjalnych.",
+        "eng": "Type valid username: min 4 symbols, max 32, without special symbols."
+    },
+    "#inputPasswordLabel": {
+        "pl": "Hasło",
+        "eng": "Password"
+    },
+    "#passwordfeedback": {
+        "pl": "Wprowadź poprawne hasło: minimum 8 znaków, conajmniej jedna duża litera, conajmniej jedna cyfra i conajmniej jeden znak specjalny.",
+        "eng": "Type valid password: minimum 8 symbols, at least one big letter, at least one number and at least one special symbol."
+    },
+    "#inputPassword2Label": {
+        "pl": "Ponów hasło",
+        "eng": "Repeat password"
+    },
+    "#password2feedback": {
+        "pl": "Wprowadź poprawne drugie hasło.",
+        "eng": "Type correct repeated password."
+    },
+    "#imGamerLabel": {
+        "pl": "Jestem graczem",
+        "eng": "I am a player"
+    },
+    "#imLectorLabel": {
+        "pl": "Jestem lektorem",
+        "eng": "I am a teacher"
+    },
+    "#rememberMeCB": {
+        "pl": "Zapamiętaj mnie",
+        "eng": "Remember me"
+    },
+    "#signinSubmitButton": {
+        "pl": "Zarejestruj się",
+        "eng": "Sign up"
+    },
+    "#accountExistValidation": {
+        "pl": "Konto o podanych danych już istnieje.",
+        "eng": "Account with given data already exists."
+    },
+    "#passwordValidation": {
+        "pl": "Niepoprawne hasło.",
+        "eng": "Incorrect password."
+    },
+    "#emailValidation": {
+        "pl": "Niepoprawny email.",
+        "eng": "Incorrect email address."
+    },
+    "#usernameValidation": {
+        "pl": "Niepoprawny username.",
+        "eng": "Incorrect username."
+    },
+    "#inputUsername": {
+        "ATTRIBUTE": "data-original-title",
+        "pl": "4-32 znaków, bez znaków specjalnych.",
+        "eng": "4-32 symbols, without special symbols."
+    },
+    "#inputPassword": {
+        "ATTRIBUTE": "data-original-title",
+        "pl": "Minimum 8 znaków, conajmniej jedna duża litera, conajmniej jedna cyfra, conajmniej jeden znak specjalny.",
+        "eng": "Minimum 8 symbols, at least one big letter, at least one number and at least one special symbol."
+    },
+    "#IAmGamer": {
+        "ATTRIBUTE": "data-original-title",
+        "pl": "Zaznacz tą opcje jeśli chcesz uczestniczyć w grach.",
+        "eng": "Select this option if you wanna play games."
+    },
+    "#IAmLecturer": {
+        "ATTRIBUTE": "data-original-title",
+        "pl": "Zaznacz tą opcje jeśli chcesz zarządzać grupami graczy.",
+        "eng": "Select this option if you wanna manage game grupus."
+    },
+    
+    "OTHER_PAGE_ELEMENTS": {
+        "document.title": {
+            "pl": "Rejestracja",
+            "eng": "Register"
+        }
+    }
+}

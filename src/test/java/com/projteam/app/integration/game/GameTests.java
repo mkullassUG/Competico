@@ -43,8 +43,7 @@ import com.projteam.app.dto.game.tasks.show.ChronologicalOrderDTO;
 import com.projteam.app.dto.game.tasks.show.ListChoiceWordFillDTO;
 import com.projteam.app.dto.game.tasks.show.ListSentenceFormingDTO;
 import com.projteam.app.dto.game.tasks.show.ListWordFillDTO;
-import com.projteam.app.dto.game.tasks.show.MultipleChoiceElementDTO;
-import com.projteam.app.dto.game.tasks.show.SingleChoiceDTO;
+import com.projteam.app.dto.game.tasks.show.OptionSelectElementDTO;
 import com.projteam.app.dto.game.tasks.show.WordConnectDTO;
 import com.projteam.app.dto.game.tasks.show.WordFillElementDTO;
 import com.projteam.app.service.game.GameService;
@@ -422,17 +421,10 @@ public class GameTests
 										.orElse(null))
 								.collect(Collectors.toList()))
 						.collect(Collectors.toList()))).toString();
-			case "SingleChoice":
-				SingleChoiceDTO sc = mapper.treeToValue(taskInfo.get("task"),
-						SingleChoiceDTO.class);
-				return mapper.valueToTree(Map.of("answer", sc.getAnswers()
-						.stream()
-						.findFirst()
-						.orElse(null))).toString();
-			case "MultipleChoice":
-				MultipleChoiceElementDTO mc = mapper.treeToValue(taskInfo.get("task"),
-						MultipleChoiceElementDTO.class);
-				return mapper.valueToTree(Map.of("answers", mc.getAnswers())).toString();
+			case "OptionSelect":
+				OptionSelectElementDTO os = mapper.treeToValue(taskInfo.get("task"),
+						OptionSelectElementDTO.class);
+				return mapper.valueToTree(Map.of("answers", os.getAnswers())).toString();
 			case "WordConnect":
 				WordConnectDTO wcDto = mapper.treeToValue(taskInfo.get("task"),
 						WordConnectDTO.class);

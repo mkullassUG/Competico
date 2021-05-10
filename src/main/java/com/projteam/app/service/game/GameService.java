@@ -290,6 +290,11 @@ public class GameService
 		return accServ.getAuthenticatedAccount()
 				.orElseThrow(() -> new IllegalArgumentException("Not authenticated."));
 	}
+	private Account getAccount(String username)
+	{
+		return accServ.findByUsername(username)
+				.orElseThrow(() -> new IllegalArgumentException("User does not exist."));
+	}
 
 	private TaskAnswer convertRawAnswer(String gameCode, JsonNode answer) throws JsonProcessingException
 	{
@@ -472,6 +477,11 @@ public class GameService
 	public Optional<Integer> getRating(Account player)
 	{
 		return pdServ.getPlayerData(player)
+				.map(pd -> pd.getRating());
+	}
+	public Optional<Integer> getRatingByUsername(String username)
+	{
+		return pdServ.getPlayerData(getAccount(username))
 				.map(pd -> pd.getRating());
 	}
 	

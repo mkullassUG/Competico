@@ -83,7 +83,7 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
             newTdScore.append("<strong>" + parseFloat((currentTask.completion*100).toFixed(1)) + "%</strong>");
 
             newTdTime = $("<td>");
-            newTdTime.append((currentTask.timeTaken/1000) + " sec");
+            newTdTime.append(self.calculateTime(currentTask.timeTaken));
 
             newTdBonus = $("<td>");
             newTdBonus.append('x'+currentTask.difficulty/100);
@@ -135,7 +135,7 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
           newTdTotalScore = $("<td>");
           newTdTotalScore.append(self.allResults[i].totalScore);
           newTdTotalTime = $("<td>");
-          newTdTotalTime.append((self.allResults[i].totalTime/1000) + " sec");
+          newTdTotalTime.append(self.calculateTime(self.allResults[i].totalTime));
   
           newTr.append(newTdCount).append(newTdNickname).append(newTdTotalScore).append(newTdTotalTime);
           scoreTable.append(newTr);
@@ -193,7 +193,7 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
           newTdTotalScore = $("<td>");
           newTdTotalScore.append(self.allResults[i].totalScore);
           newTdTotalTime = $("<td>");
-          newTdTotalTime.append((self.allResults[i].totalTime/1000) + " sec");
+          newTdTotalTime.append(self.calculateTime(self.allResults[i].totalTime));
   
           newTr.append(newTdCount).append(newTdNickname).append(newTdTotalScore).append(newTdTotalTime);
           scoreTable.append(newTr);
@@ -201,6 +201,34 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
       }
       
     }
+
+    self.calculateTime = (totalTime) => {
+      var restOfTotalTime = totalTime;
+
+      var godziny = Math.floor(restOfTotalTime / (1000 * 60 * 60));
+      restOfTotalTime %= (1000 * 60 * 60);
+
+      var minuty = Math.floor(restOfTotalTime / (1000 * 60));
+      restOfTotalTime %= (1000 * 60);
+
+      var sekundy = Math.floor(restOfTotalTime / (1000));
+      restOfTotalTime %= (1000);
+
+      var milisekundy = Math.floor(restOfTotalTime);
+
+      console.log(totalTime);
+      console.log(godziny);
+      console.log(minuty);
+      console.log(sekundy);
+      console.log(milisekundy);
+
+      return "" +(godziny? godziny + "godz ":"") + 
+      (minuty? minuty + "min ":"") +
+      (sekundy? sekundy + "sec ":"") +
+      (milisekundy? milisekundy + "ms ":"") + "";
+
+    }
+
     self.checkTotalScoreChanges = (changeOccurred) => {
   
       /* changeOccurred:

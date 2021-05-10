@@ -20,34 +20,46 @@ const ProfileLogic = (accountInfo_, debug) => {
         
         self.ajaxGetRelativeLeaderboard(self.setupMyScoreFromRelativeLeaderboard);
 
-        $("#usernameDiv").html(self.username);
-        $("#nicknameDiv").html(self.nickname);
-        $("#emailDiv").html(self.email);
+        $("#usernameDiv").text(self.username);
+        $("#nicknameDiv").text(self.nickname);
+        $("#emailDiv").text(self.email);
         $("#newEmailInput").val(self.email);
         //$("#currentUser").html(self.nickname + " <small>" + self.username + "</small>")
 
 
 
         if ( self.roles.includes("LECTURER")) {
-            $("#roleDiv").html(" Lektor");
+            $("#roleDiv").text(" Lektor");
             self.setupPageForLecturer();
         }
         else
-            $("#roleDiv").html("Gracz");
+            $("#roleDiv").text("Gracz");
 
         if ( self.roles.includes("SWAGGER_ADMIN"))
-          $("#roleDiv").html("SAdmin");
+          $("#roleDiv").text("SAdmin");
         if ( self.roles.includes("TASK_DATA_ADMIN"))
-            $("#roleDiv").html("TDAdmin");
+            $("#roleDiv").text("TDAdmin");
         if ( self.roles.includes("ACTUATOR_ADMIN"))
-            $("#roleDiv").html("AAdmin");
+            $("#roleDiv").text("AAdmin");
         
             
-        $('[data-toggle="tooltip"]').tooltip();
+        
 
         setupEventListenersForEdit();
+        //NEW!!!!!!
+        if ( typeof PageLanguageChanger != "undefined")
+            PageLanguageChanger();
+
+        tooltipsUpdate();
     }
-  
+    
+    var tooltipsUpdate = () => {
+        if ( $('[data-toggle="tooltip"]').tooltip !== null && $('[data-toggle="tooltip"]').tooltip !== undefined)
+            $('[data-toggle="tooltip"]').tooltip({
+                trigger : 'hover'
+            });  
+    }
+
     self.setupMyScoreFromRelativeLeaderboard = (data) => {
   
         if (data.length <= 0)
@@ -74,16 +86,58 @@ const ProfileLogic = (accountInfo_, debug) => {
     }
   
     self.setupMyScore = (score) => {
-        $("#scoreDiv").html("score: " + score);
+        $("#scoreDiv").text("score: " + score);
     }
 
     self.setupMyScoreEmpty = () => {
-        $("#scoreDiv").html("lektor nie może grać")
+        $("#scoreDiv").text("lektor nie może grać")
     }
 
     self.setupPageForLecturer = () => {
         $(".lectorEnableClass").show()
         $(".lectorDisableClass").hide()
+    }
+
+    var createNicknameEditInput = () => {
+        if ( $("#nicknameDiv").length > 0) {
+
+            //change div to input
+            self.stopHoverAnimation_nickname = true;
+            var currentValue = $("#nicknameDiv").text();
+
+            var input = $(`<input id="nicknameInput" class="col-sm-7" value="`+currentValue+`"></input>`);
+            $("#nicknameDiv").replaceWith(input);
+
+            input.focus();
+            var value = input.val();
+            input.focus().val("").val(value);
+
+            input.on("input propertychange",
+                function () {
+                    showSaveButton();
+                }
+            );
+
+            input.blur(
+                function () {
+                    if (  $("#nicknameInput").length > 0 && self.nickname == $("#nicknameInput").val()) {
+                        //change input to div
+                        var div = $(`<div id="nicknameDiv" class="col-sm-7 text-secondary">` + currentValue + `</input>`);
+                        $("#nicknameInput").replaceWith(div);
+                        self.stopHoverAnimation_nickname = false;
+                        $('#nicknameEditButt').fadeOut();
+                    }
+                }
+            )
+        }
+    }
+
+    var createNicknameEditDiv = () => {
+        var div = $(`<div id="nicknameDiv" class="col-sm-7 text-secondary">`+ self.nickname + `</div>`);
+
+        $("#nicknameInput").replaceWith(div);
+        self.stopHoverAnimation_nickname = false;
+        $('#nicknameEditButt').fadeOut();
     }
 
     self.afterNicknameChangeAction = (data, nickname) => {
@@ -95,25 +149,27 @@ const ProfileLogic = (accountInfo_, debug) => {
 
         if ( $("#nicknameInput").length > 0) {
             if ( data === true ) { 
+                // location.reload();
+
                 //zmiana input na div 
                 self.nickname = nickname;
-
-                var div = $(`<div id="nicknameDiv" class="col-sm-7 text-secondary">`+ self.nickname + `</div>`);
-
-                $("#nicknameInput").replaceWith(div);
-                self.stopHoverAnimation_nickname = false;
-                $('#nicknameEditButt').fadeOut();
-                
-                $("#oldPasswordInputPassword").val("");
-            } else  if (data === "BAD_NICKNAME"){
+                createNicknameEditDiv();
+                // $("#oldPasswordInputPassword").val("");
+            } else if (data === "BAD_NICKNAME"){
 
                 //wyświetlenie info o błędzie
-                $("#emailInput").css({"color":"red"})
+                $("#nicknameInput").css({"color":"red"})
                 setTimeout(function() {
-                    $("#emailInput").css({"color":"initial"})
+                    $("#nicknameInput").css({"color":"initial"})
                 },2000);
             } else {
                 console.warn("Nickame change warning!");
+                console.warn(data);
+
+                $("#nicknameInput").css({"color":"red"})
+                setTimeout(function() {
+                    $("#nicknameInput").css({"color":"initial"})
+                },2000);
             }
         }
     }
@@ -126,14 +182,15 @@ const ProfileLogic = (accountInfo_, debug) => {
                     string- kod błędu (BAD_PASSWORD", "BAD_EMAIL", "USED_EMAIL", "SAME_EMAIL)
         */
         if ( data === true ) {
+            location.reload();
             //zamknij modala albo wyświetl sukces
-            $('#saveChangesEmailModal').modal('hide');
-            //podmień na nowego emaila
-            $("#emailDiv").html(email);
-            $("#newEmailInput").val(email);
+            // $('#saveChangesEmailModal').modal('hide');
+            // //podmień na nowego emaila
+            // $("#emailDiv").html(email);
+            // $("#newEmailInput").val(email);
 
-            self.email = email;
-            $("#oldPasswordInputEmail").val("");
+            // self.email = email;
+            // $("#oldPasswordInputEmail").val("");
         } else if (data === "BAD_PASSWORD") {
             $("#invalidPasswordInfoEmail").show();
         } else if (data === "BAD_EMAIL") {
@@ -157,10 +214,12 @@ const ProfileLogic = (accountInfo_, debug) => {
         console.log(data);
         
         if ( data === true ) {
+            location.reload();
+
             //zamknij modala albo wyświetl sukces
-            $('#saveChangesPasswordModal').modal('hide');
-            $("#oldPasswordInputPassword").val("");
-            $("#newPasswordInput").val("");
+            // $('#saveChangesPasswordModal').modal('hide');
+            // $("#oldPasswordInputPassword").val("");
+            // $("#newPasswordInput").val("");
         } else if (data === "BAD_OLD_PASSWORD") {
 
             $("#invalidPasswordInfoPassword").show();
@@ -174,27 +233,31 @@ const ProfileLogic = (accountInfo_, debug) => {
             console.warn("Password change warning!");
         }
     }
-    // self.afterEmailChangeAction = (wasSuccessful) => {
-    //     if ( $("#emailInput").length > 0) {
-    //         if ( wasSuccessful ) {
-    //             //zmiana input na div
-    //             self.email = $("#emailInput").val();
 
-    //             var div = $(`<div id="emailDiv" class="col-sm-7 text-secondary">`+ self.email + `</div>`);
+    var showSaveButton = () => {
+        if ( !areEmailAndNicknameSameAsCurrent() ) {
+            //pokaż przycisk
+            $("#saveChangesDiv").show();
+        } else {
+            //schowaj przycisk
+            $("#saveChangesDiv").hide();
+        }
+    }
 
-    //             $("#emailInput").replaceWith(div);
-    //             self.stopHoverAnimation_email = false;
-    //             $('#emailEditButt').fadeOut();
-    //         } else {
-    //             //wyświetlenie info o błędzie
-    //             $("#emailInput").css({"color":"red"})
-    //             setTimeout(function() {
-    //                 $("#emailInput").css({"color":"initial"})
-    //             },2000);
-    //         }
-    //     }
-    // }
+    var areEmailAndNicknameSameAsCurrent = () => {
 
+        var emailInput = $("#emailInput");
+        var nicknameInput = $("#nicknameInput");
+
+        if ( emailInput.length > 0 && self.email != emailInput.val()) {
+            return false
+        }
+
+        if (  nicknameInput.length > 0 && self.nickname != nicknameInput.val()) {
+            return false;
+        }
+        return true;
+    }
     /*       event listeners          */
     self.stopHoverAnimation_nickname = false;
     self.stopHoverAnimation_email = false;
@@ -221,13 +284,13 @@ const ProfileLogic = (accountInfo_, debug) => {
         if ($("#emailRow").length > 0) {
             $("#emailRow").on({
                 'mouseenter':function() {
-                    if (!self.stopHoverAnimation_email) {
+                    if (!self.stopHoverAnimation_email && $('#emailEditButt').length > 0) {
                         $('#emailEditButt').stop(true, true).fadeOut();
                         $('#emailEditButt').fadeIn();
                     }
                     
                 },'mouseleave':function() {
-                    if (!self.stopHoverAnimation_email) {
+                    if (!self.stopHoverAnimation_email && $('#emailEditButt').length > 0) {
                         $('#emailEditButt').fadeIn();
                         $('#emailEditButt').stop(true, true).fadeOut();
                     }
@@ -236,39 +299,7 @@ const ProfileLogic = (accountInfo_, debug) => {
         }
 
         if ( $('#nicknameEditButt').length > 0 ) {
-            var createNicknameEditInput = () => {
-                if ( $("#nicknameDiv").length > 0) {
-    
-                    //change div to input
-                    self.stopHoverAnimation_nickname = true;
-                    var currentValue = $("#nicknameDiv").text();
-    
-                    var input = $(`<input id="nicknameInput" class="col-sm-7" value="`+currentValue+`"></input>`);
-                    $("#nicknameDiv").replaceWith(input);
-    
-                    input.focus();
-                    var value = input.val();
-                    input.focus().val("").val(value);
-    
-                    input.on("input propertychange",
-                        function () {
-                            showSaveButton();
-                        }
-                    );
-    
-                    input.blur(
-                        function () {
-                            if (  $("#nicknameInput").length > 0 && self.nickname == $("#nicknameInput").val()) {
-                                //change input to div
-                                var div = $(`<div id="nicknameDiv" class="col-sm-7 text-secondary">` + currentValue + `</input>`);
-                                $("#nicknameInput").replaceWith(div);
-                                self.stopHoverAnimation_nickname = false;
-                                $('#nicknameEditButt').fadeOut();
-                            }
-                        }
-                    )
-                }
-            }
+            
 
             $('#nicknameEditButt').on("click",
                 function () {
@@ -278,25 +309,13 @@ const ProfileLogic = (accountInfo_, debug) => {
                         3. focus na inputa
                         4. event listener na inputa
                     */
-                    createNicknameEditInput();
+                    if ( $("#nicknameInput").length > 0 )
+                        createNicknameEditDiv();
+                    else
+                        createNicknameEditInput();
                 }
             )
         }
-
-        var emailValid = (data) => {
-            if (!data.match(/(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-z0-9-]*[a-zA-Z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-zA-Z0-9-]*[a-zA-Z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/)) 
-                return false;
-            else
-                return true;
-          }
-
-        var passwordValid = (data) => {
-            if (data.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/))
-                return true;
-            else
-                return false;
-        }
-
 
         if ( $('#btnSendChangesEmail').length > 0 ) {
             
@@ -319,7 +338,7 @@ const ProfileLogic = (accountInfo_, debug) => {
                     return;
                 }
 
-                var isEmailValid = emailValid(email);
+                var isEmailValid = AccountValidation().emailValid(email);
                 if ( isEmailValid )
                     self.ajaxSendProfileEmailChanges(
                         self.afterEmailChangeAction,
@@ -351,7 +370,7 @@ const ProfileLogic = (accountInfo_, debug) => {
                     return;
                 }
 
-                var isPasswordValid = passwordValid(newPassword);
+                var isPasswordValid = AccountValidation().passwordValid(newPassword);
                 console.log(newPassword);
                 console.log(isPasswordValid);
                 if ( isPasswordValid )
@@ -364,92 +383,38 @@ const ProfileLogic = (accountInfo_, debug) => {
                     $("#invalidNewPasswordInfoPassword").show();
             });
         }
-
-        
-            // var createEmailEditInput = () => {
-            //     if ( $("#emailDiv").length > 0) {
-    
-            //         //change div to input
-            //         self.stopHoverAnimation_email = true;
-            //         var currentValue = $("#emailDiv").text();
-    
-            //         var input = $(`<input id="emailInput"  class="col-sm-7" value="`+currentValue+`"></input>`);
-            //         $("#emailDiv").replaceWith(input);
-    
-            //         var value = $("#emailInput").val();
-            //         $("#emailInput").focus().val("").val(value);
-
-    
-            //         input.on("input propertychange",
-            //             function () {
-            //                 showSaveButton();
-            //             }
-            //         );
-    
-            //         input.blur(
-            //             function () {
-            //                 if (  $("#emailInput").length > 0 && self.email == $("#emailInput").val()) {
-            //                     //change input to div
-            //                     var div = $(`<div id="emailDiv" class="col-sm-7 text-secondary">` + currentValue + `</input>`);
-            //                     $("#emailInput").replaceWith(div);
-            //                     self.stopHoverAnimation_email = false;
-            //                     $('#emailEditButt').fadeOut();
-            //                 }
-            //             }
-            //         )
-            //     }
-            // }
-            // $('#emailEditButt').on("click",
-            //     function () {
-            //         /*
-            //             1. zatrzymaj znikanie przycisku edycji
-            //             2. zrób z emailDiv inputa
-            //             3. focus na inputa
-            //             4. event listener na inputa
-            //         */
-            //         createEmailEditInput();
-            //     }
-            // )
-        //}
-
-        var showSaveButton = () => {
-            if ( !areEmailAndNicknameSameAsCurrent() ) {
-                //pokaż przycisk
-                $("#saveChangesDiv").show();
-            } else {
-                //schowaj przycisk
-                $("#saveChangesDiv").hide();
-            }
-        }
-
-        var areEmailAndNicknameSameAsCurrent = () => {
-
-            var emailInput = $("#emailInput");
-            var nicknameInput = $("#nicknameInput");
-
-            if ( emailInput.length > 0 && self.email != emailInput.val()) {
-                return false
-            }
-
-            if (  nicknameInput.length > 0 && self.nickname != nicknameInput.val()) {
-                return false;
-            }
-            return true;
-        }
     }
     
     if ( $("#btnSendChanges").length > 0 ) {
         $("#btnSendChanges").click(function() {
-            if ( $("#nicknameInput").length > 0)
-                self.ajaxSendProfileNicknameChanges(self.afterNicknameChangeAction, $("#nicknameInput").val());
-            // if ( $("#emailInput").length > 0)
-            //     self.ajaxSendProfileEmailChanges(self.afterEmailChangeAction, $("#emailInput").val());
+            if ( $("#nicknameInput").length > 0) {
+                var nickname = $("#nicknameInput").val();
+                var isNicknameValid = AccountValidation().nicknameValid(nickname);
+                if ( isNicknameValid )
+                    self.ajaxSendProfileNicknameChanges(self.afterNicknameChangeAction, nickname);
+                else {
+                    $("#nicknameInput").css({"color":"red"})
+                    setTimeout(function() {
+                        $("#nicknameInput").css({"color":"initial"})
+                    },2000);
+                    // $("#invalidNewPasswordInfoPassword").show();
+                    console.warn("ERROR !!!");
+                }
 
+            }
+            
             $("#saveChangesDiv").hide();
         })
     }
+
+    if ( $('#emailEditButt').length > 0) {
+        $('#emailEditButt').on('click',() => {
+
+            if ( $("#newEmailInput").length > 0)
+                $("#newEmailInput").val(self.email);
+        })
+    }
     /*     ajax http actions       */
-    
     self.ajaxSendProfileNicknameChanges = (callback, nickname) => {
         send = nickname;
         $.ajax({
@@ -530,7 +495,7 @@ const ProfileLogic = (accountInfo_, debug) => {
             contentType: "application/json",
             success: function(data) {
                 if (debug){
-                    console.log("ajaxSendProfileEmailChanges success");
+                    console.log("ajaxSendProfilePasswordChanges success");
                     console.log(data);
                 }
                 /*
@@ -542,15 +507,15 @@ const ProfileLogic = (accountInfo_, debug) => {
             },
             error: function(jqXHR, status, err) {
                 if (debug){
-                    console.warn("ajaxSendProfileEmailChanges error");
+                    console.warn("ajaxSendProfilePasswordChanges error");
                     console.warn(jqXHR);
                 }
                 callback(jqXHR.responseText);
             }
         });
     }
-    /*   ajax http requests       */
 
+    /*   ajax http requests       */
     self.ajaxGetTopLeaderboard = (callback) => {
         console.log("ajaxGetTopLeaderboard");
         $.ajax({

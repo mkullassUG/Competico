@@ -2,6 +2,7 @@ package com.projteam.app.api;
 
 import static com.projteam.app.domain.Account.PLAYER_ROLE;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -109,7 +110,6 @@ public class AccountAPITests
 					.map(item -> is(item))
 					.collect(Collectors.toList()))));
 	}
-	
 	@Test
 	public void shouldNotReturnAccountInfoWhenNotAuthenticated() throws Exception
 	{
@@ -119,6 +119,47 @@ public class AccountAPITests
 		mvc.perform(get("/api/v1/account/info"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.authenticated", is(false)));
+	}
+	@Test
+	public void shouldReturnAccountInfoForGivenUser() throws Exception
+	{
+		UUID id = UUID.randomUUID();
+		String email = "testAcc@test.pl";
+		String username = "TestAccount";
+		String nickname = "TestAccount";
+		String password = "QWERTY";
+		List<String> roles = List.of(PLAYER_ROLE);
+		
+		when(accountService.findByUsername(username))
+			.thenReturn(Optional.of(new Account.Builder()
+					.withID(id)
+					.withEmail(email)
+					.withUsername(username)
+					.withNickname(nickname)
+					.withPassword(password)
+					.withRoles(roles)
+					.build()));
+		
+		mvc.perform(get("/api/v1/account/" + username + "/info"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.username", is(username)))
+			.andExpect(jsonPath("$.nickname", is(nickname)))
+			.andExpect(jsonPath("$.roles", hasSize(roles.size())))
+			.andExpect(jsonPath("$.roles", containsInAnyOrder(roles.stream()
+					.map(item -> is(item))
+					.collect(Collectors.toList()))));
+	}
+	@Test
+	public void shouldNotifyWhenAccountInfoDoesNotExist() throws Exception
+	{
+		String username = "TestAccount";
+		
+		when(accountService.findByUsername(username))
+			.thenReturn(Optional.empty());
+		
+		mvc.perform(get("/api/v1/account/" + username + "/info"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.exists", is(false)));
 	}
 	
 	@ParameterizedTest
@@ -251,6 +292,93 @@ public class AccountAPITests
 		verify(accountService, times(1)).changePassword(
 				pcDto.getOldPassword(),
 				pcDto.getNewPassword());
+	}
+	
+	@Test
+	public void shouldRequestPasswordReset() throws Exception
+	{
+		String username = "TestAccount";
+		
+		mvc.perform(post("/api/v1/forgotpassword")
+				.contentType(APPLICATION_JSON_UTF8)
+				.content("" + username))
+			.andExpect(status().isOk());
+		
+		verify(accountService, times(1)).requestPasswordReset(username);
+	}
+	@Test
+	public void shouldReturnBadRequestWhenCannotRequestPasswordReset() throws Exception
+	{
+		String username = "TestAccount";
+		
+		String exceptionMessage = "Mock exception";
+		doThrow(new IllegalArgumentException(exceptionMessage))
+			.when(accountService)
+			.requestPasswordReset(username);
+		
+		mvc.perform(post("/api/v1/forgotpassword")
+				.contentType(APPLICATION_JSON_UTF8)
+				.content("" + username))
+			.andExpect(status().isBadRequest())
+			.andExpect(content().string(containsString(exceptionMessage)));
+		
+		verify(accountService, times(1)).requestPasswordReset(username);
+	}
+	
+	@Test
+	public void shouldResetPassword() throws Exception
+	{
+		String token = UUID.randomUUID().toString();
+		CharSequence newPassword = "testPass123";
+		
+		mvc.perform(post("/api/v1/resetpassword/" + token)
+				.contentType(APPLICATION_JSON_UTF8)
+				.content("" + newPassword))
+			.andExpect(status().isOk());
+		
+		verify(accountService, times(1)).resetPassword(token, newPassword);
+	}
+	@Test
+	public void shouldReturnBadRequestWhenCannotResetPassword() throws Exception
+	{
+		String token = UUID.randomUUID().toString();
+		CharSequence newPassword = "testPass123";
+		
+		String exceptionMessage = "Mock exception";
+		doThrow(new IllegalArgumentException(exceptionMessage))
+			.when(accountService)
+			.resetPassword(token, newPassword);
+		
+		mvc.perform(post("/api/v1/resetpassword/" + token)
+				.contentType(APPLICATION_JSON_UTF8)
+				.content("" + newPassword))
+			.andExpect(status().isBadRequest())
+			.andExpect(content().string(containsString(exceptionMessage)));
+		
+		verify(accountService, times(1)).resetPassword(token, newPassword);
+	}
+	
+	@Test
+	public void shouldRequestEmailVerification() throws Exception
+	{
+		mvc.perform(post("/api/v1/emailverification"))
+			.andExpect(status().isOk());
+		
+		verify(accountService, times(1)).requestEmailVerification();
+	}
+	@Test
+	public void shouldReturnBadRequestWhenCannotRequestEmailVerification() throws Exception
+	{
+		String exceptionMessage = "Mock exception";
+		doThrow(new IllegalArgumentException(exceptionMessage))
+			.when(accountService)
+			.requestEmailVerification();
+		
+		mvc.perform(post("/api/v1/emailverification"))
+			.andExpect(status().isBadRequest())
+			.andExpect(content().string(containsString(exceptionMessage)));
+		
+		verify(accountService, times(1)).requestEmailVerification();
 	}
 	
 	@Test

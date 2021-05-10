@@ -15,8 +15,7 @@ import com.projteam.app.domain.game.tasks.answers.ChronologicalOrderAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListChoiceWordFillAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListSentenceFormingAnswer;
 import com.projteam.app.domain.game.tasks.answers.ListWordFillAnswer;
-import com.projteam.app.domain.game.tasks.answers.MultipleChoiceAnswer;
-import com.projteam.app.domain.game.tasks.answers.SingleChoiceAnswer;
+import com.projteam.app.domain.game.tasks.answers.OptionSelectAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordConnectAnswer;
 import com.projteam.app.domain.game.tasks.answers.WordFillAnswer;
 
@@ -191,22 +190,7 @@ public class AnswerWrongDataTests
 		assertEquals(lsf.acceptAnswer(lsfa), 0);
 	}
 	@Test
-	public void singleChoiceRejectsWrongAnswer()
-	{
-		String content = "Lorem ipsum dolor sit amet";
-		String answer = "consectetur";
-		List<String> incorrectAnswers = List.of(
-				"adipiscing", "elit", "sed");
-		
-		SingleChoice sc = new SingleChoice(UUID.randomUUID(),
-				"Test instruction", List.of(),
-				content, answer, incorrectAnswers, 1);
-		SingleChoiceAnswer sca = new SingleChoiceAnswer(answer + "wrong");
-		
-		assertEquals(sc.acceptAnswer(sca), 0);
-	}
-	@Test
-	public void multipleChoiceRejectsWrongAnswer()
+	public void optionSelectRejectsWrongAnswer()
 	{
 		String content = "Lorem ipsum dolor sit amet";
 		List<String> correctAnswers = List.of(
@@ -214,15 +198,15 @@ public class AnswerWrongDataTests
 		List<String> incorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		MultipleChoice mc = new MultipleChoice(UUID.randomUUID(),
+		OptionSelect os = new OptionSelect(UUID.randomUUID(),
 				"Test instruction", List.of(),
-				new MultipleChoiceElement(UUID.randomUUID(),
+				new OptionSelectElement(UUID.randomUUID(),
 						content, correctAnswers, incorrectAnswers), 1);
-		MultipleChoiceAnswer mca = new MultipleChoiceAnswer(correctAnswers.stream()
+		OptionSelectAnswer osa = new OptionSelectAnswer(correctAnswers.stream()
 				.map(a -> a + "wrong")
 				.collect(Collectors.toList()));
 		
-		assertEquals(mc.acceptAnswer(mca), 0);
+		assertEquals(os.acceptAnswer(osa), 0);
 	}
 	@Test
 	public void wordConnectRejectsWrongAnswer()

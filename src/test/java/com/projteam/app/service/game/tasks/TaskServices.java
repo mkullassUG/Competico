@@ -32,10 +32,9 @@ import com.projteam.app.dao.game.tasks.ChronologicalOrderDAO;
 import com.projteam.app.dao.game.tasks.ListChoiceWordFillDAO;
 import com.projteam.app.dao.game.tasks.ListSentenceFormingDAO;
 import com.projteam.app.dao.game.tasks.ListWordFillDAO;
-import com.projteam.app.dao.game.tasks.MultipleChoiceDAO;
-import com.projteam.app.dao.game.tasks.MultipleChoiceElementDAO;
+import com.projteam.app.dao.game.tasks.OptionSelectDAO;
+import com.projteam.app.dao.game.tasks.OptionSelectElementDAO;
 import com.projteam.app.dao.game.tasks.SentenceFormingElementDAO;
-import com.projteam.app.dao.game.tasks.SingleChoiceDAO;
 import com.projteam.app.dao.game.tasks.WordConnectDAO;
 import com.projteam.app.dao.game.tasks.WordFillDAO;
 import com.projteam.app.dao.game.tasks.WordFillElementDAO;
@@ -46,10 +45,9 @@ import com.projteam.app.domain.game.tasks.ChronologicalOrder;
 import com.projteam.app.domain.game.tasks.ListChoiceWordFill;
 import com.projteam.app.domain.game.tasks.ListSentenceForming;
 import com.projteam.app.domain.game.tasks.ListWordFill;
-import com.projteam.app.domain.game.tasks.MultipleChoice;
-import com.projteam.app.domain.game.tasks.MultipleChoiceElement;
+import com.projteam.app.domain.game.tasks.OptionSelect;
+import com.projteam.app.domain.game.tasks.OptionSelectElement;
 import com.projteam.app.domain.game.tasks.SentenceFormingElement;
-import com.projteam.app.domain.game.tasks.SingleChoice;
 import com.projteam.app.domain.game.tasks.Task;
 import com.projteam.app.domain.game.tasks.WordConnect;
 import com.projteam.app.domain.game.tasks.WordFill;
@@ -65,10 +63,9 @@ public class TaskServices
 	private @Mock ListChoiceWordFillDAO lcwfDao;
 	private @Mock ListSentenceFormingDAO lsfDao;
 	private @Mock ListWordFillDAO lwfDao;
-	private @Mock MultipleChoiceDAO mcDao;
-	private @Mock MultipleChoiceElementDAO mceDao;
+	private @Mock OptionSelectDAO osDao;
+	private @Mock OptionSelectElementDAO oseDao;
 	private @Mock SentenceFormingElementDAO sfeDao;
-	private @Mock SingleChoiceDAO scDao;
 	private @Mock WordConnectDAO wcDao;
 	private @Mock WordFillDAO wfDao;
 	private @Mock WordFillElementDAO wfeDao;
@@ -78,8 +75,7 @@ public class TaskServices
 	private @InjectMocks ListChoiceWordFillService lcwfService;
 	private @InjectMocks ListSentenceFormingService lsfService;
 	private @InjectMocks ListWordFillService lwfService;
-	private @InjectMocks MultipleChoiceService mcService;
-	private @InjectMocks SingleChoiceService scService;
+	private @InjectMocks OptionSelectService osService;
 	private @InjectMocks WordConnectService wcService;
 	private @InjectMocks WordFillService wfService;
 	
@@ -151,23 +147,13 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	public void singleChoiceSaveAcceptsOnlyCorrectTasks(Task task)
+	public void optionSelectSaveAcceptsOnlyCorrectTasks(Task task)
 	{
-		if (task instanceof SingleChoice)
-			assertDoesNotThrow(() -> scService.genericSave(task));
+		if (task instanceof OptionSelect)
+			assertDoesNotThrow(() -> osService.genericSave(task));
 		else
 			assertThrows(IllegalArgumentException.class,
-					() -> scService.genericSave(task));
-	}
-	@ParameterizedTest
-	@MethodSource("mockTasks")
-	public void multipleChoiceSaveAcceptsOnlyCorrectTasks(Task task)
-	{
-		if (task instanceof MultipleChoice)
-			assertDoesNotThrow(() -> mcService.genericSave(task));
-		else
-			assertThrows(IllegalArgumentException.class,
-					() -> mcService.genericSave(task));
+					() -> osService.genericSave(task));
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
@@ -254,27 +240,15 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
-	public void singleChoiceExistsByIdAcceptsOnlyCorrectTasks(Task task)
+	public void optionSelectExistsByIdAcceptsOnlyCorrectTasks(Task task)
 	{
-		when(scDao.existsById(any())).thenReturn(true);
+		when(osDao.existsById(any())).thenReturn(true);
 		
-		if (task instanceof SingleChoice)
-			assertTrue(scService.genericExistsById(task));
+		if (task instanceof OptionSelect)
+			assertTrue(osService.genericExistsById(task));
 		else
 			assertThrows(IllegalArgumentException.class,
-					() -> scService.genericExistsById(task));
-	}
-	@ParameterizedTest
-	@MethodSource("mockTasks")
-	public void multipleChoiceExistsByIdAcceptsOnlyCorrectTasks(Task task)
-	{
-		when(mcDao.existsById(any())).thenReturn(true);
-		
-		if (task instanceof MultipleChoice)
-			assertTrue(mcService.genericExistsById(task));
-		else
-			assertThrows(IllegalArgumentException.class,
-					() -> mcService.genericExistsById(task));
+					() -> osService.genericExistsById(task));
 	}
 	@ParameterizedTest
 	@MethodSource("mockTasks")
@@ -339,19 +313,11 @@ public class TaskServices
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 25, 999})
-	public void singleChoiceCanCount(int count)
+	public void optionSelectCanCount(int count)
 	{
-		when(scDao.count()).thenReturn((long) count);
+		when(osDao.count()).thenReturn((long) count);
 		
-		assertEquals(scService.count(), count);
-	}
-	@ParameterizedTest
-	@ValueSource(ints = {0, 1, 2, 25, 999})
-	public void multipleChoiceCanCount(int count)
-	{
-		when(mcDao.count()).thenReturn((long) count);
-		
-		assertEquals(mcService.count(), count);
+		assertEquals(osService.count(), count);
 	}
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 25, 999})
@@ -429,26 +395,15 @@ public class TaskServices
 		assertEquals(lsfService.genericFindRandom(r), mockTask);
 	}
 	@Test
-	public void singleChoiceCanGetRandomTask()
+	public void optionSelectCanGetRandomTask()
 	{
-		SingleChoice mockTask = mockSingleChoice();
+		OptionSelect mockTask = mockOptionSelect();
 		Random r = new Random();
 
-		when(scDao.count()).thenReturn(1l);
-		when(scDao.findAll((PageRequest) any())).thenReturn(new PageImpl<>(List.of(mockTask)));
+		when(osDao.count()).thenReturn(1l);
+		when(osDao.findAll((PageRequest) any())).thenReturn(new PageImpl<>(List.of(mockTask)));
 		
-		assertEquals(scService.genericFindRandom(r), mockTask);
-	}
-	@Test
-	public void multipleChoiceCanGetRandomTask()
-	{
-		MultipleChoice mockTask = mockMultipleChoice();
-		Random r = new Random();
-
-		when(mcDao.count()).thenReturn(1l);
-		when(mcDao.findAll((PageRequest) any())).thenReturn(new PageImpl<>(List.of(mockTask)));
-		
-		assertEquals(mcService.genericFindRandom(r), mockTask);
+		assertEquals(osService.genericFindRandom(r), mockTask);
 	}
 	@Test
 	public void wordConnectCanGetRandomTask()
@@ -517,22 +472,13 @@ public class TaskServices
 		assertNull(lsfService.genericFindRandom(r));
 	}
 	@Test
-	public void singleChoiceCannotGetRandomTaskIfEmpty()
+	public void optionSelectCannotGetRandomTaskIfEmpty()
 	{
 		Random r = new Random();
 
-		when(scDao.count()).thenReturn(0l);
+		when(osDao.count()).thenReturn(0l);
 		
-		assertNull(scService.genericFindRandom(r));
-	}
-	@Test
-	public void multipleChoiceCannotGetRandomTaskIfEmpty()
-	{
-		Random r = new Random();
-
-		when(mcDao.count()).thenReturn(0l);
-		
-		assertNull(mcService.genericFindRandom(r));
+		assertNull(osService.genericFindRandom(r));
 	}
 	@Test
 	public void wordConnectCannotGetRandomTaskIfEmpty()
@@ -611,24 +557,13 @@ public class TaskServices
 		assertEquals(res.get(0), mockTask);
 	}
 	@Test
-	public void singleChoiceCanGetAllTasks()
+	public void optionSelectCanGetAllTasks()
 	{
-		SingleChoice mockTask = mockSingleChoice();
+		OptionSelect mockTask = mockOptionSelect();
 
-		when(scDao.findAll()).thenReturn(List.of(mockTask));
+		when(osDao.findAll()).thenReturn(List.of(mockTask));
 		
-		List<Task> res = scService.genericFindAll();
-		assertEquals(res.size(), 1);
-		assertEquals(res.get(0), mockTask);
-	}
-	@Test
-	public void multipleChoiceCanGetAllTasks()
-	{
-		MultipleChoice mockTask = mockMultipleChoice();
-
-		when(mcDao.findAll()).thenReturn(List.of(mockTask));
-		
-		List<Task> res = mcService.genericFindAll();
+		List<Task> res = osService.genericFindAll();
 		assertEquals(res.size(), 1);
 		assertEquals(res.get(0), mockTask);
 	}
@@ -655,8 +590,7 @@ public class TaskServices
 				Arguments.of(mockListChoiceWordFill()),
 				Arguments.of(mockChronologicalOrder()),
 				Arguments.of(mockListSentenceForming()),
-				Arguments.of(mockSingleChoice()),
-				Arguments.of(mockMultipleChoice()),
+				Arguments.of(mockOptionSelect()),
 				Arguments.of(mockWordConnect()));
 	}
 	
@@ -790,29 +724,18 @@ public class TaskServices
 				"Test instruction", List.of(),
 				lsfWordFillElemList, 100);
 	}
-	public static SingleChoice mockSingleChoice()
+	public static OptionSelect mockOptionSelect()
 	{
-		String scContent = "Lorem ipsum dolor sit amet";
-		String scAnswer = "consectetur";
-		List<String> scIncorrectAnswers = List.of(
-				"adipiscing", "elit", "sed");
-		
-		return new SingleChoice(UUID.randomUUID(),
-				"Test instruction", List.of(),
-				scContent, scAnswer, scIncorrectAnswers, 100);
-	}
-	public static MultipleChoice mockMultipleChoice()
-	{
-		String mcContent = "Lorem ipsum dolor sit amet";
-		List<String> mcCorrectAnswers = List.of(
+		String osContent = "Lorem ipsum dolor sit amet";
+		List<String> osCorrectAnswers = List.of(
 				"eiusmod", "tempor", "incididunt ut");
-		List<String> mcIncorrectAnswers = List.of(
+		List<String> osIncorrectAnswers = List.of(
 				"adipiscing", "elit", "sed", "labore", "et dolore");
 		
-		return new MultipleChoice(UUID.randomUUID(), 
+		return new OptionSelect(UUID.randomUUID(), 
 				"Test instruction", List.of(),
-				new MultipleChoiceElement(UUID.randomUUID(),
-						mcContent, mcCorrectAnswers, mcIncorrectAnswers), 100);
+				new OptionSelectElement(UUID.randomUUID(),
+						osContent, osCorrectAnswers, osIncorrectAnswers), 100);
 	}
 	public static WordConnect mockWordConnect()
 	{

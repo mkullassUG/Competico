@@ -1,5 +1,6 @@
 const ListChoiceWordFill_Game = (taskData) => {
     var self = TaskGameVariant(taskData);
+    self.taskName = "ListChoiceWordFill";
     
     self.singleChoiceWordFillArray = [];
 
@@ -20,51 +21,59 @@ const ListChoiceWordFill_Game = (taskData) => {
             var textFieldRowArray = self.textFields[i];
             var wordChoicesRowArray = self.wordChoices[i];
             var startWithText = self.startWithText[i];
-            var taskContentReady = "("+ (i+1) +"). ";
+            
+            var taskContentDiv = $(`<div class="border-top border-gray taskContent text-left"> (`+ (i+1) +`). </div>`);
 
             if (startWithText) {
                 for (let j = 0; j < textFieldRowArray.length; j++) {
-                    var text = textFieldRowArray[j];
+                    var text = document.createTextNode(textFieldRowArray[j]);
 
-                    taskContentReady += text;
+                    taskContentDiv.append(text)
                     if (wordChoicesRowArray[j]) {
-                        taskContentReady += `<div class="choiceDiv">`;
-                        for (let k = 0; k < (wordChoicesRowArray[j].length); k++) {
-                            var choiceWord = wordChoicesRowArray[j][k];
+                        var choiceDiv = $(`<div class="choiceDiv">`);
 
-                            if ( k == 0 ) 
-                                taskContentReady += `<div class="answerLCWF">`+choiceWord+`</div>`;
-                            else 
-                                taskContentReady += `/<div class="answerLCWF">`+choiceWord+`</div>`;
+                        taskContentDiv.append(choiceDiv);
+                        for (let k = 0; k < (wordChoicesRowArray[j].length); k++) {
+                            var choiceWord = document.createTextNode(wordChoicesRowArray[j][k]);
+
+                            var answerVariantDiv = $(`<div class="answer` + self.taskName + `F">`);
+                            if ( k != 0 ) 
+                                answerVariantDiv.append("/");
+
+                            answerVariantDiv.append(choiceWord);
+                            choiceDiv.append(answerVariantDiv);
                         }   
-                        taskContentReady += `</div>`;
                     }
                 }
             } else {
                 for (let j = 0; j < textFieldRowArray.length; j++) {
-                    var text = textFieldRowArray[j];
+                    var text = document.createTextNode(textFieldRowArray[j]);
 
-                    
                     if (wordChoicesRowArray[j]) {
-                        taskContentReady += `<div class="choiceDiv">`
+                        var choiceDiv = $(`<div class="choiceDiv">` + (i+1) + `</div>`);
+                        
+                        taskContentDiv.append(choiceDiv);
                         for (let k = 0; k < wordChoicesRowArray[j].length; k++) {
-                            var choiceWord = wordChoicesRowArray[j][k];
+                            var choiceWord = document.createTextNode(wordChoicesRowArray[j][k]);
                             
-                            if ( k == 0 ) 
-                                taskContentReady += `<div class="answerLCWF">`+choiceWord+`</div>`;
-                            else 
-                                taskContentReady += `/<div class="answerLCWF">`+choiceWord+`</div>`;
+                            var answerVariantDiv = $(`<div class="answer` + self.taskName + `F">`);
+
+                            if ( k != 0 ) 
+                                answerVariantDiv.append("/");
+
+                            answerVariantDiv.append(choiceWord);
+                            choiceDiv.append(answerVariantDiv);
                         }   
-                        taskContentReady += `</div>`;
                     }
-                    taskContentReady += text;
+                    taskContentDiv.append(text);
                 }
             }
 
-            $("#GameDiv").append(`
-            <div class="singleContentAnswerContainer">
-                <div class="border-top border-gray taskContent text-left">`+ taskContentReady +`</div>
-            </div>`);
+
+            
+            var singleContentAnswerContainerDiv = $(`<div class="singleContentAnswerContainer">`);
+            singleContentAnswerContainerDiv.append(taskContentDiv);
+            $("#GameDiv").append(singleContentAnswerContainerDiv);
         }
 
         var ChoiceContainer = (answer_, choiceWordFillContainer_) => {
@@ -90,12 +99,12 @@ const ListChoiceWordFill_Game = (taskData) => {
 
             that.use = () => {
                 that.used = true;
-                that.choiceDiv.addClass("bg-primary").addClass("text-white").removeClass("unusedLCWF");
+                that.choiceDiv.addClass("bg-primary").addClass("text-white").removeClass("unused" + self.taskName + "F");
             }
 
             that.unuse = () => {
                 that.used = false;
-                that.choiceDiv.removeClass("bg-primary").removeClass("text-white").addClass("unusedLCWF");
+                that.choiceDiv.removeClass("bg-primary").removeClass("text-white").addClass("unused" + self.taskName + "F");
             }
 
             that.init(answer_);
@@ -108,7 +117,7 @@ const ListChoiceWordFill_Game = (taskData) => {
             that.choiceContainers = [];
 
             that.init = (containerDiv_) => {
-                that.choiceHoldingElements = $($(containerDiv_).find(".answerLCWF"));
+                that.choiceHoldingElements = $($(containerDiv_).find(".answer" + self.taskName + "F"));
 
                 for ( let i = 0; i < that.choiceHoldingElements.length; i++) {
                     var choice = that.choiceHoldingElements[i];

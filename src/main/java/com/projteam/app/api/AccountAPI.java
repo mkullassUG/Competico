@@ -1,11 +1,14 @@
 package com.projteam.app.api;
 
+import java.io.BufferedReader;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -101,10 +104,27 @@ public class AccountAPI
 				.map(acc -> Map.of(
 						"authenticated", true,
 						"email", acc.getEmail(),
+						"emailVerified", acc.isEmailVerified(),
 						"username", acc.getUsername(),
 						"nickname", acc.getNickname(),
 						"roles", acc.getRoles()))
 				.orElseGet(() -> Map.of("authenticated", false));
+	}
+	
+	@GetMapping("api/v1/account/{username}/info")
+	@ApiOperation(value = "Get information about an account", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Information about the account with the provided username")
+	})
+	public Object getAccountInfo(@PathVariable String username)
+	{
+		return accServ.findByUsername(username)
+				.map(acc -> Map.of(
+						"username", acc.getUsername(),
+						"nickname", acc.getNickname(),
+						"roles", acc.getRoles()))
+				.orElseGet(() -> Map.of("exists", false));
 	}
 	
 	@PutMapping("api/v1/account/email")
@@ -160,5 +180,73 @@ public class AccountAPI
 		{
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
+	}
+	
+	@PostMapping("api/v1/forgotpassword")
+	@ApiOperation(value =
+		"Request a password reset for the account with the specified username or email",
+		code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Request accepted")
+	})
+	public ResponseEntity<String> requestPasswordReset(HttpServletRequest req)
+	{
+		try
+		{
+			accServ.requestPasswordReset(readString(req.getReader()));
+			return ResponseEntity.ok().build();
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	@PostMapping("api/v1/resetpassword/{token}")
+	@ApiOperation(value =
+		"Reset password using a password reset token",
+		code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Password set")
+	})
+	public ResponseEntity<String> resetPassword(
+			@PathVariable String token, HttpServletRequest req)
+	{
+		try
+		{
+			accServ.resetPassword(token, readString(req.getReader()));
+			return ResponseEntity.ok().build();
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PostMapping("api/v1/emailverification")
+	@ApiOperation(value =
+		"Request email verification for the account with the specified username or email",
+		code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Request accepted")
+	})
+	public ResponseEntity<String> requestEmailVerification()
+	{
+		try
+		{
+			accServ.requestEmailVerification();
+			return ResponseEntity.ok().build();
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	private String readString(BufferedReader r)
+	{
+		return r.lines().collect(Collectors.joining());
 	}
 }

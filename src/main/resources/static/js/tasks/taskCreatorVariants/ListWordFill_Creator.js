@@ -8,11 +8,11 @@ const ListWordFill_Creator = (data_ = {}) => {
     self.taskContent.rows = [];
 
     /*  Logic functions */
-    var wordFillCreatorInit = () => {
+    var WordFillCreatorInit = () => {
 
         self.hideAllTaskDivsExceptGiven(self.taskName);
 
-        var btnAddSingleWordFill = $("#ListWordFillAddWordFill");
+        var btnAddSingleWordFill = $("#" + self.taskName+ "AddWordFill");
         btnAddSingleWordFill.on('click',(e)=> {
             
             var createdElement = self.addSingleWordFill();
@@ -31,7 +31,7 @@ const ListWordFill_Creator = (data_ = {}) => {
 
         });
 
-        btnAddSingleWordFill.click();
+        self.checkAndClickOnAddButt();
     }
 
     var checkIfTaskReadySuper = self.checkIfTaskReady;
@@ -45,46 +45,16 @@ const ListWordFill_Creator = (data_ = {}) => {
     var prepareTaskJsonFileSuper = self.prepareTaskJsonFile;
     self.prepareTaskJsonFile = () => {
         var task = prepareTaskJsonFileSuper();
-        /*{
-            "taskName" : "ListWordFill",
-            "taskContent" : {
-                "id" : "0be75481-5a7d-4703-979f-70afcdae5846",
-                "instruction" : "Complete the sentences with the best word:",
-                "tags" : [ ],
-                "rows" : [  {
-                "id" : "2438f4e5-9e2a-4493-9de3-b072b786fcb4",
-                "text" : [ "Do you mind if we deal ", " it later?" ],
-                "emptySpaces" : [ {
-                    "answer" : "WITH"
-                } ],
-                "startWithText" : true,
-                "possibleAnswers" : [ "ON", "WITHOUT", "WITH", "FROM" ]
-                },  {
-                "id" : "34d0cb83-fbb3-4ae5-b712-362d0a0803c6",
-                "text" : [ "I don’t want to go into too much ", " at this stage." ],
-                "emptySpaces" : [ {
-                    "answer" : "DETAIL"
-                } ],
-                "startWithText" : true,
-                "possibleAnswers" : [ "DISTRUCTIONS", "DETAIL", "TIME", "DISCUSSIONS" ]
-                } ],
-                "difficulty" : 100.0
-            }
-        }*/
-
-
+        
         //czy można pobrać difficulty
         //slider
-        if ($("#customRangeLWF").length > 0) {
-            self.taskContent.difficulty = $("#customRangeLWF").val();
+        if ($("#customRange" + self.taskName+ "").length > 0) {
+            self.taskContent.difficulty = $("#customRange" + self.taskName+ "").val();
         }
-        // if ($("#ListWordFillDificulty").length) {
-        //     self.taskContent.difficulty = $("#ListWordFillDificulty").val();
-        // }
 
         //czy można pograc tagi
-        if ($("#ListWordFillDivTaskTags").length) {
-            var tagsString = $("#ListWordFillDivTaskTags").val();
+        if ($("#" + self.taskName+ "DivTaskTags").length) {
+            var tagsString = $("#" + self.taskName+ "DivTaskTags").val();
             var tags = tagsString.split(",")
                 .map(t=> t.trim())
                 .filter(t => t!="");
@@ -94,8 +64,8 @@ const ListWordFill_Creator = (data_ = {}) => {
             }
         }
         //czy można pobrać instrukcje
-        if ( $("#ListWordFillDivTaskInstruction").length ) {
-            self.taskContent.instruction = $("#ListWordFillDivTaskInstruction").val().trim();
+        if ( $("#" + self.taskName+ "DivTaskInstruction").length ) {
+            self.taskContent.instruction = $("#" + self.taskName+ "DivTaskInstruction").val().trim();
         }   
         
         //czy można pobrać zdania
@@ -112,8 +82,14 @@ const ListWordFill_Creator = (data_ = {}) => {
 
                 var singleWordFill = $(singleWordFills[i]);
 
-                //LWFTextArea
-                var textString = singleWordFill.find(".LWFTextArea").val();
+                //ListWordFillTextArea
+                var textString = singleWordFill.find("." + self.taskName+ "TextArea").val();
+
+                // //new 2021-05-02
+                // var fontSizeInputVal = $("#" + self.taskName+ "FontSize").val();
+                // textString = `<span style="font-size:`+fontSizeInputVal+`px">` + textString + "</span>";
+
+
                 var tagsWithWords = textString.match(/\{\[[^]+?\]\}/g);
                 if (tagsWithWords != null) //BUG 2021-02-08
                     var correctWords = tagsWithWords.map(w=> w.replace("{[",'').replace("]}",''));
@@ -134,8 +110,8 @@ const ListWordFill_Creator = (data_ = {}) => {
                 }
 
                 //get possibleAnswers
-                //LWFTDivIncorrectWords
-                var inCorrectWordsString = singleWordFill.find(".LWFTDivIncorrectWords").val();
+                //ListWordFillTDivIncorrectWords
+                var inCorrectWordsString = singleWordFill.find("." + self.taskName+ "TDivIncorrectWords").val();
                 var inCorrectWords = inCorrectWordsString.split(",")
                     .map(t=> t.trim())
                     .filter(t => t!="");
@@ -187,8 +163,57 @@ const ListWordFill_Creator = (data_ = {}) => {
     var loadTaskFromSuper = self.loadTaskFrom;
     self.loadTaskFrom = (taskObject) => {
         loadTaskFromSuper(taskObject); /*WordFill ma ten "content" jeszcze*/
-        
         self.prepareLoadedTask();
+        self.checkAndClickOnAddButt();
+    }
+    
+    self.checkAndClickOnAddButt = () => {
+        console.log("checkAndClickOnAddButt");
+        var btnAddSingleWordFill = $("#" + self.taskName+ "AddWordFill");
+        if ( btnAddSingleWordFill.length && !$("." + self.taskName+ "AddWord").length)
+            btnAddSingleWordFill.click();
+
+    }
+
+    self.keyCombos = (e) =>{
+        let evtobj = window.event ? event : e;
+        //key combo for ctrl+b
+        if (evtobj.keyCode == 66 && evtobj.ctrlKey) {
+            e.preventDefault();
+            var parentElem = $(e.target).closest(".form-group");
+
+            self.addNewWordForWordFill("{[", "]}", parentElem);
+        }
+    }
+
+    var newWordFillElement = (index, text = "", answers = "") => {
+        return $(`
+            <div class="form-group blue-border-focus singleWordFillDiv">
+            
+                <hr class="border border-primary">
+                
+                <label class="` + self.taskName+ `DivTaskText">`+(index+1)+`</label>
+                <div class="align-middle w-75 d-inline-block ` + self.taskName+ `TextBlock">
+                    <div class="form-label-group mb-0">
+                        <textarea class="form-control taskTextTextarea ` + self.taskName+ `TextArea"  id="` + self.taskName+ `DivTaskText`+index+`" placeholder=" " rows="4" data-toggle="tooltip" data-placement="top" title="Aby wstawić brakujące słowa w treści zapisz je pomiędzy {[ i ]} lub użyj skrótu Ctrl + B">`+text+`</textarea>
+                        <label for="` + self.taskName+ `DivTaskText" data-toggle="tooltip">Treść</label>
+                    </div>
+                    <div class="form-label-group">
+                        <button class="m-auto btn btn-primary btn-sm ` + self.taskName+ `AddWord" id="` + self.taskName+ `AddWord`+index+`">Wstaw brakujące poprawne słowo</button>
+                        <div class="invalid-feedback invalid` + self.taskName+ `AddWord" id="invalid` + self.taskName+ `AddWord`+index+`">
+                        Nie zgadza się umiejscowienie tagów {[ i ]}.
+                        </div>
+                    </div>
+                    <div class="form-inline">
+                        <button class="btn btn-primary btn-sm m-1 ` + self.taskName+ `AddIncorrectWord" id="` + self.taskName+ `AddIncorrectWord`+index+`">Wstaw dodatkowe słowa</button> 
+                    </div>
+                    <div class="form-label-group mb-0">
+                        <textarea class="form-control incorrectWords ` + self.taskName+ `TDivIncorrectWords" id="` + self.taskName+ `DivIncorrectWords`+index+`" placeholder=" " rows="1" data-toggle="tooltip" data-placement="top" title="Kolejne niepoprawne odpowiedzi oddzielaj przecinkiem ',' .">`+answers+`</textarea>
+                        <label for="` + self.taskName+ `DivIncorrectWords">Niepoprawne odpowiedzi</label>
+                    </div>
+                </div>
+                <button class="align-middle d-inline-block btn btn-danger btn-sm ` + self.taskName+ `DeleteButton" id="btn` + self.taskName+ `RemoveWordFill`+index+`" data-toggle="tooltip" data-placement="top" title="Usuń wiersz.">-</button>
+            </div>`);
     }
 
     self.prepareLoadedTask = () => {
@@ -196,20 +221,11 @@ const ListWordFill_Creator = (data_ = {}) => {
         //WordFillDiv
 
         /*ustawiam tagi*/
-        var tagsElem = $("#ListWordFillDivTaskTags");
-        tagsElem.val("");
-        var previousTags;
-        for (let i = 0; i < self.taskContent.tags.length; i++) {
-            var tag = self.taskContent.tags[i];
-
-            previousTags = tagsElem.val();
-            tagsElem.val(previousTags + 
-                (previousTags==""?"":", ") 
-                + tag);
-        }
+        var tagsElem = $("#" + self.taskName+ "DivTaskTags");
+        tagsElem.val(self.taskContent.tags.join(", "));
 
         /*ustawiam insmtrukcje*/
-        $("#ListWordFillDivTaskInstruction").val(self.taskContent.instruction);
+        $("#" + self.taskName+ "DivTaskInstruction").val(self.taskContent.instruction);
 
         /*wstawiam dla każdego zdania textarea i przyciski*/
 
@@ -242,46 +258,32 @@ const ListWordFill_Creator = (data_ = {}) => {
                 }
             }
 
-            var WordFillElement = $(`
-            <div class="form-group blue-border-focus singleWordFillDiv">
-            
-                <hr class="border border-primary">
-                <div class="form-inline">
-                    <button class="m-auto btn btn-primary btn-sm LWFAddWord" id="ListWordFillAddWord`+i+`">Wstaw brakujące słowo</button>
-                    <div class="invalid-feedback invalidLWFAddWord" id="invalidListWordFillAddWord`+i+`">
-                    Nie zgadza się umiejscowienie tagów {[]}.
-                    </div>
-                </div>
-                <label class="LWFDivTaskText">`+(i+1)+`</label>
-                <div class="align-middle w-75 d-inline-block LWFTextBlock">
-                    <div class="form-label-group">
-                        <textarea class="form-control taskTextTextarea LWFTextArea"  id="ListWordFillDivTaskText`+i+`" placeholder="cos" rows="4" >`+textWithAnswers+`</textarea>
-                        <label for="ListWordFillDivTaskText">Treść</label>
-                    </div>
-                    <div class="form-inline">
-                        <button class="m-auto btn btn-primary btn-sm LWFAddIncorrectWord" id="ListWordFillAddIncorrectWord`+i+`">Wstaw dodatkowe słowa</button> 
-                    </div>
-                    <div class="form-label-group">
-                        <textarea class="form-control incorrectWords LWFTDivIncorrectWords"  id="ListWordFillDivIncorrectWords`+i+`" placeholder="cos" rows="1" >`+possibleAnswersString+`</textarea>
-                        <label for="ListWordFillDivIncorrectWords">Niepoprawne odpowiedzi</label>
-                    </div>
-                </div>
-                <button class="align-middle d-inline-block btn btn-danger btn-sm LWFDeleteButton" id="btnLWFRemoveWordFill`+i+`">-</button>
-            </div>`);
+            var WordFillElement = newWordFillElement(i, textWithAnswers, possibleAnswersString);
             
             $("#WordFills").append(WordFillElement);
+
+            
         }
 
         self.setupListenersAndIndexesFromPosition(0);
-
+        tooltipsUpdate();
         /*ustawiam difficulty*/
-        $("#customRangeLWF").val(self.taskContent.difficulty);
-        $("#customRangeLabelLWF").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
+        $("#customRange" + self.taskName+ "").val(self.taskContent.difficulty);
+        $("#customRange" + self.taskName+ "").trigger("change");
+        $("#customRangeLabel" + self.taskName+ "").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
         // $("ListWordFillDificulty").val(self.taskContent.difficulty);
         
         
 
         /*TODO ustawiam czcionkę*/
+    }
+
+    var tooltipsUpdate = () => {
+
+        if ( $('[data-toggle="tooltip"]').tooltip !== null && $('[data-toggle="tooltip"]').tooltip !== undefined)
+            $('[data-toggle="tooltip"]').tooltip({
+                trigger : 'hover'
+            });  
     }
 
     self.addSingleWordFill = () => {
@@ -307,48 +309,27 @@ const ListWordFill_Creator = (data_ = {}) => {
 
         
         var index = singleWordFills.length;
-        var WordFillElement = $(`
-            <div class="form-group blue-border-focus singleWordFillDiv">
-            
-                <hr class="border border-primary">
-                <div class="form-inline">
-                    <button class="m-auto btn btn-primary btn-sm LWFAddWord" id="ListWordFillAddWord`+index+`">Wstaw brakujące słowo</button>
-                    <div class="invalid-feedback invalidLWFAddWord" id="invalidListWordFillAddWord`+index+`">
-                    Nie zgadza się umiejscowienie tagów {[]}.
-                    </div>
-                </div>
-                <label class="LWFDivTaskText">`+(index+1)+`</label>
-                <div class="align-middle w-75 d-inline-block LWFTextBlock">
-                    <div class="form-label-group">
-                        <textarea class="form-control taskTextTextarea LWFTextArea"  id="ListWordFillDivTaskText`+index+`" placeholder="cos" rows="4" > </textarea>
-                        <label for="ListWordFillDivTaskText">Treść</label>
-                    </div>
-                    <div class="form-inline">
-                        <button class="m-auto btn btn-primary btn-sm LWFAddIncorrectWord" id="ListWordFillAddIncorrectWord`+index+`">Wstaw dodatkowe słowa</button> 
-                    </div>
-                    <div class="form-label-group">
-                        <textarea class="form-control incorrectWords LWFTDivIncorrectWords"  id="ListWordFillDivIncorrectWords`+index+`" placeholder="cos" rows="1" > </textarea>
-                        <label for="ListWordFillDivIncorrectWords">Niepoprawne odpowiedzi</label>
-                    </div>
-                </div>
-                <button class="align-middle d-inline-block btn btn-danger btn-sm LWFDeleteButton" id="btnLWFRemoveWordFill`+index+`">-</button>
-            </div>`);
+
+        var WordFillElement = newWordFillElement(index, "", "");
+
         $("#WordFills").append(WordFillElement)
         self.setupListenersAndIndexesFromPosition(index);
 
+        tooltipsUpdate();
+            
         return WordFillElement;
     }
 
     self.setupListenersAndIndexesFromPosition = (elemPosition) => {
         
         
-        var ChildrenAddWord = $(".LWFAddWord");
-        var ChildrenTextArea = $(".LWFTextArea");
-        var ChildrenAddIncorrectWord = $(".LWFAddIncorrectWord");
+        var ChildrenAddWord = $("." + self.taskName+ "AddWord");
+        var ChildrenTextArea = $("." + self.taskName+ "TextArea");
+        var ChildrenAddIncorrectWord = $("." + self.taskName+ "AddIncorrectWord");
 
         //ListWordFillAddWordFill   
         for (let i = elemPosition; i < ChildrenAddWord.length; i ++) {
-            var indexLabel = $($(".LWFDivTaskText")[i]);
+            var indexLabel = $($("." + self.taskName+ "DivTaskText")[i]);
             indexLabel.text(i+1);
 
             var currentChildAddWord = $(ChildrenAddWord[i]);
@@ -363,7 +344,7 @@ const ListWordFill_Creator = (data_ = {}) => {
                 if ( buttonClone.length )
                     buttonClone.on('click', (e) => {
                         var parentElem = $(e.target).closest(".form-group");
-                        parentElem.find(".LWFTDivIncorrectWords").focus();
+                        parentElem.find("." + self.taskName+ "TDivIncorrectWords").focus();
                     });
             }
     
@@ -382,32 +363,38 @@ const ListWordFill_Creator = (data_ = {}) => {
                     buttonClone.mousedown(function(e) { // handle the mousedown event
                         e.preventDefault(); // prevent the textarea to loose focus!
                     });    
-    
-                    if (currentChildTextArea.length > 0) {
+                    
+                    var TextArea = currentChildTextArea,
+                    TextAreaClone = TextArea.clone();
+                    TextArea.replaceWith( TextAreaClone );
+
+                    if (TextAreaClone.length > 0) {
                         /*wyłaczanie przycisku jeśli nie mam focusa na textarea*/
                         
-                        currentChildTextArea.on('blur', function(e) {
+                        TextAreaClone.on('blur', function(e) {
                             // your code here
                             var parentElem = $(e.target).closest(".form-group");
-                            //.LWFAddIncorrectWord
-                            parentElem.find(".LWFAddWord").attr('disabled','');
+                            //.ListWordFillAddIncorrectWord
+                            parentElem.find("." + self.taskName+ "AddWord").attr('disabled','');
                         });
     
-                        currentChildTextArea.on('focus', function(e) {
+                        TextAreaClone.on('focus', function(e) {
                             // your code here
                             var parentElem = $(e.target).closest(".form-group");
 
-                            parentElem.find(".LWFAddWord").removeAttr("disabled");
+                            parentElem.find("." + self.taskName+ "AddWord").removeAttr("disabled");
                         });
+
+                        TextAreaClone.keydown( self.keyCombos );
                     }
                 }
             }
             
-            //.LWFDeleteButton
-            //#btnLWFRemoveWordFill  +  i
+            //.ListWordFillDeleteButton
+            //#btnListWordFillRemoveWordFill  +  i
             //klonuje przycisk od usuwania
-            //#btnLWFRemoveWordFill  +  i
-            var btnRemove = $("#btnLWFRemoveWordFill"+i);
+            //#btnListWordFillRemoveWordFill  +  i
+            var btnRemove = $("#btn" + self.taskName+ "RemoveWordFill"+i);
             if ( btnRemove.length > 0 ) {
                 var button = btnRemove,
                 buttonClone = button.clone();
@@ -415,6 +402,7 @@ const ListWordFill_Creator = (data_ = {}) => {
 
                 if ( buttonClone.length ) {
                     buttonClone.on('click', (e) => {
+                        $('.tooltip').tooltip('dispose');
                         var parentElem = $(e.target).closest(".singleWordFillDiv");
                         self.deleteSingleWordFillParent(parentElem);
                     });
@@ -438,7 +426,7 @@ const ListWordFill_Creator = (data_ = {}) => {
 
     self.addNewWordForWordFill = (leftTag_, rightTag_, forElement ) => {
 
-        var yourTextarea = forElement.find(".LWFTextArea")[0];
+        var yourTextarea = forElement.find("." + self.taskName+ "TextArea")[0];
         
         var insertAtCursor = (myField, leftTag, rightTag) => {
             //IE support
@@ -461,8 +449,8 @@ const ListWordFill_Creator = (data_ = {}) => {
 
                     if ( !part.includes(rightTag)) {
                         //oof zatrzymaj iw yświetl info że tagi się nie zgadzają
-                        forElement.find(".invalidLWFAddWord").show();
-                        setTimeout(function(){forElement.find(".invalidLWFAddWord").fadeOut()},5000);
+                        forElement.find(".invalid" + self.taskName+ "AddWord").show();
+                        setTimeout(function(){forElement.find(".invalid" + self.taskName+ "AddWord").fadeOut()},5000);
                         return;
                     }
                 }
@@ -472,8 +460,8 @@ const ListWordFill_Creator = (data_ = {}) => {
 
                     if ( !part.includes(leftTag)) {
                         //oof zatrzymaj i wyświetl info że tagi się nie zgadzają
-                        forElement.find(".invalidLWFAddWord").show();
-                        setTimeout(function(){forElement.find(".invalidLWFAddWord").fadeOut()},5000);
+                        forElement.find(".invalid" + self.taskName+ "AddWord").show();
+                        setTimeout(function(){forElement.find(".invalid" + self.taskName+ "AddWord").fadeOut()},5000);
                         return;
                     }
                 }
@@ -495,15 +483,15 @@ const ListWordFill_Creator = (data_ = {}) => {
         insertAtCursor(yourTextarea, leftTag_, rightTag_);
     }
     /* listeners */
-    if( $("#customRangeLWF").length > 0 ) {
-        $("#customRangeLWF").on("input",() => {
+    if( $("#customRange" + self.taskName+ "").length > 0 ) {
+        $("#customRange" + self.taskName+ "").on("input",() => {
 
-            self.taskContent.difficulty = $("#customRangeLWF").val();
-            $("#customRangeLabelLWF").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
+            self.taskContent.difficulty = $("#customRange" + self.taskName+ "").val();
+            $("#customRangeLabel" + self.taskName+ "").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
         })
     }
 
     /*  Initialization */
-    wordFillCreatorInit();
+    WordFillCreatorInit();
     return self;
 }

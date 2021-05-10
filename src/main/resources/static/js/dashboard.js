@@ -8,6 +8,7 @@ $(function () {
 
 const DashboardLogic = (accountInfo_, debug) => {
 
+    
     /*       logic variables          */
     var self = accountInfo_;
     self.nickname;
@@ -22,6 +23,10 @@ const DashboardLogic = (accountInfo_, debug) => {
     self.dashboardInit = (accountInfo) => {
         console.log("dashboardInit");
         
+        //NEW!!!!!!
+        if ( typeof PageLanguageChanger != "undefined")
+            PageLanguageChanger(self.InitWithPageLanguageChanger);
+
         self.roles = accountInfo.roles?accountInfo.roles:[];
 
         $("#currentUser").html(self.nickname + " <small>" + self.username + "</small>")
@@ -32,7 +37,18 @@ const DashboardLogic = (accountInfo_, debug) => {
 
         self.ajaxGetTopLeaderboard(self.setupLeaderboard);
 
+        //new bug fix
+        var resizeWindow = () => {
+        
+            var sy = window.scrollY;
+            $("html").height("100%");
+            $("html").height($(document).height());
 
+            window.scrollTo(0,sy);
+        } 
+        
+        window.onresize = resizeWindow;
+        resizeWindow();
         // if ( self.roles.includes("SWAGGER_ADMIN"))
         //   $("#swaggerHyperlink").show();
         // if ( self.roles.includes("TASK_DATA_ADMIN"))
@@ -48,6 +64,21 @@ const DashboardLogic = (accountInfo_, debug) => {
         //     $("#logOutButton").show();
         //     $("#gameHyperlink").show();
         // }
+        
+    }
+
+    self.InitWithPageLanguageChanger = (data, lang) => {
+
+        if ($("#ranksTable").length)
+            $("#ranksTable").text(PageLanguageChanger().getTextFor("ranksTable"));
+        if ($("#playersDiv").length)
+            $("#playersDiv").text(PageLanguageChanger().getTextFor("players"));
+        if ($("#scoreDiv").length)
+            $("#scoreDiv").text(PageLanguageChanger().getTextFor("score"));
+        if ($("#profilesDiv").length)
+            $("#profilesDiv").text(PageLanguageChanger().getTextFor("profiles"));
+        if ($(".playerProfile").length)
+            $(".playerProfile").text(PageLanguageChanger().getTextFor("profile"));
     }
 
     self.setupLeaderboard = (data) => {
@@ -58,12 +89,20 @@ const DashboardLogic = (accountInfo_, debug) => {
         self.topPlayers = data;
         
         var topLeaderboard = $("#topLeaderboard").html(`
-            <h5 class="border-bottom border-gray pb-2 mb-0">Tablica rankingów:</h5>
+            <h5 class="border-bottom border-gray pb-2 mb-0" id="ranksTable">` +
+            ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("ranksTable"):"Tablica rankingów:") 
+            + `</h5>
             <h6 class="border-bottom border-gray pb-2 mb-0 d-flex justify-content-between align-items-center w-100" style="
             display: inline-block;">
-                <span>Gracze:</span> 
-                <span>Wyniki:</span>
-                <span>Profile:</span>
+                <span id="playersDiv">` +
+                ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("players"):"Gracze:") 
+                + `</span> 
+                <span id="scoreDiv">` +
+                ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("score"):"Wyniki:") 
+                + `</span>
+                <span id="profilesDiv">` +
+                ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("profiles"):"Profile:") 
+                + `</span>
             </h6>`);
 
         for (let i = 0; i < data.length; i++) {
@@ -93,7 +132,9 @@ const DashboardLogic = (accountInfo_, debug) => {
                         <strong class="d-block">` + player.nickname + 
                         ((player.username===self.username&&player.nickname===self.nickname)?' (JA)  ':'') +`</strong>
                         <strong>`+player.rating+`</strong>
-                        <a href="/profile/`+ player.username + `-` + player.nickname +`">Profil</a>
+                        <a href="/profile/`+ player.username + `-` + player.nickname +`" class="playerProfile">` +
+                        ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("profiles"):"Profil:") 
+                        + `</a>
                     </div>
                     <span class="text-gray-dark">`+ player.username + `</span>
                   <small class="d-block">ostatnio grano: x dni temu</small>
@@ -102,7 +143,7 @@ const DashboardLogic = (accountInfo_, debug) => {
             topLeaderboard.append(playerHolder);
         }
         self.ajaxGetRelativeLeaderboard(self.setupRelativeLeaderboard);
-  }
+    }
 
      self.setupRelativeLeaderboard = (data) => {
 

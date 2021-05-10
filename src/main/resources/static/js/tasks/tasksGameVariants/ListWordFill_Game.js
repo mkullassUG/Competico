@@ -1,27 +1,14 @@
-/*TODO
-  WAŻNE 2021-03-20:
-
-  detekcja czy przycisk jest niżej od gaedivz żeby nei zasłaniać:
-  
-    console.log(
-        "is botton top ("
-            + $("#btnNextTask").offset().top + 
-        "px) lower than gamediv bottom ("+($("#GameDiv").offset().top + $("#GameDiv").height())+"px + 60 margin): " + (
-        ($("#btnNextTask").offset().top) >
-        ($("#GameDiv").offset().top + $("#GameDiv").height() + 60)
-        )
-    )
-*/
 //ListWordFill
 const ListWordFill_Game = (taskData) => {
     var self = TaskGameVariant(taskData);
+    self.taskName = "ListWordFill";
     
     self.singleWordFillArray = [];
-
     var taskVariantInitSuper = self.taskVariantInit;
     self.taskVariantInit = (taskData) => {
         taskVariantInitSuper(taskData);
         //NEW 2021-03-08
+        //DELETE
         self.answerCurrentlyAt = [];//teraz to będzie tablica obiektów trzymających zaznaczoną odpowiedź
         //TYLKO to sięnie zgrywa z tym co jest w reset TaskVariant, tam jest nadal obiekt
         //to moge zamiast tablicy obiekt trzymający indexy, ex
@@ -44,40 +31,48 @@ const ListWordFill_Game = (taskData) => {
             var words = self.words[i];
             var emptySpaceCount = self.emptySpaceCount[i];
             var startWithText = self.startWithText[i];
-  
-            //1.1 miejsce na index zdania 
-            //1.2 ustawić miejsce na tekst
-            var taskContentReady = "("+ (i+1) +"). ";
+            var taskContentReady = $(`<div class="text-left border-top border-gray taskContent">(` + (i+1) + `). </div>`);
+
+            var singleContentAnswerContainer = $(`<div class="singleContentAnswerContainer">`);
+
             var howManyBlanksFound = 0;
             if (startWithText) {
                 for (let i = 0; i < textField.length; i++) {
-                    taskContentReady += textField[i] + ((howManyBlanksFound>=emptySpaceCount)?"":`<div class="answerLWF">[blank]</div>`);
+                    var textFieldNode = document.createTextNode(textField[i]);
+
+                    taskContentReady.append(textFieldNode);
+                    taskContentReady.append(((howManyBlanksFound>=emptySpaceCount)?"":`<div class="answer`+ self.taskName + `">&emsp;&emsp;&emsp;&emsp;</div>`));
+
                     howManyBlanksFound++;
                 }
             } else {
                 for (let i = 0; i < textField.length; i++) {
-                    taskContentReady += ((howManyBlanksFound>=emptySpaceCount)?"":`<div class="answerLWF">[blank]</div>`) + textField[i];
+                    var textFieldNode = document.createTextNode(textField[i]);
+
+                    taskContentReady.append(((howManyBlanksFound>=emptySpaceCount)?"":`<div class="answer`+ self.taskName + `">&emsp;&emsp;&emsp;&emsp;</div>`));
+                    taskContentReady.append(textFieldNode);
+
                     howManyBlanksFound++;
                 }
             }
 
             //2.1 ustawić miejsce na odpowiedzi
-            var taskAnswerHolderReady = ``;
+            var taskAnswerHolderReady = $(`<div class="pb-2 mb-0 text-center mb-0 border-bottom border-gray taskAnswerHolder">`);
             for (let i = 0; i < words.length; i++) {
-                taskAnswerHolderReady += 
-                `<div class="answerLWF">` + words[i] + `</div>`;
-            }
+                var wordNode = document.createTextNode(words[i]);
 
-            $("#GameDiv").append(`
-            <div class="singleContentAnswerContainer">
-                <div class="text-left border-top border-gray taskContent">`+ taskContentReady +`</div>
-                <div class="pb-2 mb-0 text-center mb-0 border-bottom border-gray taskAnswerHolder">
-                    ` + taskAnswerHolderReady + `
-                </div>
-            </div>`)
+                var anserDivNode = $(`<div class="answer`+ self.taskName + `">`)
+                anserDivNode.append(wordNode);
+                
+                taskAnswerHolderReady.append(anserDivNode);
+            }
             
+            singleContentAnswerContainer.append(taskContentReady)
+            singleContentAnswerContainer.append(taskAnswerHolderReady)
+            $("#GameDiv").append(singleContentAnswerContainer);
         }
 
+        console.log("hi");
         var BlankContainer = (blank_, wordFillContainer_) => {
             var that = {};
 
@@ -108,12 +103,12 @@ const ListWordFill_Game = (taskData) => {
 
             that.unselect = () => {
                 that.selected = false;
-                that.blankDiv.removeClass("answerLWFselected");
+                that.blankDiv.removeClass("answer" + self.taskName + "selected");
             }
 
             that.select = () => {
                 that.selected = true;
-                that.blankDiv.addClass("answerLWFselected");
+                that.blankDiv.addClass("answer" + self.taskName + "selected");
             }
 
             that.setBlankAnswerTo = (answer) => {
@@ -171,12 +166,12 @@ const ListWordFill_Game = (taskData) => {
 
             that.unselect = () => {
                 that.selected = false;
-                that.answerDiv.removeClass("answerLWFselected");
+                that.answerDiv.removeClass("answer" + self.taskName + "selected");
             }
 
             that.select = () => {
                 that.selected = true;
-                that.answerDiv.addClass("answerLWFselected");
+                that.answerDiv.addClass("answer" + self.taskName + "selected");
             }
 
             that.use = () => {
@@ -203,8 +198,8 @@ const ListWordFill_Game = (taskData) => {
             //TODO: put answer and blankj containers inside??
 
             that.init = (containerDiv_) => {
-                that.blankElements = $($(containerDiv_).find(".taskContent")[0]).find(".answerLWF");
-                that.answerElements = $($(containerDiv_).find(".taskAnswerHolder")[0]).find(".answerLWF");
+                that.blankElements = $($(containerDiv_).find(".taskContent")[0]).find(".answer" + self.taskName + "");
+                that.answerElements = $($(containerDiv_).find(".taskAnswerHolder")[0]).find(".answer" + self.taskName + "");
 
                 for ( let i = 0; i < that.answerElements.length; i++) {
                     var answer = that.answerElements[i];

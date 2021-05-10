@@ -4,7 +4,6 @@ const LobbyJoinLogic = (debug = false) => {
   var nickname, gameCode, logged, isHost, gameStarted;
   var LobbyJoinInit = (data) => {
 
-    
     isHost = data.isHost;
     gameCode = data.gameCode;
     logged = data.logged;
@@ -18,20 +17,37 @@ const LobbyJoinLogic = (debug = false) => {
     NavbarLogic.getInstance();
 
     $('.hideBeforeLoad').css("display", "flex").fadeIn();
+    resizeWindow();
+
+    //NEW!!!!!!
+    if ( typeof PageLanguageChanger != "undefined")
+      PageLanguageChanger();
   }
+
+  //new 2021-04-27
+  var resizeWindow = () => {
+      
+      $("html").height("100%");
+      if (debug)
+        console.log("res");
+      $("html").height($(document).height());
+  } 
+  window.onresize = resizeWindow;
 
   var gameFound = (data) => {
 
     if (data)
       window.location = "game/" + data;
     else {
-      //alert("Nie znaleziono żadnych gier");
-      displayFailInfoAnimation("Nie znaleziono żadnych gier");
+      if ( typeof PageLanguageChanger != "undefined" )
+        displayFailInfoAnimation(PageLanguageChanger().getTextFor("CouldNotFindGames"));
+      else
+        displayFailInfoAnimation("Nie znaleziono żadnych gier");
     }
   }
 
   var displayFailInfoAnimation = (text) => {
-    var failInfoDiv = $(`<div class="failInfo alert alert-danger">` + text + `</div>`)
+    var failInfoDiv = $(`<div class="failSuccessInfo alert alert-danger">` + text + `</div>`)
     $("#buttonHolderWrapper").append(failInfoDiv)
 
     failInfoDiv.animate({
@@ -61,11 +77,15 @@ const LobbyJoinLogic = (debug = false) => {
       if (!data.isFull)
         window.location = "game/" + $("#inputCode")[0].value;
       else
-        //alert("lobby pełne");
-        displayFailInfoAnimation("lobby pełne");
+        if ( typeof PageLanguageChanger != "undefined" )
+          displayFailInfoAnimation(PageLanguageChanger().getTextFor("NoAvailableLobby"));
+        else
+          displayFailInfoAnimation("lobby pełne");
     else
-      //alert("kod nie prawidłowy");
-      displayFailInfoAnimation("kod nie prawidłowy");
+      if ( typeof PageLanguageChanger != "undefined" )
+        displayFailInfoAnimation(PageLanguageChanger().getTextFor("IncorrectCode"));
+      else
+        displayFailInfoAnimation("kod nieprawidłowy");
   }
 
   var lobbyCreated = (code) => window.location = "/game/" + code;
@@ -123,9 +143,11 @@ const LobbyJoinLogic = (debug = false) => {
 
           if (jqXHR.status == 200) 
             gameFound(data);
-           else
-            //alert("Nie ma wolnego lobby");
-            displayFailInfoAnimation("Nie ma wolnego lobby");
+          else
+            if ( typeof PageLanguageChanger != "undefined" )
+              displayFailInfoAnimation(PageLanguageChanger().getTextFor("NoAvailableLobby"));
+            else
+              displayFailInfoAnimation("Nie znaleziono wolnego lobby");
       },
       error: function(jqXHR, status, err) {
         if (debug) {
@@ -134,11 +156,13 @@ const LobbyJoinLogic = (debug = false) => {
           console.log(status)
           console.log(err)
         }
-        //alert("Nie znaleziono wolnego lobby");
-        displayFailInfoAnimation("Nie znaleziono wolnego lobby");
+        
+        if ( typeof PageLanguageChanger != "undefined" )
+          displayFailInfoAnimation(PageLanguageChanger().getTextFor("NoAvailableLobby"));
+        else
+          displayFailInfoAnimation("Nie znaleziono wolnego lobby");
+
         $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
-
-
       }
     });
   }
@@ -194,8 +218,10 @@ const LobbyJoinLogic = (debug = false) => {
             
             lobbyCreated(data);
           } else
-            //alert("nie stworzono lobby");
-            displayFailInfoAnimation("nie stworzono lobby");
+          if ( typeof PageLanguageChanger != "undefined" )
+            displayFailInfoAnimation(PageLanguageChanger().getTextFor("LobbyNotCreated"));
+          else
+            displayFailInfoAnimation("Nie stworzono lobby");
       },
       error: function(jqXHR, status, err) {
         if (debug)

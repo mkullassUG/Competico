@@ -8,7 +8,7 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
     self.taskContent.sentences = [];
 
     /*  Logic functions */
-    var chronologicalOrderCreatorInit = () => {
+    var ChronologicalOrderCreatorInit = () => {
         self.hideAllTaskDivsExceptGiven(self.taskName);
         
         /*pozbywam się even listenerów z przycisków przez klonowanie*/
@@ -22,7 +22,7 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
                 self.addNewSentence();
             });
         
-        buttonAddSentenceClone.click();
+        self.checkAndClickOnAddButt();
         /*teraz coś co nie będzie potrzebne jeśli na początku będzie zero zdań*/
     }
 
@@ -37,30 +37,13 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
     var prepareTaskJsonFileSuper = self.prepareTaskJsonFile;
     self.prepareTaskJsonFile = () => {
         var task = prepareTaskJsonFileSuper();
-        /*{
-            "taskName" : "ChronologicalOrder",
-            "taskContent" : {
-                "id" : "f10298c5-7e1f-4961-ab07-1fe9410bb433",
-                "instruction" : "Put the phrases in order:",
-                "tags" : [ ],
-                "sentences" : [ "Try to understand the problem and define the purpose of the program.", 
-                    "Once you have analysed the problem, define the successive logical steps of the program.", 
-                    "Write the instructions in a high-level language of your choice.", 
-                    "Once the code is written, test it to detect bugs or errors.", 
-                    "Debug and fix errors in your code.", 
-                    "Finally, review the program’s documentation." ],
-                "difficulty" : 100.0
-            }
-        }*/
 
         //czy można pobrać difficulty
         //slider
-        if ($("#customRangeCO").length > 0) {
-            self.taskContent.difficulty = $("#customRangeCO").val();
+        if ($("#customRangeChronologicalOrder").length > 0) {
+            self.taskContent.difficulty = $("#customRangeChronologicalOrder").val();
         }
-        // if ($("#chronologicalOrderDificulty").length) {
-        //     self.taskContent.difficulty = $("#chronologicalOrderDificulty").val();
-        // }
+
         //czy można pograc tagi
         if ($("#chronologicalOrderDivTaskTags").length) {
             var tagsString = $("#chronologicalOrderDivTaskTags").val();
@@ -120,22 +103,16 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
     self.loadTaskFrom = (taskObject) => {
         loadTaskFromSuper(taskObject);
         self.prepareLoadedTask();
+        self.checkAndClickOnAddButt();
     }
 
     self.prepareLoadedTask = () => {
         
         /*ustawiam tagi*/
         var tagsElem = $("#chronologicalOrderDivTaskTags");
-        tagsElem.val("");
-        var previousTags;
-        for (let i = 0; i < self.taskContent.tags.length; i++) {
-            var tag = self.taskContent.tags[i];
+        tagsElem.val(self.taskContent.tags.join(", "));
 
-            previousTags = tagsElem.val();
-            tagsElem.val(previousTags + ", " + tag);
-        }
-
-        /*ustawiam insmtrukcje*/
+        /*ustawiam instrukcje*/
         $("#chronologicalOrderDivTaskInstruction").val(self.taskContent.instruction);
 
         /*wstawiam dla każdego zdania textarea i przyciski*/
@@ -148,12 +125,19 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
         }
 
         /*ustawiam difficulty*/
-        $("#customRangeCO").val(self.taskContent.difficulty);
+        $("#customRangeChronologicalOrder").val(self.taskContent.difficulty);
+        $("#customRangeChronologicalOrder").trigger("change");
         $("#customRangeLabelCO").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
         // $("#chronologicalOrderDificulty").val(self.taskContent.difficulty);
 
 
         /*TODO ustawiam czcionkę*/
+    }
+
+    self.checkAndClickOnAddButt = () => {
+        var buttonAddSentence = $("#chronologicalOrderAddSentence");
+        if ( buttonAddSentence.length && !$("#chronologicalOrderSentences").children().length)
+            buttonAddSentence.click();
     }
 
     self.addNewSentence = () => {
@@ -202,8 +186,8 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
         
         var htmlString = `<div class="form-group blue-border-focus" id="chronologicalOrderSentence`+i+`">
                 <label for="chronologicalOrderDivTaskText`+i+`">`+i+`</label>
-                <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="chronologicalOrderDivTaskText`+i+`" rows="2" placeholder="Wstaw zdanie nr `+i+`">`+sentence+`</textarea>
-                <button class="d-inline-block btn btn-danger btn-sm" id="btnChronologicalOrderRemoveSentence`+i+`">-</button>
+                <textarea class="w-75 d-inline-block form-control taskTextTextarea" id="chronologicalOrderDivTaskText`+i+`" rows="2" placeholder="Wstaw zdanie nr `+i+`">`+sentence+`</textarea>
+                <button class="d-inline-block btn btn-danger btn-sm" id="btnChronologicalOrderRemoveSentence`+i+`" data-toggle="tooltip" data-placement="top" title="Usuń wiersz.">-</button>
             </div>`;
 
         var sentenceDiv = $("#chronologicalOrderSentences");
@@ -211,9 +195,21 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
         sentenceDiv.append(element);
         
         $("#btnChronologicalOrderRemoveSentence"+i).on('click', (e) => {
+            $('.tooltip').tooltip('dispose');
             self.removeSentence(i);
         });
+        
+        tooltipsUpdate();
+
         return element;
+    }
+
+    var tooltipsUpdate = () => {
+
+        if ( $('[data-toggle="tooltip"]').tooltip !== null && $('[data-toggle="tooltip"]').tooltip !== undefined)
+            $('[data-toggle="tooltip"]').tooltip({
+                trigger : 'hover'
+            });  
     }
 
     self.removeSentence = (index) => {
@@ -232,14 +228,14 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
         $(`#chronologicalOrderSentence`+sentences.length).remove();
     }
     /* listeners */
-    if( $("#customRangeCO").length > 0 ) {
-        $("#customRangeCO").on("input",() => {
+    if( $("#customRangeChronologicalOrder").length > 0 ) {
+        $("#customRangeChronologicalOrder").on("input",() => {
 
-            self.taskContent.difficulty = $("#customRangeCO").val();
+            self.taskContent.difficulty = $("#customRangeChronologicalOrder").val();
             $("#customRangeLabelCO").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
         })
     }
     /*  Initialization */
-    chronologicalOrderCreatorInit();
+    ChronologicalOrderCreatorInit();
     return self;
 }

@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -34,6 +36,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -138,33 +141,89 @@ class TaskDataAPITests
 	
 	@ParameterizedTest
 	@MethodSource("mockTaskDTOs")
-	public void canImportTask(List<TaskDTO> taskDTOs) throws Exception
+	public void canImportTask(List<TaskDTO> taskDTOs)
 	{
-		JsonNode content = mapper.valueToTree(taskDTOs);
-		
-		mvc.perform(post("/api/v1/tasks/imported")
-				.contentType(APPLICATION_JSON_UTF8)
-				.content(content.toString()))
-			.andExpect(status().isOk());
-		
-		verify(gtdService, times(1)).importGlobalTask(content);
+		taskDTOs.forEach(task ->
+		{
+			try
+			{
+				JsonNode content = mapper.valueToTree(task);
+				
+				mvc.perform(post("/api/v1/tasks/imported")
+						.contentType(APPLICATION_JSON_UTF8)
+						.content(content.toString()))
+					.andExpect(status().isOk());
+				
+				verify(gtdService, times(1)).importGlobalTask(content);
+			}
+			catch (Exception e)
+			{
+				fail(e);
+			}
+		});
 	}
 	@ParameterizedTest
 	@MethodSource("mockTaskDTOs")
 	public void shouldReturnBadRequestWhenCannotImportTask(List<TaskDTO> taskDTOs) throws Exception
 	{
+		taskDTOs.forEach(task ->
+		{
+			try
+			{
+				JsonNode content = mapper.valueToTree(task);
+				String exceptionMessage = "Mock exception";
+				doThrow(new IllegalArgumentException(exceptionMessage))
+					.when(gtdService).importGlobalTask(content);
+				
+				mvc.perform(post("/api/v1/tasks/imported")
+						.contentType(APPLICATION_JSON_UTF8)
+						.content(content.toString()))
+					.andExpect(status().isBadRequest())
+					.andExpect(content().string(containsString(exceptionMessage)));
+				
+				verify(gtdService, times(1)).importGlobalTask(content);
+			}
+			catch (Exception e)
+			{
+				fail(e);
+			}
+		});
+	}
+	
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOs")
+	public void canImportTasksFromJson(List<TaskDTO> taskDTOs) throws Exception
+	{
 		JsonNode content = mapper.valueToTree(taskDTOs);
+		MockMultipartFile file = new MockMultipartFile("file", "data.json",
+				MediaType.TEXT_PLAIN_VALUE,
+				content.toString().getBytes());
+		
+		mvc.perform(multipart("/api/v1/tasks/imported/json/file")
+				.file(file))
+			.andExpect(status().isOk());
+		
+		verify(gtdService, times(1)).importGlobalTasks(file);
+	}
+	@ParameterizedTest
+	@MethodSource("mockTaskDTOs")
+	public void shouldReturnBadRequestWhenCannotImportTasksFromJson(List<TaskDTO> taskDTOs) throws Exception
+	{
+		JsonNode content = mapper.valueToTree(taskDTOs);
+		MockMultipartFile file = new MockMultipartFile("file", "data.json",
+				MediaType.TEXT_PLAIN_VALUE,
+				content.toString().getBytes());
+		
 		String exceptionMessage = "Mock exception";
 		doThrow(new IllegalArgumentException(exceptionMessage))
-			.when(gtdService).importGlobalTask(content);
+			.when(gtdService).importGlobalTasks(file);
 		
-		mvc.perform(post("/api/v1/tasks/imported")
-				.contentType(APPLICATION_JSON_UTF8)
-				.content(content.toString()))
+		mvc.perform(multipart("/api/v1/tasks/imported/json/file")
+				.file(file))
 			.andExpect(status().isBadRequest())
 			.andExpect(content().string(containsString(exceptionMessage)));
 		
-		verify(gtdService, times(1)).importGlobalTask(content);
+		verify(gtdService, times(1)).importGlobalTasks(file);
 	}
 	
 	@ParameterizedTest

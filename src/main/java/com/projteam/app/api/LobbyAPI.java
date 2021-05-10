@@ -88,14 +88,16 @@ public class LobbyAPI
 		boolean exists = lobbyService.lobbyExists(gameCode);
 		if (!exists)
 			return Map.of("exists", exists);
+		Account host = lobbyService.getHost(gameCode);
 		return Map.of(
 				"exists", exists,
 				"allowsRandomPlayers", lobbyService.allowsRandomPlayers(gameCode),
 				"isFull", lobbyService.isLobbyFull(gameCode),
 				"maxPlayers", lobbyService.getMaximumPlayerCount(gameCode),
 				"host", Map.of(
-						"username", lobbyService.getHost(gameCode).getUsername(),
-						"nickname", lobbyService.getHost(gameCode).getNickname()),
+						"username", host.getUsername(),
+						"nickname", host.getNickname(),
+						"roles", host.getRoles()),
 				"players", lobbyService.getPlayers(gameCode)
 					.stream()
 					.map(acc -> Map.of(

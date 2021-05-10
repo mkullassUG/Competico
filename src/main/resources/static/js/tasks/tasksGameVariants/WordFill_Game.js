@@ -1,6 +1,7 @@
 //WordFill
 const WordFill_Game = (taskData) => {
     var self = TaskGameVariant(taskData);
+    self.taskName = "WordFill";
 
     self.Draggable;
 
@@ -15,43 +16,51 @@ const WordFill_Game = (taskData) => {
         self.emptySpaceCount = taskData.emptySpaceCount;
         self.startWithText = taskData.startWithText;
 
-        var taskContentReady = "";
+        var taskContentReady = $(`<div id="taskContent">`);
+        var taskAnswerHolderReady = $(`<div class="pb-2 mb-0 text-center" id="taskAnswerHolder">`);
         var howManyBlanksFound = 0;
+
+        $("#GameDiv").html(``);
         if (self.startWithText) {
             for (let i = 0; i < self.textField.length; i++) {
-                taskContentReady += self.textField[i] + ((howManyBlanksFound>=self.emptySpaceCount)?"":`<div class="answerHolderWrapper"><div class="droppableAnswerHolder">&#8203</div></div>`);
+                var textFieldNode = document.createTextNode(self.textField[i]);
+
+                taskContentReady.append(textFieldNode);
+                taskContentReady.append(((howManyBlanksFound>=self.emptySpaceCount)?"":`<div class="answerHolderWrapper"><div class="droppableAnswerHolder">&#8203</div></div>`));
+                
                 howManyBlanksFound++;
             }
         } else {
             for (let i = 0; i < self.textField.length; i++) {
-                taskContentReady += ((howManyBlanksFound>=self.emptySpaceCount)?"":`<div class="answerHolderWrapper"><div class="droppableAnswerHolder">&#8203</div></div>`) + self.textField[i];
-                //console.log(howManyBlanksFound);
+                var textFieldNode = document.createTextNode(self.textField[i]);
+
+                taskContentReady.append(((howManyBlanksFound>=self.emptySpaceCount)?"":`<div class="answerHolderWrapper"><div class="droppableAnswerHolder">&#8203</div></div>`));
+                taskContentReady.append(textFieldNode);
+
                 howManyBlanksFound++;
-              
             }
         } 
 
         //przygotowanie taskAnswerHolder
-        var taskAnswerHolderReady = 
-        `<div class="pb-2 mb-0 " id="taskAnswerHolder">`;
         for (let i = 0; i < self.words.length; i++) {
-            taskAnswerHolderReady += 
-            `<div class="answerHolderWrapper">
-              <div class="droppableAnswerHolder ui-state-highlight-custom" data-holding="answer`+i+`">
-                <div class="answer draggable" id="answer`+i+`">
-                  ` + self.words[i] + `
-                </div>&#8203
-              </div>
-            </div>`
+            var wordNode = document.createTextNode(self.words[i]);
+
+            var answerHolderWrapper = $(`<div class="answerHolderWrapper startHolder">`);
+            var droppableAnswerHolder = $(`<div class="droppableAnswerHolder ui-state-highlight-custom" data-holding="answer`+i+`">`);
+            var answerDraggable = $(`<div class="answer draggable" id="answer`+i+`">`);
+            answerHolderWrapper.append(droppableAnswerHolder);
+            droppableAnswerHolder.append(answerDraggable);
+            droppableAnswerHolder.append("&nbsp;");
+            answerDraggable.append(wordNode);
+            
+            taskAnswerHolderReady.append(answerHolderWrapper);
         }
-        taskAnswerHolderReady += `</div>`;
-  
-        $("#GameDiv").html(`<h6 class="border-bottom border-gray pb-2 mb-0 text-dark"> Content: </h6>
-        <div id="taskContent">`+ taskContentReady +`</div>
-        <h6 class="border-bottom border-gray pb-2 mb-0 text-dark"> Answers: </h6>
-        <div class="pb-2 mb-0 " id="taskAnswerHolder">
-            ` + taskAnswerHolderReady + `
-        </div>`);
+        
+        $("#GameDiv").append(`<h6 class="border-bottom border-gray pb-2 mb-0 text-dark"> Content: </h6>`);
+        $("#GameDiv").append(taskContentReady);
+
+        $("#GameDiv").append(`<h6 class="border-bottom border-gray pb-2 mb-0 text-dark"> Answers: </h6>`);
+        $("#GameDiv").append(taskAnswerHolderReady);
         
         /*ustawienie szerokości każdego "answer holdera" na max długość najdłuższej odpowiedzi*/
         var elems = $(".answer ");
@@ -97,8 +106,6 @@ const WordFill_Game = (taskData) => {
                         accept: function(draggable) {
                             
                             //only let answers drop on not occupied holders
-
-                            
                             return draggable.hasClass("answer");// && !$(this).hasClass("ui-state-highlight");
                         },
                         drop: function( event, ui ) {
@@ -115,22 +122,6 @@ const WordFill_Game = (taskData) => {
                                 //what was holding old draggable?
                                 var droppable2 = $(document)
                                     .find(`[data-holding='`+ draggable.attr("id") +`']`);
-                                // console.log("draggable")
-                                // console.log(draggable)
-                                // console.log("draggable2")
-                                // console.log(draggable2)
-                                // console.log("droppable")
-                                // console.log(droppable)
-                                // console.log("droppable2")
-                                // console.log(droppable2)
-                                // console.log(droppable2[0])
-                                // console.log("other:")
-
-                                // console.log(event.target)
-                                // console.log(ui.draggable[0])
-
-                                // that.answerDroppedOn(draggable[0],droppable[0]);
-                                // that.answerDroppedOn(draggable2[0],droppable2[0]);
 
                                 //1
                                 droppable
@@ -195,10 +186,8 @@ const WordFill_Game = (taskData) => {
                                     }
                                 });
                             }
-              
                         }
                     });
-
                 });
             }
             
@@ -209,18 +198,6 @@ const WordFill_Game = (taskData) => {
             */
             that.trigger_drop = (draggable, droppable) => {
                 //dla każdej stworzonej odpowiedzi upuść ją na parencie
-
-                // var draggable = $(draggable).draggable(),
-                // droppable = $(droppable).droppable(),
-                // droppableOffset = droppable.offset(),
-                // draggableOffset = draggable.offset(),
-                // dx = droppableOffset.left - draggableOffset.left,
-                // dy = droppableOffset.top - draggableOffset.top;
-                
-                // draggable.simulate("drag", {
-                //     dx: dx,
-                //     dy: dy
-                // });
 
                 //new 2021-04-11 nowa wersja bez simulate
                 $(draggable).position({
