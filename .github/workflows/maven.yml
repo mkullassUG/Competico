@@ -15,8 +15,8 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      EMAIL_USER:placeholder
-      EMAIL_PASS:placeholder
+      EMAIL_USER: placeholder
+      EMAIL_PASS: placeholder
 
     steps:
     - uses: actions/checkout@v2
