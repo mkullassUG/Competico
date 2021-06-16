@@ -7,19 +7,11 @@ const ListSentenceForming_Game = (taskData) => {
     self.taskVariantInit = (taskData) => {
         taskVariantInitSuper(taskData);
     
-        //ROWS nie WORDS
-        var sentence_rows = taskData.words;/*[
-            ["Let's", "play", "at", "the", "fword", "park", "you", "wword"],
-            ["is", "you", "rword"],
-            ["hello!", "my", "name", "is", "SUCC"],
-            ["buying", "GF", "1000", "gp"],
-            ["Harry", "Poter", "went", "to", "Hogward"]
-        ];*/
+        var sentence_rows = taskData.words;
         var DivListSentenceForming;
         var DivRandomizedWords;
         var DivOrderedWords;
         
-        //console.log(taskData);
         $("#GameDiv").html("");
         for ( let i = 0; i < sentence_rows.length; i++) {
             var row = sentence_rows[i];
@@ -31,11 +23,13 @@ const ListSentenceForming_Game = (taskData) => {
 
                 var li = $(`<li class="` + self.taskName + `word">`);
                 li.append(word);
+                li.dblclick(self.dbClick);
                 DivRandomizedWords.append(li);
             }
     
-            DivOrderedWords = $(`<ul class="DivOrderedWords border-bottom border-primary text-left connectedSortable`+i+`" id="DivOrderedWords`+i+`">`);
-            DivListSentenceForming.append(`<div class="sentenceIndex">` + (i+1) + `</div>`);
+            DivOrderedWords = $(`<ul class="DivOrderedWords border-bottom border-primary text-left pl-0 connectedSortable`+i+`" id="DivOrderedWords`+i+`">`);
+            if ( sentence_rows.length > 1)
+                DivListSentenceForming.append(`<div class="sentenceIndex">` + (i+1) + `</div>`);
             DivListSentenceForming.append(DivRandomizedWords);
             DivListSentenceForming.append(DivOrderedWords);
             
@@ -46,7 +40,6 @@ const ListSentenceForming_Game = (taskData) => {
                 //może się przydać:
                 //https://raw.githubusercontent.com/mattheworiordan/jquery.simulate.drag-sortable.js/master/jquery.simulate.drag-sortable.js
 
-                //$($(".ListSentenceFormingword")[1]).simulateDragSortable({ move: 4 });
                 var elmnt = $(e.target).find("." + self.taskName + "word");
 
                 if ( elmnt.length == 1 && $(e.target).hasClass("DivOrderedWords")) {
@@ -68,7 +61,17 @@ const ListSentenceForming_Game = (taskData) => {
             }).disableSelection();
         }
     }
-  
+    
+    self.dbClick = (e) => {
+
+        var target = $(e.target);
+        var parent = target.parent();
+        if ( parent.hasClass("DivOrderedWords") ){
+            parent.append($(target).remove());
+            target.dblclick(self.dbClick);
+        }
+    }
+
     var getAnswersSuper = self.getAnswers;
     self.getAnswers = () => {
         var answers = getAnswersSuper();
@@ -87,7 +90,6 @@ const ListSentenceForming_Game = (taskData) => {
         }
 
         //co jeśli array nei będzie wystarczającej długości? uzupełnić nullami?
-
         var DivRandomizedWords  = $(".DivRandomizedWords ");
         for (let i = 0; i < DivRandomizedWords.length; i++) {
             var divListSentenceForming = DivRandomizedWords[i];
@@ -99,7 +101,6 @@ const ListSentenceForming_Game = (taskData) => {
                 answers[i].push(divW.text());
             }
         }
-
         return {"answers": answers};
     }
   

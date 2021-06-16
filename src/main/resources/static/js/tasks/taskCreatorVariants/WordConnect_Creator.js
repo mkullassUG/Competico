@@ -90,6 +90,7 @@ const WordConnect_Creator = (data_ = {}) => {
         podgląd stworzonego zadania jako gry*/
     }
 
+    //Deprecated, recommended sendTaskVariantToTasksets
     var sendTaskVariantSuper = self.sendTaskVariant;
     self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
@@ -162,7 +163,7 @@ const WordConnect_Creator = (data_ = {}) => {
                     var connectionDefinitionTextareaText = connectionDefinitionTextarea.val(); 
 
                     
-                    if ( connectionWordTextareaText == "" &&  connectionDefinitionTextareaText == "") {
+                    if ( connectionWordTextareaText == "" || connectionDefinitionTextareaText == "") {
                         // nie wstawiaj bo znalazłem puste pole
                         return false;
                     }
@@ -192,22 +193,44 @@ const WordConnect_Creator = (data_ = {}) => {
     }
 
     self.createConnection = (i=1, left="", right="") => {
-        var htmlString = `<div class="form-group blue-border-focus" id="` + self.taskName + `Connection`+i+`">
-            <hr class="border border-primary">
-            <label for="` + self.taskName + `ConnectionDiv`+i+`">`+i+`</label>
-            <div class="w-75 COC d-inline-block" id="` + self.taskName + `ConnectionDiv`+i+`">
-                <label for="` + self.taskName + `DivTaskWord`+i+`">Słowo:</label>
-                <textarea class="form-control taskTextTextarea"  id="` + self.taskName + `DivTaskWord`+i+`" rows="2" placeholder="Wstaw lewą stronę nr `+i+`:">`+left+`</textarea>
 
-                <label for="` + self.taskName + `DivTaskDefinition`+i+`">Definicja:</label>
-                <textarea class="form-control taskTextTextarea"  id="` + self.taskName + `DivTaskDefinition`+i+`" rows="2" placeholder="Wstaw prawą stronę nr `+i+`:">`+right+`</textarea>
-            </div>
-            <button class="d-inline-block btn btn-danger btn-sm" id="btn` + self.taskName + `RemoveConnection`+i+`" data-toggle="tooltip" data-placement="top" title="Usuń połączenie.">-</button>
-        </div>`;
+        var ConnectionDiv = $(`<div class="form-group blue-border-focus" id="` + self.taskName + `Connection`+i+`">`);
+        ConnectionDiv.html(`<hr class="border border-primary">`);
+
+        var ConnectionDivLabel = $(`<label for="` + self.taskName + `ConnectionDiv`+i+`">`+i+`</label>`);
+        ConnectionDiv.append(ConnectionDivLabel);
+        var ConnectionDivInner = $(`<div class="w-75 COC d-inline-block" id="` + self.taskName + `ConnectionDiv`+i+`">`);
+        ConnectionDiv.append(ConnectionDivInner);
+
+        var DivTaskWordLabel = $(`<label for="` + self.taskName + `DivTaskWord`+i+`">Słowo:</label>`);
+        ConnectionDivInner.append(DivTaskWordLabel);
+        var taskTextTextareaLeft = $(`<textarea class="form-control taskTextTextarea"  id="` + self.taskName + `DivTaskWord`+i+`" rows="2" placeholder="Wstaw lewą stronę nr `+i+`:">`);
+        taskTextTextareaLeft.append(window.document.createTextNode(left));
+        ConnectionDivInner.append(taskTextTextareaLeft);
+        var DivTaskDefinitionLabel = $(`<label for="` + self.taskName + `DivTaskDefinition`+i+`">Definicja:</label>`);
+        ConnectionDivInner.append(DivTaskDefinitionLabel);
+        var taskTextTextareaRight = $(`<textarea class="form-control taskTextTextarea"  id="` + self.taskName + `DivTaskDefinition`+i+`" rows="2" placeholder="Wstaw prawą stronę nr `+i+`:">`);
+        taskTextTextareaRight.append(window.document.createTextNode(right));
+        ConnectionDivInner.append(taskTextTextareaRight);
+
+        var button = $(`<button class="d-inline-block btn btn-danger btn-sm" id="btn` + self.taskName + `RemoveConnection`+i+`" data-toggle="tooltip" data-placement="top" title="Usuń połączenie.">-</button>`);
+        ConnectionDiv.append(button);
+
+        // var htmlString = `<div class="form-group blue-border-focus" id="` + self.taskName + `Connection`+i+`">
+        //     <hr class="border border-primary">
+        //     <label for="` + self.taskName + `ConnectionDiv`+i+`">`+i+`</label>
+        //     <div class="w-75 COC d-inline-block" id="` + self.taskName + `ConnectionDiv`+i+`">
+        //         <label for="` + self.taskName + `DivTaskWord`+i+`">Słowo:</label>
+        //         <textarea class="form-control taskTextTextarea"  id="` + self.taskName + `DivTaskWord`+i+`" rows="2" placeholder="Wstaw lewą stronę nr `+i+`:">`+left+`</textarea>
+
+        //         <label for="` + self.taskName + `DivTaskDefinition`+i+`">Definicja:</label>
+        //         <textarea class="form-control taskTextTextarea"  id="` + self.taskName + `DivTaskDefinition`+i+`" rows="2" placeholder="Wstaw prawą stronę nr `+i+`:">`+right+`</textarea>
+        //     </div>
+        //     <button class="d-inline-block btn btn-danger btn-sm" id="btn` + self.taskName + `RemoveConnection`+i+`" data-toggle="tooltip" data-placement="top" title="Usuń połączenie.">-</button>
+        // </div>`;
 
         var connectionDiv = $("#" + self.taskName + "Connections");
-        var element = $(htmlString);
-        connectionDiv.append(element);
+        connectionDiv.append(ConnectionDiv);
         
         $("#btn" + self.taskName + "RemoveConnection"+i).on('click', (e) => {
             $('.tooltip').tooltip('dispose');
@@ -217,7 +240,7 @@ const WordConnect_Creator = (data_ = {}) => {
         if ( $('[data-toggle="tooltip"]').tooltip !== null && $('[data-toggle="tooltip"]').tooltip !== undefined)
             $('[data-toggle="tooltip"]').tooltip();
 
-        return element;
+        return ConnectionDiv;
     }
 
     self.removeConnection = (index) => {

@@ -3,7 +3,7 @@ będę musiał przerabiać textarea na content editable żeby miec możliwosć w
 
 ALE contenteditable jest przestarzałe (a input level 2 jest jeszcze nie używany wszędzie?)
 */
-const WordFill_Creator = (data_ = {}, debug = false, $jq, myWindow, deps = {}, cbTest) => {
+const WordFill_Creator = (data_ = {}, debug = false, $jq, myWindow, deps = {}, successfulCreationCallback) => {
 
     /* environment preparation */
     if ( deps.TaskCreatorVariant && typeof TaskCreatorVariant == "undefined")
@@ -70,8 +70,8 @@ const WordFill_Creator = (data_ = {}, debug = false, $jq, myWindow, deps = {}, c
             }
         }
 
-        if ( cbTest )
-            cbTest("success");
+        if ( successfulCreationCallback )
+            successfulCreationCallback(true);
     }
 
     var checkIfTaskReadySuper = self.checkIfTaskReady;
@@ -208,6 +208,7 @@ const WordFill_Creator = (data_ = {}, debug = false, $jq, myWindow, deps = {}, c
         podgląd stworzonego zadania jako gry*/
     }
 
+    //Deprecated, recommended sendTaskVariantToTasksets
     var sendTaskVariantSuper = self.sendTaskVariant;
     self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
@@ -293,11 +294,14 @@ const WordFill_Creator = (data_ = {}, debug = false, $jq, myWindow, deps = {}, c
         //pomogło
         //https://stackoverflow.com/questions/11076975/how-to-insert-text-into-the-textarea-at-the-current-cursor-position 
         var insertAtCursor = (myField, leftTag, rightTag) => {
+
+            var selText = window.getSelection().toString();
+            selText = selText.replaceAll(leftTag,"").replaceAll(rightTag,"");
             //IE support
-            if (document.selection) {
+            if (window.document.selection) {
                 myField.focus();
-                sel = document.selection.createRange();
-                sel.text = (leftTag + rightTag);
+                sel = window.document.selection.createRange();
+                sel.text = (leftTag + selText + rightTag);
             }
             //MOZILLA and others
             else if (myField.selectionStart || myField.selectionStart == '0') {
@@ -312,7 +316,7 @@ const WordFill_Creator = (data_ = {}, debug = false, $jq, myWindow, deps = {}, c
                     var part = partsL[i];
 
                     if ( !part.includes(rightTag)) {
-                        //oof zatrzymaj iw yświetl info że tagi się nie zgadzają
+                        //oof zatrzymaj i wyświetl info, że tagi się nie zgadzają
                         $("#invalid" + self.taskName + "AddWord").show();
                         setTimeout(function(){$("#invalid" + self.taskName + "AddWord").fadeOut()},5000);
                         return;
@@ -323,25 +327,20 @@ const WordFill_Creator = (data_ = {}, debug = false, $jq, myWindow, deps = {}, c
                     var part = partsR[i];
 
                     if ( !part.includes(leftTag)) {
-                        //oof zatrzymaj iw yświetl info że tagi się nie zgadzają
+                        //oof zatrzymaj i wyświetl info, że tagi się nie zgadzają
                         $("#invalid" + self.taskName + "AddWord").show();
                         setTimeout(function(){$("#invalid" + self.taskName + "AddWord").fadeOut()},5000);
                         return;
                     }
                 }
 
-
-
-                myField.value = leftSide + (leftTag + rightTag) + rightSide;
-
-                // myField.selectionStart = startPos + myValue.length;
-                // myField.selectionEnd = startPos + myValue.length;
+                myField.value = leftSide + (leftTag + selText + rightTag) + rightSide;
 
                 //umieszczam pozycje kursora pomiędzy {[]}
-                myField.setSelectionRange(startPos+2,startPos+2);
+                myField.setSelectionRange(startPos+2+selText.length,startPos+2+ selText.length);
             } else {
-                myField.value += (leftTag + rightTag);
-                myField.setSelectionRange(2,2);
+                myField.value += (leftTag + selText + rightTag);
+                myField.setSelectionRange(2 + selText.length,2+ selText.length);
             }
         }
         insertAtCursor(yourTextarea, leftTag_, rightTag_);

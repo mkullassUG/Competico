@@ -7,9 +7,7 @@ const OptionSelect_Game = (taskData) => {
         taskVariantInitSuper(taskData);
   
         self.content = taskData.content;
-        self.possibleAnswers = taskData.possibleAnswers;
-        console.log(self.content)
-        console.log(self.possibleAnswers)
+        self.possibleAnswers = taskData.answers;
 
         //przygotowanie taskAnswerHolder
         var taskAnswerHolderReady = $(`<div class="pb-2 mb-0 text-center" id="taskAnswerHolder">`);
@@ -54,7 +52,7 @@ const OptionSelect_Game = (taskData) => {
                 answers.push(option.html());
         }
 
-        return answers;
+        return {answers: answers};
     }
   
     var resetSuper = self.reset;

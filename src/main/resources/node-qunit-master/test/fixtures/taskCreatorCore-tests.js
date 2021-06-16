@@ -8,7 +8,7 @@ QUnit.module( "TaskCreator Logic module", {
         console.log("before Setting up DOM");
         return new Promise( function( resolve, reject_ ) {
 
-            JSDOM.fromFile("./../templates/taskCreator.html").then(domJSDOM => {
+            JSDOM.fromFile("./../templates/task-manager-lektor.html").then(domJSDOM => {
                 console.log("done Setting up taskCreator DOM");
 
                 dom = domJSDOM;
@@ -34,7 +34,9 @@ test('Creating TaskCreatorCore test', function (assert) {
     $.mockjaxSettings.logger = null;
 
     var dependencies = {
-        "TaskGameCore" : TaskGameCore
+        "TaskGameCore" : TaskGameCore,
+        // $mock: $,
+        // windowMock: window
     }
 
     var tcc = TaskCreatorCore(false, $, window, dependencies, function(data) {

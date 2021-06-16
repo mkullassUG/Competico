@@ -192,11 +192,11 @@ div > .nav-link.active {
 
 #GameDiv, 
 #endGameDiv {
-  /* border-radius: 90px; */
-  border-top-left-radius: 90px 40px;
+  border-radius: 20px; 
+  /* border-top-left-radius: 90px 40px;
 	border-top-right-radius: 90px 40px;
 	border-bottom-left-radius: 90px 40px;
-	border-bottom-right-radius: 90px 40px;
+	border-bottom-right-radius: 90px 40px; */
   overflow: hidden;
   padding: 30px;
   transform: translate(-30px);

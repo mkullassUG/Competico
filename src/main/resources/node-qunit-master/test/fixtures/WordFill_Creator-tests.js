@@ -8,7 +8,7 @@ QUnit.module( "TaskCreator Logic module", {
         console.log("before Setting up DOM");
         return new Promise( function( resolve, reject_ ) {
 
-            JSDOM.fromFile("./../templates/taskCreator.html").then(domJSDOM => {
+            JSDOM.fromFile("./../templates/task-manager-lektor.html").then(domJSDOM => {
                 console.log("done Setting up taskCreator DOM");
 
                 dom = domJSDOM;
@@ -35,12 +35,14 @@ test('Creating WordFill_Creator test', function(assert){
     $.mockjaxSettings.logger = null;
 
     var dependencies = {
-        "TaskCreatorVariant" : TaskCreatorVariant
+        "TaskCreatorVariant" : TaskCreatorVariant,
+        // $mock: $,
+        // windowMock: window
     }
     
     var tc = WordFill_Creator({}, false, $, window, dependencies, function(data) {
         
-        assert.equal(data, "success", 'Succesfuly recived message from WordFill_Creator Init function.');
+        assert.equal(data, true, 'Succesfuly recived message from WordFill_Creator Init function.');
         done();
     });
     

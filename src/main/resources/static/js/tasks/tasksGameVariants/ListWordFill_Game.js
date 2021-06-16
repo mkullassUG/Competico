@@ -31,7 +31,7 @@ const ListWordFill_Game = (taskData) => {
             var words = self.words[i];
             var emptySpaceCount = self.emptySpaceCount[i];
             var startWithText = self.startWithText[i];
-            var taskContentReady = $(`<div class="text-left border-top border-gray taskContent">(` + (i+1) + `). </div>`);
+            var taskContentReady = $(`<div class="text-left border-top border-gray taskContent">` + ((rows>1)? `(` + (i+1) + `). ` : "") + `</div>`);
 
             var singleContentAnswerContainer = $(`<div class="singleContentAnswerContainer">`);
 
@@ -57,7 +57,7 @@ const ListWordFill_Game = (taskData) => {
             }
 
             //2.1 ustawić miejsce na odpowiedzi
-            var taskAnswerHolderReady = $(`<div class="pb-2 mb-0 text-center mb-0 border-bottom border-gray taskAnswerHolder">`);
+            var taskAnswerHolderReady = $(`<div class="pb-2 pt-1 mb-0 text-center mb-0 border-bottom border-gray taskAnswerHolder">`);
             for (let i = 0; i < words.length; i++) {
                 var wordNode = document.createTextNode(words[i]);
 
@@ -72,7 +72,6 @@ const ListWordFill_Game = (taskData) => {
             $("#GameDiv").append(singleContentAnswerContainer);
         }
 
-        console.log("hi");
         var BlankContainer = (blank_, wordFillContainer_) => {
             var that = {};
 

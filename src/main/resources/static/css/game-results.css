@@ -1,0 +1,266 @@
+/*fix że tablica wychodzi poza ekran*/
+#endGameDiv tbody {
+  overflow-y: scroll;
+  width: 100%;
+  position: absolute;
+  top: 45px;
+}
+#endGameDiv table {
+	position: relative;
+}
+#endGameDiv tr {
+  width: 100%;
+  display: inline-table;
+  table-layout: fixed;
+}
+#endGameDiv tr th:first-child,
+#endGameDiv tr td:first-child {
+  width:25px;
+}
+
+@media (max-width: 576px) {
+  #btnPersonalResults,#btnLeave{
+		padding: .25rem .5rem;
+		font-size: .875rem;
+		line-height: 1.5;
+		border-radius: .2rem;
+	}
+  #gameEndBottom .col-12 {
+    -ms-flex: 0 0 50%;
+		flex: 0 0 50%;
+		max-width: 50%;
+  }
+  #gameEndBottom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  #endGameDiv {
+    padding: 15px!important;
+    font-size: .875rem;
+  }
+  #endGameDiv tbody {
+    top: 40px;
+  }
+}
+@media (min-height: 350px) and (max-width: 576px){
+	#endGameDiv tbody {
+    height: 105px;
+  }
+	#endGameDiv table {
+    height: 120px;
+  }
+}
+@media (min-height: 400px) and (max-width: 576px){
+	#endGameDiv tbody {
+		height: 145px;
+  }
+	#endGameDiv table {
+		height: 150px;
+  }
+}
+@media (min-height: 500px) and (max-width: 576px){
+	#endGameDiv tbody {
+		height: 225px;
+  }
+	#endGameDiv table {
+		height: 250px;
+  }
+}
+@media (min-height: 600px) {
+	#endGameDiv tbody {
+		height: 150px;
+  }
+	#endGameDiv table {
+		height: 165px;	
+  }
+}
+@media (min-height: 600px) and (max-width: 576px){
+	#endGameDiv tbody {
+		height: 334px
+  }
+	#endGameDiv table {
+		height: 370px;
+  }
+}
+@media (max-height: 800px) {
+	#gameEndCenter {
+		margin-top: -70px!important;
+	}
+	#gameEndBottom .col-12 {
+		width: 50%!important;
+	}
+}
+@media (min-height: 800px) {
+	#endGameDiv tbody {
+		height: 257px;
+  }
+	#endGameDiv table {
+		height: 300px;
+  }
+}
+@media (min-height: 1000px) {
+	#endGameDiv tbody {
+		height: 427px;
+  }
+	#endGameDiv table{
+		height: 450px;
+  }
+}
+@media (min-height: 1200px) {
+	#endGameDiv tbody{
+		height: 512px;
+  }
+	#endGameDiv table{
+		height: 550px;
+  }
+}
+
+
+/*  other */
+html,
+body {
+  height: 100%;
+  
+  background-color: #f5f5f5;
+  /* color: #fff; */
+  box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+}
+
+.btnShadow {
+  box-shadow: 0 0.3rem 0.1rem rgba(0, 0, 0, .5);
+}
+
+.playerResultUpdate {
+  background-color: #008d13;
+  color:white;
+}
+.lobbyMeKicked {
+  background-color: #f7f2c2;
+  color:rgb(133, 0, 0);
+}
+.lobbyMe {
+  background-color: #f7f2c2;
+}
+.gameKicked {
+  background-color: #a1a1a1;
+  color:rgb(133, 0, 0);
+}
+
+.gameOtherNotFinished {
+  background-color: #c5c5c5;
+}
+
+#gameEndCenter {
+  height: 70%;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  line-height: 60px;
+  z-index: 0!important;
+}
+
+nav {
+	z-index:2;
+}
+
+.iconbig {
+  height: 30px;
+}
+
+.container {
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  z-index: 1;
+  text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+}
+
+h2 {
+  
+  text-shadow: 0 0.3rem 0.1rem rgba(0, 0, 0, .5);
+}
+
+.fill {
+  top: 40px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  width: auto;
+  height: auto;
+}
+
+/*loading modal*/
+.bd-example-modal-lg .modal-dialog{
+  display: table;
+  position: relative;
+  margin: 0 auto;
+  top: calc(50% - 24px);
+}
+
+.bd-example-modal-lg .modal-dialog .modal-content{
+  background-color: transparent;
+  border: none;
+}
+
+/*Task completion styles*/
+
+.redTask {
+    background-color: red;
+    color: white;
+}
+
+.greenTask {
+    background-color: green;
+    color: white;
+}
+
+.limeTask {
+    background-color: lime;
+    color: black;
+}
+
+.whiteTask {
+    background-color: white;
+    color: black;
+}
+
+.yellowTask{
+    background-color: yellow;
+    color: black;
+}
+
+.orangeTask{
+    background-color: orange;
+    color: black;
+}
+
+/*comfeti*/
+
+.main_header {
+  width: 100vw;
+  height: 100vh;
+  background-color: hsl(0, 0%, 94%);
+  display: grid;
+  place-items: center;
+}
+
+.center_div {
+  min-width: 50vw;
+  height: 40vh;
+  color: #000;
+  text-shadow: 0 0 2rem rgba(0, 0, 0, 0.5);
+  font-size: 7rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  text-align:center;
+}
+
+/*other global.css*/
+

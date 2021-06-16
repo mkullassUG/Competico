@@ -149,6 +149,7 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
         podgląd stworzonego zadania jako gry*/
     }
 
+    //Deprecated, recommended sendTaskVariantToTasksets
     var sendTaskVariantSuper = self.sendTaskVariant;
     self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
@@ -404,18 +405,20 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
         }
     }
 
-    //TODO: przerobić to na Choice czyli {[dobra_odpowiedz][zła1,zła2,zła3]}
-
     self.addNewWordForChoiceWordFill = (leftTag_, middleTag_, rightTag_, forElement) => {
         var yourTextarea = forElement.find("." + self.taskName+ "FTextArea")[0];
         //pomogło
         //https://stackoverflow.com/questions/11076975/how-to-insert-text-into-the-textarea-at-the-current-cursor-position 
         var insertAtCursor = (myField, leftTag, rightTag) => {
+
+            var selText = window.getSelection().toString();
+            selText = selText.replaceAll(leftTag,"").replaceAll(rightTag,"");
+
             //IE support
             if (document.selection) {
                 myField.focus();
                 sel = document.selection.createRange();
-                sel.text = (leftTag + rightTag);
+                sel.text = (leftTag + selText +middleTag_+ rightTag);
             }
             //MOZILLA and others
             else if (myField.selectionStart || myField.selectionStart == '0') {
@@ -452,13 +455,14 @@ const ListChoiceWordFill_Creator = (data_ = {}) => {
                     }
                 }
 
-                myField.value = leftSide + (leftTag + middleTag_+ rightTag) + rightSide;
+                myField.value = leftSide + (leftTag + selText + middleTag_+ rightTag) + rightSide;
 
                 //umieszczam pozycje kursora pomiędzy {[ ... ][]]}
-                myField.setSelectionRange(startPos+2,startPos+2);
+                myField.setSelectionRange(startPos+2+selText.length,startPos+2+selText.length);
             } else {
-                myField.value += (leftTag + rightTag);
-                myField.setSelectionRange(2,2);
+                console.log("awd");
+                myField.value += (leftTag + selText + middleTag_ + rightTag);
+                myField.setSelectionRange(2+selText.length,2+selText.length);
             }
         }
 

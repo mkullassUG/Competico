@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.projteam</groupId>
-	<artifactId>app</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>competico</artifactId>
+	<version>0.9.0-SNAPSHOT</version>
 	<name>app</name>
-	<description>Aplikacja Web wspomagająca naukę języka angielskiego</description>
+	<description>Aplikacja Web Competico wspomagająca naukę języka angielskiego</description>
 
 	<properties>
 		<java.version>11</java.version>
@@ -69,7 +69,7 @@
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
-		 <dependency>
+		<dependency>
 		    <groupId>com.h2database</groupId>
 		    <artifactId>h2</artifactId>
 		    <scope>test</scope>

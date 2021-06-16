@@ -6,7 +6,7 @@
   <meta name="description" content="Language learning game">
   <meta name="author" content="Artur, Michał">
   <title>Dashboard</title>
-  <link rel="icon" href="assets/myIcons/icon.svg">
+  <link rel="icon" href="/assets/myIcons/CompeticoLogo.svg">
   <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/offcanvas/">
 
   <!-- Bootstrap core CSS -->
@@ -22,7 +22,7 @@
     <div class="container-xl">
       <a class="navbar-brand pb-0 pt-0" href="/">
         Competico
-        <img src="/assets/myIcons/iconbig.svg" class="d-inline-block mx-auto iconbig2" alt="logo">
+        <img src="/assets/myIcons/CompeticoLogo.svg" class="d-inline-block mx-auto iconbig2" alt="logo">
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample08" aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -34,55 +34,54 @@
             <a class="nav-link" href="/">Strona Domowa</a>
           </li>
           <li class="nav-item collapse" id="taskDataHyperlink">
-            
             <div  id="main_nav">
               <ul class="navbar-nav">
                 <li class="nav-item dropdown noselect">
-                  <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">Task Manager</a>
-                  <ul class="dropdown-menu">
-                    <h6 class="text-center"><a href="/tasks/import/global/">Wybór wariantu nowego zadania.</a></h6>
+                  <a class="nav-link dropdown-toggle active taskManagerHoverClass" href="#" data-toggle="dropdown" aria-expanded="false">Task Manager</a>
+                  <ul class="dropdown-menu" id="mainVariantDropdownMenu">
+                    <h6 class="text-center">
+                      <a class="d-block" href="/lecturer/taskmanager/" id="taskSettingsPanel">Zarządzanie zestawami.</a>
+                    </h6>
                     <hr>
                     <li>
-                      <a class="dropdown-item"> Wypełnianie luk w tekście. &raquo </a>
+                      <a class="dropdown-item">Test. <span class="float-right">»</span> </a>
                       <ul class="submenu dropdown-menu">
-                        <li><a class="dropdown-item" href="/tasks/import/global/#WordFill" id="btnWordFill"> Jeden wielozdaniowy tekst,<br> jedna pula odpowiedzi.</a></li>
+                        <li><a class="dropdown-item" href="/lecturer/taskmanager/#WordFill" id="btnWordFill" draggable="false">Cloze test.</a></li>
                         
-                        <li><a class="dropdown-item" href="/tasks/import/global/#ListWordFill" id="btnListWordFill"> Oddzielne zdania ułożone w wierszach,<br> jedna pula odpowiedzi na wiersz. </a></li>
+                        <li><a class="dropdown-item" href="/lecturer/taskmanager/#ListWordFill" id="btnListWordFill" draggable="false"> Wybierz słowo. </a></li>
       
-                        <li><a class="dropdown-item" href="/tasks/import/global/#ListChoiceWordFill" id="btnListChoiceWordFill"> Oddzielne zdania ułożone w wierszach,<br> wybór słowa dla każdej luki.</a></li> 
-      
-                        <li><a class="dropdown-item disabled" href="#"> Jeden wielozdaniowy tekst,<br> wybór słowa dla każdej luki. </a></li>
+                        <li><a class="dropdown-item" href="/lecturer/taskmanager/#ListChoiceWordFill" id="btnListChoiceWordFill" draggable="false">Wybierz właściwą opcję</a></li> 
                       </ul>
                     </li>
                     <li>
-                      <a class="dropdown-item">Łączenie słów i zwrotów z dwóch kolumn. &raquo</a>
+                      <a class="dropdown-item"><span id="twoColumnsWariant">Połącz w pary. </span><span class="float-right">»</span></a>
                       <ul class="submenu dropdown-menu">
                         <li>
-                          <a class="dropdown-item" href="/tasks/import/global/#WordConnect" id="btnWordConnect">Łączenie linią.</a></li>
+                          <a class="dropdown-item" href="/lecturer/taskmanager/#WordConnect" id="btnWordConnect" draggable="false">Łączenie linią.</a></li>
       
                         <li>
-                          <a class="dropdown-item disabled" href="/tasks/import/global/#WordConnectAnswerType" id="btnWordConnectAnswerType"> Dopasowanie drugiej kolumny przez ręczne wpisywanie odpowedzi.</a></li>
+                          <a class="dropdown-item disabled" href="/lecturer/taskmanager/#WordConnectAnswerType" id="btnWordConnectAnswerType" draggable="false"> Dopasowanie drugiej kolumny przez ręczne wpisywanie odpowedzi.</a></li>
       
                         <li>
-                          <a class="dropdown-item disabled" href="/tasks/import/global/#WordConnectAnswerPool" id="btnWordConnectAnswerPool"> Dopasowanie drugiej kolumny z podanego zestawu.</a></li>
+                          <a class="dropdown-item disabled" href="/lecturer/taskmanager/#WordConnectAnswerPool" id="btnWordConnectAnswerPool" draggable="false"> Dopasowanie drugiej kolumny z podanego zestawu.</a></li>
                       </ul>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="/tasks/import/global/#ChronologicalOrder" id="btnChronologicalOrder"> Układanie zdań w porządek chronologiczny. </a></li>
+                      <a class="dropdown-item" href="/lecturer/taskmanager/#ChronologicalOrder" id="btnChronologicalOrder" draggable="false"> Porządkowanie chronologiczne.</a></li>
                     <li>
-                      <a class="dropdown-item" href="/tasks/import/global/#ListSentenceForming" id="btnListSentenceForming"> Układanie zdań z podanych wyrazów. </a></li>
+                      <a class="dropdown-item" href="/lecturer/taskmanager/#ListSentenceForming" id="btnListSentenceForming" draggable="false"> Układanie zdań z podanych wyrazów. </a></li>
                     <li>
-                      <a class="dropdown-item disabled" href="/tasks/import/global/#OptionSelect" id="btnOptionSelect"> Wybór odpowiedzi (pytanie zamknięte)</a>
+                      <a class="dropdown-item" href="/lecturer/taskmanager/#OptionSelect" id="btnOptionSelect">Quiz</a>
                     </li>
       
                     <li>
-                      <a class="dropdown-item disabled"> Warianty z obrazkami. &raquo</a>
+                      <a class="dropdown-item disabled"><span id="picturesVariant">Warianty z obrazkami. </span><span class="float-right">»</span></a>
                       <ul class="submenu dropdown-menu">
-                        <li><a class="dropdown-item disabled" href="/tasks/import/global/#PictureToManyWords" id="btnPictureToManyWords"> Jeden obrazek i wiele odpowiedzi.</a></li>
+                        <li><a class="dropdown-item disabled" href="/lecturer/taskmanager/#PictureToManyWords" id="btnPictureToManyWords" draggable="false"> Jeden obrazek i wiele odpowiedzi.</a></li>
       
-                        <li><a class="dropdown-item disabled" href="/tasks/import/global/#SentenceToManyPictures" id="btnSentenceToManyPictures"> Jeden tekst i wiele obrazków. </a></li>
+                        <li><a class="dropdown-item disabled" href="/lecturer/taskmanager/#SentenceToManyPictures" id="btnSentenceToManyPictures" draggable="false"> Jeden tekst i wiele obrazków. </a></li>
       
-                        <li><a class="dropdown-item disabled" href="/tasks/import/global/#ManyPicturesManyWords" id="btnManyPicturesManyWords"> Wiele obrazków i wiele słów. </a></li>
+                        <li><a class="dropdown-item disabled" href="/lecturer/taskmanager/#ManyPicturesManyWords" id="btnManyPicturesManyWords" draggable="false"> Wiele obrazków i wiele słów. </a></li>
                       </ul>
                     </li>
                   </ul>
@@ -139,7 +138,7 @@
 
   <main role="main" class="container">
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-primary rounded shadow-sm">
-      <img class="mr-3" src="assets/myIcons/iconfinder_law_iconsArtboard_1_copy_5_2393033.svg" alt="" width="48" height="48">
+      <img class="mr-3" src="/assets/user-icon.png" alt="" width="48" height="48">
       <div class="lh-100">
         <h6 class="mb-0 text-white lh-100" id="currentUser"></h6>
         <small id="currentUserRating">ostatnio grano: 0 dni temu</small>
@@ -148,53 +147,8 @@
 
     <div class="my-3 p-3 bg-white rounded shadow-sm" id="topLeaderboard">
       <h6 class="border-bottom border-gray pb-2 mb-0">Najlepsi gracze:</h6>
-      <!-- <div class="media text-muted pt-3">
-        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#FFD700"/><text x="50%" y="50%" fill="#FFD700" dy=".3em">32x32</text></svg>
-        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-          <strong class="d-block text-gray-dark">Marek</strong>
-          pierwsze miejsce
-          <small class="d-block">ostatnio grano: 9 dni temu</small>
-        </p>
-        
-      </div> -->
     </div>
 
-    <!-- <div class="my-3 p-3 bg-white rounded shadow-sm" id="relativeLeaderboard">
-      <h6 class="border-bottom border-gray pb-2 mb-0">Pozostali</h6>
-      <div class="media text-muted pt-3">
-        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-        <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-          <div class="d-flex justify-content-between align-items-center w-100">
-            <strong class="text-gray-dark">Full Name</strong>
-            <a href="#">Profil</a>
-          </div>
-          <span class="d-block">Jan</span>
-        </div>
-      </div>
-      <div class="media text-muted pt-3">
-        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-        <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-          <div class="d-flex justify-content-between align-items-center w-100">
-            <strong class="text-gray-dark">Full Name</strong>
-            <a href="#">Profil</a>
-          </div>
-          <span class="d-block">Kamil</span>
-        </div>
-      </div>
-      <div class="media text-muted pt-3">
-        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-        <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-          <div class="d-flex justify-content-between align-items-center w-100">
-            <strong class="text-gray-dark">Full Name</strong>
-            <a href="#">Profil</a>
-          </div>
-          <span class="d-block">Zosia</span>
-        </div>
-      </div>
-      <small class="d-block text-right mt-3">
-        <a href="#">All suggestions</a> 
-      </small>
-    </div> -->
   </main>
   <script src="/js/jquery/jquery-3.5.1.min.js"></script>
   <script src="/js/bootstrap/popper.min.js"></script>
@@ -202,15 +156,14 @@
   <script>
     window.jQuery || document.write('<script src="assets/js/vendor/jquery.slim.min.js"><\/script>')
   </script>
-  <!-- <script src="/js/bootstrap/bootstrap.bundle.min.js"></script> -->
+  
   <script src="/js/dashboard.js"></script>
   <script src="/js/navbar.js"></script>
-  <script src="/js/lang/PageLanguageChanger.js"></script>
+  <script src="/js/lang/page-language-changer.js"></script>
   <script>
-    var debug
     $( document ).ready(() => {
       
-        debug = DashboardLogic.getInstance(debug = false);
+        DashboardLogic.getInstance();
     })
   </script>
 </body>
