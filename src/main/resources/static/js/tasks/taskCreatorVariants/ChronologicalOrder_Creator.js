@@ -87,6 +87,7 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
         podgląd stworzonego zadania jako gry*/
     }
 
+    //Deprecated, recommended sendTaskVariantToTasksets
     var sendTaskVariantSuper = self.sendTaskVariant;
     self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
@@ -127,7 +128,7 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
         /*ustawiam difficulty*/
         $("#customRangeChronologicalOrder").val(self.taskContent.difficulty);
         $("#customRangeChronologicalOrder").trigger("change");
-        $("#customRangeLabelCO").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
+        $("#customRangeLabelCO").text(`Difficulty: (` + self.taskContent.difficulty + `)`);
         // $("#chronologicalOrderDificulty").val(self.taskContent.difficulty);
 
 
@@ -184,15 +185,17 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
 
     self.createSentence = (i=1, sentence="") => {
         
-        var htmlString = `<div class="form-group blue-border-focus" id="chronologicalOrderSentence`+i+`">
-                <label for="chronologicalOrderDivTaskText`+i+`">`+i+`</label>
-                <textarea class="w-75 d-inline-block form-control taskTextTextarea" id="chronologicalOrderDivTaskText`+i+`" rows="2" placeholder="Wstaw zdanie nr `+i+`">`+sentence+`</textarea>
-                <button class="d-inline-block btn btn-danger btn-sm" id="btnChronologicalOrderRemoveSentence`+i+`" data-toggle="tooltip" data-placement="top" title="Usuń wiersz.">-</button>
-            </div>`;
+        var chronologicalOrderSentence = $(`<div class="form-group blue-border-focus" id="chronologicalOrderSentence`+i+`">`);
+        var chronologicalOrderDivTaskTextlabel = $(`<label for="chronologicalOrderDivTaskText`+i+`">`+i+`</label>`);
+        var taskTextTextarea = $(`<textarea class="w-75 d-inline-block form-control taskTextTextarea" id="chronologicalOrderDivTaskText`+i+`" rows="2" placeholder="Wstaw zdanie nr `+i+`"></textarea>`);
+        var button = $(`<button class="d-inline-block btn btn-danger btn-sm" id="btnChronologicalOrderRemoveSentence`+i+`" data-toggle="tooltip" data-placement="top" title="Usuń wiersz.">-</button>`);
+
+        taskTextTextarea.append(window.document.createTextNode(sentence));
+
+        chronologicalOrderSentence.append(chronologicalOrderDivTaskTextlabel).append(taskTextTextarea).append(button);
 
         var sentenceDiv = $("#chronologicalOrderSentences");
-        var element = $(htmlString);
-        sentenceDiv.append(element);
+        sentenceDiv.append(chronologicalOrderSentence);
         
         $("#btnChronologicalOrderRemoveSentence"+i).on('click', (e) => {
             $('.tooltip').tooltip('dispose');
@@ -201,7 +204,7 @@ const ChronologicalOrder_Creator = (data_ = {}) => {
         
         tooltipsUpdate();
 
-        return element;
+        return chronologicalOrderSentence;
     }
 
     var tooltipsUpdate = () => {

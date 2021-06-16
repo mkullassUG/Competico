@@ -148,6 +148,7 @@ const ListWordFill_Creator = (data_ = {}) => {
         setupDemoFromCurrentSuper();
     }
 
+    //Deprecated, recommended sendTaskVariantToTasksets
     var sendTaskVariantSuper = self.sendTaskVariant;
     self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
@@ -168,7 +169,6 @@ const ListWordFill_Creator = (data_ = {}) => {
     }
     
     self.checkAndClickOnAddButt = () => {
-        console.log("checkAndClickOnAddButt");
         var btnAddSingleWordFill = $("#" + self.taskName+ "AddWordFill");
         if ( btnAddSingleWordFill.length && !$("." + self.taskName+ "AddWord").length)
             btnAddSingleWordFill.click();
@@ -429,11 +429,15 @@ const ListWordFill_Creator = (data_ = {}) => {
         var yourTextarea = forElement.find("." + self.taskName+ "TextArea")[0];
         
         var insertAtCursor = (myField, leftTag, rightTag) => {
+
+            var selText = window.getSelection().toString();
+            selText = selText.replaceAll(leftTag,"").replaceAll(rightTag,"");
+
             //IE support
             if (document.selection) {
                 myField.focus();
                 sel = document.selection.createRange();
-                sel.text = (leftTag + rightTag);
+                sel.text = (leftTag + selText + rightTag);
             }
             //MOZILLA and others
             else if (myField.selectionStart || myField.selectionStart == '0') {
@@ -466,18 +470,13 @@ const ListWordFill_Creator = (data_ = {}) => {
                     }
                 }
 
-
-
-                myField.value = leftSide + (leftTag + rightTag) + rightSide;
-
-                // myField.selectionStart = startPos + myValue.length;
-                // myField.selectionEnd = startPos + myValue.length;
+                myField.value = leftSide + (leftTag + selText + rightTag) + rightSide;
 
                 //umieszczam pozycje kursora pomiędzy {[]}
-                myField.setSelectionRange(startPos+2,startPos+2);
+                myField.setSelectionRange(startPos+2+ selText.length,startPos+2+ selText.length);
             } else {
-                myField.value += (leftTag + rightTag);
-                myField.setSelectionRange(2,2);
+                myField.value += (leftTag + selText + rightTag);
+                myField.setSelectionRange(2+ selText.length,2+ selText.length);
             }
         }
         insertAtCursor(yourTextarea, leftTag_, rightTag_);

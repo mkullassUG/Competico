@@ -1,27 +1,34 @@
-const NavbarLogic = (accountInfo_, debug = false, $jq, myWindow) => {
+const NavbarLogic = (data, debug = false, depMocks = {}, successfulCreationCallback) => {
     
-    /* environment preparation */
-    if ( $jq )
-        $ = $jq;
-    if ( myWindow )
-        window = myWindow;
+    /*  singleton   */
+    if (NavbarLogic.singleton)
+        return NavbarLogic.singleton;
+    var self = {};
+    if (!NavbarLogic.singleton && data)
+        NavbarLogic.singleton = self;
+    else if (!NavbarLogic.singleton && !data)
+        return NavbarLogic.getInstance(false, debug, depMocks, successfulCreationCallback);
 
+    /*  environment preparation  */
+    $ = typeof $ != 'undefined'? $ : depMocks.$mock;
+    window =  typeof window != 'undefined'? window : depMocks.windowMock;
+    
     /*       logic variables          */
-    var self = accountInfo_;
     self.nickname;
     self.username;
-  
-    /*       logic functions          */
-    self.navbarLogic = (accountInfo) => {
-    
-        self.nickname = accountInfo.nickname;
-        self.username = accountInfo.username;
-        self.email = accountInfo.email;
-        self.roles = accountInfo.roles?accountInfo.roles:[];
-        self.authenticated = accountInfo.authenticated?true:(self.nickname?true:false);
-    
-        //$("#currentUser").html(self.nickname + " <small>" + self.username + "</small>")
+    self.email;
+    self.roles;
+    self.authenticated;
 
+    /*       logic functions          */
+    var NavbarLogicInit = (accountInfoData) => {
+    
+        self.nickname = accountInfoData.nickname;
+        self.username = accountInfoData.username;
+        self.email = accountInfoData.email;
+        self.roles = accountInfoData.roles?accountInfoData.roles:[];
+        self.authenticated = accountInfoData.authenticated?true:(self.nickname?true:false);
+    
         //navbar preparation
         if ( self.roles.includes("SWAGGER_ADMIN"))
             $("#swaggerHyperlink").show();
@@ -37,10 +44,21 @@ const NavbarLogic = (accountInfo_, debug = false, $jq, myWindow) => {
             $("#dashboardHyperlink").show();
             $("#logOutButton").show();
             $("#gameHyperlink").show();
-            
         } 
 
+        //Task MAnager v2
+        if (  self.roles.includes("LECTURER") ) {
+            $("#main_nav").find("a").each((e, b)=>{
+                if (b.href.includes("/tasks/import/global/"))
+                    b.href = b.href.replace("tasks/import/global","lecturer/taskmanager");
+            });
+            $("#taskDataHyperlink").show();
+        }
+
         otherFrontendLogic();
+
+        if (successfulCreationCallback)
+            successfulCreationCallback(true);
     }
     
     var otherFrontendLogic = () => {
@@ -99,25 +117,21 @@ const NavbarLogic = (accountInfo_, debug = false, $jq, myWindow) => {
             })
         });
     }
-
-    /* listeners */
     
     /*  initalization  */
-    self.navbarLogic(accountInfo_);
+    NavbarLogicInit(data);
     
     return self;
 }
   
-NavbarLogic.getInstance = (debug = false, $jq, myWindow) => {
+NavbarLogic.getInstance = (dataLazy, debug = false, depMocks = {}, successfulCreationCallback) => {
     
-    if ( $jq )
-        $ = $jq;
-    if ( myWindow )
-        window = myWindow;
-
     if (NavbarLogic.singleton)
       return NavbarLogic.singleton;
-  
+      
+    $ = typeof $ != 'undefined'? $ : depMocks.$mock;
+    window = typeof window != 'undefined'? window : depMocks.windowMock;
+    
     var ajaxReceiveAccountInfo = ( ) => {
         
         $.ajax({
@@ -130,15 +144,15 @@ NavbarLogic.getInstance = (debug = false, $jq, myWindow) => {
 
                 if (debug){
                     console.log("ajaxReceiveAccountInfo success");
-                    console.log(typeof accountInfo);
-                    console.log(accountInfo);
-                    console.log(textStatus);
-                    console.log(jqXHR);
+                    if (typeof accountInfo == 'string')
+                        console.log("nie zalogowany");
+                    else
+                        console.log(accountInfo);
                 }
                 if (typeof accountInfo == 'string') //nie zalogowany
-                    NavbarLogic.singleton = NavbarLogic({}, debug, $, window);
+                    NavbarLogic.singleton = NavbarLogic({}, debug, depMocks, successfulCreationCallback);
                 else //zalogowany
-                    NavbarLogic.singleton = NavbarLogic(accountInfo, debug, $, window);
+                    NavbarLogic.singleton = NavbarLogic(accountInfo, debug, depMocks, successfulCreationCallback);
             },
             error: function(jqXHR, status, err) {
                 if (debug){
@@ -148,7 +162,12 @@ NavbarLogic.getInstance = (debug = false, $jq, myWindow) => {
         });
     }
     
-    ajaxReceiveAccountInfo();
+    if ( dataLazy )
+        NavbarLogic.singleton = NavbarLogic(dataLazy, debug, depMocks);
+    else
+        ajaxReceiveAccountInfo();
+    
+    return NavbarLogic.singleton;
 }
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')

@@ -1,39 +1,117 @@
 
-const LobbyJoinLogic = (debug = false) => {
-  var self = {}
+const LobbyJoinLogic = (data, debug = false, depMocks = {}) => {
+  
+  
+  /*  singleton   */
+  if (LobbyJoinLogic.singleton)
+    return LobbyJoinLogic.singleton;
+  var self = {};
+  if (!LobbyJoinLogic.singleton && !data)
+    LobbyJoinLogic.getInstance(data, depMocks, debug);
+
+  /*  environment preparation  */
+  $ = typeof $ != 'undefined'? $ : depMocks.$mock;
+  window =  typeof window != 'undefined'? window : depMocks.windowMock;
+
+  if ( depMocks.NavbarLogic && typeof NavbarLogic == "undefined")
+      NavbarLogic = depMocks.NavbarLogic;
+  if ( depMocks.PageLanguageChanger && typeof PageLanguageChanger == "undefined")
+      PageLanguageChanger = depMocks.PageLanguageChanger;
+  
+  /* logic variables */
   var nickname, gameCode, logged, isHost, gameStarted;
+
   var LobbyJoinInit = (data) => {
+    /*data:
+      playerInfo, accountInfo, hideModal, showModal
+    */
+    isHost = data.playerInfo.isHost;
+    gameCode = data.playerInfo.gameCode;
+    logged = data.playerInfo.logged;
+    gameStarted = data.playerInfo.gameStarted;
+    nickname = data.playerInfo.nickname;
+    
+    self.roles = data.accountInfo.roles? data.accountInfo.roles : [];
+    self.isLecturer = self.roles.includes("LECTURER");
 
-    isHost = data.isHost;
-    gameCode = data.gameCode;
-    logged = data.logged;
-    gameStarted = data.gameStarted;
-    nickname = data.nickname;
+    self.hideModal = data.hideModal;
+    self.showModal = data.showModal;
 
-    if ((data.isHost != null && data.isHost) || 
-      (data.gameCode != null && data.gameCode != ""))
-      window.location = "/game/" + data.gameCode;
+    if ((isHost != null && isHost) || 
+      (gameCode != null && gameCode != ""))
+      window.location = "/game/" + gameCode;
 
-    NavbarLogic.getInstance();
-
+    if ( self.isLecturer ) {
+      $("#btnSearch").parent().css("visibility","hidden");
+      $("#inputCode").parent().css("visibility","hidden");
+    }
+    if (typeof NavbarLogic != "undefined")
+        NavbarLogic(data.playerInfo, debug);
+      
     $('.hideBeforeLoad').css("display", "flex").fadeIn();
     resizeWindow();
 
-    //NEW!!!!!!
     if ( typeof PageLanguageChanger != "undefined")
       PageLanguageChanger();
+
+
+    listenersSetup();
   }
 
+  /*       event listeners          */
+  var listenersSetup = () => {
+    $("#btnJoinCode").on("click",() => {
+      ajaxFindGameByCode($("#inputCode")[0].value);
+    });
+    $("#btnHost").on("click",()=>{
+      ajaxCreateLobby();
+    });
+    $("#btnSearch").on("click",()=>{
+      ajaxReceiveFoundGame();
+    });
+    $("#inputCode").on("click input paste change focus keypress", (e)=> {
+      if ($("#inputCode")[0].value != "") {
+        $("#btnJoinCodeInvisible").hide();
+        $("#btnJoinCodeCollapse").show();
+      } else {
+        $("#btnJoinCodeInvisible").show();
+        $("#btnJoinCodeCollapse").hide();
+      }
+    });
+    $("#inputCode").keydown( self.onEnterSubmit );
+    window.onresize = resizeWindow;
+  }
+
+  self.onEnterSubmit = (e) => {
+    
+    var inputCode = $("#inputCode");
+    var btnJoinCode = $("#btnJoinCode");
+    if (e.keyCode === 13) { 
+      e.preventDefault();
+      if ( inputCode.val().trim() != "") {
+        btnJoinCode.click();
+      }
+    }
+
+  }
+  /*  logic functions  */
   //new 2021-04-27
   var resizeWindow = () => {
       
       $("html").height("100%");
       if (debug)
         console.log("res");
-      $("html").height($(document).height());
+      
+      function isInt(n) {
+        return n % 1 === 0;
+      }
+      
+      var h1 = $(window.document).height();
+      if ( isInt (h1))
+        h1 -= 1;
+      $("html").height(h1);
   } 
-  window.onresize = resizeWindow;
-
+  
   var gameFound = (data) => {
 
     if (data)
@@ -91,34 +169,8 @@ const LobbyJoinLogic = (debug = false) => {
   var lobbyCreated = (code) => window.location = "/game/" + code;
 
   /*Ajax*/
-  var ajaxReceiveWhoAmI = () => {
-
-    $('.hideBeforeLoadModal').modal('show');
-    $.ajax({
-      type     : "GET",
-      cache    : false,
-      url      : "/api/v1/playerinfo",
-      contentType: "application/json",
-      success: function(data, textStatus, jqXHR) {
-        if (debug) {
-          console.log("ajaxReceiveWhoAmI success");
-          console.log(data);
-        }
-        
-        $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
-        LobbyJoinInit(data);
-      },
-      error: function(jqXHR, status, err) {
-        if (debug)
-          console.warn("ajaxReceiveWhoAmI error");
-        
-        $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
-      }
-    });
-  }
-  
   var ajaxReceiveFoundGame = () => {
-    $('.hideBeforeLoadModal').modal('show');
+    self.showModal();
     /*
     odpowiada 404 jesli nie znjadzie lobby żadneg ow danej chwili więcwyskakuje erro w konsoli, zwraca stringa "No lobby available"
     
@@ -139,7 +191,7 @@ const LobbyJoinLogic = (debug = false) => {
           console.log(textStatus)
           console.log(jqXHR)
         }
-          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
+          self.hideModal();
 
           if (jqXHR.status == 200) 
             gameFound(data);
@@ -162,19 +214,19 @@ const LobbyJoinLogic = (debug = false) => {
         else
           displayFailInfoAnimation("Nie znaleziono wolnego lobby");
 
-        $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
+        self.hideModal();
       }
     });
   }
 
   var ajaxFindGameByCode = (code) => {
-    $('.hideBeforeLoadModal').modal('show');
-    //var send = {code: code}
+
+    self.showModal();
+    
     $.ajax({
       type     : "GET",
       cache    : false,
-      url      : "api/v1/lobby/" + code,//"game/isCodeCorrect",
-      //data     : JSON.stringify(send),
+      url      : "api/v1/lobby/" + code,
       contentType: "application/json",
       success: function(data, textStatus, jqXHR) {
         if (debug) {
@@ -184,14 +236,14 @@ const LobbyJoinLogic = (debug = false) => {
           console.log(textStatus)
           console.log(jqXHR)
         }
-          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
+          self.hideModal();
           isCodeCorrect(data);
       },
       error: function(jqXHR, status, err) {
         if (debug)
           console.warn("ajaxFindGameByCode error");
 
-        $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
+        self.hideModal();
       }
     });
   }
@@ -212,7 +264,7 @@ const LobbyJoinLogic = (debug = false) => {
           console.log(textStatus)
           console.log(jqXHR)
           }
-          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
+          self.hideModal();
           
           if (jqXHR.status == 201) {
             
@@ -227,47 +279,24 @@ const LobbyJoinLogic = (debug = false) => {
         if (debug)
           console.warn("ajaxCreateLobby error");
         
-        $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
+        self.hideModal();
+        //2021-05-13: lepsze info by było, że coś z serwerem nie tak...
+
+        // if ( typeof PageLanguageChanger != "undefined" )
+        //   displayFailInfoAnimation(PageLanguageChanger().getTextFor("LobbyNotCreated"));
+        // else
+        //   displayFailInfoAnimation("Nie stworzono lobby");
       }
     });
   }
   
-
-  $("#btnJoinCode").on("click",() => {
-    ajaxFindGameByCode($("#inputCode")[0].value);
-  });
-  $("#btnHost").on("click",()=>{
-    ajaxCreateLobby();
-  });
-  $("#btnSearch").on("click",()=>{
-    ajaxReceiveFoundGame();
-  });
-  $("#inputCode").on("click input paste change focus keypress", (e)=> {
-    if ($("#inputCode")[0].value != "") {
-      $("#btnJoinCodeInvisible").hide();
-      $("#btnJoinCodeCollapse").show();
-    } else {
-      $("#btnJoinCodeInvisible").show();
-      $("#btnJoinCodeCollapse").hide();
-    }
-
-  })
+  
 
   /* debug  */
   var debugSetup = () => {
     if (debug == true) {
-      /*LobbyJoinInit({
-        logged: true,
-        nickname: "GraczTestowy",
-        gameCode: "",
-        isHost: false,
-        gameStarted: false,
-      });*/
-      ajaxReceiveWhoAmI();
+      LobbyJoinInit(data);
 
-      // self.gameFound = (game) => {
-      //   gameFound(game);
-      // }
       self.isCodeCorrect = (lobby) => {
         isCodeCorrect(lobby);
       }
@@ -285,15 +314,97 @@ const LobbyJoinLogic = (debug = false) => {
   if (debug)
     debugSetup();
   else
-    ajaxReceiveWhoAmI();
+    LobbyJoinInit(data);
 
   return self;
 }
 
-LobbyJoinLogic.create = (debug = false) => {
+LobbyJoinLogic.getInstance = (dataLazy, debug = false, depMocks = {}, cbTest) => {
+  
+  if (LobbyJoinLogic.singleton)
+    return LobbyJoinLogic.singleton;
 
-  if (debug)
-    return LobbyJoinLogic(debug);
+  $ = typeof $ != 'undefined'? $ : depMocks.$mock;
+  window =  typeof window != 'undefined'? window : depMocks.windowMock;
+
+  var showModal = () => {
+      if (typeof $("").modal != 'undefined') {
+          $('.hideBeforeLoadModal').modal('show');
+      }
+  }
+  var hideModal = () => {
+      if (typeof $("").modal != 'undefined') {
+          $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
+      }
+  }
+
+  var ajaxReceiveWhoAmI = ( ) => {
+
+    showModal();
+
+    $.ajax({
+        type     : "GET",
+        cache    : false,
+        url      : "/api/v1/playerinfo",
+        contentType: "application/json",
+        success: function(playerInfo, textStatus, jqXHR) {
+            if (debug){
+                console.log("ajaxReceiveWhoAmI success");
+            }
+            
+            ajaxReceiveAccountInfo(playerInfo);
+        },
+        error: function(jqXHR, status, err) {
+            if (debug){
+                console.warn("ajaxReceiveWhoAmI error");
+            }
+
+            hideModal();
+        }
+    });
+  }
+  var ajaxReceiveAccountInfo = ( playerInfo ) => {
+
+    $.ajax({
+      type     : "GET",
+      cache    : false,
+      url      : "/api/v1/account/info",
+      contentType: "application/json",
+      success: function(accountInfo, textStatus_, jqXHR_) {
+          if (debug) {
+              console.log("ajaxReceiveAccountInfo success");
+              console.log(accountInfo);
+          }
+          
+          playerInfo.showModal = showModal;
+          playerInfo.hideModal = hideModal;
+          playerInfo.roles = accountInfo.roles;
+
+          var data = {
+            playerInfo: playerInfo, 
+            accountInfo: accountInfo,
+            showModal: showModal,
+            hideModal: hideModal
+          }
+          if ( cbTest )
+              cbTest("success");
+
+          LobbyJoinLogic.singleton = LobbyJoinLogic(data, debug, depMocks);
+          hideModal();
+      },
+      error: function(jqXHR_, status_, err_) {
+          if (debug) {
+            console.warn("ajaxReceiveAccountInfo error");
+          }
+          hideModal();
+      }
+    });
+  }
+
+  if (dataLazy)
+    return LobbyJoinLogic(dataLazy, debug, depMocks);
   else
-    LobbyJoinLogic()
+    ajaxReceiveWhoAmI()
+
+  return LobbyJoinLogic.singleton;
 }

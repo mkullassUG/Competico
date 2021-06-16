@@ -1,4 +1,59 @@
 {
+    "#taskSettingsPanel":{
+        "pl": "Zarządzanie zestawami",
+        "eng" : "Taskset management"
+    },
+    "#btnListWordFill": {
+        "pl": "Wybierz słowo",
+        "eng" : "Choose word"
+    },
+    "#btnListChoiceWordFill": {
+        "pl": "Wybierz właściwą opcję",
+        "eng" : "Choose correct option"
+    },
+    "#twoColumnsWariant": {
+        "pl": "Połącz w pary",
+        "eng" : "Pair up"
+    },
+    "#btnChronologicalOrder": {
+        "pl": "Porządkowanie chronologiczne",
+        "eng" : "Chronological ordering"
+    },
+    "#btnListSentenceForming": {
+        "pl": "Układanie zdań z podanych wyrazów",
+        "eng" : "Arranging sentences"
+    },
+    "#picturesVariant": {
+        "pl": "Warianty z obrazkami",
+        "eng" : "Variants with pictures"
+    },
+    "#btnWordConnect": {
+        "pl": "Łączenie linią",
+        "eng" : "Connect line"
+    },
+    "#btnWordConnectAnswerType": {
+        "pl": "Dopasowanie drugiej kolumny przez ręczne wpisywanie odpowedzi",
+        "eng" : "Match the second column by typing"
+    },
+    "#btnWordConnectAnswerPool": {
+        "pl": "Dopasowanie drugiej kolumny z podanego zestawu",
+        "eng" : "Match the second column from set"
+    },
+    "#btnPictureToManyWords": {
+        "pl": "Jeden obrazek i wiele odpowiedzi.",
+        "eng" : "One picture and many answers"
+    },
+    "#btnSentenceToManyPictures": {
+        "pl": "Jeden tekst i wiele obrazków",
+        "eng" : "One text and many pictures"
+    },
+    "#btnManyPicturesManyWords": {
+        "pl": "Wiele obrazków i wiele słów",
+        "eng" : "Lots of pictures and lots of words"
+    },
+
+    
+
 
     ".footer > .container.text-center > .footer-text.m-auto": {
         "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
@@ -42,6 +97,174 @@
     },
 
 
+
+
+    "#mainTitle1": {
+        "pl": "Tworzenie zadań",
+        "eng": "Creating tasks"
+    },
+    "#mainTitle2": {
+        "pl": "Zarządzanie zestawami",
+        "eng": "Taskset management"
+    },
+    "#tasksetSettingsOptions > h3:nth-child(1)": {
+        "pl": "Globalne akcje:",
+        "eng": "Global actions:"
+    },
+    "#tasksetSettingsOptions > h3:nth-child(6) > span:nth-child(1)": {
+        "pl": "Dla wybranego zestawu: ",
+        "eng": "For selected taskset: "
+    },
+    ".impAllTasksBtn": {
+        "pl": "Importuj zadania z pliku do zestawu",
+        "eng": "Import tasks from a file into a taskset"
+    },
+    ".expAllTasksBtn": {
+        "pl": "Eksportuj zadania do pliku",
+        "eng": "Export tasks to a file"
+    },
+    ".delAllTaskBtn": {
+        "pl": "Usuń wszystkie zadania",
+        "eng": "Delete all tasks"
+    },
+    ".deleteTasksetBtn": {
+        "pl": "Usuń cały zestaw",
+        "eng": "Delete whole taskset"
+    },
+    ".changeTasksetNameBtn": {
+        "pl": "Zmień nazwe zestawu",
+        "eng": "Change taskset name"
+    },
+    "#tasksetSettingsOptions > a:nth-child(3) > span": {
+        "pl": "Importuj zestawy z pliku",
+        "eng": "Import tasksets from file"
+    },
+    "#importAllTasksetsToFileBtn > span": {
+        "pl": "Eksportuj zestawy do pliku",
+        "eng": "Export tasksets to file"
+    },
+    "#tasksetSettingsDiv > div:nth-child(3) > h3": {
+        "pl": "Wybór wariantu do tworzenia:",
+        "eng": "Choose a variant to create:"
+    },
+    "#tasksetSettingsDiv > div:nth-child(1) > div:nth-child(2) > div > table > thead > tr > th:nth-child(2)": {
+        "pl": "Nazwa zestawu",
+        "eng": "Taskset name"
+    },
+    "#tasksetSettingsDiv > div:nth-child(1) > div:nth-child(2) > div > table > thead > tr > th:nth-child(3)": {
+        "pl": "Ilośc zadań",
+        "eng": "Number of tasks"
+    },
+    "#tasksetSettingsDiv > div:nth-child(1) > div:nth-child(2) > h3": {
+        "pl": "Wszystkie zestawy:",
+        "eng": "All tasksets:"
+    },
+    "#tasksetSettingsOptions > div > div.text-left > label": {
+        "pl": "Nowy zestaw.",
+        "eng": "New taskset."
+    },
+    "#btnSendSaveTaskset": {
+        "pl": "Dodaj ->",
+        "eng": "Add ->"
+    },
+    "#tasksetsSettingTable button.btn-success": {
+        "pl": "Wybierz",
+        "eng": "Select"
+    },
+    "#newTasksetNameInputSet": {
+        "ATTRIBUTE": "placeholder",
+        "pl": "Nazwa zestawu",
+        "eng": "Taskset name"
+    },
+    "#mySidepanel > h1 > span": {
+        "pl": "Obecny zestaw: ",
+        "eng": "Current taskset: "
+    },
+    ".taskSettingsPanelSidepanelBtn": {
+        "pl": "Zarządzaj",
+        "eng": "Management"
+    },
+    "#importedTasksTable > table > thead > tr > th:nth-child(2)": {
+        "pl": "Nazwa zadania",
+        "eng": "Task name"
+    },
+    "#importedTasksTable > table > thead > tr > th:nth-child(3)": {
+        "pl": "Stworzono: ",
+        "eng": "Created: "
+    },
+    "#importedTasksTable > table > thead > tr > th:nth-child(4)": {
+        "pl": "Edycja: ",
+        "eng": "Edit: "
+    },
+    "#importedTasksTable > table > thead > tr > th:nth-child(5)": {
+        "pl": "Usuwanie: ",
+        "eng": "Delete: "
+    },
+    "#importedTasksTable button.btn-success": {
+        "pl": "Edytuj",
+        "eng": "Edit"
+    },
+    "#importedTasksTable button.btn-danger": {
+        "pl": "Usuń",
+        "eng": "Delete"
+    },
+    "#tasksetTasksInfo": {
+        "pl": "Szczegóły",
+        "eng": "Details"
+    },
+    
+    "#btnDemoTask": {
+        "pl": "Podgląd w grze",
+        "eng": "Game preview"
+    },
+    "#btnSaveTask": {
+        "pl": "Zapisz jako nowe zadanie",
+        "eng": "Save as new"
+    },
+    "#btnDemoTaskEnd": {
+        "pl": "Powrót do edycji",
+        "eng": "End demo"
+    },
+    "#btnSaveEditedTask": {
+        "pl": "Zapisz zmiany",
+        "eng": "Save changes"
+    },
+    "#deleteAllTasksModalLongTitle": {
+        "pl": "Czy na pewno chcesz usunąć wszystkie zadania?",
+        "eng": "Are you sure you want to delete all tasks?"
+    },
+    "#btnSendDeleteAllTasks":{
+        "pl": "Usuń",
+        "eng": "Delete"
+    },
+    "[data-dismiss='modal'].btn:not(.btn-primary)":{
+        "pl": "Anuluj",
+        "eng": "Cancel"
+    },
+
+    
     "OTHER_PAGE_ELEMENTS": {
+        "tasksets": {
+            "pl": "☰ Zestawy",
+            "eng": "☰ Tasksets"
+        },
+        "tasksets2": {
+            "pl": "Zestawy",
+            "eng": "Tasksets"
+        },
+        "choose": {
+            "pl": "Wybierz",
+            "eng": "Select"
+        },
+        "chooseFile": {
+            "pl": "Wybierz plik",
+            "eng": "Choose a file "
+        },
+        "taskCount": {
+            "pl": "Ilość zadań: ",
+            "eng": "Task number: "
+        }
+
+        
     }
 }

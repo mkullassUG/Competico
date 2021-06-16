@@ -8,7 +8,7 @@ ISTNIEJĄCY BUG:
 ListChoiceWordFill pozwala na stworzenie choiceDiv'a z nie wpisanymi słowami i odpowiedziami, pewnei też pozwala na stworzenie takeigo bez poprawnej odpowiedzi z wszystkimi złymi...  można też spamowac przecinkami i miec puste niepoprawne
 
 2021-03-21:
-ISTNIEJĄCY BUG:
+BUG (FIXED?): 
 -w ListChoiceWordFill możliwe że po zaznaczeniu odpowiedzi długiej, tekst przeciągnie się na tyle że przycisk będzie zasłaniał reszte odpowiedzi
 
 -/*TODO  2021-03-20: zasłanianie gry przez przuciski:

@@ -66,11 +66,53 @@ const ListSentenceForming_Creator = (data_ = {}) => {
             var sentenceTextareas = $("#" + self.taskName+ "Sentences").find(".taskTextTextarea");
             for (let i = 0; i < sentenceTextareas.length; i++) {
                 var sentenceTextarea = $(sentenceTextareas[i]);
-                var sentence = sentenceTextarea.val().split(" ").filter(s=> s != "");
-                if (sentence.length == 0) //Jakoś poinformować o tym?
+
+                var multiWordStart = "";
+                var multiWordEnd = null;
+                var sentenceArrOut = []
+
+                //jeśli jest zła ilość:
+                if (sentenceTextarea.val().split("]}").length !== sentenceTextarea.val().split("{[").length)
+                    console.warn("nie równa ilośc tagów {[ i ]}");
+                //throw Error("nie równa ilośc tagów {[ i ]}");
+
+                var sentenceTextareaValueWithReplacedTags = sentenceTextarea.val().replaceAll("{[]}"," ").replaceAll("]}"," ]} ").replaceAll("{["," {[ ");
+                var sentenceArr = sentenceTextareaValueWithReplacedTags.split(" ");
+                for (let i = 0; i < sentenceArr.length; i++) {
+                    var word = sentenceArr[i]; 
+
+                    if (word.includes("{[") && multiWordStart === "")
+                        multiWordStart = word.replaceAll("{["," ").replaceAll("]}"," ");
+                    else if (word.includes("]}") && multiWordStart !== "")
+                        multiWordEnd = word.replaceAll("]}"," ").replaceAll("{["," ");
+                    else if (multiWordStart !== "" && !word.includes("]}") && !word.includes("{["))
+                        multiWordStart += " " + word;
+                    else if (word.includes("{[") || word.includes("]}")) {
+                        word = word.replaceAll("{[","").replaceAll("]}","");
+                        console.warn("usunąłem jedno ]} lub {[");
+                        //throw Error("jedno w drugim beee");
+                    } 
+                    
+                    if (i === sentenceArr.length-1 && multiWordStart !== "" && multiWordEnd === null){
+                        word = multiWordStart;
+                        multiWordStart = "";
+                        console.warn("samemu zakończyłem ]}");
+                        //throw Error("Jak to tak nie ma końca");
+                    }
+                    
+                    if ( multiWordStart === "")
+                        sentenceArrOut.push(word);
+                    else if ( multiWordEnd !== null) {
+                        sentenceArrOut.push(" " + (multiWordStart + " " + multiWordEnd).trim() + " ");
+                        multiWordStart="";
+                        multiWordEnd=null;
+                    }
+                }
+                sentenceArrOut = sentenceArrOut.filter(s=> s.trim() != "");
+                if (sentenceArrOut.length == 0) //Jakoś poinformować o tym?
                     continue;
 
-                self.taskContent.rows.push({"words":sentence});
+                self.taskContent.rows.push({"words":sentenceArrOut});
             }
         }
 
@@ -89,6 +131,7 @@ const ListSentenceForming_Creator = (data_ = {}) => {
         podgląd stworzonego zadania jako gry*/
     }
 
+    //Deprecated, recommended sendTaskVariantToTasksets
     var sendTaskVariantSuper = self.sendTaskVariant;
     self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
@@ -106,7 +149,6 @@ const ListSentenceForming_Creator = (data_ = {}) => {
         loadTaskFromSuper(taskObject);
         self.prepareLoadedTask();
         self.checkAndClickOnAddButt();
-
     }
 
     /*TODO: */
@@ -123,9 +165,15 @@ const ListSentenceForming_Creator = (data_ = {}) => {
         sentenceDiv.empty();
         for (let i = 0; i < self.taskContent.rows.length; i++) {
             var row = self.taskContent.rows[i];
-            console.log(row);
+
+            //wstawianie z pliku -> row.words przelecieć i sprawdzić czy zają w sobie spacje " ", dla każdego takiego dodac na początki {[ i końcu]}
+            for ( let j = 0; j < row.words.length; j++) {
+                var word = row.words[j];
+                row.words[j] = (word.includes(" ")? "{["+word+"]}":word);
+            }
+
             var sentence = row.words.join(" ");
-            self.createSentence((i+1),sentence)
+            self.createSentence((i+1),sentence);
         }
 
         /*ustawiam difficulty*/
@@ -184,18 +232,22 @@ const ListSentenceForming_Creator = (data_ = {}) => {
 
     /*TODO: */
     self.createSentence = (i=1, sentence="") => {
-        //console.log(sentence);
 
-        
-        var htmlString = `<div class="form-group blue-border-focus" id="` + self.taskName+ `Sentence`+i+`">
-                <label for="` + self.taskName+ `DivTaskText`+i+`">`+i+`</label>
-                <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="` + self.taskName+ `DivTaskText`+i+`" rows="2" placeholder="Wstaw zdanie nr `+i+`">`+sentence+`</textarea>
-                <button class="d-inline-block btn btn-danger btn-sm" id="btn` + self.taskName+ `RemoveSentence`+i+`" data-toggle="tooltip" data-placement="top" title="Usuń zdanie.">-</button>
-            </div>`;
+        var listSentenceFormingSentence = $(`<div class="form-group blue-border-focus" id="` + self.taskName+ `Sentence`+i+`">`);
+        var DivTaskTextLabel = $(`<label for="` + self.taskName+ `DivTaskText`+i+`">`+i+`</label>`);
+        var taskTextTextarea = $(`<textarea class="w-75 d-inline-block form-control taskTextTextarea" id="` + self.taskName+ `DivTaskText`+i+`" rows="2" placeholder="Wstaw zdanie nr `+i+`" data-toggle="tooltip" data-placement="top" title="Aby wstawić kilka słów w jeden element: {[słowo słowo ...]} lub użyj skrótu CRTL + B">`);
+        var button = $(`<button class="d-inline-block btn btn-danger btn-sm" id="btn` + self.taskName+ `RemoveSentence`+i+`" data-toggle="tooltip" data-placement="top" title="Usuń zdanie.">-</button>`);
+
+        var textNodeSentence = window.document.createTextNode(sentence);
+        taskTextTextarea.append(textNodeSentence);
+
+        taskTextTextarea.keydown( self.keyCombos );
+        listSentenceFormingSentence.append(DivTaskTextLabel).append(taskTextTextarea).append(button);
 
         var sentenceDiv = $("#" + self.taskName+ "Sentences");
-        var element = $(htmlString);
-        sentenceDiv.append(element);
+
+
+        sentenceDiv.append(listSentenceFormingSentence);
         
         $("#btn" + self.taskName+ "RemoveSentence"+i).on('click', (e) => {
             $('.tooltip').tooltip('dispose');
@@ -204,7 +256,7 @@ const ListSentenceForming_Creator = (data_ = {}) => {
 
         tooltipsUpdate();
             
-        return element;
+        return listSentenceFormingSentence;
     }
 
     var tooltipsUpdate = () => {
@@ -215,7 +267,81 @@ const ListSentenceForming_Creator = (data_ = {}) => {
             });  
     }
 
-    /*TODO: */
+    self.keyCombos = (e) =>{
+        let evtobj = window.event ? event : e;
+        //key combo for ctrl+b
+        if (evtobj.keyCode == 66 && evtobj.ctrlKey) {
+            e.preventDefault();
+            var parentElem = $(e.target).closest(".form-group");
+
+            self.addNewMultiWord("{[", "]}", parentElem);
+        }
+    }
+    //todo poprawić
+    self.addNewMultiWord = (leftTag_, rightTag_, forElement) => {
+        var yourTextarea = forElement.find(".taskTextTextarea")[0];
+        //pomogło
+        //https://stackoverflow.com/questions/11076975/how-to-insert-text-into-the-textarea-at-the-current-cursor-position 
+        var insertAtCursor = (myField, leftTag, rightTag) => {
+
+            var selText = window.getSelection().toString();
+            selText = selText.replaceAll(leftTag,"").replaceAll(rightTag,"");
+
+            //IE support
+            if (document.selection) {
+                myField.focus();
+                sel = document.selection.createRange();
+                sel.text = (leftTag + selText + rightTag);
+            }
+            //MOZILLA and others
+            else if (myField.selectionStart || myField.selectionStart == '0') {
+                var startPos = myField.selectionStart;
+                var endPos = myField.selectionEnd;
+
+                var leftSide = myField.value.substring(0, startPos);
+                var rightSide = myField.value.substring(endPos, myField.value.length);
+
+                /*sprawdzam jeszcze czy nie znajduje się czasem już wewnątrz takiego {[]}*/
+                var partsL = leftSide.split(leftTag);
+                for ( let i = 1 ; i < partsL.length; i++) {
+                    var part = partsL[i];
+
+                    if ( !part.includes(rightTag)) {
+                        //BUG, nie pozwala umieszczać za tagami następnych
+                        console.log("1");
+
+                        forElement.find(".invalid" + self.taskName+ "FAddWord").show();
+                        setTimeout(function(){forElement.find(".invalid" + self.taskName+ "FAddWord").fadeOut()},5000);
+                        return;
+                    }
+                }
+                var partsR = rightSide.split(rightTag);
+                for ( let i = 0 ; i < partsR.length-1; i++) {
+                    var part = partsR[i];
+
+                    if ( !part.includes(leftTag)) {
+                        //BUG 2, pozwala umieszczać wewnatrz tagu jaśli jest tam jakiś tekst
+                        console.log("2");
+                        forElement.find(".invalid" + self.taskName+ "FAddWord").show();
+                        setTimeout(function(){forElement.find(".invalid" + self.taskName+ "FAddWord").fadeOut()},5000);
+                        return;
+                    }
+                }
+
+                myField.value = leftSide + (leftTag + selText + rightTag) + rightSide;
+
+                //umieszczam pozycje kursora pomiędzy {[ ... ][]]}
+                myField.setSelectionRange(startPos+2+selText.length,startPos+2+selText.length);
+            } else {
+                console.log("awd");
+                myField.value += (leftTag + selText  + rightTag);
+                myField.setSelectionRange(2+selText.length,2+selText.length);
+            }
+        }
+
+        insertAtCursor(yourTextarea, leftTag_, rightTag_);
+    }
+    
     self.removeSentence = (index) => {
 
         /*robione w podobne sposób jak w wordConnectCreator*/

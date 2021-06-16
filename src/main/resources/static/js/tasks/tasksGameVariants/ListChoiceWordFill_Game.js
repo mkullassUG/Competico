@@ -22,7 +22,7 @@ const ListChoiceWordFill_Game = (taskData) => {
             var wordChoicesRowArray = self.wordChoices[i];
             var startWithText = self.startWithText[i];
             
-            var taskContentDiv = $(`<div class="border-top border-gray taskContent text-left"> (`+ (i+1) +`). </div>`);
+            var taskContentDiv = $(`<div class="border-top border-gray taskContent text-left">` + ((rows>1)? `(` + (i+1) + `). ` : "") + `</div>`);
 
             if (startWithText) {
                 for (let j = 0; j < textFieldRowArray.length; j++) {
@@ -38,7 +38,7 @@ const ListChoiceWordFill_Game = (taskData) => {
 
                             var answerVariantDiv = $(`<div class="answer` + self.taskName + `F">`);
                             if ( k != 0 ) 
-                                answerVariantDiv.append("/");
+                                choiceDiv.append("/");
 
                             answerVariantDiv.append(choiceWord);
                             choiceDiv.append(answerVariantDiv);
@@ -59,7 +59,7 @@ const ListChoiceWordFill_Game = (taskData) => {
                             var answerVariantDiv = $(`<div class="answer` + self.taskName + `F">`);
 
                             if ( k != 0 ) 
-                                answerVariantDiv.append("/");
+                                choiceDiv.append("/");
 
                             answerVariantDiv.append(choiceWord);
                             choiceDiv.append(answerVariantDiv);

@@ -6,11 +6,25 @@ $(function () {
   })
 })
 
-const DashboardLogic = (accountInfo_, debug) => {
+const DashboardLogic = (data, debug = false, depMocks = {}) => {
 
-    
+    /*  singleton   */
+    if (DashboardLogic.singleton)
+        return DashboardLogic.singleton;
+    var self = data;
+    if (!DashboardLogic.singleton && !data)
+        DashboardLogic.getInstance(data, depMocks, debug);
+
+    /*  environment preparation  */
+    $ = typeof depMocks.$mock != 'undefined'? depMocks.$mock : $;
+    window =  typeof depMocks.windowMock != 'undefined'? depMocks.windowMock : window;
+
+    if ( depMocks.NavbarLogic && typeof NavbarLogic == "undefined")
+        NavbarLogic = depMocks.NavbarLogic;
+    if ( depMocks.PageLanguageChanger && typeof PageLanguageChanger == "undefined")
+        PageLanguageChanger = depMocks.PageLanguageChanger;
+
     /*       logic variables          */
-    var self = accountInfo_;
     self.nickname;
     self.username;
     self.email;
@@ -19,55 +33,66 @@ const DashboardLogic = (accountInfo_, debug) => {
     self.topPlayers = [];
     self.relativePlayers = [];
     self.myScore;
+    self.initDone = false;
     /*       logic functions          */
     self.dashboardInit = (accountInfo) => {
-        console.log("dashboardInit");
         
-        //NEW!!!!!!
+        var initActions = () => {
+            if (self.initDone === true) 
+                return;
+            else
+                self.initDone = true;
+            self.roles = accountInfo.roles?accountInfo.roles:[];
+
+            $("#currentUser").html(self.nickname + " <small>" + self.username + "</small>")
+
+            //navbar preparation
+            if ( typeof NavbarLogic != "undefined" )
+                NavbarLogic(accountInfo, debug);
+
+            self.ajaxGetTopLeaderboard(self.setupLeaderboard);
+
+            //new bug fix
+            var resizeWindow = () => {
+            
+                var sy = window.scrollY;
+                $("html").height("100%");
+
+                function isInt(n) {
+                    return n % 1 === 0;
+                }
+                
+                var h1 = $(window.document).height();
+                // if ( isInt (h1))
+                //     h1 -= 1;
+                $("html").height(h1);
+
+                window.scrollTo(0,sy);
+            } 
+
+            
+            if ( self.roles.includes("LECTURER")) {
+                $("#gameHistoryHyperlink").hide();
+                $("#currentUserRating").hide();
+            }
+            window.onresize = resizeWindow;
+            resizeWindow();
+        }
+
         if ( typeof PageLanguageChanger != "undefined")
-            PageLanguageChanger(self.InitWithPageLanguageChanger);
-
-        self.roles = accountInfo.roles?accountInfo.roles:[];
-
-        $("#currentUser").html(self.nickname + " <small>" + self.username + "</small>")
-
-        //navbar preparation
-        NavbarLogic.singleton = NavbarLogic(accountInfo, debug);
-
-
-        self.ajaxGetTopLeaderboard(self.setupLeaderboard);
-
-        //new bug fix
-        var resizeWindow = () => {
-        
-            var sy = window.scrollY;
-            $("html").height("100%");
-            $("html").height($(document).height());
-
-            window.scrollTo(0,sy);
-        } 
-        
-        window.onresize = resizeWindow;
-        resizeWindow();
-        // if ( self.roles.includes("SWAGGER_ADMIN"))
-        //   $("#swaggerHyperlink").show();
-        // if ( self.roles.includes("TASK_DATA_ADMIN"))
-        //     $("#taskDataHyperlink").show();
-        // if ( self.roles.includes("ACTUATOR_ADMIN"))
-        //     $("#actuatorHyperlink").show();
-
-        // if ( self.authenticated ) {
-        //     $("#registerHyperlink").hide();
-        //     $("#loginHyperlink").hide();
-        //     $("#profileHyperlink").show();
-        //     $("#dashboardHyperlink").show();
-        //     $("#logOutButton").show();
-        //     $("#gameHyperlink").show();
-        // }
+            PageLanguageChanger(false, debug, false, ()=>{initActions();self.InitWithPageLanguageChanger();});
+        else
+            initActions();
         
     }
 
-    self.InitWithPageLanguageChanger = (data, lang) => {
+    self.InitWithPageLanguageChanger = (data, lang_) => {
+
+        if ( data === true){
+            if ( debug )
+                console.log("PageLanguageChanger done");
+            return;
+        }
 
         if ($("#ranksTable").length)
             $("#ranksTable").text(PageLanguageChanger().getTextFor("ranksTable"));
@@ -89,21 +114,36 @@ const DashboardLogic = (accountInfo_, debug) => {
         self.topPlayers = data;
         
         var topLeaderboard = $("#topLeaderboard").html(`
-            <h5 class="border-bottom border-gray pb-2 mb-0" id="ranksTable">` +
+            <h5 class="pb-2 mb-1" id="ranksTable">` +
             ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("ranksTable"):"Tablica rankingów:") 
             + `</h5>
-            <h6 class="border-bottom border-gray pb-2 mb-0 d-flex justify-content-between align-items-center w-100" style="
-            display: inline-block;">
-                <span id="playersDiv">` +
-                ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("players"):"Gracze:") 
-                + `</span> 
-                <span id="scoreDiv">` +
-                ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("score"):"Wyniki:") 
-                + `</span>
-                <span id="profilesDiv">` +
-                ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("profiles"):"Profile:") 
-                + `</span>
-            </h6>`);
+            
+            <div class="row border-bottom border-gray">
+                <div class="col-1 text-center">
+                    <h6>#</h6>  
+                </div>
+                <div class="col-4">
+                    <h6>
+                        <span id="playersDiv">` +
+                            ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("players"):"Gracze:") + 
+                        `</span> 
+                    </h6>
+                </div>
+                <div class="col-sm-4 col-3">
+                    <h6>
+                        <span id="scoreDiv">` +
+                            ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("score"):"Wyniki:") + 
+                        `</span>
+                    </h6>
+                </div>
+                <div class="col-3">
+                    <h6>
+                        <span id="profilesDiv">` +
+                            ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("profile"):"Profile:") + 
+                        `</span>
+                    </h6>
+                </div>
+            </div>`);
 
         for (let i = 0; i < data.length; i++) {
             var player = data[i];
@@ -121,25 +161,55 @@ const DashboardLogic = (accountInfo_, debug) => {
             if (player.position == 3)
                 color = "#b08d57";
 
-            var playerHolder = $(`<div class="media text-muted pt-3 `+(isMe?'bg-light':'')+`">
-                <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="`+color+`"/>
-                    <text x="50%" y="50%" fill="white" dy=".3em">`+player.position+`</text>
-                </svg>
-                <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <strong class="d-block">` + player.nickname + 
-                        ((player.username===self.username&&player.nickname===self.nickname)?' (JA)  ':'') +`</strong>
-                        <strong>`+player.rating+`</strong>
-                        <a href="/profile/`+ player.username + `-` + player.nickname +`" class="playerProfile">` +
-                        ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("profiles"):"Profil:") 
-                        + `</a>
-                    </div>
-                    <span class="text-gray-dark">`+ player.username + `</span>
-                  <small class="d-block">ostatnio grano: x dni temu</small>
-                </div>
-            </div>`);
+            var rankCol = $(`<div class="col-1 align-self-center">`);
+            rankCol.append(`
+            <svg class="bd-placeholder-img mr-2 rounded tra" `+((color==="#007bff")?"":`style="box-shadow: 0px 0px 10px ` + color +`"`)+` width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32">
+                <title>Placeholder</title>
+                <rect width="100%" height="100%" fill="`+color+`"/>
+                <text x="50%" y="50%" fill="white" dy=".3em">`+player.position+`</text>
+            </svg>`);
+
+            var nameCol = $(`<div class="col-4 align-self-center">`);
+            nameCol.append(`
+                <strong class="d-block">` + player.nickname + 
+                ((player.username===self.username&&player.nickname===self.nickname)?' (JA)  ':'') +`</strong>
+                <span class="text-gray-dark">`+ player.username + `</span>
+                <small class="d-block">ostatnio grano: 0 dni temu</small>`);
+
+            var scoreCol = $(`<div class="col-sm-4 col-3 align-self-center">`);
+            scoreCol.append(`<strong>`+player.rating+`</strong>`)
+            var profileCol = $(`<div class="col-3 align-self-center">`);
+            profileCol.append(`
+            <a href="/profile/`+ player.username + `" class="playerProfile">` +
+                ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("profiles"):"Profil") + 
+            `</a>`);
+
+            var scoreAndProfileHolder = $(`<div class="row media-body pb-3 mb-0 small lh-125">`);
+
+            scoreAndProfileHolder.append(rankCol).append(nameCol).append(scoreCol).append(profileCol);
+            // var playerHolder = $(`<div class="media text-muted pt-3`+(isMe?' bg-light':'')+`">
+            //     <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32">
+            //         <title>Placeholder</title>
+            //         <rect width="100%" height="100%" fill="`+color+`"/>
+            //         <text x="50%" y="50%" fill="white" dy=".3em">`+player.position+`</text>
+            //     </svg>
+            //     <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+            //         <div class="d-flex justify-content-between align-items-center w-100">
+            //             <strong class="d-block">` + player.nickname + 
+            //             ((player.username===self.username&&player.nickname===self.nickname)?' (JA)  ':'') +`</strong>
+            //             <strong>`+player.rating+`</strong>
+            //             <a href="/profile/`+ player.username + `" class="playerProfile">` +
+            //             ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("profiles"):"Profil:") 
+            //             + `</a>
+            //         </div>
+            //         <span class="text-gray-dark">`+ player.username + `</span>
+            //       <small class="d-block">ostatnio grano: x dni temu</small>
+            //     </div>
+            // </div>`);
+
+            var playerHolder = $(`<div class="border-bottom border-gray media text-muted pt-3`+(isMe?' bg-light':'')+`">`);
+            playerHolder.append(scoreAndProfileHolder);
+
             topLeaderboard.append(playerHolder);
         }
         self.ajaxGetRelativeLeaderboard(self.setupRelativeLeaderboard);
@@ -158,12 +228,10 @@ const DashboardLogic = (accountInfo_, debug) => {
         if (data[0].position > self.topPlayers.length+1 )
             topLeaderboard.append("...");
 
-      console.log("self.topPlayers.length " + self.topPlayers.length);
 
         for (let i = 0; i < data.length; i++) {
 
             var player = data[i];
-            console.log("player.position: " + player.position);
 
             var isMe = (player.username===self.username && player.nickname===self.nickname);
             if (isMe)
@@ -172,7 +240,7 @@ const DashboardLogic = (accountInfo_, debug) => {
             if ( player.position <= self.topPlayers.length)
                 continue;
 
-            /*TODO: porówna czy w tabliy poprzedniej byli tacy:
+            /* porówna czy w tabliy poprzedniej byli tacy:
                 był: pomijam
                 nie był:
                     czy jest pierwszy w tablicy:
@@ -183,30 +251,60 @@ const DashboardLogic = (accountInfo_, debug) => {
                         czy jest ostatni w tablicy
                             tak: zakończ wielokropkiem
             */
-            var playerHolder = $(`<div class="media text-muted pt-3 `+(isMe?'bg-light':'')+`">
-                <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#007bff"/>
-                    <text x="50%" y="50%" dy=".3em" fill="white">`+player.position+`</text>
-                </svg>
-                <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                    <div class="d-flex justify-content-between align-items-center w-100">
-                        <strong class="d-block">` + player.nickname + 
-                        ((player.username===self.username&&player.nickname===self.nickname)?' (JA)  ':'') +`</strong>
-                        <strong>`+player.rating+`</strong>
-                        <a href="/profile/`+ player.username + `-` + player.nickname +`">Profil</a>
-                    </div>
-                    <span class="text-gray-dark">`+ player.username + `</span>
-                    <small class="d-block">ostatnio grano: x dni temu</small>
-                </div>
-            </div>`);
+            var rankCol = $(`<div class="col-1 align-self-center">`);
+            rankCol.append(`
+            <svg class="bd-placeholder-img mr-2 rounded tra"  width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32">
+                <title>Placeholder</title>
+                <rect width="100%" height="100%" fill="#007bff"/>
+                <text x="50%" y="50%" fill="white" dy=".3em">`+player.position+`</text>
+            </svg>`);
+
+            var nameCol = $(`<div class="col-4 align-self-center">`);
+            nameCol.append(`
+                <strong class="d-block">` + player.nickname + 
+                ((player.username===self.username&&player.nickname===self.nickname)?' (Me)  ':'') +`</strong>
+                <span class="text-gray-dark">`+ player.username + `</span>
+                <small class="d-block">ostatnio grano: 0 dni temu</small>`);
+
+            var scoreCol = $(`<div class="col-sm-4 col-3 align-self-center">`);
+            scoreCol.append(`<strong>`+player.rating+`</strong>`)
+            var profileCol = $(`<div class="col-3 align-self-center">`);
+            profileCol.append(`
+            <a href="/profile/`+ player.username + `" class="playerProfile">` +
+                ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("profiles"):"Profil") + 
+            `</a>`);
+
+            var scoreAndProfileHolder = $(`<div class="row media-body pb-3 mb-0 small lh-125">`);
+
+            scoreAndProfileHolder.append(rankCol).append(nameCol).append(scoreCol).append(profileCol);
+
+            // var playerHolder = $(`<div class="media text-muted pt-3 `+(isMe?'bg-light':'')+`">
+            //     <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32">
+            //         <title>Placeholder</title>
+            //         <rect width="100%" height="100%" fill="#007bff"/>
+            //         <text x="50%" y="50%" dy=".3em" fill="white">`+player.position+`</text>
+            //     </svg>
+            //     <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+            //         <div class="d-flex justify-content-between align-items-center w-100">
+            //             <strong class="d-block">` + player.nickname + 
+            //             ((player.username===self.username&&player.nickname===self.nickname)?' (JA)  ':'') +`</strong>
+            //             <strong>`+player.rating+`</strong>
+            //             <a href="/profile/`+ player.username + `-` + player.nickname +`">Profil</a>
+            //         </div>
+            //         <span class="text-gray-dark">`+ player.username + `</span>
+            //         <small class="d-block">ostatnio grano: x dni temu</small>
+            //     </div>
+            // </div>`);
+            
+            var playerHolder = $(`<div class="border-bottom border-gray media text-muted pt-3`+(isMe?' bg-light':'')+`">`);
+            playerHolder.append(scoreAndProfileHolder);
+
+
             topLeaderboard.append(playerHolder);
         }
         topLeaderboard.append("...");
 
 
-        console.log(self.topPlayers);
-        console.log(self.relativePlayers);
         if (self.myScore)
             self.setupMyScore();
     }
@@ -221,7 +319,7 @@ const DashboardLogic = (accountInfo_, debug) => {
     /*   ajax http requests       */
 
     self.ajaxGetTopLeaderboard = (callback) => {
-        console.log("ajaxGetTopLeaderboard");
+        
         $.ajax({
             type     : "GET",
             cache    : false,
@@ -244,7 +342,7 @@ const DashboardLogic = (accountInfo_, debug) => {
     }
 
     self.ajaxGetRelativeLeaderboard = (callback) => {
-        console.log("ajaxGetRelativeLeaderboard");
+        
         $.ajax({
             type     : "GET",
             cache    : false,
@@ -268,43 +366,52 @@ const DashboardLogic = (accountInfo_, debug) => {
 
 
     /*  initalization  */
-    self.dashboardInit(accountInfo_);
+    self.dashboardInit(data);
     
     return self;
 }
 
-DashboardLogic.getInstance = (debug = false) => {
+DashboardLogic.getInstance = (dataLazy, debug = false, depMocks = {}) => {
 
     if (DashboardLogic.singleton)
         return DashboardLogic.singleton;
 
+    /*  environment preparation  */
+    $ = typeof depMocks.$mock != 'undefined'? depMocks.$mock : $;
+    window =  typeof depMocks.windowMock != 'undefined'? depMocks.windowMock : window;
+
     var ajaxReceiveAccountInfo = ( ) => {
         $.ajax({
-        type     : "GET",
-        cache    : false,
-        url      : "/api/v1/account/info",
-        // url      : "/api/v1/playerinfo",
-        contentType: "application/json",
-        success: function(accountInfo, textStatus, jqXHR) {
-            if (debug){
-            console.log("ajaxReceiveAccountInfo success");
-            console.log(accountInfo);
-            console.log(textStatus);
-            console.log(jqXHR);
+            type     : "GET",
+            cache    : false,
+            url      : "/api/v1/account/info",
+            // url      : "/api/v1/playerinfo",
+            contentType: "application/json",
+            success: function(accountInfo, textStatus, jqXHR) {
+                if (debug){
+                    console.log("ajaxReceiveAccountInfo success");
+                    console.log(accountInfo);
+                    console.log(textStatus);
+                    console.log(jqXHR);
+                }
+                if (typeof accountInfo == 'string') //nie zalogowany
+                    DashboardLogic.singleton = DashboardLogic({}, debug, depMocks);
+                else //zalogowany
+                    DashboardLogic.singleton = DashboardLogic(accountInfo, debug, depMocks);
+                
+            },
+            error: function(jqXHR, status, err) {
+                if (debug){
+                    console.warn("ajaxReceiveAccountInfo error");
+                }
             }
-            if (typeof accountInfo == 'string') //nie zalogowany
-            DashboardLogic.singleton = DashboardLogic({}, debug);
-            else //zalogowany
-            DashboardLogic.singleton = DashboardLogic(accountInfo, debug);
-            console.log("DashboardLogic");
-        },
-        error: function(jqXHR, status, err) {
-            if (debug){
-            console.warn("ajaxReceiveAccountInfo error");
-            }
-        }
         });
     }
-  
-    ajaxReceiveAccountInfo();
+    
+    if (dataLazy)
+        return DashboardLogic(dataLazy, debug, depMocks);
+    else
+        ajaxReceiveAccountInfo()
+
+  return DashboardLogic.singleton;
 }

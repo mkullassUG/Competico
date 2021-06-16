@@ -53,15 +53,53 @@ const TaskCreatorVariant = (data_, debug = false, $jq, myWindow) =>{
             }
         );
     }
+    self.sendTaskVariantToTasksets = (ajaxCallback, onSuccess, tasksets, isJson) => {
+
+        //obiekt który dziedziczy musi implementowac tą metode
+        var preparedTask = self.prepareTaskJsonFile();
+        
+        ajaxCallback(
+            preparedTask,
+            tasksets,
+            (data) => {
+                onSuccess(data); // self.setupImportedTasksTable();
+            },
+            isJson
+        );
+    }
     //TODO edycja starego 
     self.sendEditedTaskVariant = (ajaxCallback, onSuccess, taskID, preparedTask) => {
         ajaxCallback(
             preparedTask,
             taskID,
             (data) => {
-                onSuccess(); // self.setupImportedTasksTable();
+                onSuccess(data); // self.setupImportedTasksTable();
             }
         );
+    }
+
+    self.sendEditedTaskVariantToTaskset = (ajaxCallback, onSuccess, taskIDs) => {
+
+        //obiekt który dziedziczy musi implementowac tą metode
+        var preparedTask = self.prepareTaskJsonFile();
+        
+        var promiseArray = [];
+        for (let i = 0; i < taskIDs.length; i++){
+            
+            var taskID = taskIDs[i];
+            promiseArray.push(
+                ajaxCallback(
+                    preparedTask,
+                    taskID,
+                    onSuccess
+                )
+            );
+        }
+        Promise.all(promiseArray)
+        .then((results) => {
+            //console.warn(results);
+            //onSuccess(results); 
+        });
     }
 
     self.setupDemoFromCurrent = () => {

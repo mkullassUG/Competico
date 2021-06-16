@@ -256,6 +256,7 @@ svg.fs-connector-hover path {
   float: right;
   width: 80%;
   min-height: 10%;
+  word-break: break-word;
 }
 
 /*css template'a od chronological orderu*/
@@ -385,6 +386,7 @@ svg.fs-connector-hover path {
 }
 .DivRandomizedWords  {
   text-align: center;
+  margin-top: 20px;
 }
 /*z jakiegoś powodu musze inaczej ustawiać... czy w edytorze inaczej demo jest budowane?
 w game edytorze to jest zależne od
@@ -549,13 +551,16 @@ w game edytorze to jest zależne od
   margin: 5px;
   cursor: pointer;
 }
-.optionSelectAnswer:hover {
+.optionSelectAnswer:hover,
+.answerListWordFill:not(.bg-primary):hover,
+.answerListChoiceWordFillF:hover,
+.leftLineC ._jsPlumb_endpoint_anchor_ > svg:hover,
+._jsPlumb_endpoint_connected > svg:hover,
+.ListSentenceFormingword:hover
+{
   animation: optionSelectAnim 1s ease-in-out forwards;
 }
 
-.answerListWordFill:not(.bg-primary):hover { /*listwordFill*/
-  animation: optionSelectAnim 1s ease-in-out forwards;
-}
 
 .selectedOption {
   background-color: rgb(21, 115, 255);

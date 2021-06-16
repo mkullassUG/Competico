@@ -1,337 +1,835 @@
 [ {
-  "taskName" : "ChronologicalOrder",
   "taskContent" : {
-    "id" : "f10298c5-7e1f-4961-ab07-1fe9410bb433",
-    "instruction" : "Put the phrases in order:",
-    "tags" : [ ],
-    "sentences" : [ "Try to understand the problem and define the purpose of the program.", "Once you have analysed the problem, define the successive logical steps of the program.", "Write the instructions in a high-level language of your choice.", "Once the code is written, test it to detect bugs or errors.", "Debug and fix errors in your code.", "Finally, review the program’s documentation." ],
-    "difficulty" : 100.0
-  }
+    "id" : "6025c0a7-68ce-41d4-b63d-ef7a7423dfd5",
+    "instruction" : "Re-order the words in these expressions for giving opinions:",
+    "tags" : [ "spoken English", "expressing opinions" ],
+    "rows" : [ {
+      "id" : "a03f1729-1017-41e8-b43a-e21d6bffe131",
+      "words" : [ "That's", "a", "fair", "point" ]
+    }, {
+      "id" : "761ddcf7-a5be-4c8f-a251-22fbf9f9838d",
+      "words" : [ "They", "don't", " appear to ", "take", "into", "account..." ]
+    }, {
+      "id" : "21164819-3e3f-4c16-925a-a9d9d00efb50",
+      "words" : [ "I", "think", "this", "is", "right" ]
+    }, {
+      "id" : "3b8ae1f7-fcea-490b-ab8b-c9f815d39a42",
+      "words" : [ "I'm", "not", "sure", "about", "this" ]
+    } ],
+    "difficulty" : 150.0
+  },
+  "taskName" : "ListSentenceForming"
 }, {
-  "taskName" : "ListChoiceWordFill",
   "taskContent" : {
-    "id" : "a40c7426-5662-42ec-a48d-7362d5809208",
+    "id" : "0c2def45-1ea0-4535-a2fc-30650a5c8432",
+    "instruction" : "Re-order the words in these expressions for giving opinions:",
+    "tags" : [ "spoken English", "expressing opinions" ],
+    "rows" : [ {
+      "id" : "8fbfe434-bb63-4f11-add0-b6dbd9b92801",
+      "words" : [ "It", "might", "be", "true", " but in ", "fact" ]
+    }, {
+      "id" : "e0b6d9a6-fbc9-4434-ac6a-8938501b960d",
+      "words" : [ "It's", "sometimes", "claimed", "that" ]
+    }, {
+      "id" : "4462cfb6-532b-4c7b-9abd-1c06a6c3282a",
+      "words" : [ "It's", "certainly", "the", " case that " ]
+    } ],
+    "difficulty" : 100.0
+  },
+  "taskName" : "ListSentenceForming"
+}, {
+  "taskContent" : {
+    "id" : "0ee20e8e-386d-4b1a-ae67-a91abd03ea1d",
+    "instruction" : "Put the words in order to make meaningful sentences.",
+    "tags" : [ ],
+    "rows" : [ {
+      "id" : "193ec220-fe96-4ed5-b931-ae260e987d51",
+      "words" : [ " In 1983 ", "Apple", "introduced", "the", " first commercial ", "personal", "computer" ]
+    }, {
+      "id" : "478a7ceb-0042-401d-b053-df07d4ed39d7",
+      "words" : [ "It", " was his third ", "week", "in", "the", " office and he ", "was", "still", " learning touch-typing " ]
+    }, {
+      "id" : "7bb225a1-eb23-41be-a2ef-79e3359fe294",
+      "words" : [ "It", "was", "becoming", " more and more ", "common", " to outsource ", " the helpline service ", "to", "India" ]
+    } ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ListSentenceForming"
+}, {
+  "taskContent" : {
+    "id" : "c507f9e8-81ec-4bef-af83-ddc200a3c264",
+    "instruction" : "Put the phrases in order:",
+    "tags" : [ "Grammar", "passive voice", "circular economy" ],
+    "rows" : [ {
+      "id" : "870f0b1c-3e9b-4789-a1bc-27d771a7523f",
+      "words" : [ "The", "product", " was targeted ", "at", "millenials." ]
+    }, {
+      "id" : "5a4e51e7-d210-46ed-89b1-a2e5cddb8f52",
+      "words" : [ "Some", " people like ", "having", "work", " done for ", "them." ]
+    }, {
+      "id" : "44ee4618-f522-4c15-896e-66d8180ab373",
+      "words" : [ "Our", " firm is ", "regarded", "as", " one of the ", "top", " manufactures in ", "the", "field." ]
+    } ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ListSentenceForming"
+}, {
+  "taskContent" : {
+    "id" : "bde4938e-c292-4a76-9169-f0fd7006e1bc",
+    "instruction" : "Put the words in order to make meaningful sentences.",
+    "tags" : [ ],
+    "rows" : [ {
+      "id" : "fe50ed6a-62f8-4fb3-9386-d1d586e8f980",
+      "words" : [ "When", "I", " got to the ", "office,", " I realized I ", " had left ", "my", " documents at ", "home.\n\n\n" ]
+    }, {
+      "id" : "8c2d0884-2aa3-4a22-a8c9-54e1d676d1de",
+      "words" : [ "As", " an employee of this ", "company,", "I", "designed", " data marts. " ]
+    }, {
+      "id" : "12bfc249-7444-41ec-947b-873c740afb09",
+      "words" : [ "Jim", "had", " been working ", " there since 2012 ", "until", " last Friday when ", "the", "company", " went bankrupt. " ]
+    } ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ListSentenceForming"
+}, {
+  "taskContent" : {
+    "id" : "d914a300-fcdd-4932-9f6c-6a6be16a8188",
+    "instruction" : "Put the phrases in order:",
+    "tags" : [ "Grammar", "passive voice", "circular economy" ],
+    "rows" : [ {
+      "id" : "c328862c-4b75-401e-9963-18b7b988433a",
+      "words" : [ "The", "process", "needs", " to be ", "streamlined.\n\n\n" ]
+    }, {
+      "id" : "5fbbc076-c3a5-4c28-adf2-9838b9f689a5",
+      "words" : [ "The", " city is ", " having the ", "streetlights", "repaired." ]
+    }, {
+      "id" : "960a0e03-ee6d-4564-ad0a-b00ce85584af",
+      "words" : [ "Producers", " like being ", "told", "that", "customers", " like their products. " ]
+    } ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ListSentenceForming"
+}, {
+  "taskContent" : {
+    "id" : "625d7742-2987-4bac-aa0c-f4876fd93809",
+    "instruction" : "Re-order the words in these expressions for giving opinions:",
+    "tags" : [ "spoken English", "expressing opinions" ],
+    "rows" : [ {
+      "id" : "410a50d7-b086-488c-89a7-92a68213c61d",
+      "words" : [ "I", "tend", "to", "agree", "with", "this" ]
+    }, {
+      "id" : "97b17dde-3640-4bcc-a480-da39e2f0a438",
+      "words" : [ "I", "have", "my", "doubts", "about", "this" ]
+    }, {
+      "id" : "b4423228-be6c-4fd9-ae34-cd142b4f0d6d",
+      "words" : [ "It", "seems", "to", "me", "that" ]
+    } ],
+    "difficulty" : 100.0
+  },
+  "taskName" : "ListSentenceForming"
+}, {
+  "taskContent" : {
+    "id" : "78883ff5-dfdb-4c68-8e80-5fb7112a7339",
+    "instruction" : "Re-order the words in these expressions announcing goals in research paper introductions:",
+    "tags" : [ "Academic English", "research papers", "announcing goals" ],
+    "rows" : [ {
+      "id" : "fc62d79a-dfd8-453e-90d5-534b6d33737b",
+      "words" : [ "The", "purpose", " of the present ", "study", "was", " to examine... " ]
+    }, {
+      "id" : "9855acbf-81f3-405c-a5b0-d6a74933baad",
+      "words" : [ "The", " objective of ", " the present paper ", "is", " to provide a ", "comprehensive", "review" ]
+    }, {
+      "id" : "2302fe0a-0631-454b-80e6-fcacb6a97597",
+      "words" : [ "This", " study is ", "designed", "to", " assess how ", "well" ]
+    }, {
+      "id" : "e84806cb-8e70-4afa-80a6-f3d4bd84258a",
+      "words" : [ "The", "aim", " of this investigation ", "is", "to", "improve" ]
+    } ],
+    "difficulty" : 150.0
+  },
+  "taskName" : "ListSentenceForming"
+}, {
+  "taskContent" : {
+    "id" : "8dad068e-b6c3-472d-8c66-458786216faa",
+    "instruction" : "Put the phrases in order:",
+    "tags" : [ "passive voice", "IT" ],
+    "rows" : [ {
+      "id" : "70258db2-0a58-4e19-b417-07d89b16bcc2",
+      "words" : [ "The", " project manager ", "made", "me", " execute the ", "code", "immediately.\n\n\n" ]
+    }, {
+      "id" : "4162c658-356f-4a45-aaa9-fb7f8044bf9b",
+      "words" : [ "Everyone", "has", " been surprised ", "by", "the", " output of ", "the", "code." ]
+    }, {
+      "id" : "26d10e5b-0685-40a6-9af4-13ac8f4544df",
+      "words" : [ "A", " new database of ", "our", " clients will have ", "been", " created by ", "the", "end", " of next week. " ]
+    } ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ListSentenceForming"
+}, {
+  "taskContent" : {
+    "id" : "46af4029-1e34-4a48-ab59-e1135d8fe437",
+    "instruction" : "Put the phrases in order:",
+    "tags" : [ "passive voice", "IT" ],
+    "rows" : [ {
+      "id" : "a3eeb0e3-cd68-4506-806b-5099a6fb0d0d",
+      "words" : [ "The", "expansion", " card has ", "just", "been", "fitted." ]
+    }, {
+      "id" : "5d409f4c-a15e-498f-83bf-4275174c15ab",
+      "words" : [ "Proper", " levels of access ", " for database ", "users", "are", "specified", "by", " the database administrator. " ]
+    }, {
+      "id" : "9bf0b027-239d-4767-bc8c-0e9d87bdd98b",
+      "words" : [ "This", " project must ", "be", "redesigned", " as it ", " contains too ", "many", "errors." ]
+    } ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ListSentenceForming"
+}, {
+  "taskContent" : {
+    "id" : "83c48815-dd0c-433a-a0a0-607fcba72198",
+    "instruction" : "Re-order the words in these expressions for giving opinions:",
+    "tags" : [ "spoken English", "expressing opinions" ],
+    "rows" : [ {
+      "id" : "603ffc73-59f0-4c90-b627-ff3b5c2921e6",
+      "words" : [ "I'd", "like", "to", "question", "this\n" ]
+    }, {
+      "id" : "048f2b30-bf9e-4237-82d6-c18f3a6d1a89",
+      "words" : [ "They", "don't", " appear to ", "take", "into", "account..." ]
+    }, {
+      "id" : "224d6cb3-4674-43b5-8b7f-b73b511bbed1",
+      "words" : [ "This", "seems", "to", "be", "entirely", " valid to ", "me" ]
+    }, {
+      "id" : "589a97a9-9747-4b53-882e-3bc7590de1bd",
+      "words" : [ "I'm", "not", "sure", "about", "this" ]
+    } ],
+    "difficulty" : 150.0
+  },
+  "taskName" : "ListSentenceForming"
+}, {
+  "taskContent" : {
+    "id" : "c8156889-8a4a-4379-b38d-f1d4ebb5214e",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "irregular verbs" ],
+    "rows" : [ {
+      "id" : "1eac232f-8970-443e-966e-c48f86598617",
+      "text" : [ "How many pictures have you ", " this week?" ],
+      "wordChoices" : [ {
+        "id" : "6befb725-166a-482b-926d-ef5999f936a7",
+        "correctAnswer" : "drawn",
+        "incorrectAnswers" : [ "drew", " draw", "drawed" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "b7957595-aa85-483d-8253-62cd4335e7be",
+      "text" : [ "I have never ", "" ],
+      "wordChoices" : [ {
+        "id" : "27d596f4-8bf1-4cab-a315-8ec3ce2e5cf8",
+        "correctAnswer" : "driven",
+        "incorrectAnswers" : [ "drove", " drived", " droven" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "133595e2-25d5-40a8-add3-86e4200e7ae7",
+      "text" : [ "The workers have already ", " a big hole." ],
+      "wordChoices" : [ {
+        "id" : "2ab09462-3f89-4815-bbd2-c3da7f0a12c8",
+        "correctAnswer" : "dug",
+        "incorrectAnswers" : [ "digged", " dought", " dag" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "287d5e02-bda3-4469-840b-dd4eda7cb29a",
+      "text" : [ "I have already ", " the cat, you don't have to do it." ],
+      "wordChoices" : [ {
+        "id" : "43ac047f-f817-4cf1-afde-092fb6c4665d",
+        "correctAnswer" : "fed",
+        "incorrectAnswers" : [ "feeded", " fet", " feeding" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "831fe680-5cfd-4f58-bbad-c54018bec276",
+      "text" : [ "I haven't ", " a card yet." ],
+      "wordChoices" : [ {
+        "id" : "eca4ec7b-99ee-4eb8-a0f9-ca44a73cd83f",
+        "correctAnswer" : "chosen",
+        "incorrectAnswers" : [ "choosed", " chose", " chosed" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "f7c94a63-2f24-4278-931a-470446056d2e",
+      "text" : [ "I trust him, he has never ", " anything." ],
+      "wordChoices" : [ {
+        "id" : "2ce41585-d1ec-4519-ba5d-ef5e60bd7072",
+        "correctAnswer" : "stolen",
+        "incorrectAnswers" : [ "steals", " stealed", " stole" ]
+      } ],
+      "startWithText" : true
+    } ],
+    "difficulty" : 125.0
+  },
+  "taskName" : "ListChoiceWordFill"
+}, {
+  "taskContent" : {
+    "id" : "015a1b25-89d4-492c-bd63-c570f3f7a530",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "vocabulary" ],
+    "rows" : [ {
+      "id" : "e6a3c9b3-206f-469e-b12f-1cf89ee9910b",
+      "text" : [ "He had a certain creative ", " and loved talking about his projects." ],
+      "wordChoices" : [ {
+        "id" : "e43b7199-41b2-43c8-bb86-10fdba763a85",
+        "correctAnswer" : "flair",
+        "incorrectAnswers" : [ "dazzling", " intricate" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "9595a84c-0d25-4eb6-b6f7-a4b0fae92df1",
+      "text" : [ "Many times I have experienced ringing cell phones in the middle of my ", " presentations." ],
+      "wordChoices" : [ {
+        "id" : "3cc4a3b1-b123-4094-97fe-09b22f08429c",
+        "correctAnswer" : "keynote",
+        "incorrectAnswers" : [ "intricate", "dazzling" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "066c146c-3e42-4ea4-9297-7a03bb4693ab",
+      "text" : [ "Teenagers have always used text messaging not so much to ", " information as to hang out electronically with friends." ],
+      "wordChoices" : [ {
+        "id" : "8da1ef4b-ab46-4c1b-961a-327462fb3f1f",
+        "correctAnswer" : "convey",
+        "incorrectAnswers" : [ "dazzle", " knack" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "f7f15560-e394-4671-8a85-47216c1d7965",
+      "text" : [ "The watch mechanism is extremely ", " and very difficult to repair." ],
+      "wordChoices" : [ {
+        "id" : "47bdb2d0-0215-4951-ac8f-af835667fdd6",
+        "correctAnswer" : "dazzling",
+        "incorrectAnswers" : [ "intricate", "stiff" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "623f1860-bfdf-42b4-bcfb-30b377bd16fc",
+      "text" : [ "The company recently ", " a test version of its new search engine." ],
+      "wordChoices" : [ {
+        "id" : "805788f4-cf29-47ff-8acd-35c3adf98586",
+        "correctAnswer" : "unveiled",
+        "incorrectAnswers" : [ "dazzled", "flaired" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "79e536c0-cfe2-4b10-916a-0c95e8a274a6",
+      "text" : [ "She gave a ", " performance last night." ],
+      "wordChoices" : [ {
+        "id" : "8627d174-e023-41d8-a7c4-4814257f5d5a",
+        "correctAnswer" : "dazzling",
+        "incorrectAnswers" : [ "unveiling", " stiffing" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "1bc020db-c89b-461b-b733-a57f67e3a535",
+      "text" : [ "This hair spray has made her hair ", "." ],
+      "wordChoices" : [ {
+        "id" : "d525b3fd-6748-4cff-bc94-e86205f1ede5",
+        "correctAnswer" : "stiff",
+        "incorrectAnswers" : [ "intricate", "flair" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "50b7d09f-eb58-4a5f-8ea9-9b1219900e9f",
+      "text" : [ "He had a ", " for communicating." ],
+      "wordChoices" : [ {
+        "id" : "0b6dfa5d-1bb1-49e1-a40a-6e58558b25eb",
+        "correctAnswer" : "knack",
+        "incorrectAnswers" : [ "keynote", " dazzle" ]
+      } ],
+      "startWithText" : true
+    } ],
+    "difficulty" : 120.0
+  },
+  "taskName" : "ListChoiceWordFill"
+}, {
+  "taskContent" : {
+    "id" : "759ec446-72d0-4c05-9891-6e7f50806cad",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "grammar", "past tenses", "IT" ],
+    "rows" : [ {
+      "id" : "28edbbb9-32c2-4706-af39-ff303361ea07",
+      "text" : [ "Last week Microsoft ", " that the management was extremly pleased with the experiment conducted in its subsidiary in Japan earlier this year." ],
+      "wordChoices" : [ {
+        "id" : "b1b0cafc-71c7-42be-a902-2a621e9cb26a",
+        "correctAnswer" : "announced",
+        "incorrectAnswers" : [ "had announced", " was announcing" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "bf4b78bc-b385-4b88-83c1-3331aad7272e",
+      "text" : [ "Being part of Microsoft's \"Work-Life Choice Challenge,\" this innovative project ", " at boosting the creativity and productivity of its employees by reducing the workweek by one day." ],
+      "wordChoices" : [ {
+        "id" : "f7504c62-5d0a-4e8b-80e3-0e39b2e972ba",
+        "correctAnswer" : "aimed",
+        "incorrectAnswers" : [ "was aiming", " had aimed" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "d0a668ec-39ef-4abe-a707-a6eba9ad2871",
+      "text" : [ "Microsoft Japan not only ", " its offices every Friday in August but also ", " to reduce the time spent in meetings and encouraged remote communication." ],
+      "wordChoices" : [ {
+        "id" : "68488f58-aa97-40f3-87c3-eef61991f18b",
+        "correctAnswer" : "closed",
+        "incorrectAnswers" : [ "had closed", " was closing" ]
+      }, {
+        "id" : "6175561e-5905-4e05-8f0f-c5eb209e18d2",
+        "correctAnswer" : "tried",
+        "incorrectAnswers" : [ "had tried", " was trying" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "5034f5e2-b9ea-4ddd-8645-b18482d3585c",
+      "text" : [ "Although during the experiment the employees ", " less, they ", " exactly the same salaries." ],
+      "wordChoices" : [ {
+        "id" : "895b4349-5a09-471d-91fc-f6e8de8d2027",
+        "correctAnswer" : "were working",
+        "incorrectAnswers" : [ "worked", " had worked" ]
+      }, {
+        "id" : "0b1aac71-2f71-448d-945a-2cb40f432193",
+        "correctAnswer" : "were earning",
+        "incorrectAnswers" : [ "had earned", " earned" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "1a0aa589-6a53-432d-b10a-2ba460b09f77",
+      "text" : [ "Surprisingly, labour productivity ", " by 39.9% compared with August 2018." ],
+      "wordChoices" : [ {
+        "id" : "24d2d635-48b1-4c61-a5ed-86db5e223b5b",
+        "correctAnswer" : "increased",
+        "incorrectAnswers" : [ "was increasing", " had increased" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "fa0f1190-b1f2-4766-bb53-5f6fec6fbdf7",
+      "text" : [ "Unexpectedly, Microsoft ", " the first company to notice the benefits of a four-day workweek." ],
+      "wordChoices" : [ {
+        "id" : "028256bd-7a26-4c2d-8635-4d7ce9d5cc71",
+        "correctAnswer" : "wasn't",
+        "incorrectAnswers" : [ "weren't", " hadn't been" ]
+      } ],
+      "startWithText" : true
+    }, {
+      "id" : "2345c825-db2a-487c-bc0e-df09f6f129e0",
+      "text" : [ "Peretual Guardian, a New Zeland estate-planning firm, ", " this work scheme in the long-term." ],
+      "wordChoices" : [ {
+        "id" : "0ebf6c04-ee03-4553-9492-368be2a302b6",
+        "correctAnswer" : "had already introduced",
+        "incorrectAnswers" : [ "was already introducing", " introduced already" ]
+      } ],
+      "startWithText" : true
+    } ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ListChoiceWordFill"
+}, {
+  "taskContent" : {
+    "id" : "9a341680-7840-4124-a923-72ab0adb9112",
     "instruction" : "Choose the best word to complete the sentences:",
     "tags" : [ ],
     "rows" : [ {
-      "id" : "5cd63097-ffbe-4817-827b-749f113c5d65",
+      "id" : "421e4c55-eae3-4409-b5d2-c25d3de92a5a",
       "text" : [ "Would you mind waiting ", " Ms Bright gets back?" ],
       "wordChoices" : [ {
-        "id" : "7c88ee56-ef0a-4aa7-9c12-358c07cec370",
+        "id" : "dd99c47d-d45b-400d-addf-c18aade37b01",
         "correctAnswer" : "until",
         "incorrectAnswers" : [ "by" ]
       } ],
       "startWithText" : true
     }, {
-      "id" : "455b4c97-cba9-4f3c-91ef-f97bebaa2ba7",
+      "id" : "c2f671e3-19b3-4ab9-bdcb-8c38aef9ba73",
       "text" : [ "By the way, could you remind everyone that our next meeting will be ", " Tuesday at 11:10?" ],
       "wordChoices" : [ {
-        "id" : "2d9e419d-5d4a-4049-8019-891b027b0fe0",
+        "id" : "6e5c2810-7535-4394-a03e-0c44aabf332e",
         "correctAnswer" : "on",
         "incorrectAnswers" : [ "in" ]
       } ],
       "startWithText" : true
     }, {
-      "id" : "5ee886c1-67ef-4943-ae42-408edd0c167e",
+      "id" : "2450ce30-d163-4b25-aa34-25b9099d1e8f",
       "text" : [ "I need this report ", " 6:30 tomorrow at the latest." ],
       "wordChoices" : [ {
-        "id" : "2cf31bc9-f3a2-4462-a063-11d33764df14",
+        "id" : "3435e429-2797-473c-b868-3fd8a40487ad",
         "correctAnswer" : "by",
         "incorrectAnswers" : [ "in" ]
       } ],
       "startWithText" : true
     }, {
-      "id" : "18560f9c-84d0-4311-bfec-6537dec42626",
+      "id" : "02f4a73e-2ee7-4087-8c44-19c9e4421748",
       "text" : [ "What did you do ", " the weekend?" ],
       "wordChoices" : [ {
-        "id" : "c8d00301-1704-4b2e-9be2-8f89d215902d",
+        "id" : "9d10290e-8303-4007-947a-b8706c44937f",
         "correctAnswer" : "at",
         "incorrectAnswers" : [ "on" ]
       } ],
       "startWithText" : true
     }, {
-      "id" : "b717980d-59ac-498e-b72b-91d8c416f188",
+      "id" : "545e0fa5-e09c-44cd-87e4-0fdd25b1b326",
       "text" : [ "Harry has ", " decided which university he wants to go." ],
       "wordChoices" : [ {
-        "id" : "08aaea02-a95f-4a31-a976-b8b72bf468bf",
+        "id" : "c50bb819-95f3-41dc-9860-136e1c4e83dc",
         "correctAnswer" : "already",
         "incorrectAnswers" : [ "before" ]
       } ],
       "startWithText" : true
     }, {
-      "id" : "cd821236-0e5f-42d9-b207-a1f13f00dec4",
+      "id" : "d1be6913-e4ca-44ec-ab88-49246f581607",
       "text" : [ "Luckily, we landed exactly ", ", so we were able to catch our connecting flight." ],
       "wordChoices" : [ {
-        "id" : "8882f1c1-f084-4106-a4ac-7aba25bbe5ee",
+        "id" : "c71dada1-3297-4a87-b0c0-c7bf74c1a036",
         "correctAnswer" : "on time",
         "incorrectAnswers" : [ "in time" ]
       } ],
       "startWithText" : true
     }, {
-      "id" : "dd252be4-efa0-425d-9ffd-7754be488db3",
+      "id" : "c4d8615b-d28c-4745-ad69-588f16be827e",
       "text" : [ " I got used to the new interface, it didn’t feel awkward anymore." ],
       "wordChoices" : [ {
-        "id" : "fb6dc4b9-f1ba-4d6d-bea7-e6ae884410d0",
+        "id" : "cfc1825f-5d74-4d76-9952-66f075b4d26f",
         "correctAnswer" : "Once",
         "incorrectAnswers" : [ "One day" ]
       } ],
       "startWithText" : false
     }, {
-      "id" : "4865d732-0ae6-47f6-a572-ff904a22e7bc",
-      "text" : [ "He’s been trying to solve this problem ", " three hours." ],
+      "id" : "007bc0a4-433b-42e5-b409-1b5357332619",
+      "text" : [ "He’s been trying to solve this problem " ],
       "wordChoices" : [ {
-        "id" : "b26d8da3-064c-4eab-8ecf-21966011ba86",
+        "id" : "bfc07eb4-0d94-4e4a-8482-b59a0d19ae08",
         "correctAnswer" : "for",
         "incorrectAnswers" : [ "since" ]
       } ],
       "startWithText" : false
     } ],
-    "difficulty" : 100.0
-  }
+    "difficulty" : 120.0
+  },
+  "taskName" : "ListChoiceWordFill"
 }, {
-  "taskName" : "ListWordFill",
   "taskContent" : {
-    "id" : "0be75481-5a7d-4703-979f-70afcdae5846",
-    "instruction" : "Complete the sentences with the best word:",
-    "tags" : [ ],
+    "id" : "77cfac64-4985-46e8-9db3-c4a5cef3b731",
+    "instruction" : "Choose the best option to complete the sentences.",
+    "tags" : [ "grammar", "future" ],
     "rows" : [ {
-      "id" : "58f293d5-cc76-429d-a5de-2ae27924cfc8",
-      "text" : [ "I’m ", " you asked me that question." ],
-      "emptySpaces" : [ {
-        "answer" : "GLAD"
+      "id" : "9da7113a-d4bf-4628-9bdb-6619402f7518",
+      "text" : [ "The company ", " going to expand, but the pandemic put a sudden stop to that." ],
+      "wordChoices" : [ {
+        "id" : "0fc867cd-ae6b-4cce-9506-917e3f0f3d92",
+        "correctAnswer" : "was",
+        "incorrectAnswers" : [ "were", " is", " are" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "GLAD", "SORRY", "REGRET", "INTERESTED" ]
+      "startWithText" : true
     }, {
-      "id" : "8c802a14-ba6b-4122-818f-738e2782cc9b",
-      "text" : [ "I’m afraid I can’t say it at the ", " of my head." ],
-      "emptySpaces" : [ {
-        "answer" : "TOP"
+      "id" : "fcecdfd4-f2c2-4d7b-b127-f5f472764216",
+      "text" : [ "No one knew that Dave ", " resign the following day." ],
+      "wordChoices" : [ {
+        "id" : "1af124f6-6907-45ac-a0fe-b90d55528156",
+        "correctAnswer" : "would",
+        "incorrectAnswers" : [ "shall", " will", " is" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "TIP", "END", "TOP", "BACK" ]
+      "startWithText" : true
     }, {
-      "id" : "06f4e807-f467-46d3-ab6a-bec51ea2bfd9",
-      "text" : [ "As I’ve ", " before in my presentation, …" ],
-      "emptySpaces" : [ {
-        "answer" : "MENTIONED"
+      "id" : "b2463347-1b50-435c-9cc7-1afd943b89e8",
+      "text" : [ "You're lucky you caught me. I was just ", " the point of leaving." ],
+      "wordChoices" : [ {
+        "id" : "3914e16c-49fb-466a-b7df-bbd9975c63a2",
+        "correctAnswer" : "on",
+        "incorrectAnswers" : [ "in", "from", "over" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "SPOKEN", "MENTIONED", "SEEN", "TALKED" ]
+      "startWithText" : true
     }, {
-      "id" : "2438f4e5-9e2a-4493-9de3-b072b786fcb4",
-      "text" : [ "Do you mind if we deal ", " it later?" ],
-      "emptySpaces" : [ {
-        "answer" : "WITH"
+      "id" : "d003628d-36ee-40a3-a519-896026e33c0a",
+      "text" : [ "Tom ", " tomorrow on the 9:15 train." ],
+      "wordChoices" : [ {
+        "id" : "7ccb43dc-d8b3-4c91-aaa2-a38168c2bf1f",
+        "correctAnswer" : "arrives",
+        "incorrectAnswers" : [ "is arrived", " shall arrive" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "ON", "WITHOUT", "WITH", "FROM" ]
+      "startWithText" : true
     }, {
-      "id" : "27e6b745-68ab-4a4b-9b9f-64f8bb0fa167",
-      "text" : [ "In fact, it goes ", " to what I was saying earlier, …" ],
-      "emptySpaces" : [ {
-        "answer" : "BACK"
+      "id" : "72465a32-1e56-454b-bd34-b0478f850e8c",
+      "text" : [ "I'll call you as soon as I ", " home." ],
+      "wordChoices" : [ {
+        "id" : "59e4b17c-7c56-433f-98c6-04fa81477a1b",
+        "correctAnswer" : "get",
+        "incorrectAnswers" : [ "got", " hit", " gets" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "BACK", "ON", "IN", "UP" ]
+      "startWithText" : true
     }, {
-      "id" : "34d0cb83-fbb3-4ae5-b712-362d0a0803c6",
-      "text" : [ "I don’t want to go into too much ", " at this stage." ],
-      "emptySpaces" : [ {
-        "answer" : "DETAIL"
+      "id" : "13bdf670-2ef0-484c-bbf8-1bc5aaf72fcc",
+      "text" : [ "By the end of next month Andrew will ", " worked here for two years." ],
+      "wordChoices" : [ {
+        "id" : "d92bd5bf-2be2-45f6-9168-ba00defaad6b",
+        "correctAnswer" : "have",
+        "incorrectAnswers" : [ "has", " not", " be" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "DISTRUCTIONS", "DETAIL", "TIME", "DISCUSSIONS" ]
+      "startWithText" : true
     } ],
-    "difficulty" : 100.0
-  }
+    "difficulty" : 150.0
+  },
+  "taskName" : "ListChoiceWordFill"
 }, {
-  "taskName" : "ListWordFill",
   "taskContent" : {
-    "id" : "0d9d9f22-e612-450a-b26b-8ba923d10d54",
-    "instruction" : "Choose the word that fits the definitions:",
-    "tags" : [ ],
+    "id" : "aa3ad82d-07b9-4316-8164-19ab3a7b2c8a",
+    "instruction" : "Choose the best option to complete the sentences.",
+    "tags" : [ "grammar", "modal verbs" ],
     "rows" : [ {
-      "id" : "c6965e28-b444-4f9e-ae02-b82e6a8d044a",
-      "text" : [ "the act or way of leaving place: " ],
-      "emptySpaces" : [ {
-        "answer" : "egress"
+      "id" : "d69b4662-69ed-44de-be47-723940d30342",
+      "text" : [ "Why don't you phone Katie now? She ", " yet." ],
+      "wordChoices" : [ {
+        "id" : "bae0b5cc-eea3-413a-ad12-6ee5be5c80ae",
+        "correctAnswer" : "can't have left",
+        "incorrectAnswers" : [ "must have left", " might have left" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "descend", "sound", "egress" ]
+      "startWithText" : true
     }, {
-      "id" : "0f0c8529-358a-4385-b961-3948f4053251",
-      "text" : [ "a tendency to behave in a particular way: " ],
-      "emptySpaces" : [ {
-        "answer" : "propensity"
+      "id" : "c60a9ce8-d2b4-49b7-9e93-2a00569143fe",
+      "text" : [ "Take some sun-block and wear a hat, as it ", " get very hot in the middle of the day." ],
+      "wordChoices" : [ {
+        "id" : "f0e39069-a5e0-4467-bcf2-edeb7d4ce995",
+        "correctAnswer" : "can",
+        "incorrectAnswers" : [ "must", " could have" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "smattering", "propensity", "glean" ]
+      "startWithText" : true
     }, {
-      "id" : "a358ebfd-278f-4906-9bb1-97d208043caf",
-      "text" : [ "a very small amount or number: " ],
-      "emptySpaces" : [ {
-        "answer" : "smattering"
+      "id" : "9b3f411b-ac63-42c3-b0a4-3c0364dcd3f7",
+      "text" : [ "There's no point waiting here any longer. We ", " go and have something to eat." ],
+      "wordChoices" : [ {
+        "id" : "1b170b63-72aa-4c17-9ebc-6d43c7403020",
+        "correctAnswer" : "might as well",
+        "incorrectAnswers" : [ "can hardly", " are bound to" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "glean", "ingress", "smattering" ]
+      "startWithText" : true
     }, {
-      "id" : "3c95ed9c-8f5b-45ce-bf88-58bb11fee3f7",
-      "text" : [ "come down: " ],
-      "emptySpaces" : [ {
-        "answer" : "descend"
+      "id" : "1b112479-eb4b-4b79-bf6a-fc324b619d69",
+      "text" : [ "Lucky you managed to hang on that tree. You ", " down the cliff." ],
+      "wordChoices" : [ {
+        "id" : "911428fe-2173-4e76-9652-214593c461a7",
+        "correctAnswer" : "could have fallen",
+        "incorrectAnswers" : [ "must have fallen", " may have fallen" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "descend", "in-depth", "winding" ]
+      "startWithText" : true
     }, {
-      "id" : "33c7cc61-fde1-44c4-a4aa-06465e63f365",
-      "text" : [ "done carefully and in great detail: " ],
-      "emptySpaces" : [ {
-        "answer" : "in-depth"
+      "id" : "874ceb00-9793-42d7-bbcc-aec64ac4630c",
+      "text" : [ "We were waiting in Room 2. You ", " have told us about the change of venue." ],
+      "wordChoices" : [ {
+        "id" : "74228a29-476e-4536-91bc-e88520aa7e97",
+        "correctAnswer" : "should",
+        "incorrectAnswers" : [ "couldn't", " shouldn't" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "in-depth", "ingress", "debunk" ]
+      "startWithText" : true
     }, {
-      "id" : "4ddbfc7c-7470-404b-91c4-59c51b6a7bb5",
-      "text" : [ "healthy; in good condition: " ],
-      "emptySpaces" : [ {
-        "answer" : "sound"
+      "id" : "3a80e6a7-b2a2-4663-9b02-54ad94124a09",
+      "text" : [ "I'm annoyed. She ", " have sent me these figures yesterday!" ],
+      "wordChoices" : [ {
+        "id" : "b6808d27-943c-42f7-bc77-814fe5d1e832",
+        "correctAnswer" : "should",
+        "incorrectAnswers" : [ "can", " would" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "glean", "winding", "sound" ]
+      "startWithText" : true
     }, {
-      "id" : "ecadf24c-bef9-4a3a-a01a-e3a5292d203e",
-      "text" : [ "a lot of something; big amount: " ],
-      "emptySpaces" : [ {
-        "answer" : "sheer number"
+      "id" : "05829655-4dfc-431a-820e-1dbe0fd393a6",
+      "text" : [ "The boss doesn't look too happy. It ", " have been a tough negotiation." ],
+      "wordChoices" : [ {
+        "id" : "6724744b-b12c-432c-885e-e8df46682c34",
+        "correctAnswer" : "might",
+        "incorrectAnswers" : [ "may not", " could not" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "propensity", "sheer number", "egress" ]
+      "startWithText" : true
     }, {
-      "id" : "12932a82-a94c-4742-bb5a-f46716645381",
-      "text" : [ "repeatedly turns in different directions: " ],
-      "emptySpaces" : [ {
-        "answer" : "winding"
+      "id" : "ebef19ff-a0b8-4452-a4ba-3d48594bef38",
+      "text" : [ "She ", " have stolen the money. She wasn't in the office at the time." ],
+      "wordChoices" : [ {
+        "id" : "34178890-54fc-4693-bddd-a5f264d3f686",
+        "correctAnswer" : "couldn't",
+        "incorrectAnswers" : [ "needn't", " mustn't" ]
       } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "debunk", "winding", "smattering" ]
-    }, {
-      "id" : "9c413eb2-8672-4485-893c-5ebce437cf89",
-      "text" : [ "the act of entering something: " ],
-      "emptySpaces" : [ {
-        "answer" : "ingress"
-      } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "ingress", "egress", "propensity" ]
-    }, {
-      "id" : "d72d760d-23dd-4c58-bedd-7fc6576ffee0",
-      "text" : [ "to collect information in small amounts and often with difficulty: " ],
-      "emptySpaces" : [ {
-        "answer" : "glean"
-      } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "glean", "smattering", "debunk" ]
-    }, {
-      "id" : "24b6263d-9932-4799-aa39-0e432d161219",
-      "text" : [ "to show that something is not true: " ],
-      "emptySpaces" : [ {
-        "answer" : "debunk"
-      } ],
-      "startWithText" : true,
-      "possibleAnswers" : [ "glean", "debunk", "in-depth" ]
+      "startWithText" : true
     } ],
-    "difficulty" : 100.0
-  }
+    "difficulty" : 200.0
+  },
+  "taskName" : "ListChoiceWordFill"
 }, {
-  "taskName" : "WordConnect",
   "taskContent" : {
-    "id" : "00cb1efa-d388-4647-a5ec-080755b11712",
-    "instruction" : "Match the words with their translations:",
-    "tags" : [ ],
-    "leftWords" : [ "data mining", "pattern identification", "quantitative modelling", "class label", "class membership", "explanatory variable", "variable", "fault-tolerant", "spurious pattern", "outlier" ],
-    "rightWords" : [ "eksploracja danych", "identyfikacja wzorca", "modelowanie ilościowe", "etykieta klasy", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna" ],
-    "correctMapping" : {
-      "0" : 0,
-      "1" : 1,
-      "2" : 2,
-      "3" : 3,
-      "4" : 4,
-      "5" : 5,
-      "6" : 6,
-      "7" : 7,
-      "8" : 8,
-      "9" : 9
+    "id" : "72aa892f-218c-443c-a4e9-22c8a6169805",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "vocabulary", "AI" ],
+    "content" : {
+      "id" : "49130674-63ea-4f32-9625-a27704ffedb8",
+      "content" : "Obviously we're .... now that we're both working.",
+      "correctAnswers" : [ "better off" ],
+      "incorrectAnswers" : [ "unemployed", "cushy", "outcome" ]
     },
     "difficulty" : 100.0
-  }
+  },
+  "taskName" : "OptionSelect"
 }, {
-  "taskName" : "WordConnect",
   "taskContent" : {
-    "id" : "2d210a77-329e-41c9-9fe2-ef7b0dd6918a",
-    "instruction" : "Match the words with their translations:",
-    "tags" : [ ],
-    "leftWords" : [ "keynote", "to convey (information)", "to unveil (a theme)", "consistent", "stiff", "a knack (for sth)", "a flair", "intricate", "dazzling", "to rehearse" ],
-    "rightWords" : [ "myśl przewodnia, główny motyw", "przekazywać/dostarczać (informacje)", "odkryć, ujawnić, odsłonić", "spójny, zgodny, konsekwentny", "sztywny, zdrętwiały", "talent, zręczność", "klasa, dar", "zawiły, misterny", "olśniewający", "próbować, przygotowywać się" ],
-    "correctMapping" : {
-      "0" : 0,
-      "1" : 1,
-      "2" : 2,
-      "3" : 3,
-      "4" : 4,
-      "5" : 5,
-      "6" : 6,
-      "7" : 7,
-      "8" : 8,
-      "9" : 9
+    "id" : "b79e6d84-38eb-4724-ac36-9a4c3df77e06",
+    "instruction" : "Choose the best option to answer the question",
+    "tags" : [ "vocabulary", "IT" ],
+    "content" : {
+      "id" : "4b5a8537-5e55-4b84-867a-08fe00229ff5",
+      "content" : "What type of software has the least amount of restrictions?",
+      "correctAnswers" : [ "Open Source" ],
+      "incorrectAnswers" : [ "Freeware", "Malware", "Shareware" ]
+    },
+    "difficulty" : 150.0
+  },
+  "taskName" : "OptionSelect"
+}, {
+  "taskContent" : {
+    "id" : "ddbaf3c5-fcc4-4269-b11d-f39eb4b3f5f9",
+    "instruction" : "Choose the best option",
+    "tags" : [ "vocabulary", "IT", "abbreviations" ],
+    "content" : {
+      "id" : "2dd01588-2b0c-4c53-8c1a-528032e393d0",
+      "content" : "What does each letter in EULA Stand for?",
+      "correctAnswers" : [ "End User License Agreement" ],
+      "incorrectAnswers" : [ "End Universal License Agreement", "Encrypted User Licence Account", "Enterprise Utility Licensing Access" ]
+    },
+    "difficulty" : 150.0
+  },
+  "taskName" : "OptionSelect"
+}, {
+  "taskContent" : {
+    "id" : "628c5899-cabf-4fb2-a018-60c16525abd5",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "vocabulary", "numbers" ],
+    "content" : {
+      "id" : "c2bb39fa-fa2a-4233-af3d-da6f26579564",
+      "content" : "Pierwiastek kwadratowy in English is .... .",
+      "correctAnswers" : [ "square root" ],
+      "incorrectAnswers" : [ "square element", "square number", "square fraction" ]
     },
     "difficulty" : 100.0
-  }
+  },
+  "taskName" : "OptionSelect"
 }, {
-  "taskName" : "WordConnect",
   "taskContent" : {
-    "id" : "c2d2d1c9-cde0-4774-aa19-4d12d99cf060",
-    "instruction" : "Match the words with their synonyms:",
-    "tags" : [ ],
-    "leftWords" : [ "SMATTERING", "DESCEND", "INEVITABLE", "PROPENSITY", "APPROACH", "OVERESTIMATE", "INGRESS" ],
-    "rightWords" : [ "bit, small amount", "go down, fall, drop", "bound to happen, predestined, unavoidable", "tendency, inclination", "attitude, method, way, manner", "overvalue, overstate, amplify", "entry, entrance" ],
-    "correctMapping" : {
-      "0" : 0,
-      "1" : 1,
-      "2" : 2,
-      "3" : 3,
-      "4" : 4,
-      "5" : 5,
-      "6" : 6
+    "id" : "ecced49e-5011-498f-a102-adf6daca9832",
+    "instruction" : "Choose the best option to answer the question",
+    "tags" : [ "vocabulary", "IT" ],
+    "content" : {
+      "id" : "fc92a6d0-dbfd-4502-918f-9b7b56a2b09a",
+      "content" : "What is another term for a licence key?",
+      "correctAnswers" : [ "Serial Number" ],
+      "incorrectAnswers" : [ "MAC Number", "Source Number", "License Number" ]
+    },
+    "difficulty" : 150.0
+  },
+  "taskName" : "OptionSelect"
+}, {
+  "taskContent" : {
+    "id" : "75d17d73-e9b8-442c-8d85-04b9929444c3",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "vocabulary", "numbers" ],
+    "content" : {
+      "id" : "754e2d74-01d5-48a4-971c-eaf71bd8606d",
+      "content" : "In tennis the score 30:0 is .... .",
+      "correctAnswers" : [ "thirty love" ],
+      "incorrectAnswers" : [ "thirty nil", "thirty oh", "thirty zero" ]
     },
     "difficulty" : 100.0
-  }
+  },
+  "taskName" : "OptionSelect"
 }, {
-  "taskName" : "WordConnect",
   "taskContent" : {
-    "id" : "146933ca-563d-44ac-9aab-9305389e081a",
-    "instruction" : "Match the words with their synonyms:",
-    "tags" : [ ],
-    "leftWords" : [ "GLEAN", "DEBUNK", "SOUND", "WINDING", "IN DEPTH", "EGRESS", "ITEM" ],
-    "rightWords" : [ "obtain, gather", "invalidate, discredit", "healthy, toned, in good shape", "full of twists and turns, zigzagging", "thoroughly, extensively", "exit, way out", "thing, article, object" ],
-    "correctMapping" : {
-      "0" : 0,
-      "1" : 1,
-      "2" : 2,
-      "3" : 3,
-      "4" : 4,
-      "5" : 5,
-      "6" : 6
+    "id" : "a2bdeb39-147e-4b9c-a5fb-504e61831012",
+    "instruction" : "Choose the best Polish equivalent",
+    "tags" : [ "vocabulary", "numbers" ],
+    "content" : {
+      "id" : "32e5848d-2fe0-44ff-88a6-4c99f6bc4848",
+      "content" : "Recurring decimal",
+      "correctAnswers" : [ "ułamek dziesiętny okresowy" ],
+      "incorrectAnswers" : [ "ułamek powtarzający się", "pierwiastek okresowy", "ułamek niewłaściwy" ]
     },
     "difficulty" : 100.0
-  }
+  },
+  "taskName" : "OptionSelect"
 }, {
-  "taskName" : "WordFill",
   "taskContent" : {
-    "id" : "4e8f1bec-07ad-4a2e-a0d6-bf225ca91aa1",
+    "id" : "450d8273-70ff-4dbb-8391-6367c7e08a82",
+    "instruction" : "Choose the best option to answer the question",
+    "tags" : [ "vocabulary", "IT" ],
+    "content" : {
+      "id" : "a588d5f8-f194-4704-a60c-ebea5c09b51e",
+      "content" : "What is the range of time a trial typically lasts for?",
+      "correctAnswers" : [ "30-60 days" ],
+      "incorrectAnswers" : [ "14-28 years", "1-7 weeks", "180 days" ]
+    },
+    "difficulty" : 150.0
+  },
+  "taskName" : "OptionSelect"
+}, {
+  "taskContent" : {
+    "id" : "9f82665f-c2a9-4bf9-9fb7-9317ede77609",
+    "instruction" : "Choose the best option to answer the question",
+    "tags" : [ "vocabulary", "IT" ],
+    "content" : {
+      "id" : "327f49d4-262d-4002-821d-f3dd3da8238e",
+      "content" : "What is NOT a type of Software Licensing?",
+      "correctAnswers" : [ "Consecutive" ],
+      "incorrectAnswers" : [ "Freeware", "Concurrent", "Open-Source" ]
+    },
+    "difficulty" : 150.0
+  },
+  "taskName" : "OptionSelect"
+}, {
+  "taskContent" : {
+    "id" : "a6885a1b-a173-4e61-9723-37ebe8b61073",
+    "instruction" : "Choose the best options to answer the question",
+    "tags" : [ "vocabulary", "IT" ],
+    "content" : {
+      "id" : "fd255ee8-4726-4813-a2ea-0f5111722e09",
+      "content" : "What is an advantage of buying term licence?",
+      "correctAnswers" : [ "You do not need to renew the software if you do not like it", "If you know you only need the software for a length of time" ],
+      "incorrectAnswers" : [ "You can edit the source code for a specified amount of time", "It can be transferred easier" ]
+    },
+    "difficulty" : 150.0
+  },
+  "taskName" : "OptionSelect"
+}, {
+  "taskContent" : {
+    "id" : "93b09275-efa2-4201-8b94-bc3f14f4a7f9",
+    "instruction" : "Complete the text with the missing words, there are three extra words that you don't need to use.",
+    "tags" : [ "Adverbs", "adjectives" ],
+    "content" : {
+      "id" : "7823dfe6-b24c-409b-a409-481c69952247",
+      "text" : [ "\"Come on man, this way.\"\nI swallowed, ", " looking around the office in which I would ", " work the next couple of years and ", " followed Mike. Having passed a short corridor, we entered a ", " workspace room, three desks with a computer and two screens each, the seats, one plant by the small window and not much ", ". One of the desks is going to be ", ". It's 8:55 and my first day at work is about to start ", ". " ],
+      "emptySpaces" : [ {
+        "answer" : "nervously"
+      }, {
+        "answer" : "hopefully"
+      }, {
+        "answer" : "quickly"
+      }, {
+        "answer" : "typical"
+      }, {
+        "answer" : "more"
+      }, {
+        "answer" : "mine"
+      }, {
+        "answer" : "soon"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "nervously", "hopefully", "quickly", "typical", "more", "mine", "soon", "happily", "doubtfully", "my" ]
+    },
+    "difficulty" : 200.0
+  },
+  "taskName" : "WordFill"
+}, {
+  "taskContent" : {
+    "id" : "083834e8-445b-4bf9-a668-213ad83992f8",
     "instruction" : "Complete the text with the missing words:",
     "tags" : [ ],
     "content" : {
-      "id" : "5b3c7a43-c0e6-41bc-8de2-27fcb2a10c0a",
+      "id" : "d532a9d1-2eb4-407a-8b51-3df1466af9e3",
       "text" : [ "I’m sorry to have to tell you that there has been some ", " in the project and we won’t be able to ", " our original ", " on July 30th for completing the ", " of the new software. Pedro’s absence for three weeks caused a bit of a ", ", and there were more delays when we realised that there was still some", " in the databases that needed cleaning up. Still, I am confident that we can complete the project by the end of next month." ],
       "emptySpaces" : [ {
         "answer" : "slippage"
@@ -350,5 +848,1098 @@
       "possibleAnswers" : [ "bottleneck", "deadline", "dirty data", "migrate", "rollout", "slippage", "stick to", "within", "scope" ]
     },
     "difficulty" : 100.0
-  }
+  },
+  "taskName" : "WordFill"
+}, {
+  "taskContent" : {
+    "id" : "2418c1b4-2612-417b-8730-f7d1b63b1965",
+    "instruction" : "Complete the text with the missing words, there are some extra words that you don't need to use.",
+    "tags" : [ "IT", "licensing" ],
+    "content" : {
+      "id" : "e2f228b7-b1c8-4e64-8b91-8a05bcef6466",
+      "text" : [ "A software ", " is a legally binding agreement in which you will find terms of ", " or distribution of software which is copyright ", " under copyright law. It also defines the rights and ", " of the software producer as well as the end-user. Software licensing terms and ", " usually involve limitations of liability, fair use of the software as well as warranties and ", ". Its purpose is to provide protection of intellectual property rights and software monetisation. All software must be ", " licensed before it can be installed. The exception is public ", " software which can be used without any restrictions.\n" ],
+      "emptySpaces" : [ {
+        "answer" : "license"
+      }, {
+        "answer" : "use"
+      }, {
+        "answer" : "protected"
+      }, {
+        "answer" : "responsibilities"
+      }, {
+        "answer" : "conditions"
+      }, {
+        "answer" : "disclaimers"
+      }, {
+        "answer" : "legally"
+      }, {
+        "answer" : "domain"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "license", "use", "protected", "responsibilities", "conditions", "disclaimers", "legally", "domain", "usage", "licensing", "protection", "duty", "contract", "claims", "illegal", "covered" ]
+    },
+    "difficulty" : 200.0
+  },
+  "taskName" : "WordFill"
+}, {
+  "taskContent" : {
+    "id" : "5021700f-02b6-4355-9748-107458e71073",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "circular economy", "Business English" ],
+    "content" : {
+      "id" : "6caf8663-4ca6-4ce5-afd4-ebcd8dd664ac",
+      "text" : [ "When we begin to move away from a ", " economy, we can begin to address the problem of the ", " of goods causing our landills to overflow. if we rethink business ", ", we could create items which will be recycled from the ", " and then fed back into the system. Taking ideas such as LED light bulbs and ", " smartphones means increasing the life of our everyday ", ". The ", " used in many electronic goods can be recycled rather than be lost forever. It will certainly help our ", " if we can ", " as much as possible form goods that have been produced." ],
+      "emptySpaces" : [ {
+        "answer" : "linear"
+      }, {
+        "answer" : "waste stream"
+      }, {
+        "answer" : "models"
+      }, {
+        "answer" : "outset"
+      }, {
+        "answer" : "modular"
+      }, {
+        "answer" : "products"
+      }, {
+        "answer" : "precious metals"
+      }, {
+        "answer" : "planet"
+      }, {
+        "answer" : "salvage"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "linear", "waste stream", "models", "outset", "modular", "products", "precious metals", "planet", "salvage", "circular", "onset", "solve", "gold", "plans", "economy" ]
+    },
+    "difficulty" : 200.0
+  },
+  "taskName" : "WordFill"
+}, {
+  "taskContent" : {
+    "id" : "02ce23ba-42fc-4f51-9d03-7c05db7607ae",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "IT", "Machine learning" ],
+    "content" : {
+      "id" : "f68c61f2-6ea5-4c08-954f-8cbf5900ecab",
+      "text" : [ "Using a machine-leaning algorithm, MIT researchers have identified a powerful new antibiotic compound. In laboratory tests, the drug killed many of the world's most problematic ", " bacteria, including some strains that are ", " to all known antibiotics.\nthe computer model, which can screen more than a hundred million ", " compounds in a matter of days, is designed to pick out potential antibiotics that kill bacteria using different mechanismsm than those of existing drugs.\n\"We wanted to develop a platform that would allow us to ", " the power of AI to usher in a new age of antibiotice drug discovery. Our approach revealed this amazing molecule which is ", " one of the more powerful antibiotics that has been discovered,\" says James Collins from }MIT." ],
+      "emptySpaces" : [ {
+        "answer" : "disease-causing"
+      }, {
+        "answer" : "resistant"
+      }, {
+        "answer" : "chemical"
+      }, {
+        "answer" : "harness"
+      }, {
+        "answer" : "arguably"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "disease-causing", "resistant", "chemical", "harness", "arguably", "chemistry", "harm", "harmless", "doubtfully" ]
+    },
+    "difficulty" : 200.0
+  },
+  "taskName" : "WordFill"
+}, {
+  "taskContent" : {
+    "id" : "a814141d-9589-4bad-8769-779db04e4a8e",
+    "instruction" : "Complete the text with the missing words, there are some extra words that you don't need to use.",
+    "tags" : [ "IT", "search engine" ],
+    "content" : {
+      "id" : "6778a39a-e82d-41eb-9fb8-e4f67359d78a",
+      "text" : [ "Google ", " engine seems to have one goal alone: to provide the most ", " information for the user in the fastest time possible. ", " you are doing a google search, you aren't actually searching the ", " but the Google's ", " of the Web. It is done ", " software programs called spiders, crawlers or ", " which crawl the web comprehensively and ", ". A trademarked ", " called PageRank is the primary determinant - the higher the PageRank of the webpage is, the more ", " it is that it will be discovered relatively ", " in the crawl. The success depends ", " the frequency and location of ", " within the page and the number of other webpages which link to that page." ],
+      "emptySpaces" : [ {
+        "answer" : "search"
+      }, {
+        "answer" : "relevant"
+      }, {
+        "answer" : "When"
+      }, {
+        "answer" : "Web"
+      }, {
+        "answer" : "index"
+      }, {
+        "answer" : "with"
+      }, {
+        "answer" : "googlebots"
+      }, {
+        "answer" : "deeply"
+      }, {
+        "answer" : "algorithm"
+      }, {
+        "answer" : "likely"
+      }, {
+        "answer" : "early"
+      }, {
+        "answer" : "on"
+      }, {
+        "answer" : "keywords"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "search", "relevant", "When", "Web", "index", "with", "googlebots", "deeply", "algorithm", "likely", "early", "on", "keywords", "investigation", "actual", "software", "from", "clues" ]
+    },
+    "difficulty" : 200.0
+  },
+  "taskName" : "WordFill"
+}, {
+  "taskContent" : {
+    "id" : "aeb65710-1b22-463d-8dd5-b1cb74a66b8b",
+    "instruction" : "Complete the text with the missing words, there are some extra words that you don't need to use.",
+    "tags" : [ "Present tenses" ],
+    "content" : {
+      "id" : "ec73e645-6606-4b12-a293-25c8ba8192e3",
+      "text" : [ "The most important social trend\nSocial media trends rarely ", " the same from year-to-year. The overarching theme for brands heading into 2020: Rethinking what \"success\" looks ", " for social media marketing at large. And there's perhaps no ", " time than now to reflect on how your company approaches social media moving ", ".\nMarketing specialists are ", " looking for new metrics to determine what's ", " and what's not on social media. Surprisingly, the number of \"likes\" or comments ", " becoming less and less reliable as the measuring stick for content ", ". Nearly two-thirds of marketing specialists believe that \"social listening\" will be ", " in 2020. They are growing more and more concerned with what's being said rather than how many people are talking about or looking at a single post." ],
+      "emptySpaces" : [ {
+        "answer" : "stay"
+      }, {
+        "answer" : "like"
+      }, {
+        "answer" : "better"
+      }, {
+        "answer" : "forward"
+      }, {
+        "answer" : "currently"
+      }, {
+        "answer" : "working"
+      }, {
+        "answer" : "is"
+      }, {
+        "answer" : "performance"
+      }, {
+        "answer" : "crucial"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "stay", "like", "better", "forward", "currently", "working", "is", "performance", "crucial", "stays", "staying", "liking", "back", "actually", "work", "valuable" ]
+    },
+    "difficulty" : 200.0
+  },
+  "taskName" : "WordFill"
+}, {
+  "taskContent" : {
+    "id" : "b8b0a27b-815d-451c-a9ae-203227cbb66e",
+    "instruction" : "Complete the text with the missing words, there are some extra words that you don't need to use.",
+    "tags" : [ "IT", "Big Data" ],
+    "content" : {
+      "id" : "c6db7cab-a99b-47b3-b327-3bf03d86317c",
+      "text" : [ "Nowadays, data is incredibly valuable, almost ", ". Companies are trying to analyse a ", " of data: transactions, emails, search results, sales data or ", " on website to mention just a few types. Thanks to analysing this data companies not only can ", " fraud going years back but also perform data science in order to ", " new business trends.\nBig Data is generally characterised by ", " Vs: volume, ", " (data comes in different forms), ", " (how fast data flows in from different sources and how quickly it is updated and processed) and veracity, which means ", " of data coming from a variety and number of sources.\nThe fundamental ", " of big data is making sense of these huge volumes of data and finding ", " in them in order to help organisations make better business decisions.\n" ],
+      "emptySpaces" : [ {
+        "answer" : "priceless"
+      }, {
+        "answer" : "slew"
+      }, {
+        "answer" : "click-throughs"
+      }, {
+        "answer" : "detect"
+      }, {
+        "answer" : "spot"
+      }, {
+        "answer" : "four"
+      }, {
+        "answer" : "variety"
+      }, {
+        "answer" : "velocity"
+      }, {
+        "answer" : "trustworthiness"
+      }, {
+        "answer" : "issue"
+      }, {
+        "answer" : "patterns"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "priceless", "slew", "click-throughs", "detect", "spot", "four", "variety", "velocity", "trustworthiness", "issue", "patterns", "investigation", "worthless", "various", "tiny" ]
+    },
+    "difficulty" : 200.0
+  },
+  "taskName" : "WordFill"
+}, {
+  "taskContent" : {
+    "id" : "4fa680dc-942a-4884-9d78-ef2207af86e6",
+    "instruction" : "Complete the sentences with the best word:",
+    "tags" : [ ],
+    "rows" : [ {
+      "id" : "10c60c78-18d4-4bf3-ba3b-4cfb1baac19e",
+      "text" : [ "I’m ", " you asked me that question." ],
+      "emptySpaces" : [ {
+        "answer" : "GLAD"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "GLAD", "SORRY", "REGRET", "INTERESTED" ]
+    }, {
+      "id" : "ae9ae213-7c52-47c2-bc49-dd3a535e38b7",
+      "text" : [ "I’m afraid I can’t say it at the ", " of my head." ],
+      "emptySpaces" : [ {
+        "answer" : "TOP"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "TIP", "END", "TOP", "BACK" ]
+    }, {
+      "id" : "65a529fe-e4f4-4d37-a981-95486823232c",
+      "text" : [ "As I’ve ", " before in my presentation, …" ],
+      "emptySpaces" : [ {
+        "answer" : "MENTIONED"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "SPOKEN", "MENTIONED", "SEEN", "TALKED" ]
+    }, {
+      "id" : "3ba995f1-1c8e-472a-b0b4-6460a55a6c29",
+      "text" : [ "Do you mind if we deal ", " it later?" ],
+      "emptySpaces" : [ {
+        "answer" : "WITH"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "ON", "WITHOUT", "WITH", "FROM" ]
+    }, {
+      "id" : "ed3607e3-b706-40b0-a0cf-e76d3833f0ec",
+      "text" : [ "In fact, it goes ", " to what I was saying earlier, …" ],
+      "emptySpaces" : [ {
+        "answer" : "BACK"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "BACK", "ON", "IN", "UP" ]
+    }, {
+      "id" : "2f514112-9f2c-4f5e-88d8-531847114db9",
+      "text" : [ "I don’t want to go into too much ", " at this stage." ],
+      "emptySpaces" : [ {
+        "answer" : "DETAIL"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "DISTRUCTIONS", "DETAIL", "TIME", "DISCUSSIONS" ]
+    } ],
+    "difficulty" : 100.0
+  },
+  "taskName" : "ListWordFill"
+}, {
+  "taskContent" : {
+    "id" : "7eca5438-a9fc-4ba7-9c49-21203b2eee3c",
+    "instruction" : "Choose the best option to complete the sentences:",
+    "tags" : [ "phrasal verbs", "IT" ],
+    "rows" : [ {
+      "id" : "af1d966f-84cd-4671-b9ca-d278bec10627",
+      "text" : [ "I'm having trouble ", " up my wireless printer." ],
+      "emptySpaces" : [ {
+        "answer" : "hooking"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "hooking", "hacking", "plucking", "hanging" ]
+    }, {
+      "id" : "e63bfce7-dc91-45bf-a68e-084485025197",
+      "text" : [ "I can't believe he has stuck ", " his tongue at you!" ],
+      "emptySpaces" : [ {
+        "answer" : "out"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "out", "at", "off", "up" ]
+    }, {
+      "id" : "5184fa89-d608-481d-b4cb-6584066a850e",
+      "text" : [ "He substantially ", " his income by taking on odd jobs and was able to buy a new car." ],
+      "emptySpaces" : [ {
+        "answer" : "augmented"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "augmented", "decreased", "distracted", "diminished" ]
+    }, {
+      "id" : "ded5a986-974e-440f-8480-24d426aa9af3",
+      "text" : [ "If you need help, ask John to help you. He's such a good ", "." ],
+      "emptySpaces" : [ {
+        "answer" : "sport"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "sport", "spoiler", "contest", "competitor" ]
+    }, {
+      "id" : "5c1beef3-22d6-471f-b91b-0fd9b179a6ad",
+      "text" : [ "ROM is a type of a ", " memory." ],
+      "emptySpaces" : [ {
+        "answer" : "non-volatile"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "non-volatile", "volatile", "reading", "portable" ]
+    }, {
+      "id" : "e339aded-ec0f-4660-95e1-d2615c6a351a",
+      "text" : [ "The plane ", " to a halt at the terminal." ],
+      "emptySpaces" : [ {
+        "answer" : "taxied"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "taxied", "flew", "circle", "landed" ]
+    }, {
+      "id" : "7cb60a29-6eb8-4204-bfea-9192f238f62e",
+      "text" : [ "The passengers began to ", " from the train while it was still moving." ],
+      "emptySpaces" : [ {
+        "answer" : "disembark"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "disembark", "leaf", "get on", "embark" ]
+    } ],
+    "difficulty" : 150.0
+  },
+  "taskName" : "ListWordFill"
+}, {
+  "taskContent" : {
+    "id" : "7de76b5f-1468-4202-9f17-f3281558e9f5",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "reporting verbs", "verb patterns" ],
+    "rows" : [ {
+      "id" : "da3da489-969d-48c1-be7d-aeec6c199cab",
+      "text" : [ "My friend encouraged me ", " more." ],
+      "emptySpaces" : [ {
+        "answer" : "to recycle"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "to recycle", "recycle", "recycling" ]
+    }, {
+      "id" : "525eb0e0-73fd-4218-89fc-7be4f44ca214",
+      "text" : [ "She insisted ", " opening the shop despite the restrictions." ],
+      "emptySpaces" : [ {
+        "answer" : "on"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "on", "in", "for" ]
+    }, {
+      "id" : "e556910d-ccd1-4a90-b4e4-1617f15d7d20",
+      "text" : [ "Our teacher advised us ", " new vocabulary before the test." ],
+      "emptySpaces" : [ {
+        "answer" : "to review"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "to review", "reviewing", "review" ]
+    }, {
+      "id" : "7a98108b-90be-4f1c-b004-f429e81e3f25",
+      "text" : [ "She confessed to ", " during the exam." ],
+      "emptySpaces" : [ {
+        "answer" : "cheating"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "cheating", "cheater", "cheat" ]
+    }, {
+      "id" : "d6ae9ea5-a977-4c2d-9a85-b3ce38b9bfe4",
+      "text" : [ "We should forbid companies ", " excess packaging by law." ],
+      "emptySpaces" : [ {
+        "answer" : "to use"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "to use", "use", "using" ]
+    }, {
+      "id" : "c2222f2e-741d-43bb-ad6b-ebab4839b706",
+      "text" : [ "The government claims ", " offer help with heating costs." ],
+      "emptySpaces" : [ {
+        "answer" : "to"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "to", "that", "about" ]
+    } ],
+    "difficulty" : 115.0
+  },
+  "taskName" : "ListWordFill"
+}, {
+  "taskContent" : {
+    "id" : "2b15155f-0d91-4eba-bcbb-593f693405a4",
+    "instruction" : "Choose the best option to complete the sentences:",
+    "tags" : [ "IT", "internet" ],
+    "rows" : [ {
+      "id" : "4add0983-4d10-4109-8d16-1d5e9263d3a6",
+      "text" : [ "Access points can become network ", "." ],
+      "emptySpaces" : [ {
+        "answer" : "bottlenecks"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "bottlenecks", "bots", "bottlenests", "circuits" ]
+    }, {
+      "id" : "1713bcc5-6b18-40be-a466-979f56aa474d",
+      "text" : [ "I just need a ", " of time to write up a detailed review." ],
+      "emptySpaces" : [ {
+        "answer" : "chunk"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "chunk", "chain", "link" ]
+    }, {
+      "id" : "a030b929-086c-41c8-a6d6-bf540ec116f6",
+      "text" : [ "First, it seemed natural to use class ", " for the driver interfaces because of their abstract nature." ],
+      "emptySpaces" : [ {
+        "answer" : "encapsulation"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "encapsulation", "captions", "capsules", "caps" ]
+    }, {
+      "id" : "c09039a1-e8e7-4d4c-87d6-b6b9fa23b173",
+      "text" : [ "Ranking of variables was done by the frequency of  ", " of each descriptor in all 140 models." ],
+      "emptySpaces" : [ {
+        "answer" : "occurence"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "occurence", "location", "occasion", "placement" ]
+    }, {
+      "id" : "5928a949-d184-470f-8158-c79dcb525187",
+      "text" : [ "it's hard to evaluate the investigation based on just the brief ", " that I saw reported." ],
+      "emptySpaces" : [ {
+        "answer" : "snippet"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "snippet", "snap", "figure" ]
+    } ],
+    "difficulty" : 150.0
+  },
+  "taskName" : "ListWordFill"
+}, {
+  "taskContent" : {
+    "id" : "e8553a59-914c-425f-9901-ddacbe26aa9d",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "irregular verbs" ],
+    "rows" : [ {
+      "id" : "57949d5f-c835-4e0b-af3d-9631f0f6d514",
+      "text" : [ " I have already ", " with 5 difficult customers today." ],
+      "emptySpaces" : [ {
+        "answer" : "dealt"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "dealt", "dealed", "delt", "dalt" ]
+    }, {
+      "id" : "af753a5c-f3f1-4078-b70a-b5ed41c64e27",
+      "text" : [ " Have you ", " out the washing yet?" ],
+      "emptySpaces" : [ {
+        "answer" : "hung"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "hung", "hang", "hanged", "hunged" ]
+    }, {
+      "id" : "d5aa337b-acfa-44da-a6dd-95ac749af5b8",
+      "text" : [ " John have never ", " a woman." ],
+      "emptySpaces" : [ {
+        "answer" : "hit"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "hit", "hitted", "hat", "hits" ]
+    }, {
+      "id" : "b6423c40-a57d-4703-92ef-9fcc4a81ce2c",
+      "text" : [ " The match has already ", "" ],
+      "emptySpaces" : [ {
+        "answer" : "begun"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "begun", "began", "beginned", "begins" ]
+    }, {
+      "id" : "bea6a731-0b38-4bc1-bb26-b1a23064eb17",
+      "text" : [ " The bottle of milk has just ", " off the table." ],
+      "emptySpaces" : [ {
+        "answer" : "fallen"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "fallen", "felt", "falled", "fell" ]
+    }, {
+      "id" : "f46f0a70-db4e-4e2e-b288-84b55ae9eaa2",
+      "text" : [ "He has ", " the shopping." ],
+      "emptySpaces" : [ {
+        "answer" : "brought"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "brought", "bringed", "brung", "brang" ]
+    } ],
+    "difficulty" : 100.0
+  },
+  "taskName" : "ListWordFill"
+}, {
+  "taskContent" : {
+    "id" : "6d21d185-b8e8-4acc-8189-69edad89285a",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "Business English", "Passive Voice", "grammar", "Circular Economy" ],
+    "rows" : [ {
+      "id" : "425268f9-f2c6-493c-a9f9-a23fffca8342",
+      "text" : [ "The university start-up was hoping ", " for an innovation award." ],
+      "emptySpaces" : [ {
+        "answer" : "to be chosen"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "to be chosen", "to choose", "to have chosen" ]
+    }, {
+      "id" : "050814f0-36d7-4d4d-a057-c8dc99327e79",
+      "text" : [ "It is clear that the product needs ", " as it is near the end of its life cycle." ],
+      "emptySpaces" : [ {
+        "answer" : "updating"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "updating", "update", "updated" ]
+    }, {
+      "id" : "4273d7fd-05cd-47f5-9b89-f927ff67444a",
+      "text" : [ "The candidate's experience is ", " to the job. We should hire her." ],
+      "emptySpaces" : [ {
+        "answer" : "relevant"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "relevant", "skillful", "unfit", "matching" ]
+    }, {
+      "id" : "eafea012-5214-4c57-bf91-d215e7cf9d64",
+      "text" : [ "We are facing ", " as the sales figures have decreased significantly." ],
+      "emptySpaces" : [ {
+        "answer" : "crunch time"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "crunch time", "lunch time", "prosperity time", "crash time" ]
+    }, {
+      "id" : "15908607-7431-48f7-907e-90d1b6289230",
+      "text" : [ "Farming is the ", " of the rural economy." ],
+      "emptySpaces" : [ {
+        "answer" : "mainstay"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "mainstay", "lifespan", "bassis", "lifespan" ]
+    } ],
+    "difficulty" : 100.0
+  },
+  "taskName" : "ListWordFill"
+}, {
+  "taskContent" : {
+    "id" : "ea0bb185-fba5-4842-86cd-d3ef56b86bf6",
+    "instruction" : "Choose the word that fits the definitions:",
+    "tags" : [ ],
+    "rows" : [ {
+      "id" : "4b01ab2b-fa1b-491b-9b95-4e6790014d7f",
+      "text" : [ "the act or way of leaving place: ", "" ],
+      "emptySpaces" : [ {
+        "answer" : "egress"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "egress", "descend", "sound" ]
+    }, {
+      "id" : "38215733-3e75-41e0-ac37-692fb3448e78",
+      "text" : [ "a tendency to behave in a particular way: ", "" ],
+      "emptySpaces" : [ {
+        "answer" : "propensity"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "propensity", "smattering", "glean" ]
+    }, {
+      "id" : "27053f6e-a678-47bb-b458-57fc95d5f3d7",
+      "text" : [ "a very small amount or number: ", "" ],
+      "emptySpaces" : [ {
+        "answer" : "smattering"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "smattering", "glean", "ingress" ]
+    }, {
+      "id" : "7524ceb8-8028-413e-b55d-ef69da374084",
+      "text" : [ "come down: ", "" ],
+      "emptySpaces" : [ {
+        "answer" : "descend"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "descend", "in-depth", "winding" ]
+    }, {
+      "id" : "db6090c4-b2c8-4ae0-bd60-1e3a9771a3e3",
+      "text" : [ "done carefully and in great detail: ", "" ],
+      "emptySpaces" : [ {
+        "answer" : "in-depth"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "in-depth", "ingress", "debunk" ]
+    }, {
+      "id" : "38d1a66f-4544-42bd-85eb-bc5bb3f4c09d",
+      "text" : [ "healthy; in good condition: ", "undefined" ],
+      "emptySpaces" : [ {
+        "answer" : "sound"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "sound", "glean", "winding" ]
+    }, {
+      "id" : "b0c852c0-813f-4ea9-9f02-4a9d3369050e",
+      "text" : [ "a lot of something; big amount: ", "" ],
+      "emptySpaces" : [ {
+        "answer" : "sheer number"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "sheer number", "propensity", "egress" ]
+    }, {
+      "id" : "8a71a6fc-27e8-47b4-8f61-e32745539dc2",
+      "text" : [ "repeatedly turns in different directions: ", "" ],
+      "emptySpaces" : [ {
+        "answer" : "winding"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "winding", "debunk", "smattering" ]
+    }, {
+      "id" : "7b9d1ae6-aee5-4054-8a3b-da548a1c903c",
+      "text" : [ "the act of entering something: ", "" ],
+      "emptySpaces" : [ {
+        "answer" : "ingress"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "ingress", "egress", "propensity" ]
+    }, {
+      "id" : "4d02e8b3-e31a-46d1-82b1-ea5edaa67031",
+      "text" : [ "to collect information in small amounts and often with difficulty: ", "" ],
+      "emptySpaces" : [ {
+        "answer" : "glean"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "glean", "smattering", "debunk" ]
+    }, {
+      "id" : "22f20e74-6bb7-4cd0-997e-c4d787143cb7",
+      "text" : [ "to show that something is not true: ", "" ],
+      "emptySpaces" : [ {
+        "answer" : "debunk"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "debunk", "glean", "in-depth" ]
+    } ],
+    "difficulty" : 150.0
+  },
+  "taskName" : "ListWordFill"
+}, {
+  "taskContent" : {
+    "id" : "674f0efe-4d6c-4ed0-b7cb-8ee40abc0ded",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "inversion", "grammar" ],
+    "rows" : [ {
+      "id" : "ad51bffd-0c76-4989-9e8a-2f99f7e2c3aa",
+      "text" : [ "“I’m going out now.”\n“", " you happen to pass a chemist’s, would you get me some aspirins?”" ],
+      "emptySpaces" : [ {
+        "answer" : "Should"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "Should", "Had", "Did", "Would" ]
+    }, {
+      "id" : "7f5d42a5-8bfd-499b-b1b5-1401357d2e2a",
+      "text" : [ "\"Did you know the Queen was in town yesterday?\"\n\"Yes, ", " I gone shopping, I would have seen her.\"" ],
+      "emptySpaces" : [ {
+        "answer" : "had"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "had", "were", "was", "should" ]
+    }, {
+      "id" : "a1739da8-5292-4b5e-b1d0-cb6363135aa1",
+      "text" : [ "\"I can't understand our new German teacher's accent.\"\n\"", "" ],
+      "emptySpaces" : [ {
+        "answer" : "Nor can I."
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "Nor can I.", "Nor do I.", "Neither do I.", "Neither will I." ]
+    }, {
+      "id" : "db58a278-b107-4ba0-9fa2-b7a09ca6ad2a",
+      "text" : [ "\"So, how was the film?\"\n\"It was great! ", " you come, you would have enjoyed yourself.\"" ],
+      "emptySpaces" : [ {
+        "answer" : "Had"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "Had", "Should", "Were", "Would" ]
+    }, {
+      "id" : "3170ff9e-adac-4fc8-9895-6afa8b4092af",
+      "text" : [ "\"Jane bought a new headphones this morning.\"\n\"What a coincidence! 1.\t“I’m going out now.” “…. you happen to pass a chemist’s, would you get me some aspirins?”", "\"" ],
+      "emptySpaces" : [ {
+        "answer" : "So did I."
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "So did I.", "So have I.", "Nor did I.", "Neither have I." ]
+    } ],
+    "difficulty" : 150.0
+  },
+  "taskName" : "ListWordFill"
+}, {
+  "taskContent" : {
+    "id" : "b90d591e-13ba-4fcd-ac21-37a4e1dc357f",
+    "instruction" : "Complete the text with the missing words:",
+    "tags" : [ "vocabulary" ],
+    "rows" : [ {
+      "id" : "255c6a7e-ecd0-437c-b9c0-23b43c7b82b2",
+      "text" : [ "He ", " to avoid the fist that shot out at him." ],
+      "emptySpaces" : [ {
+        "answer" : "dodged"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "dodged", "nodded", "shirked", "lavished" ]
+    }, {
+      "id" : "096b84ee-4d1f-4d52-be4c-7ab24ff9210a",
+      "text" : [ "I can never be accused of ", " my responsibilities. I have all tasks completed long before deadlines." ],
+      "emptySpaces" : [ {
+        "answer" : "shirking"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "shirking", "ducking", "beeing", "swaying" ]
+    }, {
+      "id" : "883eec8e-24c3-4059-bf2a-ebe22e990c01",
+      "text" : [ "His fear is ", ", no doubt about it." ],
+      "emptySpaces" : [ {
+        "answer" : "genuine"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "genuine", "neutral", "well-off", "truthful" ]
+    }, {
+      "id" : "a4467366-1932-4e63-b432-49ae52936674",
+      "text" : [ "He ", " his head and entered the small cave." ],
+      "emptySpaces" : [ {
+        "answer" : "ducked"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "ducked", "bent", "evaded", "swayed" ]
+    }, {
+      "id" : "695b6e47-62fb-4073-bac4-703e84aede3b",
+      "text" : [ "You need a ", " passport to go abroad." ],
+      "emptySpaces" : [ {
+        "answer" : "valid"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "valid", "current", "actual", "affluent" ]
+    }, {
+      "id" : "8f6a9aa5-b376-4e11-9285-2b542b2d101a",
+      "text" : [ "After the accident, he was fitted with ", " limb." ],
+      "emptySpaces" : [ {
+        "answer" : "an artificial"
+      } ],
+      "startWithText" : true,
+      "possibleAnswers" : [ "an artificial", "a false", "an affluent", "an actual" ]
+    } ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ListWordFill"
+}, {
+  "taskContent" : {
+    "id" : "417447d6-ab5c-4911-a647-2b1a56e05cd2",
+    "instruction" : "Put the phrases in order to unjumble the story about the Slumdog Professor:",
+    "tags" : [ ],
+    "sentences" : [ "In the late 1990s, educational researcher Dr Sugata Mitra installed a computer with Internet access in the wall of a New Delhi slum.", "Children with no previous knowledge of IT quickly started to play with the computer and in the process learnt how to use it and go online.", "After the “Hole in the Wall” experiment, Mitra went on to leave questions for children to research, letting them decide how to do this, which in some case involved the children first using the computer to learn English.", "From this research Mitra concluded that learning was more effective when children had no teacher to ask and also had to share the computer, because this promoted self-instruction and sharing of knowledge.", "However, Mitra also acknowledged that adults have a small role to play in children’s education.", "That’s why he set up “The Granny Cloud”,  a network of online non-expert to whom the children reported their discovery and whose job was just to listen, praise and encourage.", "Sugata Mitra’s work has won prizes and attracted a lot of attention, but the long-term success of his experiments has been questioned by some critics." ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ChronologicalOrder"
+}, {
+  "taskContent" : {
+    "id" : "a276098f-8b39-41c1-a9b2-134ffb47b372",
+    "instruction" : "Put the lines in order to unjumble the constructive feedback:",
+    "tags" : [ "discourse makers", "logical sequence" ],
+    "sentences" : [ "When you are late for team meetings, I get angry.", "As I think it is wasting the time of all the other team members and we are never able to get through all of the agenda items.", "Therefore, I would like you to consider finding some way of planning your schedule that lets you get to these meetings on time.", "Because that way we can be more productive at the team meetings.", "Moreover, we can all keep to our tight schedules." ],
+    "difficulty" : 150.0
+  },
+  "taskName" : "ChronologicalOrder"
+}, {
+  "taskContent" : {
+    "id" : "3c1dfce3-a8d5-4efa-8604-d859ea890d43",
+    "instruction" : "Put the phrases in order to unjumble the text about the Value of Sleep:",
+    "tags" : [ "phrasal verbs", "prepositions" ],
+    "sentences" : [ "Our ultimate escape from whatever life has thrown", "at us during the day is sleep. Nature’s healer lowers our eyelids and covers us", "with the comforting blanket of unconsciousness. These periods of unconsciousness in which our bodies and minds can recuperate are essential", "to our health and well-being and yet an increasing number of people today suffer", "from an inability to enjoy this necessary form of escape. Insomnia affects a high proportion of us and this debilitating malady can have dire results. An insomniac wades", "through his waking hours in a fog, with his creative thought deadened, his reflexes slowed and his sensations dimmed. If an inability", "to sleep persists for more than a week or two, chronic insomnia sets in, sometimes causing severe", "depression and leaving the sufferer incapable of coping with everyday life." ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ChronologicalOrder"
+}, {
+  "taskContent" : {
+    "id" : "67bd62aa-c784-49de-86a7-3cfd0574c321",
+    "instruction" : "Put the phrases in order to unjumble the book recommendation:",
+    "tags" : [ "phrasal verbs" ],
+    "sentences" : [ "The media is full of warnings about teens and modern life: too much technology and video games. Journalists and social theorists have looked", "back at the golden age before kids stood", "around playing with their phones and have decided enough and enough! But the writer Steven Johnson has thought it", "over and come to a different conclusion. His book, Everything Bad is Good for You: How Today’s Popular Culture is Making us Smarter, boils", "down to one message: kids should carry on using technology because as the world speeds up, these skills turning them", "into quick-thinking, multi-tasking 21st-century citizens. Who’s right?  Read the book and find", "out if the doom-mongers got it wrong. It will definitely give you food for thought." ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ChronologicalOrder"
+}, {
+  "taskContent" : {
+    "id" : "b61d68b3-8c9a-4fea-93b7-26504f6e07d3",
+    "instruction" : "Put the lines in order to unjumble the text about the Collaborative Consumption:",
+    "tags" : [ "phrasal verbs", "prepositions" ],
+    "sentences" : [ "The market in sharing goods and services is now estimated to be worth hundreds of billions. Nor", "is it a fringe craze. On a planet with finite resources, collaborative consumption is considered to be the sign", "of things to come. As yet, transport and travel are the most important sharing sectors but the movement’s advocates see little reason why the idea won’t keep spreading. As", "long as people need goods and services, the opportunities are endless. Whereas sharing, renting and swapping used to take", "place in market squares, these days smartphones are used to make electronic transactions. The popularity of sharing in neighbourhoods with a lot of young residents suggests that they are starting to question", "whether big fences make good neighbours. It seems that at least for the young generation the days of keeping", "up with the Joneses are over. Instead, we’ll be sharing cars and lawnmowers with them.  This seems a reasonable prediction provided the majority of consumers can be convinced there is a world", "of difference between sharing and hand-me-down." ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ChronologicalOrder"
+}, {
+  "taskContent" : {
+    "id" : "29710b9b-0960-4c1b-9708-14359551767f",
+    "instruction" : "Put the lines in order to unjumble the text about resurrecting extinct species:",
+    "tags" : [ "phrasal verbs", "prepositions", "idioms" ],
+    "sentences" : [ "The idea of resurrecting extinct species used to be science fiction, but this development may", "well come true because the science already exists. The recent explosion", "in genome research tells us that the recipe for making a creature lies in its DNA. Creating animals from a genome sequence is impossible now, but the", "chances are it will happen soon. When an animal dies in a dry cave or in ice, we can find intact genome sequences. We then need a surrogate species to give birth to an animal. If we wanted to bring", "back  a mammoth, a surrogate species would be an elephant. As a result of this development, fears about the extinction of some species could become a", "distant memory. As the science gathers", "pace, conservationists are getting ready; they have began freezing tissue samples of these animals.  The days of campaigns to save the whale and other species could soon be", "over as extinction becomes a thing of the past." ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ChronologicalOrder"
+}, {
+  "taskContent" : {
+    "id" : "e4b98da2-6c8e-48b7-87b2-37c3e6994167",
+    "instruction" : "Put the lines in order to unjumble the text about the Maker Movement:",
+    "tags" : [ "discourse makers", "logical sequence" ],
+    "sentences" : [ "People have always created their own objects, but today the practice is growing and it even has a name: a Maker Movement.", "The movement uses a DIY (Do-It-Yourself) ethic and is notable for people sharing their creations and getting together in Fab Labs (Fabrication Laboratories) or Maker Spaces to collaborate on their designs.", "The people involved are a curious mix of computer hackers, skilled artisans with an eye for good design, and tinkerers – the type of people who used to spend their free time building toy railway sets.", "In addition to these passionate adult creators, the Maker Movement is increasingly being recognised and practised in schools, with the teachers appreciating how Maker projects combine elements of maths, science, and art, as well as creativity and critical thinking.", "Most of the products that schoolchildren create in those projects are simple, for example toys made from recycled cardboard or model towers built from dry spaghetti.", "But in some areas, most notably in San Francisco, the Maker Movement is using advanced technology to create things that may benefit all of humanity.", "Recent products include prosthetic arms for war victims, 3D models for wild habitats that allow us to predict climate change and robots to help the disabled at home.", "Many such products can be seen in the Maker Fairs held around the world." ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ChronologicalOrder"
+}, {
+  "taskContent" : {
+    "id" : "969a69e0-9aaf-4ac9-97e4-909eb36db8d8",
+    "instruction" : "Put the phrases in order:",
+    "tags" : [ ],
+    "sentences" : [ "Try to understand the problem and define the purpose of the program.", "Once you have analysed the problem, define the successive logical steps of the program.", "Write the instructions in a high-level language of your choice.", "Once the code is written, test it to detect bugs or errors.", "Debug and fix errors in your code.", "Finally, review the program’s documentation." ],
+    "difficulty" : 100.0
+  },
+  "taskName" : "ChronologicalOrder"
+}, {
+  "taskContent" : {
+    "id" : "b80d991a-8b0a-471c-9fdd-ead0285e13a4",
+    "instruction" : "Put the phrases in order to unjumble the news story about an invention:",
+    "tags" : [ ],
+    "sentences" : [ "Expensive repairs for cracked screens and broken tennis rackets could one day become a thing of the past, according to researchers at the University of Illinois.", "They have announced that they have made an important technological breakthrough: plastic that can repair itself.", "The breakthrough is an example of ‘bio-mimicry’, where scientists copy strategies used by living creatures.", "In this case, the technology was inspired by the clotting properties of human blood which can heal the body’s wounds.", "More specifically,  the idea is that the plastic is filled with tiny channels, like blood vessels, which carry liquid chemicals to the damaged area, which then harden and repair the cracks.", "However impressive the invention sounds, researchers admitted that it was in early stages of development and it would be a long time before the technology would come into use.", "They also added that the technology was likely to be used on aircraft and spacecraft, and other things that are difficult to repair, like underwater drilling equipment, before it is used in commercial products." ],
+    "difficulty" : 200.0
+  },
+  "taskName" : "ChronologicalOrder"
+}, {
+  "taskContent" : {
+    "id" : "8790b633-c1f6-4ce2-9a50-6afc1ef89099",
+    "instruction" : "Match the phrases with their definitions:",
+    "tags" : [ "Vocabulary", "Internet" ],
+    "leftWords" : [ "snippet", "chunk", "to rate", "entry", "bottleneck", "circuit failure", "data encapsulation", "factor" ],
+    "rightWords" : [ "fragment", "znaczna część, kawałek", "klasyfikować/oceniać", "wpis", "wąskie gardło", "uszkodzenie obwodu", "obudowywanie danych", "czynnik" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7
+    },
+    "difficulty" : 150.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "ce84f746-234e-4058-bd1f-21b82c04f69a",
+    "instruction" : "Match the words with their synonyms:",
+    "tags" : [ ],
+    "leftWords" : [ "GLEAN", "DEBUNK", "SOUND", "WINDING", "IN DEPTH", "EGRESS", "ITEM" ],
+    "rightWords" : [ "obtain, gather", "invalidate, discredit", "healthy, toned, in good shape", "full of twists and turns, zigzagging", "thoroughly, extensively", "exit, way out", "thing, article, object" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6
+    },
+    "difficulty" : 100.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "4c658f81-c545-46aa-a3b6-06fc8e998d94",
+    "instruction" : "Match the phrases:",
+    "tags" : [ "Vocabulary", "Big Data" ],
+    "leftWords" : [ "data as service (DaaS)", "data cleansing", "disparate data", "distributed processing", "inventory data", "machine learning", "performance", "structured data", "unstructured data", "tabular database" ],
+    "rightWords" : [ "dane jako usługa", "oczyszczanie danych", "zróżnicowane dane", "przetwarzanie rozproszone", "dane inwentaryzacyjne", "uczenie maszynowe", "wydajność", "dane ustrukturyzowane", "dane nieustrukturyzowane", "tabelaryczna baza danych" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7,
+      "8" : 8,
+      "9" : 9
+    },
+    "difficulty" : 130.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "ebd8a307-076a-413a-a3a9-5fd1acaa1bbb",
+    "instruction" : "Match the words with their translations:",
+    "tags" : [ ],
+    "leftWords" : [ "keynote", "to convey (information)", "to unveil (a theme)", "consistent", "stiff", "a knack (for sth)", "a flair", "intricate", "dazzling", "to rehearse" ],
+    "rightWords" : [ "myśl przewodnia, główny motyw", "przekazywać/dostarczać (informacje)", "odkryć, ujawnić, odsłonić", "spójny, zgodny, konsekwentny", "sztywny, zdrętwiały", "talent, zręczność", "klasa, dar", "zawiły, misterny", "olśniewający", "próbować, przygotowywać się" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7,
+      "8" : 8,
+      "9" : 9
+    },
+    "difficulty" : 100.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "c15a8445-9138-4e43-93a1-84aba782e30d",
+    "instruction" : "Match the phrases:",
+    "tags" : [ "Vocabulary", "Big Data" ],
+    "leftWords" : [ "cluster resource management", "complementary data collection", "directed acyclic graph (DAG)", "to execute", "fit for analysis", "predictive analytics", "to reveal", "to spot", "relatively low cost", "homogeneity" ],
+    "rightWords" : [ "zarządzanie zasobami klastra", "uzupełniający zbiór danych", "skierowany graf acykliczny", "uruchamiać/wykonywać", "nadający się do analizy", "analityka predykcyjna", "wyjawiać/ujawniać/odsłaniać", "zauważać/dostrzegać", "stosunkowo niski koszt", "jednorodność" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7,
+      "8" : 8,
+      "9" : 9
+    },
+    "difficulty" : 150.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "1e0dc36b-e24f-4214-ab76-b3fc74261eb5",
+    "instruction" : "Match the words with their synonyms:",
+    "tags" : [ ],
+    "leftWords" : [ "SMATTERING", "DESCEND", "INEVITABLE", "PROPENSITY", "APPROACH", "OVERESTIMATE", "INGRESS" ],
+    "rightWords" : [ "bit, small amount", "go down, fall, drop", "bound to happen, predestined, unavoidable", "tendency, inclination", "attitude, method, way, manner", "overvalue, overstate, amplify", "entry, entrance" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6
+    },
+    "difficulty" : 100.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "77b7dc12-c5d3-43f7-8a75-c579b0902276",
+    "instruction" : "Match the phrases:",
+    "tags" : [ "Vocabulary", "Big Data" ],
+    "leftWords" : [ "analytical algorithm", "archival data", "batch processing", "cluster", "data analysis", "dataset", "heterogeneity", "data", "input file", "output file" ],
+    "rightWords" : [ "algorytm analityczny", "dane archiwalne", "przetwarzanie wsadowe", "klaster", "analiza danych", "zbiór danych", "niejednorodność", "dane", "plik wejściowy", "plik wyjściowy" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7,
+      "8" : 8,
+      "9" : 9
+    },
+    "difficulty" : 200.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "d690f0f0-a375-46c0-bb1d-8d2cfc23fdcb",
+    "instruction" : "Match the phrases with their definitions:",
+    "tags" : [ "Vocabulary", "Internet" ],
+    "leftWords" : [ "parsing", "stack", "to fetch", "to garble", "to jitter", "to retrieve data", "wire", "factor" ],
+    "rightWords" : [ "analiza składniowa", "stos", "pobierać", "zniekształcać/przeinaczać", "drgać/drżeć", "pobierać/odnaleźć dane", "przewód", "czynnik" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7
+    },
+    "difficulty" : 150.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "dcb3e553-7518-400e-bc91-b7353196b2b5",
+    "instruction" : "Match the phrases:",
+    "tags" : [ "Vocabulary", "Big Data" ],
+    "leftWords" : [ "data mining", "pattern identification", "class label", "quantitative modelling", "class membership", "explanatory variable", "variable", "fault tolerant", "spurious pattern", "outlier" ],
+    "rightWords" : [ "eksploracja danych", "identyfikacja wzorca", "etykieta klasy", "modelowanie ilościowe", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7,
+      "8" : 8,
+      "9" : 9
+    },
+    "difficulty" : 200.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "24a42953-79dd-41c7-bd17-0bcdb943bd7f",
+    "instruction" : "Match the phrases with their definitions:",
+    "tags" : [ "Vocabulary", "Internet" ],
+    "leftWords" : [ "keyword", "browser", "indexed search", "outside link", "hit list", "occurence", "priority queue", "relevant" ],
+    "rightWords" : [ "słowo kluczowe", "przeglądarka", "wyszukiwanie indeksowe", "link zewnętrzny", "lista wyników wyszukiwania", "wystąpienie", "kolejka priorytetowa", "istotny/trafny" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7
+    },
+    "difficulty" : 150.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "a43804cc-7d01-4f09-b4b5-c2995caddcc0",
+    "instruction" : "Match the words with their translations:",
+    "tags" : [ ],
+    "leftWords" : [ "data mining", "pattern identification", "quantitative modelling", "class label", "class membership", "explanatory variable", "variable", "fault-tolerant", "spurious pattern", "outlier" ],
+    "rightWords" : [ "eksploracja danych", "identyfikacja wzorca", "modelowanie ilościowe", "etykieta klasy", "przynależność do klasy", "zmienna objaśniająca", "zmienna", "odporny na błędy", "fałszywy wzorzec", "wartość skrajna" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7,
+      "8" : 8,
+      "9" : 9
+    },
+    "difficulty" : 100.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "dda3a108-21d3-46a1-bf7f-7f98aa5536de",
+    "instruction" : "Match the phrases:",
+    "tags" : [ "Vocabulary", "Big Data" ],
+    "leftWords" : [ "burst node", "chance node", "decision node", "end node", "leaf node", "network pruning", "sink node", "differential analysis", "itemset", "residual" ],
+    "rightWords" : [ "węzeł wyjściowy", "węzeł losowy", "węzeł decyzyjny", "węzeł końcowy", "liść / węzeł liścia", "przycinanie sieci", "węzeł zbiorczy", "analiza różnicowa", "zbiór produktów", "reszta (w analizie regresji)" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7,
+      "8" : 8,
+      "9" : 9
+    },
+    "difficulty" : 200.0
+  },
+  "taskName" : "WordConnect"
+}, {
+  "taskContent" : {
+    "id" : "415a5fc4-7e70-4972-9d75-385f03cb9e05",
+    "instruction" : "Match the phrases:",
+    "tags" : [ "Vocabulary", "Big Data" ],
+    "leftWords" : [ "data precessing", "data recipient", "data science", "data storage", "distributed file system", "distributed processing", "job scheduling", "latency", "search result", "semi-structured data" ],
+    "rightWords" : [ "przetwarzanie danych", "odbiorca danych", "badanie danych", "przechowywanie danych", "rozproszony system plików", "przetwarzanie rozproszone", "szeregowanie zadań", "opóźnienie/zwłoka", "wynik wyszukiwania", "dane częściowo ustrukturyzowane" ],
+    "correctMapping" : {
+      "0" : 0,
+      "1" : 1,
+      "2" : 2,
+      "3" : 3,
+      "4" : 4,
+      "5" : 5,
+      "6" : 6,
+      "7" : 7,
+      "8" : 8,
+      "9" : 9
+    },
+    "difficulty" : 150.0
+  },
+  "taskName" : "WordConnect"
 } ]

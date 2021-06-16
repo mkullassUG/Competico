@@ -9,7 +9,7 @@ body {
 
 /* telefony */
 @media (max-width: 576px) {
-  h2 {
+  h2:not(#mainTitle1):not(#mainTitle2) { /* not bo w taskmanager tego uzywam wtf*/
     font-size: 1.5rem;
   }
 }
@@ -71,7 +71,7 @@ body {
 #lobbyPlayersTable{
 
   overflow-y: scroll;
-  height: 240px;
+  height: 235px;
 }
 
 #lobbyBottom, #lobbyCenter, #lobbyTop {

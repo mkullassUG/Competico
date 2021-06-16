@@ -1,4 +1,59 @@
 {
+    "#taskSettingsPanel":{
+        "pl": "Zarządzanie zestawami",
+        "eng" : "Taskset management"
+    },
+    "#btnListWordFill": {
+        "pl": "Wybierz słowo",
+        "eng" : "Choose word"
+    },
+    "#btnListChoiceWordFill": {
+        "pl": "Wybierz właściwą opcję",
+        "eng" : "Choose correct option"
+    },
+    "#twoColumnsWariant": {
+        "pl": "Połącz w pary",
+        "eng" : "Pair up"
+    },
+    "#btnChronologicalOrder": {
+        "pl": "Porządkowanie chronologiczne",
+        "eng" : "Chronological ordering"
+    },
+    "#btnListSentenceForming": {
+        "pl": "Układanie zdań z podanych wyrazów",
+        "eng" : "Arranging sentences"
+    },
+    "#picturesVariant": {
+        "pl": "Warianty z obrazkami",
+        "eng" : "Variants with pictures"
+    },
+    "#btnWordConnect": {
+        "pl": "Łączenie linią",
+        "eng" : "Connect line"
+    },
+    "#btnWordConnectAnswerType": {
+        "pl": "Dopasowanie drugiej kolumny przez ręczne wpisywanie odpowedzi",
+        "eng" : "Match the second column by typing"
+    },
+    "#btnWordConnectAnswerPool": {
+        "pl": "Dopasowanie drugiej kolumny z podanego zestawu",
+        "eng" : "Match the second column from set"
+    },
+    "#btnPictureToManyWords": {
+        "pl": "Jeden obrazek i wiele odpowiedzi.",
+        "eng" : "One picture and many answers"
+    },
+    "#btnSentenceToManyPictures": {
+        "pl": "Jeden tekst i wiele obrazków",
+        "eng" : "One text and many pictures"
+    },
+    "#btnManyPicturesManyWords": {
+        "pl": "Wiele obrazków i wiele słów",
+        "eng" : "Lots of pictures and lots of words"
+    },
+
+    
+
 
     ".footer > .container.text-center > .footer-text.m-auto": {
         "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
@@ -50,7 +105,7 @@
         "pl": "Adres email",
         "eng": "Email Address"
     },
-    "#changePoasswordButton": {
+    "#changePasswordButton": {
         "pl": "Zmień hasło",
         "eng": "Change password"
     },
@@ -63,7 +118,7 @@
         "eng": "Change current password"
     },
     "#editProfileModalLongTitle": {
-        "pl": "Czy napewno edytowac profil?",
+        "pl": "Czy na pewno edytowac profil?",
         "eng": "Are you sure you want to edit profile?"
     },
     "#editEmailModalLongTitle": {
@@ -134,12 +189,19 @@
         "pl": "Wprowadź swoje obecne hasło i nowe hasło",
         "eng": "Type current password and new password"
     },
-
+    "#sendEmailVerifyButton": {
+        "pl": "Potwierdź email",
+        "eng": "Verify email"
+    },
     
     "OTHER_PAGE_ELEMENTS": {
         "document.title": {
             "pl": "Profil",
             "eng": "Profile"
+        },
+        "sendEmailVerifyButton2": {
+            "pl": "Wyślij ponownie",
+            "eng": "Send again"
         }
     }
 }

@@ -17,6 +17,23 @@ body{
     box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
 }
 
+.emailVerifiedClass::after {
+    color: transparent;  
+    text-shadow: 0 0 0 lime;
+    content: "🐦";
+}
+.emailNotVerifiedClass::after {
+    color: transparent;  
+    text-shadow: 0 0 0 red;
+    content: url('/assets/emailwarning.png');
+}
+.emailWarning {
+    background-color: gray;
+    border-radius:50%;
+    color:white;
+}
+
+
 .iconbig {
     height: 30px;
 }
