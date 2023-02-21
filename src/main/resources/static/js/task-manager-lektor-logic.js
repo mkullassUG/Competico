@@ -70,7 +70,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 {
                     if (debug)
                         console.log(data);
-                    if ( data !== "") //serwer ma nic nie wysyłać, jeśl iwyśle to znaczy że login.html
+                    if ( data !== "")
                         callback(0);
                     else if ( callback )
                         callback(data);
@@ -166,7 +166,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             });
         }
 
-        //nie potrzebuje bo moge wyciągnąć z wcześniej pobranych tasksetów
         self.deleteTask = (taskID, callback) => {
 
             return deps.$.ajax({
@@ -285,9 +284,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         }
 
         self.getImportedTasksFile = (isJson, taskSetName = 'default', callback) => { 
-
-            if ( debug )
-                console.log("getImportedTasksFile: " + taskSetName);
             
             return fetch("/api/v1/tasksets/json/file?tasksetName="+encodeURIComponent(taskSetName))
             .then(resp => resp.blob())
@@ -307,8 +303,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         }
 
         self.getAllTasksetsFile = (isJson, callback) => {
-            if ( debug )
-                console.log("getAllTasksetsFile");
             
             return fetch("/api/v1/tasksets/all/json/file")
             .then(resp => resp.blob())
@@ -326,7 +320,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             });
         }
 
-        //usused
         self.getNumberOfTasks = (taskSetName, callback) => {
 
             return deps.$.ajax({
@@ -453,7 +446,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                     if (debug) {
                         console.log("putEditTask success");
                         console.log(data);
-                        console.log(taskID);
                     }
                     if ( callback )
                         callback(data, taskID)
@@ -514,10 +506,10 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         /*       logic variables          */
         self.playerInfo = data.account;
         debug = debug;
-        self.focusedTaskID; //wybrane z tablicy zadań dla usuń / edytuj
-        self.lastEditedTaskID; // wybrane po potwierdzeniu edycji danego zadania
-        self.currentTaskVariant; // ustawianie dema
-        self.currentVariant; //edytowanie
+        self.focusedTaskID; 
+        self.lastEditedTaskID; 
+        self.currentTaskVariant;
+        self.currentVariant; 
         self.CreatorCore;
         self.tablicaPolskichNazwTaskow;
         self.allTaskIds = [];
@@ -529,7 +521,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         self.isFirstTableSetup = true;
         
         self.tasksets = data.tasksets;
-        self.tasksetOfCurrentTask; //unused
+        self.tasksetOfCurrentTask; 
         self.currentlyEditingTaskIds = [];
         self.currentEditingTasksetNames = [];
         var saveTaskToChosenTaskset = false;
@@ -546,7 +538,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 $("#btnTaskConverter").remove();
                 $("#convertTasksModalCenter").remove();
             } else {
-                $("#btnTaskConverter").removeClass('collapsed');
+                $("#btnTaskConverter").removeClass('collapse');
 
             }
 
@@ -575,7 +567,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 
             otherFrontendLogic();
     
-            //modal button bug fixes
             deps.$('#saveTaskModalCenter').on('shown.bs.modal', function (e) {
                 deps.$('#btnSaveTask').one('focus', function (e) {
                     deps.$(this).blur();
@@ -610,8 +601,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
     
             
             var setupSlider = (id) => {
-                if ( debug )
-                    console.log(id);
+                
                 const slider = deps.$("#" +id)[0];
                 const min = slider.min;
                 const max = slider.max;
@@ -627,14 +617,16 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             }
     
             for ( key in self.tablicaPolskichNazwTaskow) {
-                //SETUP SLIDERS for taskDivs:
                 setupSlider("customRange" + key);
             }
     
             deps.NavbarLogic(self.playerInfo.accountInfo, debug);
     
             listenersSetup();
-    
+            
+            if ( typeof MessagesModule !== undefined )
+                MessagesModule(deps).getInstance(false, (data)=>{data.setFunctionToInform(self.messagerFunction);});
+                
             if (successfulCreationCallback)
                 successfulCreationCallback(true);
         }
@@ -642,8 +634,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         self.InitWithPageLanguageChanger = (data, lang) => {
 
             if ( data === true){
-                if ( debug )
-                    console.log("PageLanguageChanger done");
                 return;
             }
 
@@ -655,6 +645,24 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             if (deps.$("#infoNavBtn").length)
                 deps.$("#infoNavBtn").text(deps.$("#infoNavBtn").text().replace(/(^(Tasksets)|^(Zestawy))/, ((typeof deps.PageLanguageChanger() != "undefined")?deps.PageLanguageChanger().getTextFor("tasksets2",lang,true):"Zestawy")));
         }
+
+        /* messages */
+        self.messagerFunction = (data) => {
+
+            if ( data.areNew ) {
+                //Opcja dodania efektu dźwiękowego:
+                //console.log("Ding!")
+            }
+    
+            var updateNavbar = () => {
+                $("#messageUnreadMessages").text(
+                    (data.numberOfMessages+data.numberOfLobbies)?
+                    ((data.numberOfMessages+data.numberOfLobbies)>99?
+                    "99+":(data.numberOfMessages+data.numberOfLobbies)):"");
+                $("#messageAwaitingRequests").text(data.numberOfRequests?(data.numberOfRequests>99?"99+":data.numberOfRequests):"");
+            }
+            updateNavbar();
+        }
         /*       event listeners          */
         var listenersSetup = () =>{
             
@@ -664,47 +672,22 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                     if (deps.$("#btn" + wariantName).length)
                         deps.$("#btn" + wariantName).on("click",() => {
                             var wariantNameInner = wariantName;
-                            if (debug)
-                                console.log("btn" + wariantNameInner);
                             self.changeVariant(wariantNameInner);
                             
                             deps.$("#mainNavbarDropdown").hasClass("show")?deps.$(`[data-target="#mainNavbarDropdown"]`).click() :null;
-                            // switch ( wariantNameInner ) {
-                            //     case 'WordFill':
-                            //         deps.$("#wordFillDivTaskText").focus();
-                            //         deps.$(".dropdown-menu").removeClass("show");
-                            //     break;
-                            //     case "OptionSelect":
-                            //         deps.$("#OptionSelectDivTaskText").focus();
-                            //         deps.$(".dropdown-menu").removeClass("show");
-                            //     break;
-                            // }
                         });
         
                     if (deps.$("."+ wariantName +"BtnClass").length)
                         deps.$("."+ wariantName +"BtnClass").on("click",() => {
                             var wariantNameInner = wariantName;
-                            if (debug)
-                                console.log(wariantNameInner + "BtnClass");
                             self.changeVariant(wariantNameInner);
         
-                            // switch ( wariantNameInner ) {
-                            //     case 'WordFill':
-                            //         deps.$("#wordFillDivTaskText").focus();
-                            //         deps.$(".dropdown-menu").removeClass("show");
-                            //     break;
-                            //     case "OptionSelect":
-                            //         deps.$("#OptionSelectDivTaskText").focus();
-                            //         deps.$(".dropdown-menu").removeClass("show");
-                            //     break;
-                            // }
                         });
                 }
                 for ( wariantName in tablicaPolskichNazwTaskow)
                     makeBtnListener(wariantName);
             }
     
-            //setup wariant button listeners from dropdown menu
             prepareWariantButtonListeners(self.tablicaPolskichNazwTaskow);
             
             if ( deps.$("#taskSettingsPanel, #btnStopCreatingTask").length) {
@@ -715,34 +698,23 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 }
 
                 deps.$("#taskSettingsPanel").on('click', (e) => {
-                    //notDoubleClickOnTasksetSettingsFix
                     var tasksetSettingsButtonHref = $("#taskSettingsPanel").attr("href").split("#");
                     
                     if ( tasksetSettingsButtonHref[1] && tasksetSettingsButtonHref !== deps.window.location.hash.replace("#",""))
                         deps.window.location.hash = tasksetSettingsButtonHref[1];
 
                     self.setupTitleAndButtonsForVariantsPresence();
-                    /*TODO 2021-05-30: BUG
-                        nie wiem jak rozwiązac tego buga,
-                        nie moge pozwolić na tak po prostu zaprzestanie pisania taska i przejścia na ekran zestawów
-                    */
-                    //self.currentEditingTasksetNames = [];
-                    //self.currentlyEditingTaskIds = [];
                 });
             }
 
 
             if (deps.$("#btnDownloadJsonImportedTasksSet, #btnDownloadJsonImportedTasks").length)
                 deps.$("#btnDownloadJsonImportedTasksSet, #btnDownloadJsonImportedTasks").on("click",()=>{
-                    if (debug)
-                        console.log("btnDownloadJsonImportedTasks / Set");
                     self.downloadImportedTasks();
                 });
 
             if (deps.$("#btnSendSaveTask").length)
                 deps.$("#btnSendSaveTask").on("click",()=>{
-                    if (debug)
-                        console.log("btnSendSaveTask");
                     
                     var tasksets = getChosenTasksets();
                     if ( !tasksets.length )
@@ -752,32 +724,19 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 });
             if (deps.$("#btnSendEditTask").length)
                 deps.$("#btnSendEditTask").on("click",(e)=>{
-                    if (debug)
-                        console.log("btnSendEditTask");
-                    // var taskID = deps.$(e.target).data("taskid");
                     self.editTask([self.focusedTaskID], true);
                 });
             if (deps.$("#btnSendSaveEditTask").length)
                 deps.$("#btnSendSaveEditTask").on("click",(e)=>{
-                    if (debug)
-                        console.log("btnSendSaveEditTask");
-    
-                    //var taskID = deps.$(e.target).data("taskid");
                     self.saveEditTask();
                 });
             if (deps.$("#btnSendDeleteTask").length)
                 deps.$("#btnSendDeleteTask").on("click",(e)=>{
-                    if (debug)
-                        console.log("btnSendDeleteTask");
-                    // var taskID = deps.$(e.target).data("taskid");
                     self.deleteTask(self.focusedTaskID);
                 });
             if (deps.$("#btnSendDeleteAllTasks").length)
                 deps.$("#btnSendDeleteAllTasks").on("click",(e)=>{
-                    if (debug)
-                        console.log("btnSendDeleteAllTasks");
                         
-                    //zakładam że tylko jeden task jest obecnie oglądany
                     Ajax.deleteAllTasks(self.currentEditingTasksetNames[0],
                         (data => {
                             if ( data === false ) {
@@ -785,16 +744,13 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                                 return;
                             }
 
-                            //usuwam tego taska z tablic jeśli jest tam nadal
-                            //TODO: tutaj odfiltrować od zestawu a nei wszystkie..
                             var mapOfAllTaskIdFromTaskset = self.tasksets[self.currentEditingTasksetNames[0]].map(task => task.taskID);
 
                             self.allTaskIds = self.allTaskIds.filter(t => !mapOfAllTaskIdFromTaskset.includes(t));
                             self.oldTaskIds = self.oldTaskIds.filter(t => !mapOfAllTaskIdFromTaskset.includes(t));
                             self.newTaskIds = self.newTaskIds.filter(t => !mapOfAllTaskIdFromTaskset.includes(t));
                             self.editedTaskIds = self.editedTaskIds.filter(t => !mapOfAllTaskIdFromTaskset.includes(t));
-                            //TODO 2021-05-23 nie usuwam teraz wszyskich, moge edytować z innego zestawu? czy wyłączam wtedy i zapominam to focusedTaskID?
-                            //jeśli usuwam tego co edytuje to chowam przycisk
+                            
                             if ( mapOfAllTaskIdFromTaskset.includes(self.focusedTaskID))
                                 self.focusedTaskID = undefined;
                             if ( mapOfAllTaskIdFromTaskset.includes(self.lastEditedTaskID))   
@@ -808,14 +764,10 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 });
             if (deps.$("#btnDemoTask").length)
                 deps.$("#btnDemoTask").on("click",(e)=>{
-                    if (debug)
-                        console.log("btnDemoTask");
                     self.setupDemo();
                 });
             if (deps.$("#btnDemoTaskEnd").length)
                 deps.$("#btnDemoTaskEnd").on("click", (e) => {
-                    if (debug)
-                        console.log("btnDemoTaskEnd");
                     self.endDemo();
                 });
                 
@@ -834,11 +786,9 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                         }
     
                         const url = deps.window.URL.createObjectURL(blob);
-                        // const a = document.createElement('a');
                         const a = $('<a>');
                         a[0].style.display = 'none';
                         a[0].href = url;
-                        // the filename you want
                         a[0].download = 'importedTasksetsFile.json';
                         deps.window.document.body.appendChild(a[0]);
                         a[0].click();
@@ -850,7 +800,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
             if (deps.$("#FileInputSingleTaskset").length) {
 
-                //ustalam nazwe w zmienej żeby skrócić
                 var singleTasksetName = "FileInputSingleTaskset";
                 deps.$("#" + singleTasksetName).change( (evt)=>{fileInputTableChange(singleTasksetName,evt)});
                 if (deps.$("#btnUploadJsonImportedTasks, #btnUploadJsonImportedTasksSet").length)
@@ -866,7 +815,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
             if (deps.$("#FileInputMultipleTasksets").length) {
 
-                //ustalam nazwe w zmienej żeby skrócić
                 var multipleTasksetsName = "FileInputMultipleTasksets";
                 deps.$("#"+multipleTasksetsName).change( (evt)=>{fileInputTableChange(multipleTasksetsName,evt)});
                 if (deps.$("#btnUploadJsonImportedTasksToTaskset").length)
@@ -902,9 +850,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                     var nextSibling = input.nextElementSibling
                     nextSibling.innerText = fileName
     
-                    //nie wspierane przez esprima.js
-                    //async pojawił się dopwiro w ECMAScript 2017
-                    //2021-05-09 usunąłem async i await
                     function readFile (evt) {	
                             
                         var Input = evt.target;
@@ -1008,7 +953,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                             jsonStr = JSON.parse(jsonStr);
                             
                             var typeOfData = checkIfJsonHasObjectWithTasksetOrArrayOfTasksOrArrayOfTasksets(jsonStr);
-                            console.log(typeOfData);
                             if ( typeOfData === 'other') {
                                 deps.$("#convertFileInvalidEmptyFile").show();
                                 deps.$("#customConvertFileLabel").addClass("invalid-file");
@@ -1026,8 +970,11 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                                 showTasksetImportTable(jsonStr);
                             else if ( typeOfData === 'array z tasksetami')
                                 showTasksetArrayImportTable(jsonStr);
-                            else
-                                console.warn("To nie powinno się wydarzyć! pewnie nie pusty plik json bez danych");
+                            else {
+                                
+                                if ( debug )
+                                    console.warn("To nie powinno się wydarzyć! pewnie nie pusty plik json bez danych");
+                            }
 
                         } else {
                             deps.$("#convertFileInvalidBadFile").show();
@@ -1062,8 +1009,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                     e.preventDefault();
                     
                     Ajax.useFormToSendTasksetFile(this, self.currentEditingTasksetNames[0], (data)=> {
-                        if (debug)
-                            console.log(data);
 
                         if ( data === false) {
                             displayInfoAnimation("Nie udało się importowac zadań do zestawu", false);
@@ -1100,9 +1045,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                     
                     Ajax.useFormToSendTasksetFile(this, false, (data) => {
                         
-                        if (debug)
-                            console.log(data);
-
                         if ( data === false ) {
                             displayInfoAnimation("Nie udało się importowac zadań.", false);
                             return;
@@ -1161,7 +1103,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 })
             }
             if ( deps.$(".output-move-one, .output-move-multi, .input-move-one, .input-move-multi, #duallist-selected, #duallist-non-selected").length) {
-                //output-move-one output-move-multi input-move-one input-move-multi
                 $(".output-move-one, .output-move-multi, .input-move-one, .input-move-multi, #duallist-selected, #duallist-non-selected").on('click change input', (e) => {
                     checkOnDisablingSaveTask();
                 })
@@ -1210,9 +1151,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             var nextSibling = input.nextElementSibling
             nextSibling.innerText = fileName
 
-            //nie wspierane przez esprima.js
-            //async pojawił się dopwiro w ECMAScript 2017
-            //2021-05-09 usunąłem async i await
             function readFile (evt) {	
                     
                 var Input = evt.target;
@@ -1318,8 +1256,10 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                         showTasksetImportTable(jsonStr);
                     else if ( typeOfData === 'array z tasksetami')
                         showTasksetArrayImportTable(jsonStr);
-                    else
-                        console.warn("To nie powinno się wydarzyć! pewnie nie pusty plik json bez danych");
+                    else {
+                        if ( debug )
+                            console.warn("To nie powinno się wydarzyć! pewnie nie pusty plik json bez danych");
+                    }
 
                 } else {
                     deps.$("#"+name+"InvalidBadFile").show();
@@ -1363,7 +1303,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                     deps.$("#newTasksetNameInput").removeClass("text-dark").css({"color":"red"});
                     deps.$("#btnSendSaveTask")[0].disabled = true;
                 } else if ( dualListLogic.tasksetAlreadyExists(taskNameInputValue) ) {
-                    //dualListLogic.tasksetAlreadyExists useless bo moge zajrzeć do self.tasksets... chyba że chciałbym w dualliście podświetlać tego taska albo go przenieść... ale to zły pomysł bo jakbym wpisywał dłuższą nazwe to by dodawało niepotrzebnie... więc zmiana koloru była by spoko
+
                     deps.$("#newTasksetNameInput").removeClass("text-dark").css({"color":"red"});
                     deps.$("#btnSendSaveTask")[0].disabled = true;
                 } else {
@@ -1410,7 +1350,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
                 if ( data === false) {
                     displayInfoAnimation("Nie stworzono zestawu.", false);
-                    console.log("Nie udało się");
                     return;
                 }
                 displayInfoAnimation("Stworzono nowy zestaw.", true);
@@ -1443,34 +1382,14 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
         self.changeVariant = (variantString) => {
     
-            if (debug)
-                console.log("self.changeVariant: " + variantString);
             self.currentTaskNameString = variantString;
 
-            
-            /*TODO:
-            -sprawdzanie czy wpisano coś w pola obecnego wariantu
-                -jesli tak to zapytanie czy na pewno zmienić wariant na inny i stracić dane...    
-            -zmiana wariantu do edytowania na przycisk
-            */
-    
-            /*warianty:
-                1 - Wypełnianie luk w tekście   (WordFill)
-                    1.2 - Jeden wielozdaniowy tekst, jedna pula odpowiedzi
-                2 - Łączenie słów i zwrotów z dwóch kolumn (WordConnect)
-                3 - Układanie zdań w porządek chronologiczny (ChronologicalOrder)
-            */
-    
-            /*ukryj przucisk edycji, pokaż przycisk zapisu*/
             deps.$("#btnSaveEditedTask").hide();
             deps.$("#btnSaveTask").show();
             deps.$(".taskSettingsPanelSidepanelBtn").removeClass("invisible");
     
-            //2021-04-05 fix zmaian wariantu podczas dema
             self.endDemo();
-            /*
-                Przestac podświetlać edycje taska z listy jeśli jakaś jest
-            */
+            
             try {
                 self.currentVariant = self.CreatorCore.getVariant(variantString);
                 self.changeVisualsForCreatingNewVariant(variantString);
@@ -1484,7 +1403,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         }
     
         self.downloadImportedTasks = () => {
-            //zakładam że jest tylko jedna nazwa skoro mam do tego dostęp
             Ajax.getImportedTasksFile(
                 isJson,
                 self.currentEditingTasksetNames[0], 
@@ -1499,7 +1417,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                     }
 
                     const url = deps.window.URL.createObjectURL(blob);
-                    // const a = document.createElement('a');
                     const a = $('<a>');
                     a[0].style.display = 'none';
                     a[0].href = url;
@@ -1508,8 +1425,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                     deps.window.document.body.appendChild(a[0]);
                     a[0].click();
                     deps.window.URL.revokeObjectURL(url);
-                    //TODO 2021-03-27 poprawić, żeby nie był alert tylko tekst nad przyciskiem albo popout
-                    // alert('your file has downloaded!'); // or you know, something with better UX...
                     displayInfoAnimation("Pomyślnie pobrano plik.", true);
                 });
         }
@@ -1519,7 +1434,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             if (!self.currentVariant) 
                 return false;
             
-            //w żaden sposób nie sprawdzam czy isę udało a zakładam że teraz będę te edytować!!
             self.currentEditingTasksetNames = tasksets;
             self.currentVariant.sendTaskVariantToTasksets(
                 Ajax.sendTask,
@@ -1529,8 +1443,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             );
         }
     
-        /*prepare task to edit*/
-        //teraz podkilka tasków
         self.editTask = (taskID = self.currentlyEditingTaskIds, byClickOnTaskEditButton = false) => {
             
             if (taskID.length == 1)
@@ -1546,18 +1458,13 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                             displayInfoAnimation("Nie znaleziono obecnie edytowanego zadania.",false);
                             return;
                         }
-                        /*swap variant to the one from data .taskName*/
                         self.changeVariant(data.taskName);
                         try {
                             self.currentVariant.loadTaskFrom(data);
-                            /*ustawić przycisk zapisz edycja zamiast zapisz zadanie*/
                             deps.$("#btnSaveEditedTask").show();
-                            //ustaw modala dla pojedynczego taskseta
                             $("#modalBodyEdit").hide();
-
-                            /*zapamiętać id obecnie edytowanego taska*/
                             self.lastEditedTaskID = taskID[0];
-                            self.currentlyEditingTaskIds = taskID; //Czemu puste? O.o (zmieniłem nie wiedząc na nie puste 2021-05-31)
+                            self.currentlyEditingTaskIds = taskID; 
                             self.changeVisualsForEditing();
                             
                             if ( self.currentEditingTasksetNames.length == 1) {
@@ -1583,7 +1490,8 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 );
 
             } else {
-                console.warn("To nie powinno sie wydarzyć!");
+                if ( debug )
+                    console.warn("To nie powinno sie wydarzyć!");
             }
         }
     
@@ -1633,17 +1541,10 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 previousFromVariantList.removeClass("bg-success");
             }
             
-            if ( debug ) {
-                console.log(deps.$("#main_nav").find(`[href*='/lecturer/taskmanager/#${variantString}']`));
-                console.log(`[href*='/lecturer/taskmanager/#${variantString}']`);
-            }
-            
             var taskSettingsPanel = deps.$("#taskSettingsPanel");
             if ( variantString && variantString !== "" ) {
-                //fast fix, ine też mająna początku nazwe wordConnect 
+                
                 deps.$(deps.$("#main_nav").find(`[href*='/lecturer/taskmanager/#${variantString}']`).closest("li")[0]).addClass("bg-success");
-
-                // deps.$("#main_nav").find(`[href*='/lecturer/taskmanager/#${variantString}']`).closest("li").addClass("bg-success");
                 taskSettingsPanel.removeClass("bg-success").removeClass("text-white");
             } else { 
                 taskSettingsPanel.addClass("bg-success").addClass("text-white");
@@ -1673,8 +1574,10 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                         } else 
                             return false;
                     });
-            else
-                console.warn("To nie powinno się wydarzyć!");
+            else {
+                if ( debug )
+                    console.warn("To nie powinno się wydarzyć!");
+            }
 
             self.currentVariant.sendEditedTaskVariantToTaskset(
                 Ajax.putEditTask,
@@ -1686,7 +1589,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         /*delete task*/
         self.deleteTask = (taskID) => {
             Ajax.deleteTask(taskID, self.setupImportedTasksTableAfterDelete);
-            //self.sendAjaxDeleteTask(taskID,self.setupImportedTasksTable);
         }
         
     
@@ -1697,44 +1599,31 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         }
     
         self.setupDemo = () => {
-            /*TODO
-            z obecnego wariantu, użyć tego co mam obecnie w nim i stworzyć z tego zadanie*/
+            
             if (!self.currentVariant)
                 return;
     
-            /*
-                1. przerobić to co mam w edycji na format json
-                1.2 (opcjonalne) randomizować odpowiedzi
-                2. ustawić widocznosc odpowiedniego elementu wariantu z gry
-                3. powstawiać dane do elementu gry
-            */
             deps.$("#GameWrapperDiv").show();
             deps.$("#taskEditHolder").hide();
             deps.$("#btnDemoTask").hide();
             deps.$("#btnDemoTaskEnd").show();
             deps.$("body").addClass('gameDemoBody');
     
-            //Do taskToSetup zapisać json zadania 
-            //BUG 2021-02-07 używałem tego samego obiektu do dema co wysyłania na serwer, FIX 2021-02-07: parsowanie obiektu na string JSON i spowrotem, żeby powtsał nowy obiekt dla dema
-            //czyszczenie porpzedniego taska jeśli jakiś był
-            //przygotowanie miejsca na następnego taska
             if (deps.$("#GameDiv").length)
                 deps.$("#GameDiv").html("");
     
             var taskToSetup = self.currentVariant.prepareTaskJsonFile();
-            
-            if (debug) 
-                console.log(taskToSetup);
-    
-            self.currentTaskVariant = self.CreatorCore.getVariant_GameCore(taskToSetup.taskName, self.currentVariant.prepareTaskJsonFile());
-    
-            
+            try {
+                self.currentTaskVariant = self.CreatorCore.getVariant_GameCore(taskToSetup.taskName, self.currentVariant.prepareTaskJsonFile());
+            } catch (e) {
+                if ( debug )
+                    console.warn(e);
+            }
             self.resizeWindow();
         }
     
         self.endDemo = () => {
     
-            //2021-04-05 fix zmaian wariantu podczas dema
             if( self.currentTaskVariant ) 
                 self.currentTaskVariant.isTaskDone = true;
             deps.$("#GameWrapperDiv").hide();
@@ -1765,14 +1654,8 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 if ( isInt (h1))
                     h1 -= 1;
                 deps.$("html").height(h1);
-                
-                //hideBeforeLoadModal na telefonach chyba wychodzi poza bo ma 100% height
-                // deps.$(".hideBeforeLoadModal").height(deps.$(document).height());
             } else {
                 deps.$("html").height("100%");
-    
-                //hideBeforeLoadModal na telefonach chyba wychodzi poza bo ma 100% height
-                // deps.$(".hideBeforeLoadModal").height("100%");
             }
         }
     
@@ -1803,11 +1686,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             });
         }
 
-
-
-
-
-        //new logic functions:
         self.taskSettingsPanelSetup = () => {
             
             deps.$("#gameInstruction").html(`<h2 id="mainTitle2">` +
@@ -1823,7 +1701,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
         var checkIfJsonHasObjectWithTasksetOrArrayOfTasksOrArrayOfTasksets = (json) => {
 
-            //1. tasksetContent i tasksetName czyli obiekt z pojedynczym tasksetem
             if ( json.tasksetContent && json.tasksetName)
                 return "jeden taskset";
             if ( json[0] && json[0].taskContent)
@@ -1836,7 +1713,8 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         self.deleteTaskset = (tasksetName = self.currentEditingTasksetNames[0]) => {
 
             if ( self.currentEditingTasksetNames.length !== 1) {
-                console.warn("To nie powinno się wydarzyć!")
+                if ( debug )
+                    console.warn("To nie powinno się wydarzyć!")
                 return;
             }
 
@@ -1846,7 +1724,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                         displayInfoAnimation("Nie usunięto zestawu " + tasksetName, false);
                         return;
                     }
-                    //pobierz jakie taskID tam były i usuń je z arrayów..
+                    
                     var tasksetTaskIDs = self.tasksets[tasksetName].map(task => task.taskID);
                     self.allTaskIds = self.allTaskIds.filter(t => !tasksetTaskIDs.includes(t));
                     self.oldTaskIds = self.oldTaskIds.filter(t => !tasksetTaskIDs.includes(t));
@@ -1854,7 +1732,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
                     self.editedTaskIds = self.editedTaskIds.filter(t => !tasksetTaskIDs.includes(t));
                     displayInfoAnimation("Usunięto zestaw " + tasksetName, true);
-                    //TODO, co zrobijak usune, czy na pewno default wtedy zostawiam?
                     self.setLocationUrlWithTaskset('default');
                     self.currentEditingTasksetNames = ['default'];
                     self.updateTasksetsInfo();
@@ -1866,7 +1743,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
             multipleTasksetTasksInfo.html(``);
             var nameCounter = {};
-            if (self.currentEditingTasksetNames.length != 1)
+            if (self.currentEditingTasksetNames.length != 1 && debug)
                 console.warn("To nie powinno się zdarzyć!");
 
             var tasks = self.tasksets[self.currentEditingTasksetNames[0]];
@@ -1909,15 +1786,15 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 changeTasksetNameInput.val(self.currentEditingTasksetNames[0]);
                 btnSendchangeTasksetName[0].disabled = true;
                 deps.$("#invalidPasswordInfoEmail").hide();
-                changeTasksetNameInput.focus(); // nie działa?
+                changeTasksetNameInput.focus(); 
             } else {
-                console.warn("To nie powinno się wydarzyć!");
+                if ( debug )
+                    console.warn("To nie powinno się wydarzyć!");
             }
         }
 
         self.checkSetupButtonAndInformAboutTasksetName = () => {
 
-            //czy taka nazwa pjawia się w obecnych zestawach ... czy jest to ten zestaw który edytuje...
             var btnSendchangeTasksetName = deps.$("#btnSendchangeTasksetName");
             var changeTasksetNameInput = deps.$('#changeTasksetNameInput');
             var taskNewName = changeTasksetNameInput.val();
@@ -1953,17 +1830,16 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                             displayInfoAnimation("Nie udało się zmienić nazwy z " + tasksetName + " na " + newTasksetName, false);
                             return;
                         }
-                    
-                        //TODO info o tym że się udało zmienić nazwe
                         displayInfoAnimation("Udało się zmienić nazwe z " + tasksetName + " na " + newTasksetName, true);
-                        //update wszystkiego gdzie wprowadzałem nazwe zestawu
-                        //update url
+                       
                         self.currentEditingTasksetNames = [newTasksetName];
                         self.setLocationUrlWithTaskset(newTasksetName);
                         self.updateTasksetsInfo();
                     });
-            else
-                console.warn("To nie powinno się wydarzyć!");
+            else {
+                if ( debug )
+                   console.warn("To nie powinno się wydarzyć!");
+            }
         }
 
         var URLHasTaskVariantName = () => {
@@ -2059,8 +1935,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
             if ( saveTaskToChosenTaskset ) {
                 
-                //TODO 2021-05-22 Sprawdzanie czy  zestaw o takiej nazwie istnieje już na liście dualListLogic
-                //potem dodanie endpointa od dodawania
+                
 
                 var newTasksetName = $("#newTasksetNameInput").val().trim();
                 if ( validateTasksetName(newTasksetName))
@@ -2083,16 +1958,14 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             dualListLogic.refresh();
             dualListLogic.insertOptions(Object.keys(self.tasksets));
 
-            //czy obecnie edytuje jeden lub kilka zestawów??
+            
             if ( self.currentEditingTasksetNames.length && !(self.currentEditingTasksetNames.length === 1 && self.currentEditingTasksetNames.includes('default') ) ) {
-                //zaznacz checkboxa
+                
                 $("#saveToTasksetCB")[0].checked = true;
                 showTasksetModalPart();
-                //znajdź i dodaj te zestawy do listy selected
                 dualListLogic.move(self.currentEditingTasksetNames);
 
             } else {
-                //wyłącz checkboxa
                 $("#saveToTasksetCB")[0].checked = false;
                 hideTasksetModalPart();
                 
@@ -2105,7 +1978,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 return;
             }
             
-            self.editedTaskIds.push(taskID); //dziwny wymysł żeby to du dawać
+            self.editedTaskIds.push(taskID); 
             displayInfoAnimation("Pomyślnie nadpisano.", true);
 
             self.updateTasksetsInfo();
@@ -2125,7 +1998,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             self.currentlyEditingTaskIds = taskIds;
             self.lastEditedTaskID = undefined;
             self.updateTasksetsInfo(
-                //self.setupEditModalForCurrentlyEditingTasksets
                 self.editTask
             );
         } //then
@@ -2155,36 +2027,30 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         } //then
         self.prepareTasksetTableAfterRequest = (FocusedOnSingleTaskset = false) => {
 
-            //pobrać którego taskseta obecnie edytuje... jesli jest dużo to napisac że wiele na raz edytuje...
-            
             if ( FocusedOnSingleTaskset ) {
                 
                 var currentlyEditedTaskset;
                 var currentlyEditedTasksetName;
                 if ( self.currentEditingTasksetNames.length == 1) {
-                    //przypadek gdzie edytuje pojedynczego taskseta
 
                     currentlyEditedTaskset = self.tasksets[self.currentEditingTasksetNames[0]];
                     currentlyEditedTasksetName = self.currentEditingTasksetNames[0];
                 } else {
-                    //przypadek gdzie nie edytuje nic
 
                     if ( self.tasksets['default'] ) {
                         currentlyEditedTaskset = self.tasksets['default'];
                         currentlyEditedTasksetName = 'default';
 
                     } else {
-                        console.warn("To nie powinno się wydarzyć!");
+                        if ( debug )
+                            console.warn("To nie powinno się wydarzyć!");
                     }
                 }
                 
                 self.prepareTasksetTableFor(currentlyEditedTaskset, currentlyEditedTasksetName);
                 
             } else { 
-                //przypadek gdzie edytuje kilka
-                //update na nazwie i tabeli dla wielu zestawów
-
-                //zamiast tego liste zestawów w których zapisywane jest zadanie
+                
                 setupNavbarForMultipleTasksets();
                 editTasksetsDropdowns(false);
             }
@@ -2197,7 +2063,9 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             deps.$("#btnDeleteAllTasks").hide();
             deps.$("#importedTasksTable").hide();
             deps.$("#btnDeleteTaskset").hide();
+            deps.$("#btnDeleteTaskset").addClass("collapse");
             deps.$("#btnDeleteTasksetSel").hide();
+            deps.$("#btnDeleteTasksetSel").addClass("collapse");
             deps.$("#multipleTasksetsTable").show();
         }
 
@@ -2211,7 +2079,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             deps.$("#multipleTasksetsTable").hide();
         }
 
-        //TODO:
         var setupNavbarForMultipleTasksets = () => {
             
             showMultipleTasksetsView();
@@ -2243,7 +2110,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 tdName.append(window.document.createTextNode(taskSetName));
                 tdCount.append(self.tasksets[taskSetName].length);
 
-                var tr = deps.$('<tr>').append(tdIndex).append(tdName).append(tdCount)/*.append(tdEdit).append(tdDel)*/;
+                var tr = deps.$('<tr>').append(tdIndex).append(tdName).append(tdCount);
 
                 tasksetsTable.append(tr);
             }
@@ -2254,21 +2121,15 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 displayInfoAnimation("Nie usunięto zadania.", false);
                 return;
             }
-            //usuwam tego taska z tablic jeśli jest tam nadal
+            
             self.allTaskIds = self.allTaskIds.filter(t => t !== taskID);
             self.oldTaskIds = self.oldTaskIds.filter(t => t !== taskID);
             self.newTaskIds = self.newTaskIds.filter(t => t !== taskID);
             self.editedTaskIds = self.editedTaskIds.filter(t => t !== taskID);
 
-            //jeśli usuwałem edytowanego to usune z tablicy
             self.currentlyEditingTaskIds = self.currentlyEditingTaskIds.filter(t => t !== taskID);
             
-            //jeśli usuwam tego co edytuje to chowam przycisk
             if ( self.lastEditedTaskID === taskID) {
-                if( debug) {
-                    console.log(taskID)
-                    console.log(self.lastEditedTaskID)
-                }
 
                 self.focusedTaskID = undefined;
                 self.lastEditedTaskID = undefined;
@@ -2282,21 +2143,23 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
         self.prepareTasksetTableFor = (tasksetTasksArray, tasksetName) => {
 
-            if ( !tasksetName )
+            if ( !tasksetName && debug)
                 console.warn("To nie powinno się wydarzyć");
             showSingleTasksetView();
 
             if ( tasksetName === 'default') {
                 deps.$("#btnDeleteTaskset").hide();
+                deps.$("#btnDeleteTaskset").addClass("collapse");
                 deps.$("#btnDeleteTasksetSel").hide();
+                deps.$("#btnDeleteTasksetSel").addClass("collapse");
             } else {
                 deps.$("#btnDeleteTaskset").show();
+                deps.$("#btnDeleteTaskset").removeClass("collapse");
                 deps.$("#btnDeleteTasksetSel").show();
+                deps.$("#btnDeleteTasksetSel").removeClass("collapse");
             }
             
             var currentlyEditedTasksetName = tasksetName;
-            //var currentlyEditedTasksetTaskCount = currentlyEditedTaskset.length;
-                
             var foundTaskIds = [];
             var importedTasksArray = tasksetTasksArray; 
             var tableElem = deps.$("#importedTasksElem");
@@ -2332,8 +2195,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 tableElem.append(tr);
             }
             
-            /*zakładam, że musze znaleźć nowy task jaki się pojawi, i on jest obecnie wysłanym , pobieram jego id*/
-            //self.isFirstTableSetup nie potrzebne bo inicjalizuje oldTasks z init...
+            
 
             self.newTaskIds = [...foundTaskIds.filter(t=>!self.allTaskIds.includes(t))];
             self.allTaskIds = [...self.allTaskIds, ...self.newTaskIds];
@@ -2344,7 +2206,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 self.findTaskInTableById_AndChangeBGColor(taskID);
             }
 
-            //musiał bym ddoać więcej warunków jeśli chce, żeby edytowało jedno z listy importowanych zadań
             if ( self.newTaskIds.length == 1) {
                 var oneTaskEdited = self.newTaskIds[0];
                 if ( self.currentlyEditingTaskIds.includes(oneTaskEdited)) {
@@ -2357,7 +2218,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 }
             } else {
                 if ( self.lastEditedTaskID ) {
-                    //fix, bo jak usuwałem edytowanego to error
                     if ( self.allTaskIds.includes(self.lastEditedTaskID))
                         self.editTask([self.lastEditedTaskID]);
                 }
@@ -2367,25 +2227,14 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             editTasksetsDropdowns(currentlyEditedTasksetName);
 
             deps.$(".editButton").on("click",(e)=>{
-                if (debug)
-                    console.log("editButton");
                 var taskID = deps.$(e.target).data("taskid");
-    
-                //ustawiam przycisk z modala edycji pod dane id
-                //TODO czy to wgl działa??
                 deps.$("#btnSendEditTask").data("taskid",taskID);
-    
-                //zrobie to zapamiętując id w pamięci...
                 self.focusedTaskID = taskID;
-                //self.editTask(taskID);
             });
     
             deps.$(".delButton").on("click",(e)=>{
-                if (debug)
-                    console.log("delButton");
                 var taskID = deps.$(e.target).data("taskid");
     
-                //ustawiam przycisk z modala edycji pod dane id
                 deps.$("#btnSendDeleteTask").data("taskid",taskID);
                 self.focusedTaskID = taskID;
             });
@@ -2393,20 +2242,19 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
         self.setupEditModalForCurrentlyEditingTasksets = () => {
 
-            //TODO: jeśli obecnie edytuje kilka tasków to włączyć przycisk edycji i ustawić tam info o tasksetach do których się nadpisze
             
             $("#modalBodyEdit").show();
 
             var tableBody = $("#multipleTasksetsTableElemEditing");
             tableBody.html('');
 
-            //dodać checkboxy i okno z suwakiem
             for ( let i = 0; i < self.currentlyEditingTaskIds.length; i++) {
                 var taskID = self.currentlyEditingTaskIds[i];
 
                 var tasksetName = findTasksetNameForTaskId(taskID);
                 if ( !tasksetName ) {
-                    console.warn("To nie powinno się wydarzyć!");
+                    if ( debug )
+                        console.warn("To nie powinno się wydarzyć!");
                     continue;
                 }
                 
@@ -2429,14 +2277,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 tdCB.append(CB);
 
                 tr.append(tdIndex).append(tdName).append(tdCount).append(tdCB);
-
-                // CBInput.on('input change click', (e) => {
-
-                //     var cb = $(e.target);
-                //     var taskName = cb.data("taskset");
-                //     console.log(taskName);
-                // })
-
                 tableBody.append(tr);
             }
         }
@@ -2466,10 +2306,9 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
         var editTasksetsDropdowns = (currentlyEditedTasksetName = false) => {
             
-            //pobrać czy któregoś nie edytuję
     
             var tasksetsDropdown = deps.$("#tasksetsDropdown");
-            var tasksetsMoveDropdown = deps.$("#tasksetsMoveDropdown");//tego tu nie powinno byćale moge korzystaćz tego samego loopa co ta funckja od wstawniania zestawow
+            var tasksetsMoveDropdown = deps.$("#tasksetsMoveDropdown");
             var tasksetsSettingTable = deps.$("#tasksetsSettingTable");
             tasksetsSettingTable.html('');
             var openNavButton = deps.$("#openNavButton");
@@ -2487,7 +2326,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 currentTasksetInfo = "Obecnie edycja kilku";
                 headerTasksetNameInfo = currentTasksetInfo;
 
-                //wyświetlam ilosc zadań ze wszystkich edytowanych zestawów
                 headerTasksetCountInfo = 0;
                 for ( let i = 0; i < self.currentEditingTasksetNames.length; i++) {
                     var tasksetName = self.currentEditingTasksetNames[i];
@@ -2495,9 +2333,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 }
             }
 
-            /*
-                edycja i usuwanie zestawu będzie w inny, panelu..
-            */
+            
                 
             openNavButton.html("")
             openNavButton.text(((typeof deps.PageLanguageChanger() != "undefined")?deps.PageLanguageChanger().getTextFor("tasksets"):"☰ Zestawy") +
@@ -2516,11 +2352,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 <div class="dropdown-divider"></div>
             `);
             tasksetsMoveDropdown.html(``);
-
-            /*
-                <div class="dropdown-item" >Zestawy do wyboru:</a>
-                <div class="dropdown-divider"></div>
-            */
 
             var tasksetsKeys = Object.keys(self.tasksets);
             for ( let i = 0; i < tasksetsKeys.length; i++) {
@@ -2579,17 +2410,13 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 }
 
                 elemSettTr.append(elemSettTdIndex).append(elemSettTdName).append(elemSettTdCount).append(elemSettTdButt);
-                //nie mgoe tam bo na początku jest tytuł
-                // if ( specialClass !== ``)
-                //     tasksetsDropdown.prepend(elem);
-                // else
+                
                 tasksetsDropdown.append(elem);
                 tasksetsMoveDropdown.append(elemMove);
                 tasksetsSettingTable.append(elemSettTr);
-                //dodac na liste i sprawdzić czy jest tym k
-                //może tu być problem z listenerem jeśli będę tam chciał poberać nazwe nie przez e.targeta
+                
                 elem.on('click', (e) => {
-                    // console.log("podmień tablice na te nzestaw i (przestań edytować zadanie jeśli tak było... może nie ale gdzieś info potrzeba w razie edycji wielu albo tylko podświetlony z tego taskseta będzie edytowany jeśli znajdował się tam... może podświetlić tasksety jeśli edytuje kilka że one są edytowane?)")
+                    
                     var thisTaskName = e.target.dataset["taskname"];
                     self.openTaskset(thisTaskName);
                 });
@@ -2597,20 +2424,15 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 elemMove.on('click', (e) => {
                     
                     var thisTaskName = e.target.dataset["taskname"];
-                    //TODO:
+                    
                     self.moveFocusedTaskToTaskset(thisTaskName);
                 });
             }
-
-            //pobrać wszystkie nazwy i przyciskom dac listenery
-            //zrobić przyciski od usuwania, edytowania i dodawania nowego
         }
 
         self.moveFocusedTaskToTaskset = (tasksetName) => {
 
-            //ajax z przenoszeniem, funkcja pobrania wszystkich i odświeżenia tablicy
-            
-            if ( !self.focusedTaskID )
+            if ( !self.focusedTaskID && debug)
                 console.warn("To nie powinno się wydarzyć!");
 
             Ajax.putTaskToTaskset(tasksetName, self.focusedTaskID, (data)=> {
@@ -2631,8 +2453,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
 
         self.openTaskset = (tasksetName) => {
 
-            if ( debug )
-                console.log("openTaskset: " + tasksetName);
             if (!self.tasksets[tasksetName]) {
                 displayInfoAnimation("Zestaw nie istnieje!.", false);
                 return;
@@ -2651,10 +2471,14 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             var btnchangeTasksetNameModalCenterSel = deps.$("#btnchangeTasksetNameModalCenterSel");
             if ( self.currentEditingTasksetNames.length === 1 && !self.currentEditingTasksetNames.includes("default")){
                 btnchangeTasksetNameModalCenter.show();
+                btnchangeTasksetNameModalCenter.removeClass('collapse');
                 btnchangeTasksetNameModalCenterSel.show();
+                btnchangeTasksetNameModalCenterSel.removeClass('collapse');
             }else {
                 btnchangeTasksetNameModalCenter.hide();
+                btnchangeTasksetNameModalCenter.addClass('collapse');
                 btnchangeTasksetNameModalCenterSel.hide();
+                btnchangeTasksetNameModalCenterSel.addClass('collapse');
             }
         }
         
@@ -2685,20 +2509,17 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             var currentHrefValue =  currentUrl;
             var hashSplit = currentHrefValue.split("#");
             if ( hashSplit.length === 1) {
-                //dodać #/taskset
-                //elem.attr("href",  elem.attr("href")+"#/"+tasksetName);
                 ret = currentHrefValue+"#/"+tasksetName;
             } else if (  hashSplit.length === 2 ) {
                 var slashSplit = hashSplit[1].split("/");
                 if (slashSplit.length === 1) {
-                    //elem.attr("href",  elem.attr("href")+"/"+tasksetName); 
                     ret = currentHrefValue + "/" + tasksetName;
                 } else {
-                    //elem.attr("href",  hashSplit[0] + "#" + slashSplit[0] + "/" + tasksetName);
                     ret = hashSplit[0] + "#" + slashSplit[0] + "/" + tasksetName;
                 }
             } else {
-                console.warn("To nie powinno sie wydarzyć!")
+                if ( debug )
+                    console.warn("To nie powinno sie wydarzyć!")
             }
 
             return ret;
@@ -2707,11 +2528,7 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         /* Other: */
         
         var otherFrontendLogic = () => {
-            /* textarea wtf it is blurry (no scroll) fix
-            nie działa w WordFill bo są inne textarea
-    
-            WGL to tekst na całej stronei robi się wtedy blurry
-            */
+            
             var observe;
             if (window.attachEvent) {
                 observe = function (element, event, handler) {
@@ -2724,10 +2541,9 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 };
             }
             function textareaAutoscroll () {
-                //var text = document.getElementById('WordFillDivTaskText');
                 var allText = deps.$(window.document).find(".taskTextTextarea");
                 
-                //currying concept https://en.wikipedia.org/wiki/Currying
+                
                 var resize = function(text) {
                     return function curried_func(e) {
                         text.style.height = 'auto';
@@ -2742,8 +2558,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                 }
                 for ( let i = 0; i < allText.length; i++) {
                     var text = allText[i];
-                    
-                    /* 0-timeout to get the already changed text */
                     
                     observe(text, 'change',  resize);
                     observe(text, 'focus',  resize);
@@ -2762,24 +2576,18 @@ const TaskCreatorLecturerModule = (function(deps={}) {
             });
     
             /* collapse side-panel*/
-            /* Set the width of the sidebar to 250px (show it) */
             self.isNavOpened = false;
     
+            /* Set the width of the sidebar to 250px (show it) */
             function openNav() {
     
                 deps.window.document.getElementById("mySidepanel").style.width = "";
-               //document.getElementById("mySidepanel").removeProperty('style');
-                
-                /*to wtedy zmieniam ustawienie elementów od edycji zadań*/
-    
-                /*#gameInstruction > h2*/
                 var gameInstruction = deps.$("#gameInstruction");
                 if (gameInstruction.length > 0) {
                     if (!gameInstruction.hasClass("sidepanelClassForGameInstructionH2")) {
                         gameInstruction.addClass("sidepanelClassForGameInstructionH2");
                     }
                 }
-                /*.taskDiv WSZYSTKIE */
                 var taskDivs = deps.$(".taskDiv");
                 if (taskDivs.length > 0) {
                     if (!taskDivs.hasClass("sidepanelClassForBottonAndTasks")) {
@@ -2787,19 +2595,12 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                     }
                 }
     
-                /*#gameBottom	*/
                 var bottomDiv = deps.$("#gameBottom");
                 if (bottomDiv.length > 0) {
                     if (!bottomDiv.hasClass("sidepanelClassForBottonAndTasks")) {
                         bottomDiv.addClass("sidepanelClassForBottonAndTasks");
                     }
                 }
-    
-                //nie zawija się wybór wariantu
-                // var variantNavbar = deps.$("#variantNavbar");
-                // if ( variantNavbar.length > 0) {
-                //     variantNavbar.addClass("variantNavbarFlexEnd");
-                // }
     
                 self.isNavOpened = true;
                 deps.$(".dropdown-menu").addClass("SideNavOpenClass");
@@ -2814,14 +2615,12 @@ const TaskCreatorLecturerModule = (function(deps={}) {
     
                 deps.window.document.getElementById("mySidepanel").style.width = "0";
                 
-                /*#gameInstruction > h2*/
                 var gameInstruction = deps.$("#gameInstruction");
                 if (gameInstruction.length > 0) {
                     if (gameInstruction.hasClass("sidepanelClassForGameInstructionH2")) {
                         gameInstruction.removeClass("sidepanelClassForGameInstructionH2");
                     }
                 }
-                /*.taskDiv WSZYSTKIE */
                 var taskDivs = deps.$(".taskDiv");
                 if (taskDivs.length > 0) {
                     if (taskDivs.hasClass("sidepanelClassForBottonAndTasks")) {
@@ -2829,27 +2628,19 @@ const TaskCreatorLecturerModule = (function(deps={}) {
                     }
                 }
     
-                /*#gameBottom	*/
                 var bottomDiv = deps.$("#gameBottom");
                 if (bottomDiv.length > 0) {
                     if (bottomDiv.hasClass("sidepanelClassForBottonAndTasks")) {
                         bottomDiv.removeClass("sidepanelClassForBottonAndTasks");
                     }
                 }
-    
-                //nie zawija się wybór wariantu
-                // var variantNavbar = deps.$("#variantNavbar");
-                // if ( variantNavbar.length > 0) {
-                //     variantNavbar.removeClass("variantNavbarFlexEnd");
-                // }
-    
+
                 self.isNavOpened = false;
                 deps.$(".dropdown-menu").removeClass("SideNavOpenClass");
                 deps.$(".nav-item .submenu").removeClass("SideNavOpenClass");
                 deps.$(".nav-item .submenu-left").removeClass("SideNavOpenClass");
                 deps.$(".taskDiv").removeClass("SideNavOpenClass");
                 deps.$("#mySidepanel").addClass("closed");
-                //naprawianie blurra tekstu
             }
     
             deps.$("#closeNavButton").on("click", ()=> {
@@ -2876,11 +2667,6 @@ const TaskCreatorLecturerModule = (function(deps={}) {
         else {
             return Promise.all([Ajax.getWhoAmI(),Ajax.getAccountInfo(),Ajax.getTasksetsInfo()]).then((values)=>{
                 
-                if ( debug ) {
-                    console.log(values);
-                    console.log("done");
-                }
-
                 if ( !values[0] || !values[1] || !values[2] ){
                     if ( successfulCreationCallback )
                         successfulCreationCallback(false);

@@ -12,22 +12,22 @@ const AccountValidation = () => {
         let username = password = password2 =  email = valid = true;
       
         if (!self.emailValid(data.email)) {
-            email = false;//"Niepoprawny email";
+            email = false;
             valid = false;
         }
       
         if (!self.usernameValid(data.username)) {
-            username = false;//"Niepoprawny username, min 8 znaków, max 32, bez znaków specjalnych";
+            username = false;
             valid = false;
         }
       
         if (!self.passwordValid(data.password)) {
-            password = false;//"Niepoprawne hasło, wzór: minimum 8 znaków, conajmniej jedna duża litera i conajmniej jedna cyfra";
+            password = false;
             valid = false;
         }
       
         if (!self.password2Valid(data.password,data.password2)) {
-            password2 = false;//"Hasła nie są identyczne"});
+            password2 = false;
             valid = false;
         }
       
@@ -51,7 +51,6 @@ const AccountValidation = () => {
 
     self.nicknameValid = (data) => {
         if (data.match(/^(?:[a-zA-Z0-9ąĄłŁśŚćĆńŃóÓżŻźŹęĘ!#$%^&\(\)_+}{":?|~`]|(?:\u00a9|\u00ae|[\uD83C-\uDBFF\uDC00-\uDFFF])){3,32}$/)) 
-        // if (data.match(/^(?=.{3,32}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)) 
             return true;
         else 
             return false;

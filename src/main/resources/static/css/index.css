@@ -1,5 +1,4 @@
 html {
-  /*troche pomaga z pokryciem tła gdy kontent rozciąga strone, ale nie wiem czemy body się nei rozciąga*/
   min-height: 100%;
   height: fit-content;
   box-shadow: inset 0 0 5rem rgb(0 0 0 / 50%);
@@ -13,9 +12,6 @@ body {
   max-width: 960px;
 }
 
-/*
- * Custom translucent site header
- */
 .footer {
   position: absolute;
   bottom: 0;
@@ -35,14 +31,6 @@ body {
   color: #fff;
   text-decoration: none;
 }
-
-/*
- * Dummy devices (replace them with your own or something else entirely!)
- */
-
-/*
- * Extra utilities
- */
 
 .flex-equal > * {
   -ms-flex: 1;
@@ -89,7 +77,6 @@ body {
   animation-name: btnSlide;
   animation-duration: 2s;
 }
-/*ludek pod przyciskiem*/
 
 @media (max-width: 725px) {
   body {

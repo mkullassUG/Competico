@@ -9,7 +9,6 @@ const OptionSelect_Game = (taskData) => {
         self.content = taskData.content;
         self.possibleAnswers = taskData.answers;
 
-        //przygotowanie taskAnswerHolder
         var taskAnswerHolderReady = $(`<div class="pb-2 mb-0 text-center" id="taskAnswerHolder">`);
 
         $("#GameDiv").append(``);

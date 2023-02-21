@@ -1,4 +1,3 @@
-
 const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
 
     /*       logic variables          */
@@ -12,24 +11,22 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
     self.debug = debug_;
     self.myPlace;
     self.previousScores = null;
+    self.isLecturer = false;
     /*       logic functions          */
     self.gameResultsInit = (task_) => {
 
-      //losowo podczas startu gry występuje bug z modalem blokującym interfejs użytkownika, tutaj prowizorycznie się go pozbywam
-      //zauważyłem że dzieje się to tylko gdy mam przeglądarke w pomniejszonym oknie, jak mam fullscreen to jest ok
-      //ale też nie zawsze, rozszerzyłem o troche ekram, cofnąłem do tyłu i znow bug
       if ($(".modal-backdrop")[0]) {
         $(".modal-backdrop").remove()
-        if ( self.debug )
-          console.warn("Usunąłem natrętnego modala!");
       }
       
       self.isAfterGame = window.location.hash.includes("afterGame");
-      //jeśli chcemy wywysłać info np o tym żew gracz nie ma focusa na grze...
-      //ajaxLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
-      //self.ajaxGamePingLoopTimeout = setTimeout(()=>{ajaxGamePing(self.lobbyCode)},10000);
 
-      //dalej będzie ustawianie i wysyłanie requestów z użyciem tego gameID
+      if ( self.roles.includes("LECTURER")) {
+        self.isLecturer = true;
+        setupForLecturer();
+      } else {
+        setupForPlayer();
+      }
       ajaxGetPersonalGameResults(
         (gameData)=>{self.setPesonalResult(gameData)},
         self.gameID
@@ -40,7 +37,6 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
         self.gameID
       );
       //then
-      /* keep asking until game is finished for all players */
       ajaxCheckTotalScoreChanges(
         (changeOccurred) => {self.checkTotalScoreChanges(changeOccurred)},
         self.gameID)
@@ -98,12 +94,10 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
       var scoreTable = $("#scoreTable");
       scoreTable.html("");
       var newTr,newTdCount,newTdNickname,newTdTotalScore,newTdTotalTime, myCurrentPlace = false;
-      if (self.allPreviousResults) { //update
+      if (self.allPreviousResults) {
   
         for (let i = 0; i < self.allResults.length; i++) {
           var currentResult = self.allResults[i];
-          //to nie będzie działać bo będę dostawać ich w innej kolejności
-          //więc musiałbym pętlą przelatywać po username i nickach
           
           if (self.username == currentResult.username && currentResult.removedForInactivity) {
             newTr = $('<tr class="lobbyMeKicked" title="Wykluczony za nieaktywność">');
@@ -131,6 +125,17 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
           newTdTotalTime.append(self.calculateTime(currentResult.totalTime));
   
           newTr.append(newTdCount).append(newTdNickname).append(newTdTotalScore).append(newTdTotalTime);
+
+          if (self.isLecturer) {
+            var checkResTd = $(`<td>`);
+            var btnCheck = $(`<button class="btn btn-sm btn-info" data-toggle="modal" data-target="#personalResultsModal">Wyniki</button>`).on('click',(e)=>{
+              lecturerCheckResBtn(e);
+            });
+            checkResTd.append(btnCheck);
+            newTr.append(checkResTd);
+            newTr[0].dataset['username'] = currentResult.username;
+          }
+
           scoreTable.append(newTr);
           
           if ( self.previousScores ) {
@@ -142,10 +147,10 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
             if ( prevScore.length > 0)
               if ( prevScore[0].totalScore !== currentResult.totalScore || 
                 prevScore[0].totalTime !== currentResult.totalTime)
-                updatedResultFor(newTr);
+                updatedResultFor(newTr, currentResult.username);
           }
         }
-      } else { //init tr'ów
+      } else { 
         
         for (let i = 0; i < self.allResults.length; i++) {
           var currentResult = self.allResults[i];
@@ -169,7 +174,7 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
           newTdCount = $("<td>");
           newTdCount.append(i+1);
           newTdNickname = $("<td>");
-          newTdNickname.append("<strong>" +currentResult.nickname + "</strong> <i>" + currentResult.username + "</i>");
+          newTdNickname.append("<strong>" + currentResult.nickname + "</strong> <i>" + currentResult.username + "</i>");
           newTdTotalScore = $("<td>");
           newTdTotalScore.append(currentResult.totalScore);
           newTdTotalTime = $("<td>");
@@ -177,6 +182,16 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
   
           newTr.append(newTdCount).append(newTdNickname).append(newTdTotalScore).append(newTdTotalTime);
           scoreTable.append(newTr);
+
+          if (self.isLecturer) {
+            var checkResTd = $(`<td>`);
+            var btnCheck = $(`<button class="btn btn-sm btn-info" data-toggle="modal" data-target="#personalResultsModal">Wyniki</button>`).on('click',(e)=>{
+              lecturerCheckResBtn(e);
+            });
+            checkResTd.append(btnCheck);
+            newTr.append(checkResTd);
+            newTr[0].dataset['username'] = currentResult.username;
+          }
 
           if ( self.previousScores ) {
               var prevScore = self.previousScores.filter(scor => {
@@ -187,11 +202,10 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
               if ( prevScore.length > 0)
                 if ( prevScore[0].totalScore !== currentResult.totalScore || 
                   prevScore[0].totalTime !== currentResult.totalTime)
-                  updatedResultFor(newTr);
+                  updatedResultFor(newTr, currentResult.username);
           }
         }
       }
-      // tooltipsUpdate();
       self.previousScores = self.allResults;
 
       if ( self.allResults) {
@@ -212,7 +226,45 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
       }
     }
 
-    var updatedResultFor = (elem) => {
+    var setupForLecturer = () => {
+      $("#lecturersView").removeClass("collapse");
+      $("#btnPersonalResults").remove();
+      $("#mainLeaderboardHeader").text("Widok lektora");
+    }
+
+    var setupForPlayer = () => {
+      $("#lecturersView").remove();
+    }
+
+    var lecturerCheckResBtn = (e) => {
+      
+      var target = $(e.target);
+      if ( !target.is('tr'))
+        target = target.closest("tr");
+
+      var username = $(e.target).closest("tr")[0].dataset['username'];
+      self.focusedUserResults = username;
+
+      self.showModal();
+      ajaxGetUserResults(username, self.gameID, setupLecturersViewOnPersonalResults)
+    }
+
+    var setupLecturersViewOnPersonalResults = (data) => {
+      
+      self.hideModal();
+
+      var personalResultsModalLongTitle = $("#personalResultsModalLongTitle");
+      personalResultsModalLongTitle.text("Wyniki gracza: " + self.focusedUserResults);
+      self.setPesonalResult(data);
+    }
+
+    var updatedResultFor = (elem, username) => {
+      
+      if ( self.isLecturer && self.focusedUserResults === username) {
+        self.showModal();
+        ajaxGetUserResults(username, self.gameID, setupLecturersViewOnPersonalResults);
+      }
+
       var orgClasses = elem[0].className.split(" ");
       
       elem.addClass("playerResultUpdate",500).removeClass(orgClasses,500);
@@ -220,16 +272,6 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
         .addClass(orgClasses,1000)
         .removeClass("playerResultUpdate",1000);},600)
     }
-    // var tooltipsUpdate = () => {
-    
-    //   if ( $('[data-toggle="tooltip"]').tooltip !== null && $('[data-toggle="tooltip"]').tooltip !== undefined)
-    //       $('[data-toggle="tooltip"]').tooltip({
-    //           show: {
-    //             delay: 5000,
-    //             duration: 0
-    //           }
-    //       });
-    // }
 
     self.popoutAndConfetti = ( ) => {
       
@@ -275,11 +317,6 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
 
     self.checkTotalScoreChanges = (changeOccurred) => {
   
-      /* changeOccurred:
-        haveResultsChanged:true
-        haveResultsChanged:false
-        gameExists:false;
-      */
       if ( changeOccurred.gameExists !== false ) {
         self.ajaxGameEndLoopTimeout = setTimeout(()=>{
           ajaxCheckTotalScoreChanges((changeOccurred) => {self.checkTotalScoreChanges(changeOccurred)},
@@ -287,18 +324,13 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
         },
           5000);
       } 
-      /*TODO 
-        obsługa danych z data (jeśli zaszły zmiany to wysyłać zapytani o to co się zmieniło)
-      */
       if (changeOccurred.haveResultsChanged) {
         ajaxGetTotalGameResults(
           (gameData)=>{self.setAllResults(gameData)},
           self.gameID
         );
       }
-      //nie wiem czy to odpalać
       if (changeOccurred.gameExists === false) {
-        //ostatnie poproszenie o total results
         
         ajaxGetTotalGameResults(
           (gameData)=>{self.setAllResults(gameData)},
@@ -310,40 +342,22 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
     /*       event listeners          */
     if ($("#btnLeave").length)
       $("#btnLeave").on("click",()=>{
-
-        //TODO: is game finished?
-
-        if (self.debug)
-            console.log("btnLeave");
         if ( self.gameFinished )
           window.location.replace("/dashboard");
       });
 
     if ( $("#IDoWantToLeaveBtn").length )
       $("#IDoWantToLeaveBtn").on("click",()=>{
-        if (self.debug)
-            console.log("btnLeave");
+        
         window.location.replace("/dashboard");
       });
-
-    if ($("#btnPersonalResults").length)
-        $("#btnPersonalResults").on("click",()=>{
-          if (self.debug)
-              console.log("btnPersonalResults");
-        });
     
     /*     ajax http actions       */
-    
-    
     
     /*   ajax http requests       */
     
     var ajaxCheckTotalScoreChanges = ( callback, gameID ) => {
-      /*
-      api/v1/{gameID}/scores/total/changes GET
-      {}
-      {true/false}
-      */
+
       $.ajax({
         type     : "GET",
         cache    : false,
@@ -352,29 +366,21 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
           if (self.debug) {
             console.log("ajaxCheckTotalScoreChanges success");
             console.log(data);
-            console.log(textStatus);
-            console.log(jqXHR);
           }
-          callback(data);
+          if ( callback)
+            callback(data);
         },
         error: function(jqXHR, status, err) {
           if (self.debug) {
             console.warn("ajaxCheckTotalScoreChanges error");
             console.warn(jqXHR);
-            console.warn(status);
-            console.warn(err);
-  
           }
         }
       });
     }
   
     var ajaxGetPersonalGameResults = (callback, gameID) => {
-      /*
-      api/v1/{gameID}/scores/total GET
-      {}
-      [ {"username": String, "nickname": String, "totalScore": int, "hasFinished": true}, ...] 
-      */
+      
       self.showModal();
       $.ajax({
         type     : "GET",
@@ -384,19 +390,15 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
           if (self.debug) {
             console.log("ajaxGetPersonalGameResults success");
             console.log(data);
-            console.log(textStatus);
-            console.log(jqXHR);
           }
-          callback(data);
+          if ( callback )
+            callback(data);
           self.hideModal();
         },
         error: function(jqXHR, status, err) {
           if (self.debug) {
             console.warn("ajaxGetPersonalGameResults error");
             console.warn(jqXHR);
-            console.warn(status);
-            console.warn(err);
-  
           }
           self.hideModal();
         }
@@ -404,11 +406,7 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
     }
   
     var ajaxGetTotalGameResults = (callback, gameID) => {
-      /*
-      api/v1/{gameID}/scores/personal GET
-      {}
-      [ {"competion": double, "timeTaken": long, "difficulty": double }, ...]
-      */
+      
       self.showModal();
       $.ajax({
         type     : "GET",
@@ -418,8 +416,6 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
           if (self.debug) {
             console.log("ajaxGetTotalGameResults success");
             console.log(data);
-            console.log(textStatus);
-            console.log(jqXHR);
           }
           callback(data);
           self.hideModal();
@@ -428,14 +424,36 @@ const GameResultsLogic = ( playerInfo_, gameID_, debug_) => {
           if (self.debug) {
             console.warn("ajaxGetTotalGameResults error");
             console.warn(jqXHR);
-            console.warn(status);
-            console.warn(err);
           }
           self.hideModal();
         }
       });
     }
   
+    var ajaxGetUserResults = (username, gameID, callback) => {
+
+      $.ajax({
+        type     : "GET",
+        cache    : false,
+        url      : "/api/v1/scores/"+gameID+"/personal/" + username,
+        success: function(data, textStatus, jqXHR) {
+          if (self.debug) {
+            console.log("ajaxGetUserResults success");
+            console.log(data);
+          }
+          if ( callback )
+            callback(data);
+        },
+        error: function(jqXHR, status, err) {
+          if (self.debug) {
+            console.warn("ajaxGetUserResults error");
+            console.warn(jqXHR);
+          }
+          if ( callback )
+            callback(false);
+        }
+      });
+    }
     /*  initalization  */
     self.gameResultsInit();
      
@@ -461,8 +479,8 @@ GameResultsLogic.getInstance = (debug = false) => {
     }
 
     var ajaxReceiveWhoAmI = ( ) => {
-        showModal();
-        $.ajax({
+        
+        return $.ajax({
         type     : "GET",
         cache    : false,
         url      : "/api/v1/playerinfo",
@@ -471,30 +489,65 @@ GameResultsLogic.getInstance = (debug = false) => {
             if (debug){
               console.log("ajaxReceiveWhoAmI success");
               console.log(playerInfo);
-              console.log(textStatus);
-              console.log(jqXHR);
             }
-            hideModal();
-            playerInfo.showModal = showModal;
-            playerInfo.hideModal = hideModal;
-            GameResultsLogic.singleton = GameResultsLogic(playerInfo, gameID, debug);
         },
         error: function(jqXHR, status, err) {
             if (debug){
               console.warn("ajaxReceiveWhoAmI error");
               console.log(data);
-              console.log(textStatus);
-              console.log(jqXHR);
             }
-            
-            hideModal();
         }
-        });
+      });
     }
     
-    ajaxReceiveWhoAmI();
+    var getAccountInfo = (callback) => {
+      return $.ajax({
+          type     : "GET",
+          cache    : false,
+          url      : "/api/v1/account/info",
+          contentType: "application/json",
+          success: function(accountInfo, textStatus, jqXHR) {
+              if (debug) {
+                  console.log("getAccountInfo success");
+                  console.log(accountInfo);
+              }
+              if ( callback )
+                  callback(accountInfo);
+          },
+          error: function(data, status, err) {
+              if (debug) {
+                  console.warn("getAccountInfo error");
+                  console.warn(data);
+              }
+              if ( callback )
+                  callback(false);
+          }
+      });
+  }  
+
+    showModal();
+    Promise.all([
+      ajaxReceiveWhoAmI(),
+      getAccountInfo()
+
+    ]).then(values=>{
+
+      var playerInfo = values[0];
+      var accountInfo = values[1];
+      playerInfo.showModal = showModal;
+      playerInfo.hideModal = hideModal;
+      playerInfo.roles = accountInfo.roles;
+
+      GameResultsLogic.singleton = GameResultsLogic(playerInfo, gameID, debug);
+      hideModal();
+    }).catch(e=>{
+
+      if ( debug )
+        console.warn(e);
+      hideModal();
+    });
+
     return GameResultsLogic.singleton;
 }
-  //var debug = GameLogic.create(self.debug = true);
   
   

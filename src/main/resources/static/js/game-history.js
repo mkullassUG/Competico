@@ -1,5 +1,4 @@
- 
-const GameHistoryLogic = (playerInfo_, pageNumber_, debug_, deps = {}) => {
+ const GameHistoryLogic = (playerInfo_, pageNumber_, debug_, deps = {}) => {
   
     /*       logic variables          */
     var self = playerInfo_;
@@ -31,14 +30,33 @@ const GameHistoryLogic = (playerInfo_, pageNumber_, debug_, deps = {}) => {
       }
 
       if ( typeof PageLanguageChanger != "undefined")
-          PageLanguageChanger(false, self.debug, false, ()=>{initActions(); self.InitWithPageLanguageChanger();});
+          PageLanguageChanger(false, self.debug, {}, ()=>{initActions(); self.InitWithPageLanguageChanger();});
       else
           initActions();
       
+      if ( typeof MessagesModule !== undefined )
+          MessagesModule().getInstance(false, (data)=>{data.setFunctionToInform(self.messagerFunction);});
     }
     
-    self.InitWithPageLanguageChanger = () => {
-      //zmiana tekstu w tablicy
+    self.InitWithPageLanguageChanger = () => { }
+
+
+    /* messages */
+    self.messagerFunction = (data) => {
+      
+      if ( data.areNew ) {
+          //dźwiek
+          //console.log("Ding!")
+      }
+      
+      var updateNavbar = () => {
+        $("#messageUnreadMessages").text(
+            (data.numberOfMessages+data.numberOfLobbies)?
+            ((data.numberOfMessages+data.numberOfLobbies)>99?
+            "99+":(data.numberOfMessages+data.numberOfLobbies)):"");
+        $("#messageAwaitingRequests").text(data.numberOfRequests?(data.numberOfRequests>99?"99+":data.numberOfRequests):"");
+    }
+      updateNavbar();
     }
 
     self.setupGameHistory = (data) => {
@@ -74,13 +92,6 @@ const GameHistoryLogic = (playerInfo_, pageNumber_, debug_, deps = {}) => {
     /*       event listeners          */
     if ($("#gameHistory").length)
       $("#gameHistory").on("click",(e) => {
-
-        /*TODO:
-            nawigacja po stronach historii
-        */
-
-        if (self.debug == true)
-          console.log("gameHistory")
           window.location.replace("/game/history/1");
       });
   
@@ -133,8 +144,6 @@ GameHistoryLogic.getInstance = (debug = false) => {
           if (debug){
             console.log("ajaxReceiveWhoAmI success");
             console.log(playerInfo);
-            console.log(textStatus);
-            console.log(jqXHR);
           }
           GameHistoryLogic.singleton = GameHistoryLogic(playerInfo, pageNumber, debug);
         },

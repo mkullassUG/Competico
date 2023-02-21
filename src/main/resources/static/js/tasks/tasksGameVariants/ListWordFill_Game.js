@@ -1,4 +1,3 @@
-//ListWordFill
 const ListWordFill_Game = (taskData) => {
     var self = TaskGameVariant(taskData);
     self.taskName = "ListWordFill";
@@ -7,24 +6,16 @@ const ListWordFill_Game = (taskData) => {
     var taskVariantInitSuper = self.taskVariantInit;
     self.taskVariantInit = (taskData) => {
         taskVariantInitSuper(taskData);
-        //NEW 2021-03-08
-        //DELETE
-        self.answerCurrentlyAt = [];//teraz to będzie tablica obiektów trzymających zaznaczoną odpowiedź
-        //TYLKO to sięnie zgrywa z tym co jest w reset TaskVariant, tam jest nadal obiekt
-        //to moge zamiast tablicy obiekt trzymający indexy, ex
+        self.answerCurrentlyAt = [];
+        self.textField = taskData.text;
+        self.words = taskData.possibleAnswers;
+        self.emptySpaceCount = taskData.emptySpaceCount;
+        self.startWithText = taskData.startWithText;
+        self.isTaskDone = false
 
-        // self.taskData = taskData;
-        self.textField = taskData.text; //tablica tablic zdań
-        self.words = taskData.possibleAnswers;//tablica tablic słów
-        self.emptySpaceCount = taskData.emptySpaceCount; //teraz to jest tablica liczb (ale nie miała byc jedna odpowiedz na zdanie max?) O.o
-        self.startWithText = taskData.startWithText; //tablica boolean
-        //Trzeba na końcu taska to zaznaczać na true; (w TaskGameCore)
-        self.isTaskDone = false; //żeby pozbyć się event listenera z document, odznaczjącego wybrane odpowiedzi 
-        //dla każdego zdania:
-        var rows = self.words.length;
-  
         $("#GameDiv").html(``);
   
+        var rows = self.words.length;
         for (let i = 0; i < rows; i++) {
 
             var textField = self.textField[i];
@@ -56,14 +47,12 @@ const ListWordFill_Game = (taskData) => {
                 }
             }
 
-            //2.1 ustawić miejsce na odpowiedzi
             var taskAnswerHolderReady = $(`<div class="pb-2 pt-1 mb-0 text-center mb-0 border-bottom border-gray taskAnswerHolder">`);
             for (let i = 0; i < words.length; i++) {
                 var wordNode = document.createTextNode(words[i]);
 
                 var anserDivNode = $(`<div class="answer`+ self.taskName + `">`)
                 anserDivNode.append(wordNode);
-                
                 taskAnswerHolderReady.append(anserDivNode);
             }
             
@@ -77,8 +66,8 @@ const ListWordFill_Game = (taskData) => {
 
             that.name = "BlankContainer";
             that.blankDiv;
-            that.selected; //klik
-            that.used;  //po kliku, umieszczenie w blanku
+            that.selected;
+            that.used;
             that.text;
 
             that.init = (blank) => {
@@ -91,7 +80,7 @@ const ListWordFill_Game = (taskData) => {
 
                 that.blankDiv.on('click', (e) => {
                     if (!that.selected)
-                        //that.select();
+                    
                         that.mainWordFillContainer.blankWasSelected(that);
                     else {
                         that.mainWordFillContainer.elementWasUnselected();
@@ -111,9 +100,8 @@ const ListWordFill_Game = (taskData) => {
             }
 
             that.setBlankAnswerTo = (answer) => {
-                //set used BUT if different answer was used FOR THIS BLANK then change it to not used
-                that.mainWordFillContainer.checkIfAnyAnswerWasUsedForThisBlankAndChangeToNotUsedIfOtherBlanksDontUseItToo(that);
 
+                that.mainWordFillContainer.checkIfAnyAnswerWasUsedForThisBlankAndChangeToNotUsedIfOtherBlanksDontUseItToo(that);
                 that.text = answer.text;
                 that.blankDiv.text(answer.text);
                 that.use()
@@ -141,8 +129,8 @@ const ListWordFill_Game = (taskData) => {
             var that = {};
             that.name = "AnswerContainer";
             that.answerDiv;
-            that.selected; //klik
-            that.used;  //po kliku, umieszczenie w blanku
+            that.selected;
+            that.used;
             that.text;
             that.mainWordFillContainer = wordFillContainer_;
             
@@ -194,7 +182,6 @@ const ListWordFill_Game = (taskData) => {
             that.answerContainers = [];
             that.blankContainers = [];
             that.selectedElement;
-            //TODO: put answer and blankj containers inside??
 
             that.init = (containerDiv_) => {
                 that.blankElements = $($(containerDiv_).find(".taskContent")[0]).find(".answer" + self.taskName + "");
@@ -211,15 +198,14 @@ const ListWordFill_Game = (taskData) => {
                 }
 
                 var onclickFunction = (e) => {
-                    //jeśli niebył click na answer W tym Wordfill Divie to odznacz wszystkie
+
                     if (self.isTaskDone) {
                         $(document).off('click', onclickFunction);
                         return;
                     }
 
                     var clickedElement = $(e.target);
-
-                    var wasClickOnAnswerElement = false; //ale wewnątrz danego WordFillLista
+                    var wasClickOnAnswerElement = false;
 
                     for ( let i = 0; i < that.blankElements.length; i++) {
                         var blank = that.blankElements[i];
@@ -262,17 +248,7 @@ const ListWordFill_Game = (taskData) => {
             }
 
             that.answerWasSelected = (answer) => {
-                /*
-                    1.1. that.blankContainers.length == 1
-                        -od razu przypisuje odpowiedź
-                    1.2 that.blankContainers.length != 0
-                        2.that.selectedElement == undefined
-                            -zaznaczam answer do uzycia
-                        3.that.selectedElement == answer
-                            -zaznaczam answwer do uzycia i odznaczma reszte
-                        4.that.selectedElement == blank
-                            -ustawiam odpowiedź 
-                */
+                
                 if ( that.blankContainers.length == 1) {
                     var onlyBlank = that.blankContainers[0];
                     onlyBlank.setBlankAnswerTo(answer);
@@ -284,19 +260,10 @@ const ListWordFill_Game = (taskData) => {
                     that.unselectAllAnswers();
                     answer.select();
                 }
-
             }
 
             that.blankWasSelected = (blank) => {
-                /*
-                    1.that.selectedElement == undefined
-                        -zaznaczam blanka do użycia
-                    2.that.selectedElement == blank
-                        -zaznaczam blanka do użycia
-                            ..inne odznaczam
-                    3.that.selectedElement == answer
-                        -ustawiam odpowiedź 
-                */
+                
                 if ( that.selectedElement != undefined && that.selectedElement.name === "AnswerContainer") {
                     blank.setBlankAnswerTo(that.selectedElement);
                     that.selectedElement = undefined;
@@ -307,7 +274,6 @@ const ListWordFill_Game = (taskData) => {
                 }
             }
 
-            
             that.elementWasUnselected = () => {
                 that.selectedElement = undefined;
             }
@@ -321,7 +287,6 @@ const ListWordFill_Game = (taskData) => {
 
                     if ( answer.text === blank.text) {
 
-                        //ALE co jeśli używają bo inne blanki..
                         var wasUsedByOtherBlanks = false;
                         for (let i = 0; i < that.blankContainers.length; i++) {
                             var currentBlank = that.blankContainers[i];

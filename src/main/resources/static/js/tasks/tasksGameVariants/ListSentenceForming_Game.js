@@ -1,4 +1,3 @@
-//ListSentenceForming
 const ListSentenceForming_Game = (taskData) => {
     var self = TaskGameVariant(taskData);
     self.taskName = "ListSentenceForming";
@@ -37,13 +36,9 @@ const ListSentenceForming_Game = (taskData) => {
             
             function doterHrUpdate ( e, ui ) {
 
-                //może się przydać:
-                //https://raw.githubusercontent.com/mattheworiordan/jquery.simulate.drag-sortable.js/master/jquery.simulate.drag-sortable.js
-
                 var elmnt = $(e.target).find("." + self.taskName + "word");
 
                 if ( elmnt.length == 1 && $(e.target).hasClass("DivOrderedWords")) {
-                    //fast fix
                     $(elmnt[0]).simulateDragSortable({ move: 1 });
                 }
             }
@@ -55,8 +50,6 @@ const ListSentenceForming_Game = (taskData) => {
                 cancel: "hr",
                 remove: doterHrUpdate,
                 update: doterHrUpdate,
-                // over: doterHrUpdate,
-                // out: doterHrUpdate,
                 cursor: "grabbing"
             }).disableSelection();
         }
@@ -88,8 +81,7 @@ const ListSentenceForming_Game = (taskData) => {
                 answers[i][j] = divW.text();
             }
         }
-
-        //co jeśli array nei będzie wystarczającej długości? uzupełnić nullami?
+        
         var DivRandomizedWords  = $(".DivRandomizedWords ");
         for (let i = 0; i < DivRandomizedWords.length; i++) {
             var divListSentenceForming = DivRandomizedWords[i];

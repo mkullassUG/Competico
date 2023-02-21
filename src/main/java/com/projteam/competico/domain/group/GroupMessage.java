@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import com.projteam.competico.domain.Account;
+import com.projteam.competico.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "GroupMessage")
 @Access(AccessType.FIELD)
-public class GroupMessage
+public class GroupMessage implements Initializable
 {
 	private @Id UUID id;
 	private @JoinColumn(name = "account") @ManyToOne Account account;
@@ -35,4 +36,10 @@ public class GroupMessage
 	private @Column(name = "creationDate") @Temporal(TemporalType.TIMESTAMP) Date creationDate;
 	private @Column(name = "editDate", nullable = true) @Temporal(TemporalType.TIMESTAMP) Date editDate;
 	private @ElementCollection List<UUID> readBy;
+	
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(account, group, readBy);
+	}
 }

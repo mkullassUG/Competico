@@ -1,7 +1,26 @@
-#main_nav{
-	/* border: 1px solid gray;
-    border-radius: 5px;
-	margin-top: -10px; */
+/*messages*/
+
+nav .badge {
+  max-width: 20px;
+  padding: 3px;
+}
+.badge {
+  position: absolute;
+  top: 0px;
+  right: -5px;
+  z-index: 1;
+  color: black;
+}
+.badge:not(.bg-light):not(.bg-white):not(.bg-warning) {
+  color: white!important;
+}
+.badgeHolder {
+  position: relative;
+}
+
+.badgeHolder .nav-link {
+  position:relative;
+  z-index: 2;
 }
 
 a.dropdown-item {
@@ -60,7 +79,10 @@ div > .nav-link.active {
   left: initial!important;
   right: 0px;
 }
-
+#audioBtn {
+  width: 30px;
+  color: white;
+}
 #languageDropdown{
   text-align: right;
 }
@@ -69,7 +91,7 @@ div > .nav-link.active {
 
   #languageDropdown {
     
-    transform: translate(-55px, 0);
+    transform: translate(-95px, 0);
   }
 
   #logOutButton {
@@ -80,19 +102,7 @@ div > .nav-link.active {
     transform: translate(75px, 0);
 
   }
-
-  /* .navbar-nav.ml-auto {
-    transform: translateX(30px);
-  } */
 }
-
-/* @media (min-width:1300px) {
-
-  #languageDropdown {
-    
-    transform: translate(90px, 0);
-  }
-} */
 
 
 #logOutButton {
@@ -138,11 +148,6 @@ div > .nav-link.active {
   border-bottom-style: dotted !important;
 }
 
-/*navbar fix ale nie moge tak po prostuy dać wszystkim bo niektóre są wyłączone*/
-/* .navbar-collapse > ul {
-    margin-left: auto;
-}  */
-
 .navbar-collapse > a{
     margin-left: auto;
 }
@@ -150,9 +155,6 @@ div > .nav-link.active {
   .navbar-collapse > ul > li:not(.navbar-collapse > ul > li:first-child) {
       border-left: 1px solid #0062cc;
   }
-  /* .navbarMarginFix {
-    margin-left: 7%!important;
-  } */
 }
 @media (max-width: 991px) {
   .navbar-collapse > ul > li {
@@ -160,17 +162,7 @@ div > .nav-link.active {
   }
 }
 
-  /*@media (min-width: 992px){
-    ul {
-      flex-grow: 1;
-      text-align: center!important;
-      display: inline-block!important;
-    }
-  
-    ul > li {
-      display: inline-block! important;
-    }
-  } */
+
 /*buttons animation*/
 .btn-custom-animation {
   box-shadow: 0 0.3rem 0.1rem rgb(0 0 0 / 50%);
@@ -193,10 +185,6 @@ div > .nav-link.active {
 #GameDiv, 
 #endGameDiv {
   border-radius: 20px; 
-  /* border-top-left-radius: 90px 40px;
-	border-top-right-radius: 90px 40px;
-	border-bottom-left-radius: 90px 40px;
-	border-bottom-right-radius: 90px 40px; */
   overflow: hidden;
   padding: 30px;
   transform: translate(-30px);
@@ -241,4 +229,26 @@ div > .nav-link.active {
 
 #languageOption1.bg-light,#languageOption2.bg-light {
   cursor: default;
+}
+
+/*Dual list taskset pick*/
+.dual-list .list-group {
+	margin-top: 8px;
+}
+
+.list-left li, .list-right li {
+	cursor: pointer;
+}
+
+.list-arrows {
+	padding-top: 100px;
+}
+
+.list-arrows button {
+	margin-bottom: 20px;
+}
+
+/*messages*/
+#messageContentDisplay,#messageLobbyContentDisplay, #messageTitleDisplay {
+  white-space: pre-wrap;
 }

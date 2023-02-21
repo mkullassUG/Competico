@@ -87,6 +87,10 @@
         "pl": "Rankingi",
         "eng": "Dashboard"
     },
+    "#groupsHyperlinkMainNav > a": {
+        "pl": "Grupy",
+        "eng": "Groups"
+    },
     "#profileHyperlink > a": {
         "pl": "Profil",
         "eng": "Profile"
@@ -133,7 +137,7 @@
         "pl": "Anuluj",
         "eng": "Cancel"
     },
-    ".changeBtn": {
+    ".changeBtn, #btnSendChangesPassword": {
         "pl": "Zmień",
         "eng": "Change"
     },
@@ -159,7 +163,7 @@
     },
     "#invalidEmailInfoUsed": {
         "pl": "Zajęty email.",
-        "eng": "Email addres is already."
+        "eng": "Email addres is already used."
     },
     "#invalidEmailInfoIdentical": {
         "pl": "Identyczny email.",
@@ -193,7 +197,29 @@
         "pl": "Potwierdź email",
         "eng": "Verify email"
     },
-    
+    "#groupManagementDiv > div:nth-child(1) > div > div > div > a > button": {
+        "pl": "Moje grupy",
+        "eng": "My groups"
+    },
+    "#groupManagementDiv > div:nth-child(2) > div > div > h6 > i": {
+        "pl": "Moje wiadomości:",
+        "eng": "My messages:"
+    },
+
+    "#myMessagesTable > thead > tr > th:nth-child(2)": {
+        "pl": "Tytuł:",
+        "eng": "Title:"
+    },
+    "#myMessagesTable > thead > tr > th:nth-child(3)": {
+        "pl": "Data:",
+        "eng": "Date:"
+    },
+    "#displayMessageGroupModalLongTitle": {
+        "pl": "Komunikat",
+        "eng": "Message"
+    },
+
+
     "OTHER_PAGE_ELEMENTS": {
         "document.title": {
             "pl": "Profil",

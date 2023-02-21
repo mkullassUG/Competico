@@ -5,7 +5,7 @@ var mockjax, $, window, dom;
 
 QUnit.module( "TaskCreator Logic module", {
     before: function() {
-        console.log("before Setting up DOM");
+        //console.log("before Setting up DOM");
         return new Promise( function( resolve, reject_ ) {
 
             JSDOM.fromFile("./../templates/task-manager-lektor.html").then(domJSDOM => {
@@ -17,11 +17,11 @@ QUnit.module( "TaskCreator Logic module", {
                 mockjax = mockjaxFunc($, window);
 
                 resolve(dom);
+            }).catch((e)=>{
+                console.warn("ERROR COULD NOT FIND HTML TEMPLATE!!!!!!!!!!!!!!!!");
+                resolve(false);
             });
         });
-    },
-    beforeEach: function() {
-        console.log("beforeEach mock reset");
     }
 });
 

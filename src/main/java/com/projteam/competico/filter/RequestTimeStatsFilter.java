@@ -37,9 +37,7 @@ public class RequestTimeStatsFilter extends GenericFilterBean
 				{
 					HttpServletRequest httpReq = (HttpServletRequest) req;
 					log.warn("Request processing took {}ms:\t{} {}",
-							time,
-							httpReq.getRequestURI(),
-							httpReq.getMethod());
+							time, httpReq.getRequestURI(), httpReq.getMethod());
 				}
 				else
 					log.warn("Request processing took {}ms:\t{}",

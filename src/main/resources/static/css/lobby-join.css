@@ -10,13 +10,11 @@ body {
 body {
   background-repeat: no-repeat;
   background-position: calc(50% + 7px) -25px;
-  /* background-position: center; */
   background-image: url(../assets/devices-animate.svg);
 }
 
 
 #buttonHolder {
-  /* background-color: rgba(50,50,50,0.85); */
   background-color: rgba(15,80,185,0.85);
   border-radius: 20px;
   padding:20px;
@@ -53,7 +51,7 @@ nav {
   height: 30px;
 }
 
-.container {
+.container:not(.nav.nav-underline):not(main) {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-align: center;
@@ -126,7 +124,6 @@ h2 {
   height: 100%;
 }
 
-/*sorry not found elements*/
 .failSuccessInfo {
   position: absolute;
   top: 10%;
@@ -144,4 +141,3 @@ h2 {
   padding: .6rem 2rem;
   font-size: 2.25rem;
 }
-/*other global.css*/

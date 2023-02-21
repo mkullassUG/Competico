@@ -5,7 +5,7 @@ var $, window, dom;
 
 function newDomMock( resolve, reject_ ) {
     JSDOM.fromFile("./../templates/task-manager-lektor.html").then(domJSDOM => {
-        console.log("done Setting up task manager DOM");
+        //console.log("done Setting up task manager DOM");
         dom = domJSDOM;
         window = dom.window;
         dom.reconfigure({url: "http://mockAddress/lecturer/taskmanager/"});
@@ -18,12 +18,12 @@ function newDomMock( resolve, reject_ ) {
 
 QUnit.module( "Dual-list module", {
     beforeEach: function() {
-        console.log("Setting up DOM beforeEach and mock reset (Dual-list module)");
+        //console.log("Setting up DOM beforeEach and mock reset (Dual-list module)");
         return new Promise( newDomMock );
     },
 
     afterEach: function () {
-        console.log("afterEach mock reset");
+        //console.log("afterEach mock reset");
     }
 });
 

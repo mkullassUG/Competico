@@ -8,7 +8,7 @@ const TaskGameVariant = (taskData) => {
     }
   
     self.getAnswers = () => {
-        var answers = [];//nie zawsze jest arrayem
+        var answers = [];
         return answers;
     }
   
@@ -22,33 +22,3 @@ const TaskGameVariant = (taskData) => {
 
     return self;
 }
-
-
-//potrzebne tylko do tworzenia nowych wariantów, mock
-
-// const TaskVariantDemo = (taskData) => {
-//     var self = TaskGameVariant(taskData);
-    
-//     var taskVariantInitSuper = self.taskVariantInit;
-//     self.taskVariantInit = (taskData) => {
-//       taskVariantInitSuper(taskData);
-  
-//     }
-  
-//     var getAnswersSuper = self.getAnswers;
-//     self.getAnswers = () => {
-//       var answers = getAnswersSuper();
-  
-//       return answers;
-//     }
-  
-//     var resetSuper = self.reset;
-//     self.reset = () => {
-//       resetSuper();
-  
-//       self.taskVariantInit(taskData);
-//     }
-  
-//     self.taskVariantInit(taskData);
-//     return self;
-// }

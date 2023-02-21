@@ -179,10 +179,10 @@ public class GameAPI
 		return gameService.getHistory(page - 1);
 	}
 	
-	@ApiOperation(value = "Notify the server that the user is still in a game", code = 200)
+	@ApiOperation(value = "Check the rating of the current user", code = 200)
 	@ApiResponses(
 	{
-		@ApiResponse(code = 200, message = "Server notified successfully")
+		@ApiResponse(code = 200, message = "Rating retrieved successfully")
 	})
 	@GetMapping("api/v1/player/rating")
 	public Object getRating()
@@ -198,10 +198,10 @@ public class GameAPI
 			return Map.of("exists", false);
 		}
 	}
-	@ApiOperation(value = "Notify the server that the user is still in a game", code = 200)
+	@ApiOperation(value = "Check the rating of a user with the provided username", code = 200)
 	@ApiResponses(
 	{
-		@ApiResponse(code = 200, message = "Server notified successfully")
+		@ApiResponse(code = 200, message = "Rating retrieved successfully")
 	})
 	@GetMapping("api/v1/player/{username}/rating")
 	public Object getRating(@PathVariable String username)

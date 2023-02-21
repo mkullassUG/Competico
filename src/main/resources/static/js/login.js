@@ -32,14 +32,12 @@ const LoginLogic = (debug = false, depMocks = {}, successfulCreationCallback) =>
 
         $('form').on('submit',function(e){
             e.preventDefault();
-            //console.log(this)
-    
     
             let send = {
                 email: $('form')[0][0].value,
                     password: $('form')[0][1].value,
             };
-            //console.log(JSON.stringify(send))
+            
             $.ajax({
                 type     : "POST",
                 cache    : false,

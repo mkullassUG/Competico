@@ -14,6 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import com.projteam.competico.domain.Account;
+import com.projteam.competico.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,10 +26,16 @@ import lombok.NoArgsConstructor;
 @Access(AccessType.FIELD)
 @Table(name = "GroupJoinRequest", uniqueConstraints =
 	@UniqueConstraint(columnNames = {"account", "lecturer_group"}))
-public class GroupJoinRequest
+public class GroupJoinRequest implements Initializable
 {
 	private @Id UUID id;
 	private @JoinColumn(name = "account") @ManyToOne Account account;
 	private @JoinColumn(name = "lecturer_group") @ManyToOne Group group;
 	private @Column(name = "creationDate") @Temporal(TemporalType.TIMESTAMP) Date creationDate;
+	
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(account, group);
+	}
 }

@@ -24,7 +24,6 @@ const PasswordChangeWithToken = (debug = false) => {
             tooltipsUpdate();
             NavbarLogic.getInstance();
 
-            //new bug fix
             var resizeWindow = () => {
             
                 $("html").height("100%");
@@ -43,21 +42,13 @@ const PasswordChangeWithToken = (debug = false) => {
     }
 
     var badUsernameOrEmail = () => {
-        if (debug)
-            console.log("badUsernameOrEmail");
-
+        
         $("#invalidEmailOrUsernamefeedback").show();
         setTimeout(function(){$("#invalidEmailOrUsernamefeedback").fadeOut()},4000);
     }
 
     var tokenSendSuccess = (data) => {
-        if (debug)
-            console.log("tokenSendSuccess");
-
-        //zmiana tekstu na wysłano token na adres axxx@
-        if (debug)
-            console.log("email: " + data);
-
+        
         $("#mainTextResetPasswordRequest").text(plc.getTextFor("#mainTextResetPasswordRequest.sendDone", null, isOther = false));
         $("#sendEmailOrUsernameBtn").text(plc.getTextFor("#sendEmailOrUsernameBtn.sendDone", null, isOther = false));
         $("#mainTextResetPasswordRequest").addClass("sendDone");
@@ -68,33 +59,34 @@ const PasswordChangeWithToken = (debug = false) => {
     }
 
     var codeHandler = (data) => {
-        if (debug)
-            console.log("codeHandler");
 
         switch (data) {
             case "ACCOUNT_NOT_PRESENT":
-                console.warn("code ACCOUNT_NOT_PRESENT");
+                if (debug)
+                    console.warn("code ACCOUNT_NOT_PRESENT");
 
                 $("#invalidAccountNotExists").show();
                 setTimeout(function(){$("#invalidAccountNotExists").fadeOut()},5000);
                 break;
             case "BAD_NEW_PASSWORD":
-                console.warn("code BAD_NEW_PASSWORD");
+                if (debug)
+                    console.warn("code BAD_NEW_PASSWORD");
                 break;
             case "INVALID_TOKEN":
-                console.warn("code INVALID_TOKEN");
+                if (debug)
+                    console.warn("code INVALID_TOKEN");
                 break;
             case "EXPIRED_TOKEN":
-                console.warn("code EXPIRED_TOKEN");
+                if (debug)
+                    console.warn("code EXPIRED_TOKEN");
                 break;
             default:
-                console.warn("code not recognized");
+                if (debug)
+                    console.warn("code not recognized");
         }
     }
 
     var badPassword = (index = "") => {
-        if (debug)
-            console.log("badPassword");
 
         $("#invalidPassword" + index + "feedback").show();
         setTimeout(function(){$("#invalidPassword" + index + "feedback").fadeOut()},4000);
@@ -104,9 +96,6 @@ const PasswordChangeWithToken = (debug = false) => {
     if ($('#formSendUsernameOrEmailForToken').length)
         $('#formSendUsernameOrEmailForToken').on('submit',function(e){
             e.preventDefault();
-
-            if (debug)
-                console.log('form submit');
 
             let usernameOrEmail =  $('#inputEmailOrUsername').val();
 
@@ -118,18 +107,12 @@ const PasswordChangeWithToken = (debug = false) => {
                 return;
             }
 
-            if (debug)
-                console.log(usernameOrEmail);
-
             self.ajaxSendUsernameOrEmailForToken(codeHandler, usernameOrEmail);
         });
     
     if ($('#formSendChangePassword').length)
         $('#formSendChangePassword').on('submit',function(e){
             e.preventDefault();
-
-            if (debug)
-                console.log('form submit');
 
             let password =  $('#inputNewPassword').val();
             let password2 =  $('#inputNewPassword2').val();
@@ -146,9 +129,6 @@ const PasswordChangeWithToken = (debug = false) => {
                 badPassword(2);
                 return;
             }
-
-            if (debug)
-                console.log(password);
 
             var pathSplit = window.location.href.split("/");
             var token = pathSplit[pathSplit.length-1];

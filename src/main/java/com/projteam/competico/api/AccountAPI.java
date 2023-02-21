@@ -136,7 +136,8 @@ public class AccountAPI
 	@ApiOperation(value = "Update email of the current account", code = 200)
 	@ApiResponses(
 	{
-		@ApiResponse(code = 200, message = "Whether the email was updated")
+		@ApiResponse(code = 200, message = "Email updated successfully"),
+		@ApiResponse(code = 400, message = "Could not update email")
 	})
 	public ResponseEntity<String> changeEmail(@RequestBody EmailChangeDTO eDto)
 	{
@@ -154,7 +155,8 @@ public class AccountAPI
 	@ApiOperation(value = "Update nickname of the current account", code = 200)
 	@ApiResponses(
 	{
-		@ApiResponse(code = 200, message = "Whether the email was updated")
+		@ApiResponse(code = 200, message = "Nickname updated successfully"),
+		@ApiResponse(code = 400, message = "Could not update nickname")
 	})
 	public ResponseEntity<String> changeNickname(@RequestBody String newNickname)
 	{
@@ -172,7 +174,8 @@ public class AccountAPI
 	@ApiOperation(value = "Update password of the current account", code = 200)
 	@ApiResponses(
 	{
-		@ApiResponse(code = 200, message = "Whether the email was updated")
+		@ApiResponse(code = 200, message = "Whether the password was updated"),
+		@ApiResponse(code = 400, message = "Could not update password")
 	})
 	public ResponseEntity<String> changePassword(@RequestBody PasswordChangeDTO pcDto)
 	{
@@ -193,7 +196,8 @@ public class AccountAPI
 		code = 200)
 	@ApiResponses(
 	{
-		@ApiResponse(code = 200, message = "Request accepted")
+		@ApiResponse(code = 200, message = "Request accepted"),
+		@ApiResponse(code = 400, message = "Request rejected")
 	})
 	public ResponseEntity<String> requestPasswordReset(HttpServletRequest req)
 	{

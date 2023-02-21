@@ -1,13 +1,12 @@
-/*TODO*/
 const OptionSelect_Creator = (data_ = {}) => {
 
     /*  Extends TaskCreator */
     var self = TaskCreatorVariant(data_);
     /*  Variables */
     self.taskName = "OptionSelect";
-    self.taskContent.content = {}; //text
-    self.taskContent.content.correctAnswers = [];//text
-    self.taskContent.content.incorrectAnswers = []; //text array
+    self.taskContent.content = {};
+    self.taskContent.content.correctAnswers = [];
+    self.taskContent.content.incorrectAnswers = []; 
 
     /*  Logic functions */
     var OptionSelectCreatorInit = () => {
@@ -19,22 +18,16 @@ const OptionSelect_Creator = (data_ = {}) => {
     var checkIfTaskReadySuper = self.checkIfTaskReady;
     self.checkIfTaskReady = () => {
         checkIfTaskReadySuper();
-        /*TODO:
-        sprawdzaj czy obecny wariant przeszedł wymogi zgodności do importu
-        */
     }
 
     var prepareTaskJsonFileSuper = self.prepareTaskJsonFile;
     self.prepareTaskJsonFile = () => {
         var task = prepareTaskJsonFileSuper();
 
-        //czy można pobrać difficulty
-        //slider
         if ($("#customRange" + self.taskName + "").length > 0) {
             self.taskContent.difficulty = $("#customRange" + self.taskName + "").val();
         }
 
-        //czy można pograc tagi
         if ($("#" + self.taskName + "DivTaskTags").length) {
             var tagsString = $("#" + self.taskName + "DivTaskTags").val();
             var tags = tagsString.split(",")
@@ -45,16 +38,14 @@ const OptionSelect_Creator = (data_ = {}) => {
                 self.taskContent.tags.push(tags[i]);
             }
         }
-        //czy można pobrać instrukcje
+
         if ( $("#" + self.taskName + "DivTaskInstruction").length )
             self.taskContent.instruction = $("#" + self.taskName + "DivTaskInstruction").val().trim();
         
         self.taskContent.content = {};
-        //czy można pobrać treść
         if ( $("#" + self.taskName + "DivTaskText").length )
             self.taskContent.content.content = $("#" + self.taskName + "DivTaskText").val().trim();
 
-        //czy można pobrać odpowiedź
         if ( $("#" + self.taskName + "DivCorrectWords").length )
 
             var correctAnswersString = $("#" + self.taskName + "DivCorrectWords").val();
@@ -66,7 +57,6 @@ const OptionSelect_Creator = (data_ = {}) => {
                 self.taskContent.content.correctAnswers.push(correctAnswers[i]);
             }
         
-        //czy można pobrać błędne odpowiedzi
         if ( $("#" + self.taskName + "DivIncorrectWords").length ) {
             var incorrectAnswersString = $("#" + self.taskName + "DivIncorrectWords").val();
             var incorrectAnswers = incorrectAnswersString.split(",")
@@ -87,11 +77,8 @@ const OptionSelect_Creator = (data_ = {}) => {
     var setupDemoFromCurrentSuper = self.setupDemoFromCurrent;
     self.setupDemoFromCurrent = () => {
         setupDemoFromCurrentSuper();
-        /*TODO:
-        podgląd stworzonego zadania jako gry*/
     }
 
-    //Deprecated, recommended sendTaskVariantToTasksets
     var sendTaskVariantSuper = self.sendTaskVariant;
     self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
@@ -113,31 +100,26 @@ const OptionSelect_Creator = (data_ = {}) => {
 
     self.prepareLoadedTask = () => {
         
-        /*ustawiam tagi*/
         var tagsElem = $("#" + self.taskName + "DivTaskTags");
         tagsElem.val(self.taskContent.tags.join(", "));
 
-        /*ustawiam instrukcje*/
         $("#" + self.taskName + "DivTaskInstruction").val(self.taskContent.instruction);
 
-        /*wstawiam dla każdego zdania textarea i przyciski*/
         var taskTextElem = $("#" + self.taskName + "DivTaskText");
         taskTextElem.val(self.taskContent.content.content);
 
-        /*ustawiam dodatkowe słowa*/
         var incorWordsElem = $("#" + self.taskName + "DivIncorrectWords");
         incorWordsElem.val(self.taskContent.content.incorrectAnswers.join(", "));
 
         var incorWordsElem = $("#" + self.taskName + "DivCorrectWords");
         incorWordsElem.val(self.taskContent.content.correctAnswers.join(", "));
 
-        /*ustawiam difficulty*/
         $("#customRange" + self.taskName + "").val(self.taskContent.difficulty);
         $("#customRange" + self.taskName + "").trigger("change");
         $("#customRangeLabel" + self.taskName + "").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
 
-        /*TODO ustawiam czcionkę*/
     }
+    
     /* listeners */
     if( $("#customRange" + self.taskName + "").length > 0 ) {
         $("#customRange" + self.taskName + "").on("input",() => {

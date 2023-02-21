@@ -18,4 +18,5 @@ public interface GroupJoinRequestDAO extends JpaRepository<GroupJoinRequest, UUI
 	public Page<GroupJoinRequest> findAllByAccount_id(UUID id, Pageable pageable);
 	public List<GroupJoinRequest> findAllByGroup_Lecturers_id(UUID id);
 	public Page<GroupJoinRequest> findAllByGroup_Lecturers_id(UUID id, Pageable pageable);
+	public int countByGroup_Lecturers_id(UUID id);
 }

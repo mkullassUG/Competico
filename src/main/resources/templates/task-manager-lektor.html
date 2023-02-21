@@ -114,20 +114,28 @@
           <li class="nav-item collapse" id="dashboardHyperlink">
             <a class="nav-link" href="/dashboard" >Rankingi</a>
           </li>
+          <li class="nav-item collapse badgeHolder" id="groupsHyperlinkMainNav">
+            <a class="nav-link" href="/groups/1" >Grupy</a>
+            <span class="badge badge-pill bg-info  align-text-bottom" id="messageAwaitingRequests"></span>
+          </li>
           <li class="nav-item collapse" id="swaggerHyperlink">
             <a class="nav-link " href="/swagger-ui/">Swagger</a>
           </li>
           <li class="nav-item collapse" id="actuatorHyperlink">
             <a class="nav-link " href="/actuator">Actuator</a>
           </li>
-          <li class="nav-item mr-lg-auto collapse" id="profileHyperlink">
+          <li class="nav-item mr-lg-auto collapse badgeHolder" id="profileHyperlink">
             <a class="nav-link" href="/profile">Profil</a>
+            <span class="badge badge-pill bg-danger align-text-bottom" id="messageUnreadMessages"></span>
           </li>
           
         </ul>
         <a class="nav-link mr-r pl-0 collapse" id="logOutButton" href="/logout">Wyloguj</a>
         <a class="nav-link mr-r pl-0" id="loginHyperlink" href="/login" >Zaloguj</a>
         <div class="nav-item dropdown" id="languageDropdown">
+          <button class="btn" id="audioBtn" title="audio switch">
+            <i class="fa fa-volume-up" aria-hidden="true"></i>
+          </button>
           <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="languageSelected"><img alt="🇵🇱" class="imga" style="width: 16px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAMAAABiM0N1AAACxFBMVEUAAAD/AAD///+2JCS/ICDhJC/cIizVFSvbHyrt7e3////UHCXgJC/fJC7aICnv7+/z8/PRFy7VHCbfICvlIyz09PTv7+/y8vLeIyz/AADz8/P19fXWHCfVGiLVHSbhJTDVHCfXHSfbJC3dIi/bHCjt7e3VHCb39/f09PTZHSnYISzu7u7v7+/VHCvjJS/cIivcIyzZICrWHCbx8fHfIy309PTYICfZHyj09PT////XIij29vby8vLy8vLaHyv29vbx8fHdIi309PTu7u7z8/Pz8/Pz8/Py8vLx8fHv7+/jJi/z8/PeISnXHin39/fu7u7bHSjWICbXHij19fXx8fHx8fHYHyny8vLv7+/v7+/jJi/09PTz8/P09PT19fXcIiz29vbjJjDjJS/x8fHhJSzgIy/hJy7aICrZHynjIy7hJTD39/fZHirbICriJS/gJS/hJC/fJjDWHCfkJTD09PTXHSjfJC3cIy719fXZICrdIi3fIy/jJi/iJTD19fXXHijVKyvdIiv19fX////19fXx8fH19fXXHinVHCX29vb09PT19fXdISzZHiv////29vb09PTcISzkJC7bISreIizz8/PgJC/y8vLZHCb09PT19fX09PT39/ffJCzaICrUHCb39/fYHif09PT09PTbICj09PTVHSbZHyn29vb29vb19fX29vb29vb09PTXHij19fXZHyn29vb19fX19fX39/f4+PjXHijbICr09PTWHiXXHyjVHSfWHSf29vb19fXx8fH19fXVHCb29vb////RFyP19fXWHSX29vb29vb29vb29vb19fXOGCT29vbVHCf09PTUGyb19fXw8PD39/f19fX29vb09PTx8fHz8/PfJC7cIizaICrw8PDZHyneIy3dIy3XHijv7+/gJC7WHSfVHSfUHCbhJS/y8vLjJjD19fX29vb09PRBLbWNAAAA13RSTlMAAwMHCKL9DDFGBL+U+va9+wv6GB39MeRzAuytox6w5aXqOTw/HbYec1guHh82bcTs8WST5XRvxBcNLXPn5opyuNH2D/oVZmGncRvFH9KDSUZx/pORpMN4sa+9W1bw9ur7r6SibpJw5uRIRR+G5eOno2ZjYBhZtxa37VtXvLGD5QZ47QzsberMbh3R/dA8BTmKhRzB58Sz5Rsu5/E9QO+UPzvt70At5OgcxM/DG4b8/o42zNI8cevus29s5X1ZtqPltVgHFmSm5W3kpWMVokhvlea8vZRuRiejyDoAAAKjSURBVHhe1NQ7ysJAFIZhSWkfmyzAwloQ/kLQUrCxVtLbWvyVhYqggrGx8FIERfCKqLFUgkE0kSCSmD3MzCasEyfJzHQ+C3jhwMeJ/Jiy87ZNwbIEs3B34oyRytW4QRfdeKRoK9rpX4QY4vmiUWTqaRX6alazhJnoXw0Gahw5ks5uD0MdlNAMl+8AAlu7G9xpLQCh1TyoM9MBsWHMvyNNAIWi7NeRS4BKZozvDKaI0gh7XeKFqKlrzAxziEH/e5o9xGTj7Sg8YMJLnkG3AaOl+7gkYvZ0/Y0PafWKwyAQQFEUiwLXZDwJAlfVpE0q+CoMhF8dW+gWWANbqUPMDjCMqKmabTR5mQxo3l3AsVeo04nbAWoUUbg78s5AD2mhQVG9LPTUVB/7C5+D4sRAqSbLDJSz0GKgmYUuDoo2ugBQyUMuoIKHJkBXHqoA1V+6EVDLQx0g70e3Aur/pMy7DUBQGAXgv6BzK3obqIxhCRISCo9ISDwSdhC7aRQKMYbkuO4C5xvge2gTopmPYkQJH9mIHD5KEWU3LUCU81GBKOIjT8Bnn1I+FRvVOmouUqsjVx0U1YvWcdEuv4GLRhNZ20kIFzFWJnqrmX+XBKIADuDfR4cdHBwoDSfcHVoRGIg/BoOGoFUQtMG1RbBBl6ChqbEGG6zFxSIQ3cTJUFsCcRJxVkSh+j8cvbvunu+9zc8f8NGwsR9fCrv2w0ITjwqwIpczQRUCmyOf2OM7hMOFWFSFU/B1LiBG8M9Bkf8pp+Hi9JP3SchwVVcXXNRjePi453neGvB0fsP+tGRQvJytGOVroCKlNktz1SHYJvq4/ck8gwHJdX+owqkg2Ej9B0rz5Qc76e4k8Osi8B3ZA6dhcjT4s2mGbscQY0x6U91UFFN/f8oa2C1rNdZA8W7uzHUAAAAASUVORK5CYII="></a>
           <div class="dropdown-menu" id="languageDropdown-inner">
               <a class="dropdown-item bg-light" id="languageOption1"><img alt="🇵🇱" class="imga" style="width: 16px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAMAAABiM0N1AAACxFBMVEUAAAD/AAD///+2JCS/ICDhJC/cIizVFSvbHyrt7e3////UHCXgJC/fJC7aICnv7+/z8/PRFy7VHCbfICvlIyz09PTv7+/y8vLeIyz/AADz8/P19fXWHCfVGiLVHSbhJTDVHCfXHSfbJC3dIi/bHCjt7e3VHCb39/f09PTZHSnYISzu7u7v7+/VHCvjJS/cIivcIyzZICrWHCbx8fHfIy309PTYICfZHyj09PT////XIij29vby8vLy8vLaHyv29vbx8fHdIi309PTu7u7z8/Pz8/Pz8/Py8vLx8fHv7+/jJi/z8/PeISnXHin39/fu7u7bHSjWICbXHij19fXx8fHx8fHYHyny8vLv7+/v7+/jJi/09PTz8/P09PT19fXcIiz29vbjJjDjJS/x8fHhJSzgIy/hJy7aICrZHynjIy7hJTD39/fZHirbICriJS/gJS/hJC/fJjDWHCfkJTD09PTXHSjfJC3cIy719fXZICrdIi3fIy/jJi/iJTD19fXXHijVKyvdIiv19fX////19fXx8fH19fXXHinVHCX29vb09PT19fXdISzZHiv////29vb09PTcISzkJC7bISreIizz8/PgJC/y8vLZHCb09PT19fX09PT39/ffJCzaICrUHCb39/fYHif09PT09PTbICj09PTVHSbZHyn29vb29vb19fX29vb29vb09PTXHij19fXZHyn29vb19fX19fX39/f4+PjXHijbICr09PTWHiXXHyjVHSfWHSf29vb19fXx8fH19fXVHCb29vb////RFyP19fXWHSX29vb29vb29vb29vb19fXOGCT29vbVHCf09PTUGyb19fXw8PD39/f19fX29vb09PTx8fHz8/PfJC7cIizaICrw8PDZHyneIy3dIy3XHijv7+/gJC7WHSfVHSfUHCbhJS/y8vLjJjD19fX29vb09PRBLbWNAAAA13RSTlMAAwMHCKL9DDFGBL+U+va9+wv6GB39MeRzAuytox6w5aXqOTw/HbYec1guHh82bcTs8WST5XRvxBcNLXPn5opyuNH2D/oVZmGncRvFH9KDSUZx/pORpMN4sa+9W1bw9ur7r6SibpJw5uRIRR+G5eOno2ZjYBhZtxa37VtXvLGD5QZ47QzsberMbh3R/dA8BTmKhRzB58Sz5Rsu5/E9QO+UPzvt70At5OgcxM/DG4b8/o42zNI8cevus29s5X1ZtqPltVgHFmSm5W3kpWMVokhvlea8vZRuRiejyDoAAAKjSURBVHhe1NQ7ysJAFIZhSWkfmyzAwloQ/kLQUrCxVtLbWvyVhYqggrGx8FIERfCKqLFUgkE0kSCSmD3MzCasEyfJzHQ+C3jhwMeJ/Jiy87ZNwbIEs3B34oyRytW4QRfdeKRoK9rpX4QY4vmiUWTqaRX6alazhJnoXw0Gahw5ks5uD0MdlNAMl+8AAlu7G9xpLQCh1TyoM9MBsWHMvyNNAIWi7NeRS4BKZozvDKaI0gh7XeKFqKlrzAxziEH/e5o9xGTj7Sg8YMJLnkG3AaOl+7gkYvZ0/Y0PafWKwyAQQFEUiwLXZDwJAlfVpE0q+CoMhF8dW+gWWANbqUPMDjCMqKmabTR5mQxo3l3AsVeo04nbAWoUUbg78s5AD2mhQVG9LPTUVB/7C5+D4sRAqSbLDJSz0GKgmYUuDoo2ugBQyUMuoIKHJkBXHqoA1V+6EVDLQx0g70e3Aur/pMy7DUBQGAXgv6BzK3obqIxhCRISCo9ISDwSdhC7aRQKMYbkuO4C5xvge2gTopmPYkQJH9mIHD5KEWU3LUCU81GBKOIjT8Bnn1I+FRvVOmouUqsjVx0U1YvWcdEuv4GLRhNZ20kIFzFWJnqrmX+XBKIADuDfR4cdHBwoDSfcHVoRGIg/BoOGoFUQtMG1RbBBl6ChqbEGG6zFxSIQ3cTJUFsCcRJxVkSh+j8cvbvunu+9zc8f8NGwsR9fCrv2w0ITjwqwIpczQRUCmyOf2OM7hMOFWFSFU/B1LiBG8M9Bkf8pp+Hi9JP3SchwVVcXXNRjePi453neGvB0fsP+tGRQvJytGOVroCKlNktz1SHYJvq4/ck8gwHJdX+owqkg2Ej9B0rz5Qc76e4k8Osi8B3ZA6dhcjT4s2mGbscQY0x6U91UFFN/f8oa2C1rNdZA8W7uzHUAAAAASUVORK5CYII="></a>
@@ -140,61 +148,7 @@
   <!-- main content -->
   <button id="openNavButton" class="btn-lg btn-dark">&#9776; Zestawy (default: 0)</button>
   <nav class="navbar navbar-dark fixed-top" id="variantNavbar">
-    <!-- <div  id="main_nav">
-      <ul class="navbar-nav">
-        <li class="nav-item dropdown noselect">
-          <a class="nav-link dropdown-toggle btn btn-lg " href="#" data-toggle="dropdown">Wybór wariantu nowego zadania.</a>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item"> Wypełnianie luk w tekście. &raquo </a>
-              <ul class="submenu dropdown-menu">
-                <li><a class="dropdown-item" href="#WordFill" id="btnWordFill"> Jeden wielozdaniowy tekst,<br> jedna pula odpowiedzi.</a></li>
-                
-                <li><a class="dropdown-item" href="#ListWordFill" id="btnListWordFill"> Oddzielne zdania ułożone w wierszach,<br> jedna pula odpowiedzi na wiersz. </a></li>
-
-                <li><a class="dropdown-item" href="#ListChoiceWordFill" id="btnListChoiceWordFill"> Oddzielne zdania ułożone w wierszach,<br> wybór słowa dla każdej luki.</a></li> 
-
-                <li><a class="dropdown-item disabled" href="#"> Jeden wielozdaniowy tekst,<br> wybór słowa dla każdej luki. </a></li>
-              </ul>
-            </li>
-            <li>
-              <a class="dropdown-item">Łączenie słów i zwrotów z dwóch kolumn. &raquo</a>
-              <ul class="submenu dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="#WordConnect" id="btnWordConnect">Łączenie linią.</a></li>
-
-                <li>
-                  <a class="dropdown-item disabled" href="#WordWrite" id="btnWordWrite"> Dopasowanie drugiej kolumny przez ręczne wpisywanie odpowedzi.</a></li>
-
-                <li>
-                  <a class="dropdown-item disabled" href="#WordDrag" id="btnWordDrag"> Dopasowanie drugiej kolumny z podanego zestawu.</a></li>
-              </ul>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#ChronologicalOrder" id="btnChronologicalOrder"> Układanie zdań w porządek chronologiczny. </a></li>
-            <li>
-              <a class="dropdown-item" href="#ListSentenceForming" id="btnListSentenceForming"> Układanie zdań z podanych wyrazów. </a></li>
-            <li>
-              <a class="dropdown-item disabled"> Wybór odpowiedzi (pytanie zamknięte). &raquo</a>
-              <ul class="submenu dropdown-menu">
-                <li><a class="dropdown-item disabled" href="#OptionSelect" id="btnOptionSelect"> Wiele poprawnych odpowiedzi </a></li>
-              </ul>
-            </li>
-
-            <li>
-              <a class="dropdown-item disabled"> Warianty z obrazkami. &raquo</a>
-              <ul class="submenu dropdown-menu">
-                <li><a class="dropdown-item disabled" href="#PictureToManyWords" id="btnPictureToManyWords"> Jeden obrazek i wiele odpowiedzi.</a></li>
-
-                <li><a class="dropdown-item disabled" href="#SentenceToManyPictures" id="btnSentenceToManyPictures"> Jeden tekst i wiele obrazków. </a></li>
-
-                <li><a class="dropdown-item disabled" href="#ManyPicturesManyWords" id="btnManyPicturesManyWords"> Wiele obrazków i wiele słów. </a></li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div> -->
+   
   </nav>
   <div id="mySidepanel" class="sidepanel bg-dark btnShadow" style="width:0">
     <a href="javascript:void(0)" class="closebtn" id="closeNavButton">&times;</a>
@@ -278,8 +232,6 @@
       </table>
     </div>
 
-
-
     <div class="table-responsive collapse" id="multipleTasksetsTable">
       <table class="table table-dark table-sm">
         <thead>
@@ -326,9 +278,6 @@
       </table>
     </div>
 
-
-
-
   </div>
   <div class="container fill text-center" id="bigChangeDiv">
     <div class="row" id="Top">
@@ -372,11 +321,10 @@
               <a href="#" id="btnUploadJsonImportedTasksSet" class="btn pl-0 pl-md-4 text-center text-md-left" data-toggle="modal" data-target="#importTasksToTasksetModalCenter"><i class="fa fa-upload mr-3"></i><span class="impAllTasksBtn">Importuj zadania z pliku do zestawu</span></a>
               <a href="#" id="btnDownloadJsonImportedTasksSet" class="pl-0 pl-md-4 text-center text-md-left"><i class="fa fa-download mr-3"></i><span class="expAllTasksBtn">Eksportuj zadania do pliku</span></a>
               <a href="#" id="" data-toggle="modal" data-target="#deleteAllTasksModalCenter" class="pl-0 pl-md-4 text-center text-md-left"><i class="fa fa-remove mr-3"></i><span class="delAllTaskBtn">Usuń wszystkie zadania</span></a>
-              <a href="#" id="btnDeleteTasksetSel" data-toggle="modal" data-target="#deleteTasksetModalCenter" class="pl-0 pl-md-4 text-center text-md-left"><i class="fa fa-remove mr-3"></i><span class="deleteTasksetBtn">Usuń cały zestaw</span></a>
-              <a href="#" id="btnchangeTasksetNameModalCenterSel" data-toggle="modal" data-target="#changeTasksetNameModalCenter" class="pl-0 pl-md-4 text-center text-md-left"><i class="fa fa-pencil-square-o mr-3"></i><span class="changeTasksetNameBtn">Zmień nazwe zestawu</span></a>
+              <a href="#" id="btnDeleteTasksetSel" data-toggle="modal" data-target="#deleteTasksetModalCenter" class="pl-0 pl-md-4 text-center text-md-left collapse"><i class="fa fa-remove mr-3"></i><span class="deleteTasksetBtn">Usuń cały zestaw</span></a>
+              <a href="#" id="btnchangeTasksetNameModalCenterSel" data-toggle="modal" data-target="#changeTasksetNameModalCenter" class="pl-0 pl-md-4 text-center text-md-left collapse"><i class="fa fa-pencil-square-o mr-3"></i><span class="changeTasksetNameBtn">Zmień nazwe zestawu</span></a>
 
             </div>
-            
             
             <div class="col-md-6 col-12 col-xxl-12-sb">
               
@@ -422,16 +370,6 @@
             <div class="col-6 col-md-4">
               <a href="#OptionSelect" class="OptionSelectBtnClass btn btn-secondary m-1 btn-xs-sm text-break w-100">wariant 7 OptionSelect</a>
             </div>
-            <!-- <div class="col-4">
-              <a href="#OptionSelect" class="OptionSelectBtnClass">wariant 7 OptionSelect</a>
-            </div> -->
-            <!-- <div class="col-4">
-              <a href="#WordFill" class="BtnClass">wariant 8</a>
-            </div>
-            <div class="col-4">
-              <a href="#WordFill" class="BtnClass">wariant 9</a>
-            </div> -->
-            
           </div>
         </div>
 
@@ -448,10 +386,6 @@
               <label for="WordFillDivTaskInstruction">Instrukcja</label>
             </div>
             <div class="form-inline">
-              <!-- <div class="form-group mx-sm-3 mb-2">
-                <label for="WordFillDificulty">Difficulty: </label>
-                <input type="number" class="form-control" id="WordFillDificulty" placeholder="difficulty" value="100">
-              </div> -->
               <div class="col-12 form-group mx-sm-3 mb-2">
                 <label for="customRangeWordFill" id="customRangeLabelWordFill" class="col-12">Difficulty: (100)</label>
                 <div class="col-2 text-right d-none d-sm-block">Easy</div>
@@ -505,43 +439,7 @@
             </div>
           </div>
           <div id="WordFills">
-            <!-- <div class="form-group blue-border-focus">
-              <hr class="border border-primary">
-              <div class="w-75 COC d-inline-block">
-                <div class="form-label-group">
-                  <textarea class="form-control taskTextTextarea ListWordFillTextArea"  id="ListWordFillDivTaskText" placeholder=" " rows="4" ></textarea>
-                  <label for="ListWordFillDivTaskText">Treść</label>
-                </div>
-                <div class="form-inline">
-                  <button class="m-1 btn btn-primary btn-sm"id="ListWordFillAddIncorrectWord">Wstaw dodatkowe słowa</button> 
-                </div>
-                <div class="form-label-group">
-                  <textarea class="form-control incorrectWords"  id="ListWordFillDivIncorrectWords" placeholder=" " rows="1" ></textarea>
-                  <label for="ListWordFillDivIncorrectWords">Dodatkowe, niepoprawne odpowiedzi</label>
-                </div>
-              </div>
-              <button class="d-inline-block btn btn-danger btn-sm">-</button>
-            </div> -->
-
-            <!--
-            <div class="form-group blue-border-focus">
-              <hr class="border border-primary">
-              <div class="w-75 COC d-inline-block">
-                <div class="form-label-group">
-                  <textarea class="form-control taskTextTextarea"  id="ListWordFillDivTaskText" placeholder=" " rows="4" >I don’t want to go into too much {[DETAIL]} at this stage.</textarea>
-                  <label for="ListWordFillDivTaskText">Treść</label>
-                </div>
-                <div class="form-inline">
-                  <button class="m-1 btn btn-primary btn-sm"id="ListWordFillAddIncorrectWord">Wstaw dodatkowe słowa</button> 
-                </div>
-                <div class="form-label-group">
-                  <textarea class="form-control incorrectWords"  id="ListWordFillDivIncorrectWords" placeholder=" " rows="1" >DISTRUCTIONS, TIME, DISCUSSIONS</textarea>
-                  <label for="ListWordFillDivIncorrectWords">Dodatkowe, niepoprawne odpowiedzi</label>
-                </div>
-              </div>
-              <button class="d-inline-block btn btn-danger btn-sm">-</button>
-            </div>
-                -->
+            
           </div>
           <hr class="border border-primary">
           <button class="btn btn-primary btn-sm" id="ListWordFillAddWordFill" data-toggle="tooltip" data-placement="top" title="Dodaj kolejny wiersz.">+</button>
@@ -576,25 +474,7 @@
           </div>
           <!-- <div id="WordFills"> -->
           <div id="ChoiceWordFills">
-            <!-- <div class="form-group blue-border-focus singleChoiceWordFillDiv">
-              <hr class="border border-primary">
-              <div class="form-inline">
-                  <button class="m-auto btn btn-primary btn-sm ListChoiceWordFillFAddWord" id="ListChoiceWordFillFAddWord0">Wstaw wybór odpowiedzi</button>
-                  <div class="invalid-feedback invalidListChoiceWordFillFAddWord" id="invalidListChoiceWordFillFAddWord0">
-                  Nie zgadza się umiejscowienie tagów {[]}.
-                  </div>
-              </div>
-              <label class="ListChoiceWordFillFDivTaskText">1</label>
-              <div class="align-middle w-75 d-inline-block ListChoiceWordFillFTextBlock">
-                  <div class="form-label-group">
-                      <textarea class="form-control taskTextTextarea ListChoiceWordFillFTextArea"  id="ListChoiceWordFillFDivTaskTextArea0" placeholder=" " rows="4"></textarea>
-                      <label for="ListChoiceWordFillFDivTaskTextArea">Treść</label>
-                  </div>
-              </div>
-              <button class="align-middle d-inline-block btn btn-danger btn-sm ListChoiceWordFillFDeleteButton" id="btnListChoiceWordFillFRemoveWordFill0">-</button>
-            </div> -->
-
-            <!-- ... -->
+            
           </div>
           <hr class="border border-primary">
           <button class="btn btn-primary btn-sm" id="ListChoiceWordFillAddWordFill" data-toggle="tooltip" data-placement="top" title="Dodaj kolejny wiersz.">+</button>
@@ -616,10 +496,7 @@
             </div>
 
             <div class="form-inline">
-              <!-- <div class="form-group mx-sm-3 mb-2">
-                <label for="chronologicalOrderDificulty">Difficulty: </label>
-                <input type="number" class="form-control" id="chronologicalOrderDificulty" placeholder="difficulty" value="100">
-              </div> -->
+              
               <div class="col-12 form-group mx-sm-3 mb-2">
                 <label for="customRangeCO" id="customRangeLabelCO" class="col-12">Difficulty: (100)</label>
                 <div class="col-2 text-right d-none d-sm-block">Easy</div>
@@ -631,17 +508,7 @@
           </div>
           <hr class="border border-primary">
           <div id="chronologicalOrderSentences">
-            <!-- <div class="form-group blue-border-focus">
-              <label for="chronologicalOrderDivTaskText1">1</label>
-                <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="chronologicalOrderDivTaskText1" rows="2" placeholder="Wstaw zdanie nr 1"></textarea>
-              <button class="d-inline-block btn btn-danger btn-sm">-</button>
-            </div> -->
-            <!--
-            <div class="form-group blue-border-focus">
-              <label for="chronologicalOrderDivTaskText6">6</label>
-              <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="chronologicalOrderDivTaskText6" rows="2" placeholder="Wstaw zdanie nr 6">Finally, review the program’s documentation.</textarea>
-              <button class="d-inline-block btn btn-danger btn-sm">-</button>
-            </div>-->
+            
           </div>
           <button class="btn btn-primary btn-sm" id="chronologicalOrderAddSentence" data-toggle="tooltip" data-placement="top" title="Dodaj kolejny wiersz.">+</button>
           <div class="invalid-feedback" id="invalidConnectAddSentence">
@@ -662,10 +529,7 @@
             </div>
 
             <div class="form-inline">
-              <!-- <div class="form-group mx-sm-3 mb-2">
-                <label for="ListSentenceFormingDificulty">Difficulty: </label>
-                <input type="number" class="form-control" id="ListSentenceFormingDificulty" placeholder="difficulty" value="100">
-              </div> -->
+              
               <div class="col-12 form-group mx-sm-3 mb-2">
                 <label for="customRangeListSentenceForming" id="customRangeLabelListSentenceForming" class="col-12">Difficulty: (100)</label>
                 <div class="col-2 text-right d-none d-sm-block">Easy</div>
@@ -677,18 +541,7 @@
           </div>
           <hr class="border border-primary">
           <div id="ListSentenceFormingSentences">
-            <!-- <div class="form-group blue-border-focus">
-              <label for="ListSentenceFormingDivTaskText1">1</label>
-                <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="ListSentenceFormingDivTaskText1" rows="2" placeholder="Wstaw zdanie nr 1"></textarea>
-              <button class="d-inline-block btn btn-danger btn-sm">-</button>
-            </div> -->
-            <!--
-
-            <div class="form-group blue-border-focus">
-              <label for="ListSentenceFormingDivTaskText6">6</label>
-              <textarea class="w-75 d-inline-block form-control taskTextTextarea"  id="ListSentenceFormingDivTaskText6" rows="2" placeholder="Wstaw zdanie nr 6">Finally, review the program’s documentation.</textarea>
-              <button class="d-inline-block btn btn-danger btn-sm">-</button>
-            </div>-->
+            
           </div>
           <button class="btn btn-primary btn-sm" id="ListSentenceFormingAddSentence" data-toggle="tooltip" data-placement="top" title="Dodaj kolejne zdanie.">+</button>
           <div class="invalid-feedback" id="invalidListSentenceFormingAddSentence">
@@ -709,10 +562,7 @@
             </div>
 
             <div class="form-inline">
-              <!-- <div class="form-group mx-sm-3 mb-2">
-                <label for="WordConnectDificulty">Difficulty: </label>
-                <input type="number" class="form-control" id="WordConnectDificulty" placeholder="difficulty" value="100">
-              </div> -->
+              
               <div class="col-12 form-group mx-sm-3 mb-2">
                 <label for="customRangeWC" id="customRangeLabelWC" class="col-12">Difficulty: (100)</label>
                 <div class="col-2 text-right d-none d-sm-block">Easy</div>
@@ -723,30 +573,6 @@
           </div>
           <div id="WordConnectConnections">
             
-            <!-- <div class="form-group blue-border-focus">
-              <hr class="border border-primary">
-              <div class="w-75 COC d-inline-block">
-                <label for="WordConnectDivTaskWord1">Słowo:</label>
-                <textarea class="form-control taskTextTextarea"  id="WordConnectDivTaskWord1" rows="2" placeholder="Wstaw słowo nr 1:"></textarea>
-
-                <label for="WordConnectDivTaskDefinition1">Definicja:</label>
-                <textarea class="form-control taskTextTextarea"  id="WordConnectDivTaskDefinition1" rows="2" placeholder="Wstaw definicje nr 1:"></textarea>
-              </div>
-              <button class="d-inline-block btn btn-danger btn-sm">-</button>
-            </div> -->
-            <!--
-            <div class="form-group blue-border-focus">
-              <hr class="border border-primary">
-              <div class="w-75 COC d-inline-block">
-                <label for="WordConnectDivTaskWord10">Słowo:</label>
-                <textarea class="form-control taskTextTextarea"  id="WordConnectDivTaskWord10" rows="2" placeholder="Wstaw słowo nr 10:">outlier</textarea>
-
-                <label for="WordConnectDivTaskDefinition10">Definicja:</label>
-                <textarea class="form-control taskTextTextarea"  id="WordConnectDivTaskDefinition10" rows="2" placeholder="Wstaw definicje nr 10:">wartość skrajna</textarea>
-              </div>
-              <button class="d-inline-block btn btn-danger btn-sm">-</button>
-            </div>
-          -->
           </div>
           <hr class="border border-primary">
           <button class="btn btn-primary btn-sm" id="WordConnectAddConnection" data-toggle="tooltip" data-placement="top" title="Dodaj nowe połączenie linią.">+</button>
@@ -769,10 +595,7 @@
             </div>
 
             <div class="form-inline">
-              <!-- <div class="form-group mx-sm-3 mb-2">
-                <label for="WordConnectDificulty">Difficulty: </label>
-                <input type="number" class="form-control" id="WordConnectDificulty" placeholder="difficulty" value="100">
-              </div> -->
+              
               <div class="col-12 form-group mx-sm-3 mb-2">
                 <label for="customRangeWordDrag" id="customRangeLabelWordDrag" class="col-12">Difficulty: (100)</label>
                 <div class="col-2 text-right d-none d-sm-block">Easy</div>
@@ -783,17 +606,6 @@
           </div>
           <div id="WordDragConnections">
             
-            <!-- <div class="form-group blue-border-focus">
-              <hr class="border border-primary">
-              <div class="w-75 COC d-inline-block">
-                <label for="WordConnectDivTaskWord1">Słowo:</label>
-                <textarea class="form-control taskTextTextarea"  id="WordConnectDivTaskWord1" rows="2" placeholder="Wstaw słowo nr 1:"></textarea>
-
-                <label for="WordConnectDivTaskDefinition1">Definicja:</label>
-                <textarea class="form-control taskTextTextarea"  id="WordConnectDivTaskDefinition1" rows="2" placeholder="Wstaw definicje nr 1:"></textarea>
-              </div>
-              <button class="d-inline-block btn btn-danger btn-sm">-</button>
-            </div> -->
           </div>
           <hr class="border border-primary">
           <button class="btn btn-primary btn-sm" id="WordDragAddConnection" data-toggle="tooltip" data-placement="top" title="Dodaj kolejny wiersz.">+</button>
@@ -816,10 +628,7 @@
             </div>
 
             <div class="form-inline">
-              <!-- <div class="form-group mx-sm-3 mb-2">
-                <label for="WordConnectDificulty">Difficulty: </label>
-                <input type="number" class="form-control" id="WordConnectDificulty" placeholder="difficulty" value="100">
-              </div> -->
+              
               <div class="col-12 form-group mx-sm-3 mb-2">
                 <label for="customRangeWordWrite" id="customRangeLabelWordWrite" class="col-12">Difficulty: (100)</label>
                 <div class="col-2 text-right d-none d-sm-block">Easy</div>
@@ -830,17 +639,6 @@
           </div>
           <div id="WordWriteConnections">
             
-            <!-- <div class="form-group blue-border-focus">
-              <hr class="border border-primary">
-              <div class="w-75 COC d-inline-block">
-                <label for="WordConnectDivTaskWord1">Słowo:</label>
-                <textarea class="form-control taskTextTextarea"  id="WordConnectDivTaskWord1" rows="2" placeholder="Wstaw słowo nr 1:"></textarea>
-
-                <label for="WordConnectDivTaskDefinition1">Definicja:</label>
-                <textarea class="form-control taskTextTextarea"  id="WordConnectDivTaskDefinition1" rows="2" placeholder="Wstaw definicje nr 1:"></textarea>
-              </div>
-              <button class="d-inline-block btn btn-danger btn-sm">-</button>
-            </div> -->
           </div>
           <hr class="border border-primary">
           <button class="btn btn-primary btn-sm" id="WordWriteAddConnection" data-toggle="tooltip" data-placement="top" title="Dodaj kolejny wiersz.">+</button>
@@ -979,23 +777,8 @@
               </div>
             </div>
           </div>
-          <!-- <div class="form-label-group">
-            <textarea class="form-control taskTextTextarea"  id="ManyPicturesManyWordsDivTaskText" placeholder=" " rows="4" ></textarea>
-            <label for="ManyPicturesManyWordsDivTaskText">Treść</label>
-          </div> -->
           <div id="ManyPicturesManyWordsConnections">
             
-            <!-- <div class="form-group blue-border-focus">
-              <hr class="border border-primary">
-              <div class="w-75 COC d-inline-block">
-                <label for="WordConnectDivTaskWord1">Słowo:</label>
-                <textarea class="form-control taskTextTextarea"  id="WordConnectDivTaskWord1" rows="2" placeholder="Wstaw słowo nr 1:"></textarea>
-
-                <label for="WordConnectDivTaskDefinition1">Definicja:</label>
-                <textarea class="form-control taskTextTextarea"  id="WordConnectDivTaskDefinition1" rows="2" placeholder="Wstaw definicje nr 1:"></textarea>
-              </div>
-              <button class="d-inline-block btn btn-danger btn-sm">-</button>
-            </div> -->
           </div>
           <hr class="border border-primary">
           <button class="btn btn-primary btn-sm" id="WordConnectAddConnection">+</button>
@@ -1055,16 +838,13 @@
           <div class="row collapse" id="dualList">
             <div class="col-6">
               <div class="row mr-1 ml-1">
-                <label for="duallist-non-selected" id="duallist-non-selected-label">Pozostałe zestawy:</label>
+                <label for="duallist-non-selected" id="duallist-non-selected-label"><span id="duallist-non-selected-label-part1">Pozostałe zestawy:</span><span id="duallist-non-selected-label-part2"></span></label>
               </div>
               <div class="row mr-1 ml-1">
                 <span class="info-container">     
                   <span class="d-inline-block mb-1" style="font-size:11px;">
                     Showing all 
                   </span>     
-                  <!-- <button type="button" class="btn btn-sm" style="font-size: 11px;background-color: lightgray;position: absolute;right: 20px;padding: .15rem .3rem!important;">
-                    show all
-                  </button>    -->
                 </span>
               </div>
               <div class="row mr-1 ml-1">
@@ -1092,16 +872,13 @@
             
             <div class="col-6">
               <div class="row mr-1 ml-1">
-                <label for="duallist-selected" id="duallist-selected-label">Zapisz do zestawów:</label>
+                <label for="duallist-selected" id="duallist-selected-label"><span id="duallist-selected-label-part1">Zapisz do zestawów:</span><span id="duallist-selected-label-part2"></span></label>
               </div>
               <div class="row mr-1 ml-1">
                 <span class="info-container">     
                   <span class="d-inline-block mb-1" style="font-size:11px;">
                     Showing all 
                   </span>     
-                  <!-- <button type="button" class="btn btn-sm" style="font-size: 11px;background-color: lightgray;position: absolute;right: 20px;padding: .15rem .3rem!important;">
-                    show all
-                  </button>    -->
                 </span>
               </div>
               <div class="row mr-1 ml-1">
@@ -1475,9 +1252,9 @@
   <script src="/js/dual-list-logic.js"></script>
   <script src="/js/lang/page-language-changer.js"></script>
   <script src="/js/cyto/cytoscape.min.js"></script>
+  <script src="/js/messages.js"></script>
   <script>
-      var tclm = TaskCreatorLecturerModule({debug: false});
-      tclm.getInstance(false);
+      TaskCreatorLecturerModule().getInstance();
   </script>
 </body>
 </html>

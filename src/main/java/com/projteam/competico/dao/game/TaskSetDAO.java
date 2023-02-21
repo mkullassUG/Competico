@@ -12,4 +12,5 @@ public interface TaskSetDAO extends JpaRepository<TaskSet, UUID>
 	public List<TaskSet> findAllByLecturerID(UUID lecturerID);
 	public long countAllByLecturerID(UUID lecturerID);
 	public boolean existsByNameAndLecturerID(String name, UUID lecturerID);
+	public List<TaskSet> findAllByNameInAndLecturerID(List<String> names, UUID id);
 }

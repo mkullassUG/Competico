@@ -47,7 +47,7 @@ public class AccountController
 	}
 
 	@GetMapping("/profile/{username}")
-	@ApiOperation(value = "Display profile information of the user with the provided username", code = 200)
+	@ApiOperation(value = "Display profile information of a user with the provided username", code = 200)
 	public Object profilePage(Model model, @PathVariable String username)
 	{
         Map<String, Object> userData = accServ.findByUsername(username)

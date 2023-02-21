@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
+import com.projteam.competico.service.game.LobbyService;
 import com.projteam.competico.service.group.GroupService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,11 +27,14 @@ import io.swagger.annotations.ApiResponses;
 public class GroupAPI
 {
 	private GroupService groupService;
+	private LobbyService lobbyService;
 	
 	@Autowired
-	public GroupAPI(GroupService groupService)
+	public GroupAPI(GroupService groupService,
+			LobbyService lobbyService)
 	{
 		this.groupService = groupService;
+		this.lobbyService = lobbyService;
 	}
 	
 	@PostMapping("/api/v1/groups")
@@ -170,7 +175,7 @@ public class GroupAPI
 		}
 	}
 	@DeleteMapping("/api/v1/groups/{code}/user/{username}")
-	@ApiOperation(value = "Delete a user from a group", code = 200)
+	@ApiOperation(value = "Remove a user from a group", code = 200)
 	public ResponseEntity<?> removeUserFromGroup(
 			@PathVariable("code") String groupCode,
 			@PathVariable("username") String username)
@@ -197,7 +202,7 @@ public class GroupAPI
 	}
 	
 	@PostMapping("/api/v1/groups/join/{code}")
-	@ApiOperation(value = "Request to join a group", code = 200)
+	@ApiOperation(value = "Send a request to join a group", code = 200)
 	public ResponseEntity<?> requestToJoinGroup(
 			@PathVariable("code") String groupCode)
 	{
@@ -267,7 +272,7 @@ public class GroupAPI
 		}
 	}
 	@GetMapping("/api/v1/groups/requests/my")
-	@ApiOperation(value = "Get own requests to join a group", code = 200)
+	@ApiOperation(value = "Get personal requests to join a group", code = 200)
 	public Object getOwnGroupJoinRequests()
 	{
 		try
@@ -280,7 +285,7 @@ public class GroupAPI
 		}
 	}
 	@GetMapping("/api/v1/groups/requests/my/{page}")
-	@ApiOperation(value = "Get own requests to join a group, with paging", code = 200)
+	@ApiOperation(value = "Get personal requests to join a group, with paging", code = 200)
 	public Object getOwnGroupJoinRequests(@PathVariable int page)
 	{
 		try
@@ -454,18 +459,128 @@ public class GroupAPI
 		}
 	}
 	
-	@ApiOperation(value = "Notify the server that the user is still in a game", code = 200)
+	@ApiOperation(value = "Get a list of history of the games played in a group", code = 200)
 	@ApiResponses(
 	{
-		@ApiResponse(code = 200, message = "Server notified successfully")
+		@ApiResponse(code = 200, message = "List retrieved successfully")
 	})
 	@GetMapping("api/v1/groups/{code}/game/history/{page}")
 	public Object getGameHistory(
 			@PathVariable("code") String groupCode,
 			@PathVariable int page)
 	{
-		if (page < 1)
-			return new RedirectView("api/v1/groups/{code}/game/history/1");
-		return groupService.getGameHistory(groupCode, page - 1);
+		try
+		{
+			if (page < 1)
+				return new RedirectView("api/v1/groups/{code}/game/history/1");
+			return groupService.getGameHistory(groupCode, page - 1);
+		}
+		catch (Exception e)
+		{
+			switch (Optional
+					.ofNullable(e.getMessage())
+					.orElse(""))
+			{
+				case "GROUP_NOT_FOUND":
+					return ResponseEntity.notFound().build();
+				case "NOT_IN_GROUP":
+					return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+				default:
+					return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}
+	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
+	@ApiOperation(value = "Create a new group lobby", code = 201)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 201, message = "Lobby created successfully"),
+		@ApiResponse(code = 400, message = "Lobby could not be created")
+	})
+	@PostMapping("api/v1/groups/{code}/lobby")
+	public ResponseEntity<String> createLobby(
+			@PathVariable("code") String groupCode)
+	{
+		try
+		{
+			return new ResponseEntity<String>(
+					lobbyService.createGroupLobby(groupCode), HttpStatus.CREATED);
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body("Nie udało się stworzyć lobby");
+		}
+	}
+	
+	@GetMapping("/api/v1/groups/joinrequests/count")
+	@ApiOperation(value = "Get the number of group messages", code = 200)
+	public Object getTotalJoinRequestCount()
+	{
+		try
+		{
+			return groupService.getTotalJoinRequestCount();
+		}
+		catch (Exception e)
+		{
+
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	@GetMapping("/api/v1/groups/messages/unread/count")
+	@ApiOperation(value = "Get group messages", code = 200)
+	public Object getTotalUnreadMessagesCount()
+	{
+		try
+		{
+			return groupService.getTotalUnreadMessagesCount();
+		}
+		catch (Exception e)
+		{
+
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	@GetMapping("/api/v1/groups/messages/unread")
+	@ApiOperation(value = "Get unread group messages from all groups", code = 200)
+	public Object getTotalUnreadMessages()
+	{
+		try
+		{
+			return groupService.getTotalUnreadMessages();
+		}
+		catch (Exception e)
+		{
+
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	@GetMapping("/api/v1/groups/{code}/lobbies")
+	@ApiOperation(value = "Get a list of group lobbies from a group", code = 200)
+	public Object getGroupLobbies(@PathVariable("code") String groupCode)
+	{
+		try
+		{
+			return groupService.getGroupLobbies(groupCode);
+		}
+		catch (Exception e)
+		{
+
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	@GetMapping("/api/v1/groups/lobbies")
+	@ApiOperation(value = "Get a list all group lobbies", code = 200)
+	public Object getAllGroupLobbies()
+	{
+		try
+		{
+			return groupService.getAllGroupLobbiesDto();
+		}
+		catch (Exception e)
+		{
+
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 }

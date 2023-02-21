@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.projteam</groupId>
 	<artifactId>competico</artifactId>
-	<version>0.9.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>app</name>
 	<description>Aplikacja Web Competico wspomagająca naukę języka angielskiego</description>
 

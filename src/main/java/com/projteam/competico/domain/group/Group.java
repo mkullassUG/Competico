@@ -11,11 +11,11 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import com.projteam.competico.domain.Account;
+import com.projteam.competico.utils.Initializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "LecturerGroup")
 @Access(AccessType.FIELD)
-public class Group
+public class Group implements Initializable
 {
 	private @Id UUID id;
 	private @Column(name = "name") String name;
@@ -35,9 +35,6 @@ public class Group
 	private @ElementCollection List<String> gameCodes;
 	private @ManyToMany List<Account> lecturers;
 	private @ManyToMany List<Account> players;
-	private @OneToMany List<GroupGameResult> gameHistory;
-	private @OneToMany List<GroupJoinRequest> joinRequests;
-	private @OneToMany List<GroupMessage> messages;
 	
 	public Group(UUID id, String groupName, String groupCode, List<Account> lecturers)
 	{
@@ -48,8 +45,11 @@ public class Group
 		creationDate = new Date();
 		gameCodes = new ArrayList<>();
 		players = new ArrayList<>();
-		gameHistory = new ArrayList<>();
-		joinRequests = new ArrayList<>();
-		messages = new ArrayList<>();
+	}
+
+	@Override
+	public void initialize()
+	{
+		Initializable.initialize(gameCodes, lecturers, players);
 	}
 }

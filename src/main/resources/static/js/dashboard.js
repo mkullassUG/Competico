@@ -46,51 +46,47 @@ const DashboardLogic = (data, debug = false, depMocks = {}) => {
 
             $("#currentUser").html(self.nickname + " <small>" + self.username + "</small>")
 
-            //navbar preparation
             if ( typeof NavbarLogic != "undefined" )
                 NavbarLogic(accountInfo, debug);
 
             self.ajaxGetTopLeaderboard(self.setupLeaderboard);
 
-            //new bug fix
-            var resizeWindow = () => {
-            
-                var sy = window.scrollY;
-                $("html").height("100%");
-
-                function isInt(n) {
-                    return n % 1 === 0;
-                }
-                
-                var h1 = $(window.document).height();
-                // if ( isInt (h1))
-                //     h1 -= 1;
-                $("html").height(h1);
-
-                window.scrollTo(0,sy);
-            } 
-
-            
             if ( self.roles.includes("LECTURER")) {
                 $("#gameHistoryHyperlink").hide();
                 $("#currentUserRating").hide();
             }
             window.onresize = resizeWindow;
-            resizeWindow();
         }
 
         if ( typeof PageLanguageChanger != "undefined")
-            PageLanguageChanger(false, debug, false, ()=>{initActions();self.InitWithPageLanguageChanger();});
+            PageLanguageChanger(false, debug, {}, ()=>{initActions();self.InitWithPageLanguageChanger();});
         else
             initActions();
         
+        if ( MessagesModule )
+            MessagesModule().getInstance(false, (data)=>{data.setFunctionToInform(self.messagerFunction);});
     }
+
+    var resizeWindow = () => {
+            
+        var sy = window.scrollY;
+        $("html").height("100%");
+
+        function isInt(n) {
+            return n % 1 === 0;
+        }
+        
+        var h1 = $(window.document).height();
+        if ( isInt (h1))
+             h1 -= 1;
+        $("html").height(h1);
+
+        window.scrollTo(0,sy);
+    } 
 
     self.InitWithPageLanguageChanger = (data, lang_) => {
 
         if ( data === true){
-            if ( debug )
-                console.log("PageLanguageChanger done");
             return;
         }
 
@@ -106,6 +102,24 @@ const DashboardLogic = (data, debug = false, depMocks = {}) => {
             $(".playerProfile").text(PageLanguageChanger().getTextFor("profile"));
     }
 
+    /* messages */
+    self.messagerFunction = (data) => {
+
+        if ( data.areNew ) {
+            //dźwiek
+            //console.log("Ding!")
+        }
+        
+        var updateNavbar = () => {
+            $("#messageUnreadMessages").text(
+                (data.numberOfMessages+data.numberOfLobbies)?
+                ((data.numberOfMessages+data.numberOfLobbies)>99?
+                "99+":(data.numberOfMessages+data.numberOfLobbies)):"");
+            $("#messageAwaitingRequests").text(data.numberOfRequests?(data.numberOfRequests>99?"99+":data.numberOfRequests):"");
+        }
+        updateNavbar();
+    }
+    
     self.setupLeaderboard = (data) => {
 
         if (data.length <= 0)
@@ -174,7 +188,7 @@ const DashboardLogic = (data, debug = false, depMocks = {}) => {
                 <strong class="d-block">` + player.nickname + 
                 ((player.username===self.username&&player.nickname===self.nickname)?' (JA)  ':'') +`</strong>
                 <span class="text-gray-dark">`+ player.username + `</span>
-                <small class="d-block">ostatnio grano: 0 dni temu</small>`);
+                <small class="d-block"></small>`);
 
             var scoreCol = $(`<div class="col-sm-4 col-3 align-self-center">`);
             scoreCol.append(`<strong>`+player.rating+`</strong>`)
@@ -187,25 +201,6 @@ const DashboardLogic = (data, debug = false, depMocks = {}) => {
             var scoreAndProfileHolder = $(`<div class="row media-body pb-3 mb-0 small lh-125">`);
 
             scoreAndProfileHolder.append(rankCol).append(nameCol).append(scoreCol).append(profileCol);
-            // var playerHolder = $(`<div class="media text-muted pt-3`+(isMe?' bg-light':'')+`">
-            //     <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32">
-            //         <title>Placeholder</title>
-            //         <rect width="100%" height="100%" fill="`+color+`"/>
-            //         <text x="50%" y="50%" fill="white" dy=".3em">`+player.position+`</text>
-            //     </svg>
-            //     <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            //         <div class="d-flex justify-content-between align-items-center w-100">
-            //             <strong class="d-block">` + player.nickname + 
-            //             ((player.username===self.username&&player.nickname===self.nickname)?' (JA)  ':'') +`</strong>
-            //             <strong>`+player.rating+`</strong>
-            //             <a href="/profile/`+ player.username + `" class="playerProfile">` +
-            //             ((typeof PageLanguageChanger != "undefined")?PageLanguageChanger().getTextFor("profiles"):"Profil:") 
-            //             + `</a>
-            //         </div>
-            //         <span class="text-gray-dark">`+ player.username + `</span>
-            //       <small class="d-block">ostatnio grano: x dni temu</small>
-            //     </div>
-            // </div>`);
 
             var playerHolder = $(`<div class="border-bottom border-gray media text-muted pt-3`+(isMe?' bg-light':'')+`">`);
             playerHolder.append(scoreAndProfileHolder);
@@ -213,6 +208,7 @@ const DashboardLogic = (data, debug = false, depMocks = {}) => {
             topLeaderboard.append(playerHolder);
         }
         self.ajaxGetRelativeLeaderboard(self.setupRelativeLeaderboard);
+        resizeWindow();
     }
 
      self.setupRelativeLeaderboard = (data) => {
@@ -221,16 +217,12 @@ const DashboardLogic = (data, debug = false, depMocks = {}) => {
             return;
 
         self.relativePlayers = data;
-
         var topLeaderboard = $("#topLeaderboard");
 
-        //
         if (data[0].position > self.topPlayers.length+1 )
             topLeaderboard.append("...");
 
-
         for (let i = 0; i < data.length; i++) {
-
             var player = data[i];
 
             var isMe = (player.username===self.username && player.nickname===self.nickname);
@@ -264,7 +256,7 @@ const DashboardLogic = (data, debug = false, depMocks = {}) => {
                 <strong class="d-block">` + player.nickname + 
                 ((player.username===self.username&&player.nickname===self.nickname)?' (Me)  ':'') +`</strong>
                 <span class="text-gray-dark">`+ player.username + `</span>
-                <small class="d-block">ostatnio grano: 0 dni temu</small>`);
+                <small class="d-block"></small>`);
 
             var scoreCol = $(`<div class="col-sm-4 col-3 align-self-center">`);
             scoreCol.append(`<strong>`+player.rating+`</strong>`)
@@ -277,24 +269,6 @@ const DashboardLogic = (data, debug = false, depMocks = {}) => {
             var scoreAndProfileHolder = $(`<div class="row media-body pb-3 mb-0 small lh-125">`);
 
             scoreAndProfileHolder.append(rankCol).append(nameCol).append(scoreCol).append(profileCol);
-
-            // var playerHolder = $(`<div class="media text-muted pt-3 `+(isMe?'bg-light':'')+`">
-            //     <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32">
-            //         <title>Placeholder</title>
-            //         <rect width="100%" height="100%" fill="#007bff"/>
-            //         <text x="50%" y="50%" dy=".3em" fill="white">`+player.position+`</text>
-            //     </svg>
-            //     <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            //         <div class="d-flex justify-content-between align-items-center w-100">
-            //             <strong class="d-block">` + player.nickname + 
-            //             ((player.username===self.username&&player.nickname===self.nickname)?' (JA)  ':'') +`</strong>
-            //             <strong>`+player.rating+`</strong>
-            //             <a href="/profile/`+ player.username + `-` + player.nickname +`">Profil</a>
-            //         </div>
-            //         <span class="text-gray-dark">`+ player.username + `</span>
-            //         <small class="d-block">ostatnio grano: x dni temu</small>
-            //     </div>
-            // </div>`);
             
             var playerHolder = $(`<div class="border-bottom border-gray media text-muted pt-3`+(isMe?' bg-light':'')+`">`);
             playerHolder.append(scoreAndProfileHolder);
@@ -307,6 +281,7 @@ const DashboardLogic = (data, debug = false, depMocks = {}) => {
 
         if (self.myScore)
             self.setupMyScore();
+        resizeWindow();
     }
 
     self.setupMyScore = () => {
@@ -385,18 +360,15 @@ DashboardLogic.getInstance = (dataLazy, debug = false, depMocks = {}) => {
             type     : "GET",
             cache    : false,
             url      : "/api/v1/account/info",
-            // url      : "/api/v1/playerinfo",
             contentType: "application/json",
             success: function(accountInfo, textStatus, jqXHR) {
                 if (debug){
                     console.log("ajaxReceiveAccountInfo success");
                     console.log(accountInfo);
-                    console.log(textStatus);
-                    console.log(jqXHR);
                 }
-                if (typeof accountInfo == 'string') //nie zalogowany
+                if (typeof accountInfo == 'string')
                     DashboardLogic.singleton = DashboardLogic({}, debug, depMocks);
-                else //zalogowany
+                else 
                     DashboardLogic.singleton = DashboardLogic(accountInfo, debug, depMocks);
                 
             },

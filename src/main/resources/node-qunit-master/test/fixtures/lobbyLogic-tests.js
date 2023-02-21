@@ -128,7 +128,7 @@ var hostMock = () =>[
 function newDomMock( resolve, reject_ ) {
     JSDOM.fromFile("./../templates/lobby.html").then(domJSDOM => {
                 
-        console.log("done Setting up lobby DOM");
+        //console.log("done Setting up lobby DOM");
         dom = domJSDOM;
         window = dom.window;
         dom.reconfigure({  url: "http://mockAddress/game/"+lobbyCodeMock });
@@ -137,22 +137,29 @@ function newDomMock( resolve, reject_ ) {
         $ = require('jquery')(window);
         mockjax = mockjaxFunc($, window);
         resolve(dom);
+    }).catch((e)=>{
+        console.warn("ERROR COULD NOT FIND HTML TEMPLATE!!!!!!!!!!!!!!!!");
+        resolve(false);
     });
 }
 
 QUnit.module( "Lobby Logic module", {
     beforeEach: function() {
-        console.log("Setting up DOM beforeEach and mock reset (LobbyLogic module)");
+        //console.log("Setting up DOM beforeEach and mock reset (LobbyLogic module)");
         return new Promise( newDomMock );
     },
 
     afterEach: function () {
-        console.log("afterEach mock reset");
+        console.log("afterEach mock reset (Lobby Logic)");
         
-        console.log("unused ajax mocks:");
-        console.log($.mockjax.unfiredHandlers());
-        console.log("unmockedAjaxCalls ajax mocks:");
-        console.log($.mockjax.unmockedAjaxCalls());
+        if ( $.mockjax.unfiredHandlers().length){
+            console.log("unused ajax mocks (Lobby Logic):");
+            console.log($.mockjax.unfiredHandlers());
+        }
+        if ( $.mockjax.unmockedAjaxCalls().length ) {
+            console.log("unmockedAjaxCalls ajax mocks (Lobby Logic):");
+            console.log($.mockjax.unmockedAjaxCalls());
+        }
         // console.log("mockedAjaxCalls ajax mocks:");
         // console.log($.mockjax.mockedAjaxCalls())
         $.mockjax.clear();
@@ -164,13 +171,14 @@ QUnit.module( "Lobby Logic module", {
 */
 
 test('Lobby creation test with player', function(assert){
-    console.log("test with mockjax player");
+    assert.timeout( 5000 );
+    //console.log("test with mockjax player");
     var done = assert.async(); 
     
     mockjax(playerMock());
     $.mockjaxSettings.logger = null;
 
-    var ll = LobbyModule($, window).getInstance(false, false, function(data) {
+    var ll = LobbyModule({$:$, window:window}).getInstance(false, function(data) {
         
         assert.equal(typeof data === 'object', true, 'Successfully recived message from Lobby Init function.');
         done();
@@ -179,16 +187,17 @@ test('Lobby creation test with player', function(assert){
 });
 
 test('Lobby singleton test with player', function(assert){
-    console.log("Lobby singleton test with player");
+    assert.timeout( 5000 );
+    //console.log("Lobby singleton test with player");
     var done = assert.async(); 
     
     mockjax(playerMock());
     $.mockjaxSettings.logger = null;
 
-    var lm = LobbyModule($, window);
+    var lm = LobbyModule({$:$, window:window});
     var areSameObjects = (obj1, obj2) =>  assert.equal(obj1 == obj2, true, 'Objects are the same.');
 
-    var ll = lm.LobbyLogic(false, false, function(data) {
+    var ll = lm.LobbyLogic(false, function(data) {
         
         areSameObjects(data, lm.LobbyLogic.singleton);
         areSameObjects(data, lm.LobbyLogic());
@@ -200,13 +209,14 @@ test('Lobby singleton test with player', function(assert){
 });
 
 test('Lobby creation test with host', function(assert){
-    console.log("test with mockjax host");
+    assert.timeout( 5000 );
+    //console.log("test with mockjax host");
     var done = assert.async(); 
     
     mockjax(hostMock());
     $.mockjaxSettings.logger = null;
     
-    var ll = LobbyModule($, window).getInstance(false, false, function(data) {
+    var ll = LobbyModule({$:$, window:window}).getInstance(false, function(data) {
         
         assert.equal(typeof data == 'object', true, 'Successfully recived message from Lobby Init function.');
         done();
@@ -215,7 +225,8 @@ test('Lobby creation test with host', function(assert){
 });
 
 test('Lobby copy lobbycode test with host', function(assert){
-    console.log("Lobby copy lobbycode test with host");
+    assert.timeout( 5000 );
+    //console.log("Lobby copy lobbycode test with host");
     var done = assert.async(); 
     
     mockjax(hostMock());
@@ -241,7 +252,7 @@ test('Lobby copy lobbycode test with host', function(assert){
         }
     }
 
-    var ll = LobbyModule($, window).getInstance(false, false, function(data) {
+    var ll = LobbyModule({$:$, window:window}).getInstance(false, function(data) {
         var testValue = data.copyTextToClipboard(lobbyCodeMock);
         assert.equal(testValue, true, 'Successfully copied lobby code (but clipboard and focus not supported in nodejs?).');
         done();
@@ -250,7 +261,8 @@ test('Lobby copy lobbycode test with host', function(assert){
 });
 
 test('Lobby startgame test with host', function(assert){
-    console.log("Lobby startgame test with host");
+    assert.timeout( 5000 );
+    //console.log("Lobby startgame test with host");
     var done = assert.async();
     
     var ajaxMocks = [...hostMock(),
@@ -304,7 +316,7 @@ test('Lobby startgame test with host', function(assert){
     window.cytoscape = cytoscopeMock;
     window.ResizeObserver = ResizeObserver;
 
-    var ll = LobbyModule($, window).getInstance(false, false, function(data) {
+    var ll = LobbyModule({$:$, window:window}).getInstance(false, function(data) {
         
         data.startGame((gameObj) => {
             assert.equal(gameObj.gameExist, true, 'Game has started.');
@@ -316,7 +328,8 @@ test('Lobby startgame test with host', function(assert){
 });
 
 test('Lobby lobbySetupAfterChange test with host', function(assert){
-    console.log("Lobby lobbySetupAfterChange test with host");
+    assert.timeout( 5000 );
+    //console.log("Lobby lobbySetupAfterChange test with host");
     var done = assert.async();
 
     mockjax(hostMock());
@@ -328,7 +341,7 @@ test('Lobby lobbySetupAfterChange test with host', function(assert){
         possiblyJoinedFromEndGame : true
     }
 
-    var ll = LobbyModule($, window).getInstance(false, false, function(data) {
+    var ll = LobbyModule({$:$, window:window}).getInstance(false, function(data) {
         
         assert.equal(data.lobbySetupAfterChange(mockLobbResponse), "prevented from displaying info", 'Game leave test.');
         assert.equal(data.lobbySetupAfterChange(mockLobbResponse), "displaying info", 'Game leave test 2.');
@@ -338,7 +351,8 @@ test('Lobby lobbySetupAfterChange test with host', function(assert){
 });
 
 test('Lobby leave test with host', function(assert){
-    console.log("Lobby leave test with host");
+    assert.timeout( 5000 );
+    //console.log("Lobby leave test with host");
     var done = assert.async();
     
     var ajaxMocks = [...hostMock(),
@@ -351,7 +365,7 @@ test('Lobby leave test with host', function(assert){
 
     mockjax(ajaxMocks);
     $.mockjaxSettings.logger = null;
-    console.log("mockjax(ajaxMocks);");
+    //console.log("mockjax(ajaxMocks);");
 
     var assertionFunction = (href) => {
         console.log("assertionFunction");
@@ -381,16 +395,16 @@ test('Lobby leave test with host', function(assert){
     })
 
     
-    console.log("LobbyModule");
-    console.log(typeof LobbyModule);
-    var ll = LobbyModule($, window).getInstance(false, false, function(data) {
-        console.log("before delete window.location");
+    //console.log("LobbyModule");
+    //console.log(typeof LobbyModule);
+    var ll = LobbyModule({$:$, window:window}).getInstance(false, function(data) {
+        //console.log("before delete window.location");
         delete window.location;
         window.location = windowLocationMock();
-        console.log("after windowLocationMock");
+        //console.log("after windowLocationMock");
         $("#btnSendleave").trigger('click');
         
-        console.log("after trigger");
+        //console.log("after trigger");
     });
     
 });

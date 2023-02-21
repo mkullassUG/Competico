@@ -22,9 +22,6 @@ const RegisterModule = (function($) {
         self.name = "RegisterLogic";
         /*       logic functions          */
         var RegisterLogicInit = () => {
-            
-            if ( debug )
-                console.log("RegisterLogicInit")
 
             if ( typeof NavbarLogic != "undefined" )
                 NavbarLogic.getInstance(false, debug);
@@ -133,7 +130,8 @@ const RegisterModule = (function($) {
             } else if (data === "DATA_ALREADY_USED") {
                 $("#accountExistValidation").show();
             } else {
-                console.warn("Coś poszło nie tak. Takiego kodu nie obsłużę.")
+                if ( debug )
+                    console.warn("Coś poszło nie tak. Takiego kodu nie obsłużę.")
             }
           }
     

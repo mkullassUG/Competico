@@ -3,7 +3,7 @@ var a = require('assert'),
 
 var tr = require('../lib/testrunner'),
     log = require('../lib/log'),
-    generators = require('../lib/generators');
+    generators_ = require('../lib/generators');
 
 var fixtures = __dirname + '/fixtures',
     fixtures_code = __dirname + '../../../static/js',
@@ -60,8 +60,25 @@ chain.add('ghillieCode2', function() {
         }
     });
     tr.options.coverage = true;
-    tr.options.maxBlockDuration = 1000;
+    tr.options.maxBlockDuration = 10000;
     tr.run([
+        {
+            deps: [
+                fixtures_code + '/navbar.js',
+                fixtures_code + '/lang/page-language-changer.js',
+                fixtures_code + '/messages.js',
+            ],
+            code: fixtures_code + '/group-list.js',
+            tests: fixtures + "/group-list-test.js"
+        },
+        // {
+        //     deps: [
+        //         fixtures_code + '/navbar.js',
+        //         fixtures_code + '/lang/page-language-changer.js',
+        //     ],
+        //     code: fixtures_code + '/group.js',
+        //     tests: fixtures + "/group-test.js"
+        // },
         {
             code: fixtures_code + "/account-validation.js",
             tests: fixtures + "/AccountValidation-tests.js"
@@ -118,13 +135,10 @@ chain.add('ghillieCode2', function() {
             code: fixtures_code + '/dual-list-logic.js',
             tests: fixtures + "/dual-list-logic-tests.js"
         },
-    ],  function(err, res) {
-        // console.log("------ghillieCode results-----")
-        // console.log("err")
-        //console.log("Done")
+    ],  function(err, res_) {
+        //console.log("------results-----")
         //console.log(err)
-        // console.log("res")
-        // console.log(res)
+        //console.log(res)
         
         a.strictEqual(err, null, 'no errors');
         //a.deepEqual(stat, res, 'coverage code testing works');

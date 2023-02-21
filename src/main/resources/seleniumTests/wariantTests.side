@@ -1,0 +1,811 @@
+{
+  "id": "fdd30164-5b1a-4694-97a9-96df844b2097",
+  "version": "2.0",
+  "name": "wariantTests",
+  "url": "http://localhost:81",
+  "tests": [{
+    "id": "19b1b23a-515a-42e9-969a-a4ea0c6843be",
+    "name": "create_wordfill",
+    "commands": [{
+      "id": "b3d2ffee-3563-494f-afac-d0041ed308a7",
+      "comment": "",
+      "command": "open",
+      "target": "/logout",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "922cd221-ed51-466c-b8ee-4270c5726ff0",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1646x998",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b050bd4c-d72b-4a09-b5d9-7d965f35f15b",
+      "comment": "",
+      "command": "click",
+      "target": "id=indexLogin",
+      "targets": [
+        ["id=indexLogin", "id"],
+        ["css=#indexLogin", "css:finder"],
+        ["xpath=//button[@id='indexLogin']", "xpath:attributes"],
+        ["xpath=//div[@id='headline']/div/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Sign In')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "25f0513a-8825-49a4-9a56-bb09c94bb351",
+      "comment": "",
+      "command": "click",
+      "target": "id=inputEmail",
+      "targets": [
+        ["id=inputEmail", "id"],
+        ["css=#inputEmail", "css:finder"],
+        ["xpath=//input[@id='inputEmail']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b9d56dd7-567d-46fc-9862-22af70b02681",
+      "comment": "",
+      "command": "click",
+      "target": "id=inputEmail",
+      "targets": [
+        ["id=inputEmail", "id"],
+        ["css=#inputEmail", "css:finder"],
+        ["xpath=//input[@id='inputEmail']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4621c34d-9ee2-4fd4-83d0-3b54a9b76a50",
+      "comment": "",
+      "command": "type",
+      "target": "id=inputEmail",
+      "targets": [
+        ["id=inputEmail", "id"],
+        ["css=#inputEmail", "css:finder"],
+        ["xpath=//input[@id='inputEmail']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "seleniumLektor"
+    }, {
+      "id": "11c82850-1d9e-44a9-91ce-417740d832d7",
+      "comment": "",
+      "command": "click",
+      "target": "id=inputPassword",
+      "targets": [
+        ["id=inputPassword", "id"],
+        ["css=#inputPassword", "css:finder"],
+        ["xpath=//input[@id='inputPassword']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9b932da4-dc35-411b-bff4-8b31b28deb9a",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=showHidePasswordButton",
+      "targets": [
+        ["id=showHidePasswordButton", "id"],
+        ["css=#showHidePasswordButton", "css:finder"],
+        ["xpath=//button[@id='showHidePasswordButton']", "xpath:attributes"],
+        ["xpath=//div[2]/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6fa5b7e3-17c3-4c76-bf76-bdb202848535",
+      "comment": "",
+      "command": "type",
+      "target": "id=inputPassword",
+      "targets": [
+        ["id=inputPassword", "id"],
+        ["css=#inputPassword", "css:finder"],
+        ["xpath=//input[@id='inputPassword']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "qazwsx!Q2"
+    }, {
+      "id": "fa78c627-7a96-4067-b4a2-231718676de4",
+      "comment": "",
+      "command": "click",
+      "target": "id=showHidePasswordButton",
+      "targets": [
+        ["id=showHidePasswordButton", "id"],
+        ["css=#showHidePasswordButton", "css:finder"],
+        ["xpath=//button[@id='showHidePasswordButton']", "xpath:attributes"],
+        ["xpath=//div[2]/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "235daad0-bf2e-46f6-bb8d-58f6f6ccf7a2",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=showHidePasswordButton",
+      "targets": [
+        ["id=showHidePasswordButton", "id"],
+        ["css=#showHidePasswordButton", "css:finder"],
+        ["xpath=//button[@id='showHidePasswordButton']", "xpath:attributes"],
+        ["xpath=//div[2]/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1096342d-8044-4b6d-a465-0ec8daaaaee5",
+      "comment": "",
+      "command": "click",
+      "target": "css=.fa",
+      "targets": [
+        ["css=.fa", "css:finder"],
+        ["xpath=//button[@id='showHidePasswordButton']/i", "xpath:idRelative"],
+        ["xpath=//i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "be32614b-8312-477a-a160-5233a17b069b",
+      "comment": "",
+      "command": "click",
+      "target": "id=loginSubmit",
+      "targets": [
+        ["id=loginSubmit", "id"],
+        ["css=#loginSubmit", "css:finder"],
+        ["xpath=//button[@id='loginSubmit']", "xpath:attributes"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Log In')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "7f813268-b60b-4550-b3e9-349269f5c17f",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Task Manager",
+      "targets": [
+        ["linkText=Task Manager", "linkText"],
+        ["css=.noselect > .nav-link", "css:finder"],
+        ["xpath=//a[contains(text(),'Task Manager')]", "xpath:link"],
+        ["xpath=//div[@id='main_nav']/ul/li/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '#')]", "xpath:href"],
+        ["xpath=//li[2]/div/ul/li/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Task Manager')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "2e937cd0-ba57-40a1-ae38-bc8a3c4d64d4",
+      "comment": "",
+      "command": "click",
+      "target": "id=taskSettingsPanel",
+      "targets": [
+        ["id=taskSettingsPanel", "id"],
+        ["linkText=Taskset management", "linkText"],
+        ["css=#taskSettingsPanel", "css:finder"],
+        ["xpath=//a[contains(text(),'Taskset management')]", "xpath:link"],
+        ["xpath=//a[@id='taskSettingsPanel']", "xpath:attributes"],
+        ["xpath=//ul[@id='mainVariantDropdownMenu']/h6/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/lecturer/taskmanager/')]", "xpath:href"],
+        ["xpath=//h6/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Taskset management')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "01dc5fbc-e671-461e-8186-be8ce66891bf",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=wariant 1 WordFill",
+      "targets": [
+        ["linkText=wariant 1 WordFill", "linkText"],
+        ["css=.WordFillBtnClass", "css:finder"],
+        ["xpath=//a[contains(text(),'wariant 1 WordFill')]", "xpath:link"],
+        ["xpath=//div[@id='tasksetSettingsDiv']/div[2]/div/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#WordFill')])[2]", "xpath:href"],
+        ["xpath=//div[2]/div/a", "xpath:position"],
+        ["xpath=//a[contains(.,'wariant 1 WordFill')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "24303b5b-5564-482d-b627-9fd8a2c2ca5e",
+      "comment": "",
+      "command": "click",
+      "target": "id=WordFillDivTaskText",
+      "targets": [
+        ["id=WordFillDivTaskText", "id"],
+        ["css=#WordFillDivTaskText", "css:finder"],
+        ["xpath=//textarea[@id='WordFillDivTaskText']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFillDivTaskTextFormLabelGroup']/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5d8835c6-c3c2-4484-8da2-98856d498b04",
+      "comment": "",
+      "command": "type",
+      "target": "id=WordFillDivTaskText",
+      "targets": [
+        ["id=WordFillDivTaskText", "id"],
+        ["css=#WordFillDivTaskText", "css:finder"],
+        ["xpath=//textarea[@id='WordFillDivTaskText']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFillDivTaskTextFormLabelGroup']/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/textarea", "xpath:position"]
+      ],
+      "value": "awdawdadawd awdawd awd"
+    }, {
+      "id": "34e5e75e-db59-46bd-9a0e-4d1fc8a5b1e0",
+      "comment": "",
+      "command": "click",
+      "target": "id=WordFillDivIncorrectWords",
+      "targets": [
+        ["id=WordFillDivIncorrectWords", "id"],
+        ["css=#WordFillDivIncorrectWords", "css:finder"],
+        ["xpath=//textarea[@id='WordFillDivIncorrectWords']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFillDiv']/div[5]/textarea", "xpath:idRelative"],
+        ["xpath=//div[5]/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1a3493fe-ff28-4647-8c20-99c9d029ce18",
+      "comment": "",
+      "command": "type",
+      "target": "id=WordFillDivIncorrectWords",
+      "targets": [
+        ["id=WordFillDivIncorrectWords", "id"],
+        ["css=#WordFillDivIncorrectWords", "css:finder"],
+        ["xpath=//textarea[@id='WordFillDivIncorrectWords']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFillDiv']/div[5]/textarea", "xpath:idRelative"],
+        ["xpath=//div[5]/textarea", "xpath:position"]
+      ],
+      "value": "awdawd awdawda w,w dawd ad"
+    }, {
+      "id": "d58dd554-e3c1-4e5d-bfe6-2282c37b0d25",
+      "comment": "",
+      "command": "click",
+      "target": "id=WordFillDivTaskText",
+      "targets": [
+        ["id=WordFillDivTaskText", "id"],
+        ["css=#WordFillDivTaskText", "css:finder"],
+        ["xpath=//textarea[@id='WordFillDivTaskText']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFillDivTaskTextFormLabelGroup']/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "dfd19bd1-28c6-43d4-8fff-cf2ea4cef082",
+      "comment": "",
+      "command": "click",
+      "target": "id=WordFillDivTaskText",
+      "targets": [
+        ["id=WordFillDivTaskText", "id"],
+        ["css=#WordFillDivTaskText", "css:finder"],
+        ["xpath=//textarea[@id='WordFillDivTaskText']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFillDivTaskTextFormLabelGroup']/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "29b76e40-7215-4181-8480-e9f9fbf641f0",
+      "comment": "",
+      "command": "click",
+      "target": "id=WordFillAddWord",
+      "targets": [
+        ["id=WordFillAddWord", "id"],
+        ["css=#WordFillAddWord", "css:finder"],
+        ["xpath=//button[@id='WordFillAddWord']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFillDiv']/div[3]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Wstaw brakujące poprawne słowo')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "36d6716e-932b-4ef9-b227-abb252ba0d79",
+      "comment": "",
+      "command": "click",
+      "target": "id=WordFillDivTaskText",
+      "targets": [
+        ["id=WordFillDivTaskText", "id"],
+        ["css=#WordFillDivTaskText", "css:finder"],
+        ["xpath=//textarea[@id='WordFillDivTaskText']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFillDivTaskTextFormLabelGroup']/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0a23366b-14fc-4094-b5a8-2b25e7a275e9",
+      "comment": "",
+      "command": "type",
+      "target": "id=WordFillDivTaskText",
+      "targets": [
+        ["id=WordFillDivTaskText", "id"],
+        ["css=#WordFillDivTaskText", "css:finder"],
+        ["xpath=//textarea[@id='WordFillDivTaskText']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFillDivTaskTextFormLabelGroup']/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/textarea", "xpath:position"]
+      ],
+      "value": "awdawdadawd awdawd awd,awd awda wd {[awdawda]} awdawd ad{[awdawd]} awd awdaw dawd"
+    }, {
+      "id": "5731eed8-915e-46b6-a73b-9be42c33acfd",
+      "comment": "",
+      "command": "click",
+      "target": "id=WordFillDivTaskTags",
+      "targets": [
+        ["id=WordFillDivTaskTags", "id"],
+        ["css=#WordFillDivTaskTags", "css:finder"],
+        ["xpath=//textarea[@id='WordFillDivTaskTags']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFillDiv']/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d8978f32-97d1-48fe-a5e1-0425e3019bea",
+      "comment": "",
+      "command": "type",
+      "target": "id=WordFillDivTaskTags",
+      "targets": [
+        ["id=WordFillDivTaskTags", "id"],
+        ["css=#WordFillDivTaskTags", "css:finder"],
+        ["xpath=//textarea[@id='WordFillDivTaskTags']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFillDiv']/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "awdad, awdad"
+    }, {
+      "id": "c99ff7c5-14f3-477c-b20c-72927ca41703",
+      "comment": "",
+      "command": "click",
+      "target": "id=btnSaveTask",
+      "targets": [
+        ["id=btnSaveTask", "id"],
+        ["css=#btnSaveTask", "css:finder"],
+        ["xpath=//button[@id='btnSaveTask']", "xpath:attributes"],
+        ["xpath=//div[@id='gameBottom']/div/button[4]", "xpath:idRelative"],
+        ["xpath=//button[4]", "xpath:position"],
+        ["xpath=//button[contains(.,'Save as new')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "cd89f9b1-2bdf-49c0-a8b0-2a35e05ac11a",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=btnSaveTask",
+      "targets": [
+        ["id=btnSaveTask", "id"],
+        ["css=#btnSaveTask", "css:finder"],
+        ["xpath=//button[@id='btnSaveTask']", "xpath:attributes"],
+        ["xpath=//div[@id='gameBottom']/div/button[4]", "xpath:idRelative"],
+        ["xpath=//button[4]", "xpath:position"],
+        ["xpath=//button[contains(.,'Save as new')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "40335f93-74bb-42a6-9f46-e13acae7886d",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=btnSaveTask",
+      "targets": [
+        ["id=btnSaveTask", "id"],
+        ["css=#btnSaveTask", "css:finder"],
+        ["xpath=//button[@id='btnSaveTask']", "xpath:attributes"],
+        ["xpath=//div[@id='gameBottom']/div/button[4]", "xpath:idRelative"],
+        ["xpath=//button[4]", "xpath:position"],
+        ["xpath=//button[contains(.,'Save as new')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "b53ec9cd-4dc4-4172-9951-021c9d86703f",
+      "comment": "",
+      "command": "click",
+      "target": "id=btnSendSaveTask",
+      "targets": [
+        ["id=btnSendSaveTask", "id"],
+        ["css=#btnSendSaveTask", "css:finder"],
+        ["xpath=//button[@id='btnSendSaveTask']", "xpath:attributes"],
+        ["xpath=//div[@id='saveTaskModalCenter']/div/div/div[3]/button[2]", "xpath:idRelative"],
+        ["xpath=//div[3]/button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Prześlij')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "8ffcf7b4-d5c3-4dac-b145-c181b96f2d50",
+      "comment": "",
+      "command": "open",
+      "target": "/logout",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "58deb64c-c72c-47b9-b1a8-4bfd066953de",
+      "comment": "",
+      "command": "click",
+      "target": "id=loginHyperlink",
+      "targets": [
+        ["id=loginHyperlink", "id"],
+        ["linkText=Login", "linkText"],
+        ["css=#loginHyperlink", "css:finder"],
+        ["xpath=//a[contains(text(),'Login')]", "xpath:link"],
+        ["xpath=//a[@id='loginHyperlink']", "xpath:attributes"],
+        ["xpath=//div[@id='navbarsExample08']/a[2]", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/login')]", "xpath:href"],
+        ["xpath=//a[2]", "xpath:position"],
+        ["xpath=//a[contains(.,'Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c05a64c6-8f13-460d-aa49-5f6c3809d6fb",
+      "comment": "",
+      "command": "type",
+      "target": "id=inputEmail",
+      "targets": [
+        ["id=inputEmail", "id"],
+        ["css=#inputEmail", "css:finder"],
+        ["xpath=//input[@id='inputEmail']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "seleniumLektor"
+    }, {
+      "id": "7ddbda58-c79e-466e-ac31-27f657a0540c",
+      "comment": "",
+      "command": "click",
+      "target": "id=inputPassword",
+      "targets": [
+        ["id=inputPassword", "id"],
+        ["css=#inputPassword", "css:finder"],
+        ["xpath=//input[@id='inputPassword']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bb693f41-3366-4db0-9248-56f8135b575d",
+      "comment": "",
+      "command": "type",
+      "target": "id=inputPassword",
+      "targets": [
+        ["id=inputPassword", "id"],
+        ["css=#inputPassword", "css:finder"],
+        ["xpath=//input[@id='inputPassword']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "qazwsx!Q2"
+    }, {
+      "id": "5b0b95cf-8247-4140-adfa-2d9af47b0d06",
+      "comment": "",
+      "command": "click",
+      "target": "id=loginSubmit",
+      "targets": [
+        ["id=loginSubmit", "id"],
+        ["css=#loginSubmit", "css:finder"],
+        ["xpath=//button[@id='loginSubmit']", "xpath:attributes"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Log In')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ca3f2db1-bb7c-4a1e-9d1b-706228ce3a84",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Task Manager",
+      "targets": [
+        ["linkText=Task Manager", "linkText"],
+        ["css=.noselect > .nav-link", "css:finder"],
+        ["xpath=//a[contains(text(),'Task Manager')]", "xpath:link"],
+        ["xpath=//div[@id='main_nav']/ul/li/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '#')]", "xpath:href"],
+        ["xpath=//li[2]/div/ul/li/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Task Manager')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5fb15550-ad41-4797-bd50-76775ab5536e",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "css=#mainVariantDropdownMenu > li:nth-child(3) > a",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6dc0dcdb-d3bc-432d-8a48-4814b68ab0da",
+      "comment": "",
+      "command": "click",
+      "target": "id=btnListWordFill",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5898c125-6f54-4604-8146-17a1bd176349",
+      "comment": "",
+      "command": "click",
+      "target": "id=ListWordFillDivIncorrectWords0",
+      "targets": [
+        ["id=ListWordFillDivIncorrectWords0", "id"],
+        ["css=#ListWordFillDivIncorrectWords0", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivIncorrectWords0']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div/div/div[4]/textarea", "xpath:idRelative"],
+        ["xpath=//div[4]/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0d640bec-e737-46c2-ade5-3ce42bb0c271",
+      "comment": "",
+      "command": "type",
+      "target": "id=ListWordFillDivIncorrectWords0",
+      "targets": [
+        ["id=ListWordFillDivIncorrectWords0", "id"],
+        ["css=#ListWordFillDivIncorrectWords0", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivIncorrectWords0']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div/div/div[4]/textarea", "xpath:idRelative"],
+        ["xpath=//div[4]/textarea", "xpath:position"]
+      ],
+      "value": "awdad adwda wd,awd awd,awd ad"
+    }, {
+      "id": "ebf0135f-26da-4b70-8050-33c4c79d92c1",
+      "comment": "",
+      "command": "click",
+      "target": "id=ListWordFillDivTaskText0",
+      "targets": [
+        ["id=ListWordFillDivTaskText0", "id"],
+        ["css=#ListWordFillDivTaskText0", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivTaskText0']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/div/div/div/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fdc8024a-a383-473a-b742-c8224f0db835",
+      "comment": "",
+      "command": "type",
+      "target": "id=ListWordFillDivTaskText0",
+      "targets": [
+        ["id=ListWordFillDivTaskText0", "id"],
+        ["css=#ListWordFillDivTaskText0", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivTaskText0']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/div/div/div/textarea", "xpath:position"]
+      ],
+      "value": "awd adawd awd awda wdawd aaaw dkaw{[ad awd ]}a wdawd awd awda {[wdadwad ]}awda wd awd"
+    }, {
+      "id": "2ca1ea21-3b6b-4f79-bf75-370d165b019d",
+      "comment": "",
+      "command": "click",
+      "target": "id=ListWordFillDivTaskTags",
+      "targets": [
+        ["id=ListWordFillDivTaskTags", "id"],
+        ["css=#ListWordFillDivTaskTags", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivTaskTags']", "xpath:attributes"],
+        ["xpath=//div[@id='ListWordFillDiv']/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "75eb557e-7816-4e72-87ec-abf9eb561d11",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=ListWordFillAddWordFill",
+      "targets": [
+        ["id=ListWordFillAddWordFill", "id"],
+        ["css=#ListWordFillAddWordFill", "css:finder"],
+        ["xpath=//button[@id='ListWordFillAddWordFill']", "xpath:attributes"],
+        ["xpath=//div[@id='ListWordFillDiv']/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'+')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "91414638-0ee8-438d-920e-d26de21af257",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=ListWordFillAddWordFill",
+      "targets": [
+        ["id=ListWordFillAddWordFill", "id"],
+        ["css=#ListWordFillAddWordFill", "css:finder"],
+        ["xpath=//button[@id='ListWordFillAddWordFill']", "xpath:attributes"],
+        ["xpath=//div[@id='ListWordFillDiv']/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'+')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "060535ec-3e3f-4303-adf7-ee2d682eca8b",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=ListWordFillAddWordFill",
+      "targets": [
+        ["id=ListWordFillAddWordFill", "id"],
+        ["css=#ListWordFillAddWordFill", "css:finder"],
+        ["xpath=//button[@id='ListWordFillAddWordFill']", "xpath:attributes"],
+        ["xpath=//div[@id='ListWordFillDiv']/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'+')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "524b47a2-299b-4a20-8e87-096f866c8943",
+      "comment": "",
+      "command": "type",
+      "target": "id=ListWordFillDivTaskTags",
+      "targets": [
+        ["id=ListWordFillDivTaskTags", "id"],
+        ["css=#ListWordFillDivTaskTags", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivTaskTags']", "xpath:attributes"],
+        ["xpath=//div[@id='ListWordFillDiv']/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/textarea", "xpath:position"]
+      ],
+      "value": "awd awd a,wd awd"
+    }, {
+      "id": "1d5ce7f9-2d07-4653-be86-7f22434134ef",
+      "comment": "",
+      "command": "click",
+      "target": "id=ListWordFillAddWordFill",
+      "targets": [
+        ["id=ListWordFillAddWordFill", "id"],
+        ["css=#ListWordFillAddWordFill", "css:finder"],
+        ["xpath=//button[@id='ListWordFillAddWordFill']", "xpath:attributes"],
+        ["xpath=//div[@id='ListWordFillDiv']/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'+')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "7325de3a-a29f-4632-a8b9-6c044839ea28",
+      "comment": "",
+      "command": "mouseOut",
+      "target": "id=ListWordFillAddWordFill",
+      "targets": [
+        ["id=ListWordFillAddWordFill", "id"],
+        ["css=#ListWordFillAddWordFill", "css:finder"],
+        ["xpath=//button[@id='ListWordFillAddWordFill']", "xpath:attributes"],
+        ["xpath=//div[@id='ListWordFillDiv']/button", "xpath:idRelative"],
+        ["xpath=//body/div[2]/div[2]/div/div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'+')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f7b0b4f4-04fb-4bdd-956d-f28c795e8b33",
+      "comment": "",
+      "command": "click",
+      "target": "id=ListWordFillDivIncorrectWords1",
+      "targets": [
+        ["id=ListWordFillDivIncorrectWords1", "id"],
+        ["css=#ListWordFillDivIncorrectWords1", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivIncorrectWords1']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div[2]/div/div[4]/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[4]/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8f113362-c66d-4399-a679-f1b9ef0c9662",
+      "comment": "",
+      "command": "type",
+      "target": "id=ListWordFillDivIncorrectWords1",
+      "targets": [
+        ["id=ListWordFillDivIncorrectWords1", "id"],
+        ["css=#ListWordFillDivIncorrectWords1", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivIncorrectWords1']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div[2]/div/div[4]/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[4]/textarea", "xpath:position"]
+      ],
+      "value": "aw dawda wdawd,aw awd awda,wd awd"
+    }, {
+      "id": "0fe39a19-e966-4319-b0f1-a65410abd087",
+      "comment": "",
+      "command": "click",
+      "target": "id=ListWordFillDivTaskText1",
+      "targets": [
+        ["id=ListWordFillDivTaskText1", "id"],
+        ["css=#ListWordFillDivTaskText1", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivTaskText1']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div[2]/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/div/div/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2152ca56-3d47-480e-a24d-a24f27bcac62",
+      "comment": "",
+      "command": "click",
+      "target": "id=ListWordFillAddWord1",
+      "targets": [
+        ["id=ListWordFillAddWord1", "id"],
+        ["css=#ListWordFillAddWord1", "css:finder"],
+        ["xpath=//button[@id='ListWordFillAddWord1']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div[2]/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "35756c85-149d-48b0-aa90-8b04153e7bb4",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=ListWordFillAddWord1",
+      "targets": [
+        ["id=ListWordFillAddWord1", "id"],
+        ["css=#ListWordFillAddWord1", "css:finder"],
+        ["xpath=//button[@id='ListWordFillAddWord1']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div[2]/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ef749403-136e-4a3f-b3e5-3f21041c6c58",
+      "comment": "",
+      "command": "click",
+      "target": "id=ListWordFillDivTaskText1",
+      "targets": [
+        ["id=ListWordFillDivTaskText1", "id"],
+        ["css=#ListWordFillDivTaskText1", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivTaskText1']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div[2]/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/div/div/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7ffdd010-0c99-456e-b9ac-01852cbacc59",
+      "comment": "",
+      "command": "click",
+      "target": "id=ListWordFillDivTaskText1",
+      "targets": [
+        ["id=ListWordFillDivTaskText1", "id"],
+        ["css=#ListWordFillDivTaskText1", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivTaskText1']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div[2]/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/div/div/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f332332a-b152-4b16-b6ba-78aca718ba08",
+      "comment": "",
+      "command": "mouseOver",
+      "target": "id=ListWordFillAddWord1",
+      "targets": [
+        ["id=ListWordFillAddWord1", "id"],
+        ["css=#ListWordFillAddWord1", "css:finder"],
+        ["xpath=//button[@id='ListWordFillAddWord1']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div[2]/div/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "30e4d8cd-72f0-469a-8f43-93edb567f4a0",
+      "comment": "",
+      "command": "type",
+      "target": "id=ListWordFillDivTaskText1",
+      "targets": [
+        ["id=ListWordFillDivTaskText1", "id"],
+        ["css=#ListWordFillDivTaskText1", "css:finder"],
+        ["xpath=//textarea[@id='ListWordFillDivTaskText1']", "xpath:attributes"],
+        ["xpath=//div[@id='WordFills']/div[2]/div/div/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/div/div/textarea", "xpath:position"]
+      ],
+      "value": "aw awda wda d{[ awda]} awda wdaw da {[wdawd aw]} awdawd "
+    }, {
+      "id": "940b4c47-32b5-4a93-9fec-665cb2f60213",
+      "comment": "",
+      "command": "click",
+      "target": "id=btnSaveTask",
+      "targets": [
+        ["id=btnSaveTask", "id"],
+        ["css=#btnSaveTask", "css:finder"],
+        ["xpath=//button[@id='btnSaveTask']", "xpath:attributes"],
+        ["xpath=//div[@id='gameBottom']/div/button[4]", "xpath:idRelative"],
+        ["xpath=//button[4]", "xpath:position"],
+        ["xpath=//button[contains(.,'Save as new')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c1e459ae-6ab5-4937-b02e-d926647be79a",
+      "comment": "",
+      "command": "click",
+      "target": "id=btnSendSaveTask",
+      "targets": [
+        ["id=btnSendSaveTask", "id"],
+        ["css=#btnSendSaveTask", "css:finder"],
+        ["xpath=//button[@id='btnSendSaveTask']", "xpath:attributes"],
+        ["xpath=//div[@id='saveTaskModalCenter']/div/div/div[3]/button[2]", "xpath:idRelative"],
+        ["xpath=//div[3]/button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Prześlij')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "d2c44867-670a-4d3e-a046-7d4878ef043b",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["19b1b23a-515a-42e9-969a-a4ea0c6843be"]
+  }],
+  "urls": ["http://localhost:81/"],
+  "plugins": []
+}

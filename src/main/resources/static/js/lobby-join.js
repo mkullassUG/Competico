@@ -22,9 +22,7 @@ const LobbyJoinLogic = (data, debug = false, depMocks = {}) => {
   var nickname, gameCode, logged, isHost, gameStarted;
 
   var LobbyJoinInit = (data) => {
-    /*data:
-      playerInfo, accountInfo, hideModal, showModal
-    */
+
     isHost = data.playerInfo.isHost;
     gameCode = data.playerInfo.gameCode;
     logged = data.playerInfo.logged;
@@ -56,6 +54,9 @@ const LobbyJoinLogic = (data, debug = false, depMocks = {}) => {
 
 
     listenersSetup();
+
+    if ( MessagesModule )
+        MessagesModule().getInstance(false, (data)=>{data.setFunctionToInform(self.messagerFunction);});
   }
 
   /*       event listeners          */
@@ -82,6 +83,23 @@ const LobbyJoinLogic = (data, debug = false, depMocks = {}) => {
     window.onresize = resizeWindow;
   }
 
+  /* messages */
+  self.messagerFunction = (data) => {
+
+    if ( data.areNew ) {
+        //dźwiek
+        //console.log("Ding!")
+    }
+
+    var updateNavbar = () => {
+      $("#messageUnreadMessages").text(
+          (data.numberOfMessages+data.numberOfLobbies)?
+          ((data.numberOfMessages+data.numberOfLobbies)>99?
+          "99+":(data.numberOfMessages+data.numberOfLobbies)):"");
+      $("#messageAwaitingRequests").text(data.numberOfRequests?(data.numberOfRequests>99?"99+":data.numberOfRequests):"");
+  }
+    updateNavbar();
+  }
   self.onEnterSubmit = (e) => {
     
     var inputCode = $("#inputCode");
@@ -95,12 +113,9 @@ const LobbyJoinLogic = (data, debug = false, depMocks = {}) => {
 
   }
   /*  logic functions  */
-  //new 2021-04-27
   var resizeWindow = () => {
       
       $("html").height("100%");
-      if (debug)
-        console.log("res");
       
       function isInt(n) {
         return n % 1 === 0;
@@ -147,10 +162,7 @@ const LobbyJoinLogic = (data, debug = false, depMocks = {}) => {
   }
 
   var isCodeCorrect = (data) => {
-    /*TODO
-      -w przyszłości dojdzie isPublic.
-      -dodac modala który da info o lobby z przyciskami dołączenia/ anulowania i może info czyje to lobby (pobierane przez innego endpointa)
-    */
+
     if (data.exists)
       if (!data.isFull)
         window.location = "game/" + $("#inputCode")[0].value;
@@ -171,25 +183,16 @@ const LobbyJoinLogic = (data, debug = false, depMocks = {}) => {
   /*Ajax*/
   var ajaxReceiveFoundGame = () => {
     self.showModal();
-    /*
-    odpowiada 404 jesli nie znjadzie lobby żadneg ow danej chwili więcwyskakuje erro w konsoli, zwraca stringa "No lobby available"
-    
-    */
 
-    //var send = {}
     $.ajax({
       type     : "GET",
       cache    : false,
-      url      : "api/v1/lobby/random",//"game/findGame",
-      //data     : JSON.stringify(send),
+      url      : "api/v1/lobby/random",
       contentType: "application/json",
       success: function(data, textStatus, jqXHR) {
         if (debug) {
           console.log("ajaxReceiveFoundGame success");
-          console.log("hide")
           console.log(data)
-          console.log(textStatus)
-          console.log(jqXHR)
         }
           self.hideModal();
 
@@ -205,8 +208,6 @@ const LobbyJoinLogic = (data, debug = false, depMocks = {}) => {
         if (debug) {
           console.warn("ajaxReceiveFoundGame error");
           console.log(jqXHR)
-          console.log(status)
-          console.log(err)
         }
         
         if ( typeof PageLanguageChanger != "undefined" )
@@ -231,10 +232,7 @@ const LobbyJoinLogic = (data, debug = false, depMocks = {}) => {
       success: function(data, textStatus, jqXHR) {
         if (debug) {
           console.log("ajaxFindGameByCode success");
-          
           console.log(data)
-          console.log(textStatus)
-          console.log(jqXHR)
         }
           self.hideModal();
           isCodeCorrect(data);
@@ -254,15 +252,13 @@ const LobbyJoinLogic = (data, debug = false, depMocks = {}) => {
     $.ajax({
       type     : "POST",
       cache    : false,
-      url      : "api/v1/lobby",//"game/createLobby",
+      url      : "api/v1/lobby",
       data     : JSON.stringify(send),
       contentType: "application/json",
       success: function(data, textStatus, jqXHR) {
         if (debug){
           console.log("ajaxCreateLobby success");
           console.log(data)
-          console.log(textStatus)
-          console.log(jqXHR)
           }
           self.hideModal();
           
@@ -280,18 +276,10 @@ const LobbyJoinLogic = (data, debug = false, depMocks = {}) => {
           console.warn("ajaxCreateLobby error");
         
         self.hideModal();
-        //2021-05-13: lepsze info by było, że coś z serwerem nie tak...
-
-        // if ( typeof PageLanguageChanger != "undefined" )
-        //   displayFailInfoAnimation(PageLanguageChanger().getTextFor("LobbyNotCreated"));
-        // else
-        //   displayFailInfoAnimation("Nie stworzono lobby");
       }
     });
   }
   
-  
-
   /* debug  */
   var debugSetup = () => {
     if (debug == true) {

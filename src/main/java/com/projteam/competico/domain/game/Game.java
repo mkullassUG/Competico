@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -37,6 +38,8 @@ public class Game
 	
 	private Map<UUID, Optional<Long>> taskStartTime;
 	private Map<UUID, Map<Integer, Long>> timeTakenForTasks;
+	
+	private UUID groupID;
 	
 	private static final long NANOS_IN_MILLI = 1000000;
 	
@@ -70,6 +73,16 @@ public class Game
 				.collect(Collectors.toMap(p -> p.getId(), p -> Optional.empty())));
 		timeTakenForTasks = syncMap(players.stream()
 				.collect(Collectors.toMap(p -> p.getId(), p -> syncMap())));
+	}
+	public Game(List<Account> players,
+			List<Account> spectators,
+			int taskCount,
+			Map<UUID, List<Task>> taskMap,
+			UUID groupId)
+	{
+		this(players, spectators, taskCount, taskMap);
+		
+		this.groupID = Objects.requireNonNull(groupId);
 	}
 	
 	public UUID getID()
@@ -135,6 +148,10 @@ public class Game
 		UUID id = player.getId();
 		noteInteraction(id);
 		return taskMap.get(id).size();
+	}
+	public Optional<UUID> getGroupId()
+	{
+		return Optional.ofNullable(groupID);
 	}
 	public GameResult createGameResult()
 	{

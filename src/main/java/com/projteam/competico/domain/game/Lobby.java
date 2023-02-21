@@ -1,6 +1,7 @@
 package com.projteam.competico.domain.game;
 
 import static com.projteam.competico.domain.Account.PLAYER_ROLE;
+import static com.projteam.competico.domain.Account.LECTURER_ROLE;
 import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;
 import java.util.ArrayList;
@@ -8,8 +9,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import com.projteam.competico.domain.Account;
+import com.projteam.competico.domain.group.GroupLobbySettings;
 
 public class Lobby
 {
@@ -17,6 +22,7 @@ public class Lobby
 	private Account host;
 	private List<Account> players;
 	private int maxPlayerCount;
+	private GroupLobbySettings groupLobbySettings;
 	
 	private int changeCount;
 	private Map<UUID, Integer> playerLastChangeCounts;
@@ -24,10 +30,11 @@ public class Lobby
 	private Map<UUID, Long> lastInteractions;
 	
 	private static final long NANOS_IN_MILLI = 1000000;
+	private static final int DEFAULT_MAX_PLAYER_COUNT = 20;
 	
 	public Lobby(String gameCode, Account host)
 	{
-		this(gameCode, host, 20);
+		this(gameCode, host, DEFAULT_MAX_PLAYER_COUNT);
 	}
 	public Lobby(String gameCode, Account host, int maxPlayerCount)
 	{
@@ -43,6 +50,18 @@ public class Lobby
 		lastInteractions = syncMap();
 		
 		noteInteraction(host);
+	}
+	
+	public Lobby(String gameCode, Account host, UUID groupId, String groupCode)
+	{
+		this(gameCode, host, DEFAULT_MAX_PLAYER_COUNT, groupId, groupCode);
+	}
+	public Lobby(String gameCode, Account host,
+			int maxPlayerCount, UUID groupId, String groupCode)
+	{
+		this(gameCode, host, maxPlayerCount);
+		
+		groupLobbySettings = new GroupLobbySettings(groupId, groupCode, null);
 	}
 	
 	public Account getHost()
@@ -66,7 +85,9 @@ public class Lobby
 			return false;
 		synchronized (players)
 		{
-			if (player.hasRole(PLAYER_ROLE) && players.add(player))
+			if ((player.hasRole(PLAYER_ROLE)
+				|| player.hasRole(LECTURER_ROLE))
+					&& players.add(player))
 			{
 				changeOccurred();
 				noteInteraction(player.getId());
@@ -108,6 +129,47 @@ public class Lobby
 			return true;
 		}
 		return false;
+	}
+	public boolean isGroupLobby()
+	{
+		return groupLobbySettings != null;
+	}
+	public List<String> getTasksetNames()
+	{
+		return Optional.ofNullable(groupLobbySettings)
+				.map(gls -> Optional.ofNullable(gls.getSelectedTasksets()))
+				.map(v -> v.stream())
+				.map(v -> v.flatMap(list -> list.stream()))
+				.map(v -> v.map(ts -> ts.getName()))
+				.map(v -> v.collect(Collectors.toList()))
+				.orElse(null);
+	}
+	public List<TaskSet> getTasksets()
+	{
+		return Optional.ofNullable(groupLobbySettings)
+				.map(gls -> Optional.ofNullable(gls.getSelectedTasksets()))
+				.map(v -> v.stream())
+				.map(v -> v.flatMap(list -> list.stream()))
+				.map(v -> v.collect(Collectors.toList()))
+				.orElse(null);
+	}
+	@Transactional
+	public void setTasksets(List<TaskSet> tasksets)
+	{
+		GroupLobbySettings gls = Optional.ofNullable(groupLobbySettings)
+				.orElseThrow(() -> new IllegalArgumentException("NOT_GROUP_LOBBY"));
+		
+		gls.setSelectedTasksets(new ArrayList<>(tasksets));
+	}
+	public Optional<UUID> getGroupId()
+	{
+		return Optional.ofNullable(groupLobbySettings)
+				.map(gls -> gls.getGroupId());
+	}
+	public Optional<String> getGroupCode()
+	{
+		return Optional.ofNullable(groupLobbySettings)
+				.map(gls -> gls.getGroupCode());
 	}
 	public String getGameCode()
 	{

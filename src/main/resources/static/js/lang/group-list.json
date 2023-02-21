@@ -1,0 +1,388 @@
+{
+    "#taskSettingsPanel":{
+        "pl": "Zarządzanie zestawami",
+        "eng" : "Taskset management"
+    },
+    "#btnListWordFill": {
+        "pl": "Wybierz słowo",
+        "eng" : "Choose word"
+    },
+    "#btnListChoiceWordFill": {
+        "pl": "Wybierz właściwą opcję",
+        "eng" : "Choose correct option"
+    },
+    "#twoColumnsWariant": {
+        "pl": "Połącz w pary",
+        "eng" : "Pair up"
+    },
+    "#btnChronologicalOrder": {
+        "pl": "Porządkowanie chronologiczne",
+        "eng" : "Chronological ordering"
+    },
+    "#btnListSentenceForming": {
+        "pl": "Układanie zdań z podanych wyrazów",
+        "eng" : "Arranging sentences"
+    },
+    "#picturesVariant": {
+        "pl": "Warianty z obrazkami",
+        "eng" : "Variants with pictures"
+    },
+    "#btnWordConnect": {
+        "pl": "Łączenie linią",
+        "eng" : "Connect line"
+    },
+    "#btnWordConnectAnswerType": {
+        "pl": "Dopasowanie drugiej kolumny przez ręczne wpisywanie odpowedzi",
+        "eng" : "Match the second column by typing"
+    },
+    "#btnWordConnectAnswerPool": {
+        "pl": "Dopasowanie drugiej kolumny z podanego zestawu",
+        "eng" : "Match the second column from set"
+    },
+    "#btnPictureToManyWords": {
+        "pl": "Jeden obrazek i wiele odpowiedzi.",
+        "eng" : "One picture and many answers"
+    },
+    "#btnSentenceToManyPictures": {
+        "pl": "Jeden tekst i wiele obrazków",
+        "eng" : "One text and many pictures"
+    },
+    "#btnManyPicturesManyWords": {
+        "pl": "Wiele obrazków i wiele słów",
+        "eng" : "Lots of pictures and lots of words"
+    },
+
+    
+
+    ".footer > .container.text-center > .footer-text.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    ".footer > .container.text-center> .text-muted.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    "#homepageHyperlink > a": {
+        "pl": "Strona Domowa",
+        "eng": "Home Page"
+    },
+    "#gameHyperlink > a": {
+        "pl": "Gra",
+        "eng": "Game"
+    },
+    "#helpHyperlink > a": {
+        "pl": "Wsparcie",
+        "eng": "Support"
+    },
+    "#registerHyperlink > a": {
+        "pl": "Rejestracja",
+        "eng": "Register"
+    },
+    "#loginHyperlink": {
+        "pl": "Zaloguj",
+        "eng": "Login"
+    },
+    "#dashboardHyperlink > a": {
+        "pl": "Rankingi",
+        "eng": "Dashboard"
+    },
+    "#profileHyperlink > a": {
+        "pl": "Profil",
+        "eng": "Profile"
+    },
+    "#logOutButton": {
+        "pl": "Wyloguj",
+        "eng": "Logout"
+    },
+    "#groupsHyperlinkMainNav > a": {
+        "pl": "Grupy",
+        "eng": "Groups"
+    },
+    "#allGroupsNames": {
+        "pl": "Moje grupy",
+        "eng": "My groups"
+    },
+    "#gameRankingsHyperlink": {
+        "pl": "Rankingi",
+        "eng": "Rankings"
+    },
+    "#gameHistoryHyperlink": {
+        "pl": "Historia gier",
+        "eng": "Game history"
+    },
+    
+    ".pageNumText": {
+        "pl": "Strona: ",
+        "eng": "Page: "
+    },
+    "#groupTableDiv > div.col-12.d-flex.justify-content-around > h5": {
+        "pl": "Grupy: ",
+        "eng": "Groups: "
+    },
+    "#allMyGroupsTable > thead > tr > th:nth-child(2)":{
+        "pl": "Nazwa",
+        "eng": "Name"
+    },
+    "#allMyGroupsTable > thead > tr > th:nth-child(3), #myRequestsTable > thead > tr > th:nth-child(3)":{
+        "pl": "Kod",
+        "eng": "Code"
+    },
+    "#allMyGroupsTable > thead > tr > th:nth-child(4), #myRequestsTable > thead > tr > th:nth-child(4)":{
+        "pl": "Data",
+        "eng": "Date"
+    },
+    "#allMyGroupsTable > thead > tr > th:nth-child(5)":{
+        "pl": "Członkowie",
+        "eng": "Members"
+    },
+    "#btnAddGroupModalShow": {
+        "pl": "Dołącz do grupy",
+        "eng": "Join group"
+    },
+    "#btnCreateGroupModalShow": {
+        "pl": "Stwórz grupę",
+        "eng": "Create group"
+    },
+    "#createGroupModalLongTitle":{
+        "pl": "Nowa grupa",
+        "eng": "New group"
+    },
+    "#newGroupHeader":{
+        "pl": "Wprowadź nazwe grupy",
+        "eng": "Provide group name"
+    },
+    "#newGroupInputLabel":{
+        "pl": "Nazwa",
+        "eng": "Name"
+    },
+    "#invalidGroupInfoBad": {
+        "pl": "Wprowadź poprawą nazwe group.",
+        "eng": "Provide correct group name."
+    },
+    "#invalidGroupInfoExists":{
+        "pl": "Grupa o tej nazwie istnieje.",
+        "eng": "Group with given name exists."
+    },
+    "#nextPageNamebtn": {
+        "pl": "następna →",
+        "eng": "next → "
+    },
+    "#prevPageNamebtn":{
+        "pl": " ← poprzednia",
+        "eng": " ← prev"
+    },
+    ".cancelBtn": {
+        "pl": "Anuluj",
+        "eng": "Cancel"
+    },
+    "#btnCreateGroup": {
+        "pl": "Stwórz",
+        "eng": "Create"
+    },
+    "#btnGroupsView h5": {
+        "pl": "Grupy",
+        "eng": "Groups"
+    },
+    "#btnRequestView h5": {
+        "pl": "Prośby",
+        "eng": "Requests"
+    },
+    "#btnMyRequestView > h5 > span:nth-child(1)": {
+        "pl": "Prośby wysłane",
+        "eng": "Sent requests"
+    },
+    "#btnAllRequestView > h5 > span:nth-child(1)": {
+        "pl": "Prośby odebrane",
+        "eng": "Received requests"
+    },
+    "#btnJoinGroupModalShow": {
+        "pl": "Dołącz do grupy",
+        "eng": "Join group"
+    },
+    "#joinGroupModalLongTitle": {
+        "pl": "Dołącz do grupy",
+        "eng": "Join group"
+    },
+    "#codeGroupHeader": {
+        "pl": "Wprowadź kod grupy",
+        "eng": "Enter the group code"
+    },
+    "#newGroupCodeInputLabel": {
+        "pl": "Kod",
+        "eng": "Code"
+    },
+    "#invalidGroupCodeInfoBad": {
+        "pl": "Wprowadź poprawny kod grupy.",
+        "eng": "Enter correct group code."
+    },
+    "#invalidGroupCodeInfoExists": {
+        "pl": "Kod użyty lub grupa nie istnieje.",
+        "eng": "Code used or group does not exist."
+    },
+    "#btnjoinGroup": {
+        "pl": "Wyślij prośbę o dołączenie",
+        "eng": "Send a join request"
+    },
+    
+    "#allRequestsTable > thead > tr > th:nth-child(2)": {
+        "pl": "Użytkownik",
+        "eng": "User"
+    },
+    
+    "#allRequestsTable > thead > tr > th:nth-child(3)": {
+        "pl": "Grupa",
+        "eng": "Group"
+    },
+    
+    "#allRequestsTable > thead > tr > th:nth-child(4)": {
+        "pl": "Informacje",
+        "eng": "Informations"
+    },
+    "#allRequestsTable > thead > tr > th:nth-child(5)": {
+        "pl": "Potwierdź",
+        "eng": "Accept"
+    },
+    "#allRequestsTable > thead > tr > th:nth-child(6), #myRequestsTable > thead > tr > th:nth-child(5)": {
+        "pl": "Usuń",
+        "eng": "Remove"
+    },
+    
+    "#groupTBodyAllReq  td:nth-child(5) > button" : {
+        "pl": "Potwierdź",
+        "eng": "Accept"
+    },
+	
+	"#groupTBodyAllReq  td:nth-child(6) > button" : {
+        "pl": "Usuń",
+        "eng": "Remove"
+    },
+
+    "#myRequestsTable > thead > tr > th:nth-child(2)": {
+        "pl": "Nazwa",
+        "eng": "Username"
+    },
+    "#acceptGroupModalLongTitle": {
+        "pl": "Czy na pewno potwierdzić prośbę użytkownika?",
+        "eng": "Are you sure you want to confirm user's request?"
+    },
+    "#btnAcceptGroup, #modalAcceptRequestBtn": {
+        "pl": "Akceptuj",
+        "eng": "Accept"
+    },
+    "#declineGroupModalLongTitle": {
+        "pl": "Czy na pewno usunąć prośbę użytkownika?",
+        "eng": "Are you sure you want to delete user's request?"
+    },
+    "#btnDeclineGroup, #btnCancelRequestGroup": {
+        "pl": "Usuń",
+        "eng": "Remove"
+    },
+    "#cancelRequestGroupModalLongTitle": {
+        "pl": "Czy na pewno usunąć prośbę o dołączenie?",
+        "eng": "Are you sure you want to delete the join request?"
+    },
+    "#groupTBodyMyReq button": {
+        "pl": "Anuluj",
+        "eng": "Cancel"
+    },
+    "#recivedRequestGroupModalLongTitle": {
+        "pl": "Prośba o dołączenie:",
+        "eng": "Join request:"
+    },
+    "#recivedRequestGroupModal > div > div > div.modal-body > p:nth-child(1) > span:nth-child(1)": {
+        "pl": "Nazwa użytkownika: ",
+        "eng": "User Name: "
+    },
+
+    "#recivedRequestGroupModal > div > div > div.modal-body > p:nth-child(2) > span:nth-child(1)": {
+        "pl": "Profil: ",
+        "eng": "Profile: "
+    },
+
+    "#recivedRequestGroupModal > div > div > div.modal-body > p:nth-child(3) > span:nth-child(1)": {
+        "pl": "Typ konta: ",
+        "eng": "Account Type: "
+    },
+
+    "#recivedRequestGroupModal > div > div > div.modal-body > p:nth-child(4) > span:nth-child(1)": {
+        "pl": "Naza grupy: ",
+        "eng": "Group name: "
+    },
+    "#recivedRequestGroupModal > div > div > div.modal-body > p:nth-child(5) > span:nth-child(1)": {
+        "pl": "Data wysłania: ",
+        "eng": "Post date: "
+    },
+    "#modalDeclineRequestBtn": {
+        "pl": "Odmów",
+        "eng": "Decline"
+    },
+
+
+
+
+    "OTHER_PAGE_ELEMENTS": {
+        "document.title": {
+            "pl": "Grupy",
+            "eng": "Groups"
+        },
+        "noGroups": {
+            "pl": "Brak grup",
+            "eng": "No groups"
+        },
+        "noRequests": {
+            "pl": "Brak próśb",
+            "eng": "No requests"
+        },
+        "noAllRequests": {
+            "pl": "Brak oczekujących próśb",
+            "eng": "No pending requests"
+        },
+        "noMyRequests": {
+            "pl": "Brak oczekujących próśb",
+            "eng": "No pending requests"
+        },
+        "ProfileBtn": {
+            "pl": "Profil",
+            "eng": "Profile"
+        },
+        "CancelRequestBtn": {
+            "pl": "Anuluj",
+            "eng": "Cancel"
+        },
+
+        "msgAcceptRequestError":{
+            "pl": "Nie udało się zaakceptować prośby",
+            "eng": "Failed to accept the request"
+        },
+        "msgAcceptRequestSuccess":{
+            "pl": "Prośba potwierdzona",
+            "eng": "Request accepted"
+        },
+        "msgRemoveRequestError":{
+            "pl": "Nie udało się usunąć prośby",
+            "eng": "Unable to remove request"
+        },
+        "msgRemoveRequestSuccess":{
+            "pl": "Prośba usunięta",
+            "eng": "Request Deleted"
+        },
+        "msgCreateGroupError":{
+            "pl": "Nie stworzono grupy",
+            "eng": "Group not created"
+        },
+        "msgCreateGroupSuccess":{
+            "pl": "Stworzono grupę",
+            "eng": "Group created"
+        },
+        "msgSendRequestError":{
+            "pl": "Nie wysłano prośby(oczekuje na potwierdzenie)",
+            "eng": "Request not sent (awaiting confirmation)"
+        },
+        "msgSendRequestSuccess":{
+            "pl": "Wysłano prośbę",
+            "eng": "Request sent"
+        }
+        
+        
+    }
+}

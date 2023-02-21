@@ -1,5 +1,7 @@
 package com.projteam.competico.api;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +91,8 @@ public class LobbyAPI
 		if (!exists)
 			return Map.of("exists", exists);
 		Account host = lobbyService.getHost(gameCode);
-		return Map.of(
+		Map<String, Object> ret = new HashMap<>();
+		ret.putAll(Map.of(
 				"exists", exists,
 				"allowsRandomPlayers", lobbyService.allowsRandomPlayers(gameCode),
 				"isFull", lobbyService.isLobbyFull(gameCode),
@@ -103,13 +106,23 @@ public class LobbyAPI
 					.map(acc -> Map.of(
 							"username", acc.getUsername(),
 							"nickname", acc.getNickname()
-		)));
+		))));
+		if (lobbyService.isGroupLobby(gameCode))
+		{
+			ret.putAll(Map.of(
+					"isGroupLobby", true,
+					"groupCode", lobbyService.getGroupCode(gameCode).orElse(null)));
+			List<String> tasksets = lobbyService.getTasksetNames(gameCode);
+			if (tasksets != null)
+				ret.put("tasksets", tasksets);
+		}
+		return ret;
 	}
 	
-	@ApiOperation(value = "Check lobby status", code = 200)
+	@ApiOperation(value = "Retrieve information about the current player", code = 200)
 	@ApiResponses(
 	{
-		@ApiResponse(code = 200, message = "Current status of a given lobby"),
+		@ApiResponse(code = 200, message = "Information about the player"),
 	})
 	@GetMapping("api/v1/playerinfo")
 	public Object playerInfo()
@@ -184,9 +197,32 @@ public class LobbyAPI
 		@ApiResponse(code = 200, message = "Whether lobby settings were updated"),
 	})
 	@PutMapping("api/v1/lobby/{gameCode}")
-	public boolean updateLobbySettings(@PathVariable String gameCode, @RequestBody LobbyOptionsDTO options)
+	public boolean updateLobbySettings(
+			@PathVariable String gameCode,
+			@RequestBody LobbyOptionsDTO options)
 	{
 		return lobbyService.updateOptions(gameCode, options);
+	}
+	
+	@ApiOperation(value = "Update selected tasksets in a group lobby", code = 200)
+	@ApiResponses(
+	{
+		@ApiResponse(code = 200, message = "Whether lobby settings were updated"),
+	})
+	@PutMapping("api/v1/lobby/{gameCode}/tasksets")
+	public ResponseEntity<?> updateGroupLobbySettings(
+			@PathVariable String gameCode,
+			@RequestBody List<String> tasksets)
+	{
+		try
+		{
+			lobbyService.setTasksets(gameCode, tasksets);
+			return ResponseEntity.ok().build();
+		}
+		catch (Exception e)
+		{
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 	@ApiOperation(value = "Leave lobby", code = 200)

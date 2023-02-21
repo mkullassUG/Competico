@@ -16,13 +16,11 @@ const ListWordFill_Creator = (data_ = {}) => {
         btnAddSingleWordFill.on('click',(e)=> {
             
             var createdElement = self.addSingleWordFill();
-            //add new and focus
-            //podobnie jak w CO i LSF tylko w inym miejscu, powinienem zrobić inaczej
 
             if (createdElement) {
                 createdElement.find("textarea").focus()
             }
-            //scroll to bottom of the div after adding new
+
             function gotoBottom(id){
                 var element = document.getElementById(id);
                 element.scrollTop = element.scrollHeight - element.clientHeight;
@@ -46,13 +44,10 @@ const ListWordFill_Creator = (data_ = {}) => {
     self.prepareTaskJsonFile = () => {
         var task = prepareTaskJsonFileSuper();
         
-        //czy można pobrać difficulty
-        //slider
         if ($("#customRange" + self.taskName+ "").length > 0) {
             self.taskContent.difficulty = $("#customRange" + self.taskName+ "").val();
         }
 
-        //czy można pograc tagi
         if ($("#" + self.taskName+ "DivTaskTags").length) {
             var tagsString = $("#" + self.taskName+ "DivTaskTags").val();
             var tags = tagsString.split(",")
@@ -63,40 +58,30 @@ const ListWordFill_Creator = (data_ = {}) => {
                 self.taskContent.tags.push(tags[i]);
             }
         }
-        //czy można pobrać instrukcje
+
         if ( $("#" + self.taskName+ "DivTaskInstruction").length ) {
             self.taskContent.instruction = $("#" + self.taskName+ "DivTaskInstruction").val().trim();
         }   
         
-        //czy można pobrać zdania
         var singleWordFills = $("#WordFills").find(".singleWordFillDiv");
         if ( singleWordFills.length ) {
             
             self.taskContent.rows = [];
             
             for ( let i = 0; i < singleWordFills.length; i++) {
-                //dla pojedynczego WordFilla poberać, potem do row wsadzać
+
                 var currentRow = {};
                 currentRow.emptySpaces = [];
                 currentRow.possibleAnswers = [];
-
                 var singleWordFill = $(singleWordFills[i]);
-
-                //ListWordFillTextArea
                 var textString = singleWordFill.find("." + self.taskName+ "TextArea").val();
 
-                // //new 2021-05-02
-                // var fontSizeInputVal = $("#" + self.taskName+ "FontSize").val();
-                // textString = `<span style="font-size:`+fontSizeInputVal+`px">` + textString + "</span>";
-
-
                 var tagsWithWords = textString.match(/\{\[[^]+?\]\}/g);
-                if (tagsWithWords != null) //BUG 2021-02-08
+                if (tagsWithWords != null)
                     var correctWords = tagsWithWords.map(w=> w.replace("{[",'').replace("]}",''));
                 else 
                     var correctWords = [];
                     
-                //get emptySpaces
                 for (let i = 0; i < correctWords.length; i++) {
                     var correctWord = correctWords[i];
                     
@@ -109,25 +94,20 @@ const ListWordFill_Creator = (data_ = {}) => {
                         });
                 }
 
-                //get possibleAnswers
-                //ListWordFillTDivIncorrectWords
                 var inCorrectWordsString = singleWordFill.find("." + self.taskName+ "TDivIncorrectWords").val();
                 var inCorrectWords = inCorrectWordsString.split(",")
                     .map(t=> t.trim())
                     .filter(t => t!="");
                     currentRow.possibleAnswers = [...correctWords, ...inCorrectWords];
 
-                //get text
-                //build regex 
                 var regexString = `\\{\\[`+correctWords[0]+ "\\]\\}";
                 for ( let i = 1; i < correctWords.length; i++) {
                     regexString += "|\\{\\[" +correctWords[i] + "\\]\\}";
                 }
-                //regexString += "";
+                
                 regexString = new RegExp(regexString, "g");
                 var text = textString.split(regexString);
                 
-                //get starts with text
                 currentRow.startWithText = text[0] != "";
                 currentRow.text = [...(text).filter((t,index)=>!(t==""&&index==0))]
 
@@ -137,7 +117,7 @@ const ListWordFill_Creator = (data_ = {}) => {
 
         task.taskName = self.taskName;
         task.taskContent = self.taskContent;
-        //BUG fixed, przez id nie przyjmowało, ale nei wiem skąd id O.o
+
         if (task.taskContent.id)
             delete task.taskContent.id;
         return task;
@@ -148,7 +128,6 @@ const ListWordFill_Creator = (data_ = {}) => {
         setupDemoFromCurrentSuper();
     }
 
-    //Deprecated, recommended sendTaskVariantToTasksets
     var sendTaskVariantSuper = self.sendTaskVariant;
     self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask = self.prepareTaskJsonFile()) => {
 
@@ -163,7 +142,7 @@ const ListWordFill_Creator = (data_ = {}) => {
 
     var loadTaskFromSuper = self.loadTaskFrom;
     self.loadTaskFrom = (taskObject) => {
-        loadTaskFromSuper(taskObject); /*WordFill ma ten "content" jeszcze*/
+        loadTaskFromSuper(taskObject);
         self.prepareLoadedTask();
         self.checkAndClickOnAddButt();
     }
@@ -172,7 +151,6 @@ const ListWordFill_Creator = (data_ = {}) => {
         var btnAddSingleWordFill = $("#" + self.taskName+ "AddWordFill");
         if ( btnAddSingleWordFill.length && !$("." + self.taskName+ "AddWord").length)
             btnAddSingleWordFill.click();
-
     }
 
     self.keyCombos = (e) =>{
@@ -218,18 +196,10 @@ const ListWordFill_Creator = (data_ = {}) => {
 
     self.prepareLoadedTask = () => {
         
-        //WordFillDiv
-
-        /*ustawiam tagi*/
         var tagsElem = $("#" + self.taskName+ "DivTaskTags");
         tagsElem.val(self.taskContent.tags.join(", "));
 
-        /*ustawiam insmtrukcje*/
         $("#" + self.taskName+ "DivTaskInstruction").val(self.taskContent.instruction);
-
-        /*wstawiam dla każdego zdania textarea i przyciski*/
-
-        /*TODO: msuze zrobić żeby po klasach znajdowało w pętli a nie po id*/
         
         $("#WordFills").html(``);
         for (let i = 0; i < self.taskContent.rows.length; i++) {
@@ -267,15 +237,10 @@ const ListWordFill_Creator = (data_ = {}) => {
 
         self.setupListenersAndIndexesFromPosition(0);
         tooltipsUpdate();
-        /*ustawiam difficulty*/
+
         $("#customRange" + self.taskName+ "").val(self.taskContent.difficulty);
         $("#customRange" + self.taskName+ "").trigger("change");
         $("#customRangeLabel" + self.taskName+ "").html(`Difficulty: (` + self.taskContent.difficulty + `)`);
-        // $("ListWordFillDificulty").val(self.taskContent.difficulty);
-        
-        
-
-        /*TODO ustawiam czcionkę*/
     }
 
     var tooltipsUpdate = () => {
@@ -288,33 +253,27 @@ const ListWordFill_Creator = (data_ = {}) => {
 
     self.addSingleWordFill = () => {
 
-        //check if treść of other singleWordFills are empty
         var foundEmpty = false;
         var singleWordFills = $("#WordFills").find(".singleWordFillDiv");
         for ( let i = 0; i < singleWordFills.length; i++) {
             var singleWordFill = $(singleWordFills[i]);
-            //.trim()
-            //.replaceAll(/\s/g,'')
+            
             if ( singleWordFill.find(".taskTextTextarea").val().trim() === ""){
                 foundEmpty = true;
                 break;
             }
         }
         if (foundEmpty) {
-            //wyświetl info i zakończ
             $("#invalidFillAddFill").show();
             setTimeout(function(){$("#invalidFillAddFill").fadeOut()},5000);
             return
         }
-
         
         var index = singleWordFills.length;
-
         var WordFillElement = newWordFillElement(index, "", "");
 
         $("#WordFills").append(WordFillElement)
         self.setupListenersAndIndexesFromPosition(index);
-
         tooltipsUpdate();
             
         return WordFillElement;
@@ -322,12 +281,10 @@ const ListWordFill_Creator = (data_ = {}) => {
 
     self.setupListenersAndIndexesFromPosition = (elemPosition) => {
         
-        
         var ChildrenAddWord = $("." + self.taskName+ "AddWord");
         var ChildrenTextArea = $("." + self.taskName+ "TextArea");
         var ChildrenAddIncorrectWord = $("." + self.taskName+ "AddIncorrectWord");
 
-        //ListWordFillAddWordFill   
         for (let i = elemPosition; i < ChildrenAddWord.length; i ++) {
             var indexLabel = $($("." + self.taskName+ "DivTaskText")[i]);
             indexLabel.text(i+1);
@@ -360,8 +317,8 @@ const ListWordFill_Creator = (data_ = {}) => {
                         self.addNewWordForWordFill("{[", "]}", parentElem);
                     });
                     
-                    buttonClone.mousedown(function(e) { // handle the mousedown event
-                        e.preventDefault(); // prevent the textarea to loose focus!
+                    buttonClone.mousedown(function(e) {
+                        e.preventDefault();
                     });    
                     
                     var TextArea = currentChildTextArea,
@@ -369,19 +326,14 @@ const ListWordFill_Creator = (data_ = {}) => {
                     TextArea.replaceWith( TextAreaClone );
 
                     if (TextAreaClone.length > 0) {
-                        /*wyłaczanie przycisku jeśli nie mam focusa na textarea*/
                         
                         TextAreaClone.on('blur', function(e) {
-                            // your code here
                             var parentElem = $(e.target).closest(".form-group");
-                            //.ListWordFillAddIncorrectWord
                             parentElem.find("." + self.taskName+ "AddWord").attr('disabled','');
                         });
     
                         TextAreaClone.on('focus', function(e) {
-                            // your code here
                             var parentElem = $(e.target).closest(".form-group");
-
                             parentElem.find("." + self.taskName+ "AddWord").removeAttr("disabled");
                         });
 
@@ -390,10 +342,6 @@ const ListWordFill_Creator = (data_ = {}) => {
                 }
             }
             
-            //.ListWordFillDeleteButton
-            //#btnListWordFillRemoveWordFill  +  i
-            //klonuje przycisk od usuwania
-            //#btnListWordFillRemoveWordFill  +  i
             var btnRemove = $("#btn" + self.taskName+ "RemoveWordFill"+i);
             if ( btnRemove.length > 0 ) {
                 var button = btnRemove,
@@ -412,8 +360,7 @@ const ListWordFill_Creator = (data_ = {}) => {
     }
 
     self.deleteSingleWordFillParent = (parentElem) => {
-        //ogarnąc który z kolei jest to element i delete, wszystkie wyżej elementy przesunać i pozmieniać listenery.
-        //array.index(parentElem)
+
         var WordFillsDiv = parentElem.closest("#WordFills");
         var allSingleWordFills = WordFillsDiv.find(".singleWordFillDiv");
 
@@ -446,13 +393,11 @@ const ListWordFill_Creator = (data_ = {}) => {
 
                 var leftSide = myField.value.substring(0, startPos);
                 var rightSide = myField.value.substring(endPos, myField.value.length);
-                /*sprawdzam jeszcze czy nie znajduje się czasem już wewnątrz takiego {[]}*/
                 var partsL = leftSide.split(leftTag);
                 for ( let i = 1 ; i < partsL.length; i++) {
                     var part = partsL[i];
 
                     if ( !part.includes(rightTag)) {
-                        //oof zatrzymaj iw yświetl info że tagi się nie zgadzają
                         forElement.find(".invalid" + self.taskName+ "AddWord").show();
                         setTimeout(function(){forElement.find(".invalid" + self.taskName+ "AddWord").fadeOut()},5000);
                         return;
@@ -463,7 +408,6 @@ const ListWordFill_Creator = (data_ = {}) => {
                     var part = partsR[i];
 
                     if ( !part.includes(leftTag)) {
-                        //oof zatrzymaj i wyświetl info że tagi się nie zgadzają
                         forElement.find(".invalid" + self.taskName+ "AddWord").show();
                         setTimeout(function(){forElement.find(".invalid" + self.taskName+ "AddWord").fadeOut()},5000);
                         return;
@@ -471,8 +415,6 @@ const ListWordFill_Creator = (data_ = {}) => {
                 }
 
                 myField.value = leftSide + (leftTag + selText + rightTag) + rightSide;
-
-                //umieszczam pozycje kursora pomiędzy {[]}
                 myField.setSelectionRange(startPos+2+ selText.length,startPos+2+ selText.length);
             } else {
                 myField.value += (leftTag + selText + rightTag);
