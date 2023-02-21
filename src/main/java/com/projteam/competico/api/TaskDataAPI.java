@@ -130,7 +130,7 @@ public class TaskDataAPI
 		}
 	}
 	@GetMapping("/api/v1/tasks/imported/{id}")
-	@ApiOperation(value = "Delete an inported task with the given id", code = 200)
+	@ApiOperation(value = "Delete an imported task with the given id", code = 200)
 	public Object getImportedTask(@PathVariable UUID id)
 	{
 		return gtdService.getImportedGlobalTask(id)
@@ -139,7 +139,7 @@ public class TaskDataAPI
 				.orElse(Map.of("taskExists", "false"));
 	}
 	@PutMapping("/api/v1/tasks/imported/{id}")
-	@ApiOperation(value = "Edit an inported task with the given id", code = 200)
+	@ApiOperation(value = "Edit an imported task with the given id", code = 200)
 	public ResponseEntity<?> editImportedTask(@PathVariable UUID id, @RequestBody JsonNode newTaskData)
 	{
 		try
@@ -154,13 +154,13 @@ public class TaskDataAPI
 		}
 	}
 	@DeleteMapping("/api/v1/tasks/imported/{id}")
-	@ApiOperation(value = "Delete an inported task with the given id", code = 200)
+	@ApiOperation(value = "Delete an imported task with the given id", code = 200)
 	public boolean deleteImportedTask(@PathVariable UUID id)
 	{
 		return gtdService.removeImportedGlobalTask(id);
 	}
 	@DeleteMapping("/api/v1/tasks/imported")
-	@ApiOperation(value = "Delete all inported tasks", code = 200)
+	@ApiOperation(value = "Delete all imported tasks", code = 200)
 	public void deleteImportedTasks()
 	{
 		gtdService.removeAllImportedGlobalTasks();
@@ -248,7 +248,7 @@ public class TaskDataAPI
 				.body(ret);
 	}
 	@PostMapping("/api/v1/taskset")
-	@ApiOperation(value = "Create a new task", code = 200)
+	@ApiOperation(value = "Create a new taskset", code = 200)
 	public ResponseEntity<?> createTaskset(@RequestBody TasksetNameDTO tnDto)
 	{
 		try
@@ -262,7 +262,7 @@ public class TaskDataAPI
 		}
 	}
 	@PutMapping("/api/v1/taskset")
-	@ApiOperation(value = "Create a new task", code = 200)
+	@ApiOperation(value = "Edit a taskset", code = 200)
 	public ResponseEntity<?> changeTasksetName(@RequestBody TasksetChangeDTO tcDto)
 	{
 		try
@@ -279,7 +279,7 @@ public class TaskDataAPI
 		}
 	}
 	@DeleteMapping("/api/v1/taskset")
-	@ApiOperation(value = "Create a new task", code = 200)
+	@ApiOperation(value = "Delete a taskset", code = 200)
 	public ResponseEntity<?> deleteTaskset(@RequestBody TasksetNameDTO tnDto)
 	{
 		try
@@ -339,7 +339,7 @@ public class TaskDataAPI
 		}
 	}
 	@GetMapping("/api/v1/task/{id}")
-	@ApiOperation(value = "Get task with given id from given taskset", code = 200)
+	@ApiOperation(value = "Get task with given id", code = 200)
 	public Object getTask(@PathVariable UUID id)
 	{
 		return tsdService.getTask(id)
@@ -348,7 +348,7 @@ public class TaskDataAPI
 				.orElse(Map.of("taskExists", "false"));
 	}
 	@PutMapping("/api/v1/task/{id}")
-	@ApiOperation(value = "Edit task with given id from given taskset", code = 200)
+	@ApiOperation(value = "Edit task with given id", code = 200)
 	public ResponseEntity<?> editTask(@PathVariable UUID id, @RequestBody JsonNode newTaskData)
 	{
 		try
@@ -363,25 +363,25 @@ public class TaskDataAPI
 		}
 	}
 	@DeleteMapping("/api/v1/task/{id}")
-	@ApiOperation(value = "Delete an inported task with the given id", code = 200)
+	@ApiOperation(value = "Delete a task with the given id", code = 200)
 	public boolean deleteTask(@PathVariable UUID id)
 	{
 		return tsdService.removeTask(id);
 	}
 	@DeleteMapping("/api/v1/tasksets/all/tasks")
-	@ApiOperation(value = "Delete all inported tasks", code = 200)
+	@ApiOperation(value = "Delete all tasks", code = 200)
 	public void deleteAllTasks()
 	{
 		tsdService.removeAllTasks();
 	}
 	@DeleteMapping("/api/v1/tasksets/tasks")
-	@ApiOperation(value = "Delete all inported tasks", code = 200)
+	@ApiOperation(value = "Delete all tasks from a given taskset", code = 200)
 	public void deleteAllTasksFromTaskset(@RequestBody TasksetNameDTO tnDto)
 	{
 		tsdService.removeAllTasksFromTaskset(tnDto.getTasksetName());
 	}
 	@PutMapping("/api/v1/task/{id}/move")
-	@ApiOperation(value = "Delete all inported tasks", code = 200)
+	@ApiOperation(value = "Move a task to a different taskset", code = 200)
 	public void moveTask(@PathVariable UUID id, @RequestBody TasksetNameDTO tnDto)
 	{
 		tsdService.moveTask(id, tnDto.getTasksetName());

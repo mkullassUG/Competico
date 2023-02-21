@@ -1,6 +1,7 @@
 package com.projteam.competico.service.game;
 
 import static com.projteam.competico.domain.Account.PLAYER_ROLE;
+import static com.projteam.competico.domain.Account.LECTURER_ROLE;
 import static java.util.Collections.synchronizedMap;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,10 +14,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +35,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.projteam.competico.dao.game.GameResultDAO;
 import com.projteam.competico.dao.game.PlayerResultDAO;
+import com.projteam.competico.dao.group.GroupDAO;
+import com.projteam.competico.dao.group.GroupGameResultDAO;
 import com.projteam.competico.domain.Account;
 import com.projteam.competico.domain.game.Game;
 import com.projteam.competico.domain.game.GameResult;
 import com.projteam.competico.domain.game.PlayerData;
 import com.projteam.competico.domain.game.PlayerResult;
+import com.projteam.competico.domain.game.TaskSet;
 import com.projteam.competico.domain.game.tasks.Task;
 import com.projteam.competico.domain.game.tasks.answers.TaskAnswer;
+import com.projteam.competico.domain.group.GroupGameResult;
 import com.projteam.competico.dto.game.GameResultPersonalDTO;
 import com.projteam.competico.dto.game.GameResultTotalDTO;
 import com.projteam.competico.dto.game.GameResultTotalDuringGameDTO;
 import com.projteam.competico.dto.game.tasks.show.TaskInfoDTO;
 import com.projteam.competico.service.AccountService;
+import com.projteam.competico.service.group.GroupService;
+import com.projteam.competico.utils.Initializable;
 
 @Service
 public class GameService
@@ -51,9 +60,14 @@ public class GameService
 	private AccountService accServ;
 	private LobbyService lobbyServ;
 	private GameTaskDataService gtdServ;
+	private TaskSetDataService tsdServ;
 	private PlayerDataService pdServ;
 	private PlayerResultDAO prDAO;
 	private GameResultDAO grDAO;
+	
+	private GroupService groupServ;
+	private GroupDAO groupDao;
+	private GroupGameResultDAO ggrDao;
 	
 	private Map<String, Game> games;
 	
@@ -70,16 +84,24 @@ public class GameService
 	public GameService(AccountService accServ,
 			LobbyService lobbyServ,
 			GameTaskDataService gtdServ,
+			TaskSetDataService tsdServ,
 			PlayerDataService pdServ,
 			PlayerResultDAO prDAO,
-			GameResultDAO grDAO)
+			GameResultDAO grDAO,
+			GroupService groupServ,
+			GroupDAO groupDao,
+			GroupGameResultDAO ggrDao)
 	{
 		this.accServ = accServ;
 		this.lobbyServ = lobbyServ;
 		this.gtdServ = gtdServ;
+		this.tsdServ = tsdServ;
 		this.pdServ = pdServ;
 		this.prDAO = prDAO;
 		this.grDAO = grDAO;
+		this.groupServ = groupServ;
+		this.groupDao = groupDao;
+		this.ggrDao = ggrDao;
 		
 		games = syncMap();
 	}
@@ -97,11 +119,25 @@ public class GameService
 		if (!lobbyServ.isHost(gameCode, requestSource))
 			return false;
 		
-		List<Account> players = lobbyServ.getPlayers(gameCode);
-		List<Account> spectators = Optional.ofNullable(lobbyServ.getHost(gameCode))
-				.filter(host -> !host.hasRole(PLAYER_ROLE))
-				.stream()
-				.collect(Collectors.toList());
+		List<Account> accs = new ArrayList<>(lobbyServ.getPlayers(gameCode));
+		Optional.ofNullable(lobbyServ.getHost(gameCode))
+			.filter(h -> accs.stream()
+					.noneMatch(a -> a.getId().equals(h.getId())))
+			.ifPresent(h -> accs.add(h));
+		List<Account> players = new ArrayList<>();
+		List<Account> spectators = new ArrayList<>();
+		
+		accs.forEach(acc ->
+		{
+			if (acc.hasRole(PLAYER_ROLE))
+				players.add(acc);
+			else if (acc.hasRole(LECTURER_ROLE))
+				spectators.add(acc);
+		});
+		
+		Optional<UUID> groupId = lobbyServ.getGroupId(gameCode);
+		Optional<String> groupCode = lobbyServ.getGroupCode(gameCode);
+		List<TaskSet> tasksets = lobbyServ.getTasksets(gameCode);
 		
 		if (players.size() < 1)
 			return false;
@@ -119,20 +155,50 @@ public class GameService
 		Map<UUID, List<Task>> taskMap = new HashMap<>();
 		taskMap.putAll(players.stream()
 				.collect(Collectors.toMap(player -> player.getId(),
-						player -> generateTaskList(taskCount, targetDifficulty))));
+						player -> generateTaskList(taskCount, targetDifficulty, tasksets))));
 		
 		if (!lobbyServ.deleteLobby(gameCode, requestSource))
 			return false;
-		games.put(gameCode, new Game(players, spectators, taskCount, taskMap));
+		
+		if (groupId.isPresent())
+		{
+			games.put(gameCode, new Game(players, spectators, taskCount, taskMap, groupId.get()));
+			groupServ.removeGroupLobby(groupCode.get(), gameCode);
+		}
+		else
+			games.put(gameCode, new Game(players, spectators, taskCount, taskMap));
 		return true;
 	}
-	private List<Task> generateTaskList(int taskCount, double targetDifficulty)
+	private List<Task> generateTaskList(int taskCount, double targetDifficulty, List<TaskSet> tasksets)
 	{
 		Random rand = new Random();
 		List<Task> ret = new ArrayList<>();
 		Map<String, Integer> taskCounts = new HashMap<>();
 		Set<UUID> taskIDs = new HashSet<>();
 		String lastName = "";
+		tasksets = Objects.requireNonNullElseGet(tasksets, () -> List.of());
+		List<TaskSet> tasksetList = new ArrayList<>(tasksets
+					.stream()
+					.filter(ts -> !ts.getTaskInfos().isEmpty())
+					.collect(Collectors.toList()));
+		int tasksetLen = tasksetList.size();
+		Supplier<Task> taskGen = tasksetList.isEmpty()?
+				(() -> gtdServ.generateRandomTask(targetDifficulty)):
+				(() ->
+				{
+					for (int i = 0; i < RETRY_LIMIT; i++)
+					{
+						Task ta = tsdServ.getRandomTask(
+							tasksetList.get(rand.nextInt(tasksetLen))
+							.getId(), rand)
+							.orElse(null);
+						if (ta != null)
+							return Initializable.init(ta);
+					}
+					
+					return gtdServ.generateRandomTask(targetDifficulty);
+				});
+		
 		for (int i = 0; i < taskCount; i++)
 		{
 			Task t;
@@ -143,7 +209,7 @@ public class GameService
 			{
 				retryCount++;
 				
-				t = gtdServ.generateRandomTask(targetDifficulty);
+				t = taskGen.get();
 				name = t.getClass().getName();
 				
 				if (lastName.equals(name))
@@ -268,6 +334,13 @@ public class GameService
 		for (PlayerResult pr: gr.getResults().values())
 			prDAO.save(pr);
 		grDAO.save(gr);
+		
+		game.getGroupId()
+			.flatMap(groupId -> groupDao.findById(groupId))
+			.ifPresent(group -> ggrDao.save(
+					new GroupGameResult(
+						UUID.randomUUID(),
+						group, gr)));
 		
 		updateRatings(game);
 	}
@@ -494,12 +567,14 @@ public class GameService
 					});
 		return ret;
 	}
+	@Transactional
 	public Optional<List<GameResultPersonalDTO>> getPersonalResults(
 			UUID gameID,
 			String username)
 	{
 		return getPersonalResults(gameID, username, getAccount());
 	}
+	@Transactional
 	public Optional<List<GameResultPersonalDTO>> getPersonalResults(
 			UUID gameID,
 			String username,

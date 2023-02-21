@@ -371,7 +371,7 @@ public class AccountService implements UserDetailsService
 		
 		try
 		{
-			emailServ.sendEmail(email, subject, message);
+			emailServ.sendEmailAsync(email, subject, message);
 		}
 		catch (Exception e)
 		{
@@ -428,7 +428,7 @@ public class AccountService implements UserDetailsService
 		
 		try
 		{
-			emailServ.sendEmail(email, subject, message);
+			emailServ.sendEmailAsync(email, subject, message);
 		}
 		catch (Exception e)
 		{

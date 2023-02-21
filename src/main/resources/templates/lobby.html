@@ -83,7 +83,7 @@
       <div class="col-2 col-sm-4">
       </div>
       <div class="col-5 col-sm-4">
-        <buton class="btn btn-lg btn-secondary btn-custom-animation collapse mb-3 float-right btnShadow" id="btnStart">Rozpocznij gre</buton>
+        <buton class="btn btn-lg btn-secondary btn-custom-animation collapse mb-3 float-right btnShadow" data-toggle="modal" data-target="#startGameModalCenter" id="btnStart">Rozpocznij gre</buton>
       </div>
     </div>
     <!-- game -->
@@ -97,7 +97,7 @@
     </div>
     <div class="row  mt-3 rounded collapse" id="gameCenter">
       <div class="col-12" id="GameWrapperDiv">
-        <div class="m-custom my-3 p-3 rounded gameDivDecoration" /*style="overflow:hidden;"*/>
+        <div class="m-custom my-3 p-3 rounded gameDivDecoration">
           <div class="bg-light unselectable btnShadow" id="GameDiv">
             Ładowanie zadanka
           </div>
@@ -115,7 +115,7 @@
         <h2 class="text-white">Dziękuję za grę</h2>
         <div id="endGameDashboard" >
           <div class="col-12" id="endGameWrapperDiv">
-            <div class="m-custom my-3 p-3 rounded gameDivDecoration" /*style="overflow:hidden;"*/>
+            <div class="m-custom my-3 p-3 rounded gameDivDecoration">
               <div class="bg-light unselectable btnShadow" id="endGameDiv">
                 <table class="table table-sm">
                   <thead>
@@ -141,12 +141,7 @@
       </div>
     </div>
   </div>
-  <!--
-  <footer class="footer">
-    <div class="container text-center">
-      <span class="text-muted m-auto">Ucz się angielskiego razem z nami <img src="/assets/myIcons/iconbigblack.svg" class="iconbig" style=" filter: invert(25%);"></span>
-    </div>
-  </footer> -->
+
   <!-- Modal settings-->
   <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -162,27 +157,7 @@
             <input type="checkbox" class="custom-control-input" id="allowsRandomPlayersCB">
             <label class="custom-control-label" for="allowsRandomPlayersCB">Pozwalam na losowych graczy.</label>
           </div>
-          
-          <div class="custom-control custom-switch lectorEnableClass collapse">
-            <hr>
-            <input type="checkbox" class="custom-control-input" id="lektorCB">
-            <label class="custom-control-label" for="lektorCB">Gra z grupą.</label>
-          </div>
-          <div id="lectorModeOnDiv" class="lectorEnableClass collapse mt-1">
-            <div class="form-check">
-              <label class="" for="groupNameSelect">Wybierz grupę</label>
-              <select class="custom-select" size="3" id="groupNameSelect">
-                <option selected>grupa0</option>
-                <option value="1">grupa1</option>
-                <option value="2">grupa2</option>
-                <option value="3">grupa3</option>
-              </select>
-            </div>
-            <div class="text-center">
-              <button type="button" class="btn btn-secondary mt-1" >wyślij zaproszenie członkom grupy</button>
-            </div>
-          </div>
-          <div id="lectorModeOffDiv" >
+          <div>
             <hr>
             <label for="inputMaxPlayers" class="col-form-label">Max graczy:</label>
             <input type="number" class="form-control" id="inputMaxPlayers" value="10">
@@ -193,26 +168,69 @@
             <input type="checkbox" class="custom-control-input" id="customTasksCB">
             <label class="custom-control-label" for="customTasksCB">Moje zestawy zadań.</label>
           </div>
-          <div id="customTaskSetModeOnDiv" class="lectorEnableClass collapse">
-            <div class="form-check">
-              <label class="" for="custonTaskSetSelect">Wybierz zestaw zadań</label>
-              <select class="custom-select" size="3" id="custonTaskSetSelect">
-                <option selected>zestaw0</option>
-                <option value="1">zestaw1</option>
-                <option value="2">zestaw2</option>
-                <option value="3">zestaw3</option>
-              </select>
+
+
+          <div class="row" id="dualList">
+            <div class="col-6">
+              <div class="row mr-1 ml-1">
+                <label for="duallist-non-selected" id="duallist-non-selected-label"><span id="duallist-non-selected-label-part1">Pozostałe zestawy:</span><span id="duallist-non-selected-label-part2"></span></label>
+              </div>
+              <div class="row mr-1 ml-1">
+                <span class="info-container">     
+                  <span class="d-inline-block mb-1" style="font-size:11px;">
+                    Showing all 
+                  </span>     
+                </span>
+              </div>
+              <div class="row mr-1 ml-1">
+                <input class="form-control w-100 text-dark mb-1 input-text-filter" type="text" placeholder="Filter">
+              </div>
+              <div class="row mr-1 ml-1">
+                <button class="btn btn-lg btn-outline-secondary w-50 input-move-multi" style="border-radius: 0px; border-top-left-radius: .3rem; border-bottom: none;z-index: 2;">&#62;&#62;</button>
+                <button class="btn btn-lg btn-outline-secondary w-50 input-move-one" style="border-radius: 0px; border-top-right-radius: .3rem; border-bottom: none;z-index: 2;">&#62;</button>
+              </div>
+              <div class="row mr-1 ml-1">
+                <select class="w-100 inputSel" multiple="multiple" id="duallist-non-selected" name="duallist-non-selected" style="height: 222px;">
+                  <option value="option1">
+                    Option 1
+                  </option>
+                  <option value="option2">
+                    Option 2
+                  </option>
+                  <option value="option4">
+                    Option 4
+                  </option>
+                  <option value="option5">Option 5</option><option value="option7">Option 7</option><option value="option8">Option 8</option><option value="option9">Option 9</option><option value="option0">Option 10</option><option value="option0">Option 11</option><option value="option0">Option 12</option><option value="option0">Option 13</option><option value="option0">Option 14</option><option value="option0">Option 15</option><option value="option0">Option 16</option><option value="option0">Option 17</option><option value="option0">Option 18</option><option value="option0">Option 19</option><option value="option0">Option 20</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="col-6">
+              <div class="row mr-1 ml-1">
+                <label for="duallist-selected" id="duallist-selected-label"><span id="duallist-selected-label-part1">Użyj zestawów:</span><span id="duallist-selected-label-part2"></span></label>
+              </div>
+              <div class="row mr-1 ml-1">
+                <span class="info-container">     
+                  <span class="d-inline-block mb-1" style="font-size:11px;">
+                    Showing all 
+                  </span>     
+                </span>
+              </div>
+              <div class="row mr-1 ml-1">
+                <input class="form-control w-100 text-dark mb-1 output-text-filter" type="text" placeholder="Filter">
+              </div>
+              <div class="row mr-1 ml-1">
+                <button class="btn btn-lg btn-outline-secondary w-50 output-move-one" style="border-radius: 0px; border-top-left-radius: .3rem; border-bottom: none;z-index: 2;">&#60;</button>
+                <button class="btn btn-lg btn-outline-secondary w-50 output-move-multi" style="border-radius: 0px; border-top-right-radius: .3rem; border-bottom: none;z-index: 2;">&#60;&#60;</button>
+              </div>
+              <div class="row mr-1 ml-1">
+                <select class="w-100 outputSel" multiple="multiple" id="duallist-selected" name="duallist-selected" style="height: 222px;">
+                  
+                </select>
+              </div>
             </div>
           </div>
-          <!-- <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="allowsRandomPlayersCB">
-            <label class="form-check-label" for="defaultCheck1">
-              Pozwalam na losowych graczy
-            </label>
-          </div> -->
-          <hr>
-          <h5>Pozostałe opcje</h5>
-          <p>...</p>
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -238,6 +256,25 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal start game -->
+  <div class="modal fade" id="startGameModalCenter" tabindex="-1" role="dialog" aria-labelledby="startGameModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="startGameModalLongTitle">Czy wszyscy są gotowi do gry?</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnSendStartGame">Start</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal leave lobby-->
   <div class="modal fade" id="leaveModalCenter" tabindex="-1" role="dialog" aria-labelledby="leaveModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -314,10 +351,10 @@
   <script src="/js/tasks/task-game-core.js"></script>
 
   <script src="/js/lobby-logic.js"></script>
+  <script src="/js/dual-list-logic.js"></script>
   <script src="/js/cyto/cytoscape.min.js"></script>
   <script>
-      var lm = LobbyModule($, window);
-      lm.getInstance();
+      LobbyModule().getInstance();
   </script>
 </body>
 </html>

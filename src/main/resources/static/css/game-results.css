@@ -1,13 +1,15 @@
-/*fix że tablica wychodzi poza ekran*/
+
+@media (max-width: 300px){
+  h2 {
+    font-size: 1.7rem;
+  }
+}
+
 #endGameDiv tbody {
   overflow-y: scroll;
-  width: 100%;
   position: absolute;
-  top: 45px;
 }
-#endGameDiv table {
-	position: relative;
-}
+
 #endGameDiv tr {
   width: 100%;
   display: inline-table;
@@ -18,7 +20,31 @@
   width:25px;
 }
 
-@media (max-width: 576px) {
+
+#gameEndBottom {
+  z-index:100!important;
+}
+
+@media (max-width: 576px){
+  #gameEndCenter {
+		margin-top: -70px!important;
+	}
+  #endGameDiv {
+    padding: 15px!important;
+    font-size: .875rem;
+  }
+  
+  #endGameDiv table {
+    position: static;
+  }
+
+  #scoreTable {
+    right: 15px;
+    left: 15px;
+    height: calc(100% - 100px);
+    top: 87px!important;
+  }
+
   #btnPersonalResults,#btnLeave{
 		padding: .25rem .5rem;
 		font-size: .875rem;
@@ -31,99 +57,60 @@
 		max-width: 50%;
   }
   #gameEndBottom {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-  }
-  #endGameDiv {
-    padding: 15px!important;
-    font-size: .875rem;
-  }
-  #endGameDiv tbody {
-    top: 40px;
-  }
-}
-@media (min-height: 350px) and (max-width: 576px){
-	#endGameDiv tbody {
-    height: 105px;
-  }
-	#endGameDiv table {
-    height: 120px;
-  }
-}
-@media (min-height: 400px) and (max-width: 576px){
-	#endGameDiv tbody {
-		height: 145px;
-  }
-	#endGameDiv table {
-		height: 150px;
-  }
-}
-@media (min-height: 500px) and (max-width: 576px){
-	#endGameDiv tbody {
-		height: 225px;
-  }
-	#endGameDiv table {
-		height: 250px;
-  }
-}
-@media (min-height: 600px) {
-	#endGameDiv tbody {
-		height: 150px;
-  }
-	#endGameDiv table {
-		height: 165px;	
-  }
-}
-@media (min-height: 600px) and (max-width: 576px){
-	#endGameDiv tbody {
-		height: 334px
-  }
-	#endGameDiv table {
-		height: 370px;
-  }
-}
-@media (max-height: 800px) {
-	#gameEndCenter {
-		margin-top: -70px!important;
-	}
-	#gameEndBottom .col-12 {
-		width: 50%!important;
-	}
-}
-@media (min-height: 800px) {
-	#endGameDiv tbody {
-		height: 257px;
-  }
-	#endGameDiv table {
-		height: 300px;
-  }
-}
-@media (min-height: 1000px) {
-	#endGameDiv tbody {
-		height: 427px;
-  }
-	#endGameDiv table{
-		height: 450px;
-  }
-}
-@media (min-height: 1200px) {
-	#endGameDiv tbody{
-		height: 512px;
-  }
-	#endGameDiv table{
-		height: 550px;
+    bottom: 0px;
   }
 }
 
+@media (min-width: 577px){
+	#gameEndBottom {
+    bottom: 45px;
+  }
+  #bigChangeDiv {
+    height: calc(100% - 200px)!important;
+  }
+  .fill {
+    top: initial!important;
+    left: initial!important;
+    right: initial!important;
+    bottom: initial!important;
+    position: initial!important;
+    width: initial!important;
+  }
+  #scoreTable {
+    height: calc(100% - 124px);
+    top: 104px!important;
+    right: 15px;
+    left: 15px;
+  }
+}
+@media (min-width: 577px) and (max-height: 511px) {
+  #gameEndCenter {
+    margin-top: -30px!important;
+  }
+}
+
+#gameEndBottom {
+	position: fixed;
+	left: 0;
+  right: 0;
+  margin: auto;
+}
+
+#endGameDiv, .gameDivDecoration, #endGameWrapperDiv, #gameEndCenter, #endGameDashboard {
+  height: 100%;
+}
+
+#gameHistoryHyperlink.active:hover,
+#gameRankingsHyperlink.active:hover {
+  color: black;
+}
 
 /*  other */
 html,
 body {
   height: 100%;
-  
+  overflow: hidden;
   background-color: #f5f5f5;
-  /* color: #fff; */
   box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
 }
 
@@ -151,10 +138,6 @@ body {
   background-color: #c5c5c5;
 }
 
-#gameEndCenter {
-  height: 70%;
-}
-
 .footer {
   position: absolute;
   bottom: 0;
@@ -171,7 +154,7 @@ nav {
   height: 30px;
 }
 
-.container {
+.container:not(.nav.nav-underline) {
   align-items: center;
   padding-top: 40px;
   padding-bottom: 40px;
@@ -194,7 +177,6 @@ h2 {
   height: auto;
 }
 
-/*loading modal*/
 .bd-example-modal-lg .modal-dialog{
   display: table;
   position: relative;
@@ -206,8 +188,6 @@ h2 {
   background-color: transparent;
   border: none;
 }
-
-/*Task completion styles*/
 
 .redTask {
     background-color: red;
@@ -239,8 +219,6 @@ h2 {
     color: black;
 }
 
-/*comfeti*/
-
 .main_header {
   width: 100vw;
   height: 100vh;
@@ -261,6 +239,4 @@ h2 {
   font-weight: bold;
   text-align:center;
 }
-
-/*other global.css*/
 

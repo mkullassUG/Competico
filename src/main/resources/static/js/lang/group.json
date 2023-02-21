@@ -1,0 +1,448 @@
+{
+    "#taskSettingsPanel":{
+        "pl": "Zarządzanie zestawami",
+        "eng" : "Taskset management"
+    },
+    "#btnListWordFill": {
+        "pl": "Wybierz słowo",
+        "eng" : "Choose word"
+    },
+    "#btnListChoiceWordFill": {
+        "pl": "Wybierz właściwą opcję",
+        "eng" : "Choose correct option"
+    },
+    "#twoColumnsWariant": {
+        "pl": "Połącz w pary",
+        "eng" : "Pair up"
+    },
+    "#btnChronologicalOrder": {
+        "pl": "Porządkowanie chronologiczne",
+        "eng" : "Chronological ordering"
+    },
+    "#btnListSentenceForming": {
+        "pl": "Układanie zdań z podanych wyrazów",
+        "eng" : "Arranging sentences"
+    },
+    "#picturesVariant": {
+        "pl": "Warianty z obrazkami",
+        "eng" : "Variants with pictures"
+    },
+    "#btnWordConnect": {
+        "pl": "Łączenie linią",
+        "eng" : "Connect line"
+    },
+    "#btnWordConnectAnswerType": {
+        "pl": "Dopasowanie drugiej kolumny przez ręczne wpisywanie odpowedzi",
+        "eng" : "Match the second column by typing"
+    },
+    "#btnWordConnectAnswerPool": {
+        "pl": "Dopasowanie drugiej kolumny z podanego zestawu",
+        "eng" : "Match the second column from set"
+    },
+    "#btnPictureToManyWords": {
+        "pl": "Jeden obrazek i wiele odpowiedzi.",
+        "eng" : "One picture and many answers"
+    },
+    "#btnSentenceToManyPictures": {
+        "pl": "Jeden tekst i wiele obrazków",
+        "eng" : "One text and many pictures"
+    },
+    "#btnManyPicturesManyWords": {
+        "pl": "Wiele obrazków i wiele słów",
+        "eng" : "Lots of pictures and lots of words"
+    },
+
+    
+
+    ".footer > .container.text-center > .footer-text.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    ".footer > .container.text-center> .text-muted.m-auto": {
+        "pl": "Ucz się angielskiego razem z nami! <br> © 2020-2021 Artur Lech, Michał Kullass.",
+        "eng" : "Let's learn english together! <br> © 2020-2021 Artur Lech, Michał Kullass."
+    },
+    "#homepageHyperlink > a": {
+        "pl": "Strona Domowa",
+        "eng": "Home Page"
+    },
+    "#gameHyperlink > a": {
+        "pl": "Gra",
+        "eng": "Game"
+    },
+    "#helpHyperlink > a": {
+        "pl": "Wsparcie",
+        "eng": "Support"
+    },
+    "#registerHyperlink > a": {
+        "pl": "Rejestracja",
+        "eng": "Register"
+    },
+    "#loginHyperlink": {
+        "pl": "Zaloguj",
+        "eng": "Login"
+    },
+    "#dashboardHyperlink > a": {
+        "pl": "Rankingi",
+        "eng": "Dashboard"
+    },
+    "#profileHyperlink > a": {
+        "pl": "Profil",
+        "eng": "Profile"
+    },
+    "#logOutButton": {
+        "pl": "Wyloguj",
+        "eng": "Logout"
+    },
+    "#groupsHyperlinkMainNav > a": {
+        "pl": "Grupy",
+        "eng": "Groups"
+    },
+    "#allGroupName": {
+        "pl": "Grupa: ",
+        "eng": "Group: "
+    },
+    "#gameRankingsHyperlink": {
+        "pl": "Rankingi",
+        "eng": "Rankings"
+    },
+    "#gameHistoryHyperlink": {
+        "pl": "Historia gier",
+        "eng": "Game history"
+    },
+    
+    "#manageInfoDiv > div.col-12.d-flex.justify-content-around > h5 > span:nth-child(1)": {
+        "pl": "Członkowie: ",
+        "eng": "Members: "
+    },
+    "#btnHistoryView > h5": {
+        "pl": "Historia gier",
+        "eng": "Game history"
+    },
+    "#btnRequestView > h5 > span:nth-child(1)": {
+        "pl": "Prośby",
+        "eng": "Requests"
+    },
+    "#btnMessageView > h5 > span:nth-child(1)": {
+        "pl": "Komunikaty",
+        "eng": "Messages"
+    },
+    "#btnManageView > h5": {
+        "pl": "Zarządzaj",
+        "eng": "Manage"
+    },
+    "#btnDeleteGroupModal": {
+        "pl": "Rozwiąż grupę",
+        "eng": "Disband group"
+    },
+    "#btnStartGroupLobbyModal": {
+        "pl": "Rozpocznij grę",
+        "eng": "Start game"
+    },
+    "#btnSendMessageModal": {
+        "pl": "Wyślij komunikat",
+        "eng": "Send message"
+    },
+    "#manageInfoDiv > table > thead > tr > th:nth-child(2)":{
+        "pl": "Nazwa",
+        "eng": "Username"
+    },
+    "#manageInfoDiv > table > thead > tr > th:nth-child(3), #requestsDiv > table > thead > tr > th:nth-child(7)": {
+        "pl": "Usuń",
+        "eng": "Remove"
+    },
+    "#manageInfoDiv > table > thead > tr > th:nth-child(4), #requestsDiv > table > thead > tr > th:nth-child(3)":{
+        "pl": "Profil",
+        "eng": "Profile"
+    },
+    "#messageDiv > table > thead > tr > th:nth-child(2), #requestsDiv > table > thead > tr > th:nth-child(2)": {
+        "pl": "Użytkownik",
+        "eng": "User"
+    },
+    "#messageDiv > table > thead > tr > th:nth-child(3)": {
+        "pl": "Tytuł",
+        "eng": "Title"
+    },
+    "#messageDiv > table > thead > tr > th:nth-child(4), #requestsDiv > table > thead > tr > th:nth-child(5), #historyDiv > table > thead > tr > th:nth-child(3)": {
+        "pl": "Data",
+        "eng": "Date"
+    },
+    "#messageDiv > table > thead > tr > th:nth-child(5)": {
+        "pl": "Edytowano",
+        "eng": "Edited"
+    },
+    "#messageDiv > table > thead > tr > th:nth-child(6)": {
+        "pl": "Przeczytana",
+        "eng": "Read"
+    },
+    "#requestsDiv > table > thead > tr > th:nth-child(4)": {
+        "pl": "Typ",
+        "eng": "Type"
+    },
+    "#requestsDiv > table > thead > tr > th:nth-child(6)": {
+        "pl": "Potwierdź",
+        "eng": "Accept"
+    },
+    "#historyDiv > table > thead > tr > th:nth-child(2)": {
+        "pl": "Opis",
+        "eng": "Description"
+    },
+    "#displayMessageGroupModalLongTitle": {
+        "pl": "Komunikat",
+        "eng": "Message"
+    },
+    "#removeGroupModalLongTitle": {
+        "pl": "Czy na pewno chcesz rozwiązać grupę?",
+        "eng": "Are you sure you want to disband the group?"
+    },
+    "#btnRemoveGroup": {
+        "pl": "Rozwiąż",
+        "eng": "Disband"
+    },
+    ".cancelBtn": {
+        "pl": "Anuluj",
+        "eng": "Cancel"
+    },
+    "#btnGroupLobby": {
+        "pl": "Stwórz",
+        "eng": "Create"
+    },
+    "#groupLobbyModalLongTitle": {
+        "pl": "Stworzyć grupowe lobby?",
+        "eng": "Create a group lobby?"
+    },
+    "#messageUserGroupModalLongTitle": {
+        "pl": "Wysłanie komunikatu do członków",
+        "eng": "Send a message to members"
+    },
+    "#inputMessageTitleLabel": {
+        "pl": "Tytuł",
+        "eng": "Title"
+    },
+    "#inputMessageContentLabel": {
+        "pl": "Treść",
+        "eng": "Content"
+    },
+    "#btnMessageGroup": {
+        "pl": "Wyślij",
+        "eng": "Send"
+    },
+    "#removeUserGroupModalLongTitle": {
+        "pl": "Czy na pewno chcesz usunąć użytkownika z grupy?",
+        "eng": "Are you sure you want to remove user from the group?"
+    },
+    "#btnRemoveUserGroup, #groupTBody td:nth-child(3) > button": {
+        "pl": "Usuń",
+        "eng": "Remove"
+    },
+    "#removeRequestGroupModalLongTitle": {
+        "pl": "Czy na pewno chcesz odrzucić prośbę użytkownika?",
+        "eng": "Are you sure you want to decline user's request?"
+    },
+    "#btnRemoveRequestGroup": {
+        "pl": "Odrzuć",
+        "eng": "Decline"
+    },
+    "#groupTBody2  td:nth-child(6) > button": {
+        "pl": "Akceptuj",
+        "eng": "Accept"
+    },
+    "#groupTBody2  td:nth-child(7) > button": {
+        "pl": "Usuń",
+        "eng": "Remove"
+    },
+    "#btnInfoView > h5": {
+        "pl": "Informacje",
+        "eng": "Informations"
+    },
+
+    ".trans1": {
+        "pl": "Założono: ",
+        "eng": "Created: "
+    },
+    ".trans2": {
+        "pl": "Nazwa: ",
+        "eng": "Name: "
+    },
+    ".trans3": {
+        "pl": "Kod: ",
+        "eng": "Code: "
+    },
+    ".trans4": {
+        "pl": "Lektorzy: ",
+        "eng": "Lecturers: "
+    },
+    "#btnLeaveGroupModal": {
+        "pl": "Opuść grupę",
+        "eng": "Leave group"
+    },
+
+    "#returnNotFoundBtn": {
+        "pl": "Powrót do listy",
+        "eng": "Return to list"
+    },
+    "#NotExistsMainHeaderInfo": {
+        "pl": "Grupa nie istnieje!",
+        "eng": "Group does not exist!"
+    },
+    "#NotMemberMainHeaderInfo": {
+        "pl": "Nie jesteś członkiem tej grupy!",
+        "eng": "You are not a member of this group!"
+    },
+    "#editMessageBtn": {
+        "pl": "Edytuj",
+        "eng": "Edit"
+    },
+    "#gameHistoryGroupModalLongTitle": {
+        "pl": "Przejść do widoku historii gry?",
+        "eng": "Change to game history view?"
+    },
+    "#btnGameHistoryGroup": {
+        "pl": "Kontynuuj",
+        "eng": "Change"
+    },
+    "#invalidMessageContent": {
+        "pl": "Treść kumunikatu jest pusta!",
+        "eng": "Message content is empty!"
+    },
+    "#invalidMessageTitle": {
+        "pl": "Tytuł kumunikatu jest pusty!",
+        "eng": "Message title is empty!"
+    },
+
+
+    
+
+    "OTHER_PAGE_ELEMENTS": {
+        "document.title": {
+            "pl": "Grupa",
+            "eng": "Group"
+        },
+        "noHistory": {
+            "pl": "Brak historii",
+            "eng": "No history"
+        },
+        "noMessages": {
+            "pl": "Brak komunikatów",
+            "eng": "No messages"
+        },
+        "noRequests": {
+            "pl": "Brak próśb",
+            "eng": "No requests"
+        },
+
+        "RemoveBtn": {
+            "pl": "Wyproś",
+            "eng": "Remove"
+        },
+        "ProfileBtn": {
+            "pl": "Profil",
+            "eng": "Profile"
+        },
+        "ReadInfo": {
+            "pl": "Przeczytana",
+            "eng": "Read"
+        },
+        "UnReadInfo": {
+            "pl": "Nowa wiadomość",
+            "eng": "New message"
+        },
+        "GamePlayerInfo": {
+            "pl": "Gra rozegrana",
+            "eng": "Game played"
+        },
+        "AcceptBtn": {
+            "pl": "Akceptuj",
+            "eng": "Accept"
+        },
+        "DeleteBtn": {
+            "pl": "Usuń",
+            "eng": "Delete"
+        },
+        "UserTypeLektor": {
+            "pl": "Lektor",
+            "eng": "Lecturer"
+        },
+        "UserTypeGracz": {
+            "pl": "Gracz",
+            "eng": "Player"
+        },
+
+        "msgDeletedUserSuccess": {
+            "pl": "Użytkownik usunięty",
+            "eng": "User deleted"
+        },
+        "msgDeletedUserError": {
+            "pl": "Nie usunięto użytkownika z grupy",
+            "eng": "User not removed from group"
+        },
+        "msgUserAcceptedSuccess": {
+            "pl": "Zaakceptowano użytkownika do grupy",
+            "eng": "User joined the group"
+        },
+        "msgUserAcceptedError": {
+            "pl": "Nie udało się zaakceptować użytkownika do grupy",
+            "eng": "The user could not be accepted into the group"
+        },
+        "msgUserRequestRemovedError": {
+            "pl": "Nie usunięto prośby użytkownika",
+            "eng": "User request not removed"
+        },
+        "msgUserRequestRemovedSuccess": {
+            "pl": "Usunięto prośbę użytkownika",
+            "eng": "User request removed"
+        },
+        "msgGroupNameNotChangedError": {
+            "pl": "Nie zmieniono nazwy grupy",
+            "eng": "Group name not changed"
+        },
+        "msgGroupNameNotChangedSuccess": {
+            "pl": "Zmieniono nazwę grupy",
+            "eng": "Group name changed"
+        },
+        "msgMessageEditedError": {
+            "pl": "Nie udało się edytowac komunikatu",
+            "eng": "Failed to edit the message"
+        },
+        "msgMessageEditedSuccess": {
+            "pl": "Pomyślnie edytowano komunikat",
+            "eng": "Message edited successfully"
+        },
+        "msgGroupLobbyCreatedError": {
+            "pl": "Nie stworzono grupowego lobby",
+            "eng": "No group lobby created"
+        },
+        "msgGroupLobbyMessageSendError": {
+            "pl": "Nie wysłano komunikatu o grupowym lobby",
+            "eng": "Group lobby message not sent"
+        },
+        "msgMessageSentError": {
+            "pl": "Nie wysłano komunikatu",
+            "eng": "Message not sent"
+        },
+        "msgMessageSentSuccess": {
+            "pl": "Wysłano komunikat",
+            "eng": "Message sent"
+        },
+        "msgCodeCopiedSuccess": {
+            "pl": "Skopiowano kod",
+            "eng": "Code copied"
+        },
+        "msgCodeCopiedError": {
+            "pl": "Nie udało się skopiować kodu",
+            "eng": "Could not copy code"
+        },
+        "msgGroupRemovedSuccess": {
+            "pl": "Usunięto grupę",
+            "eng": "Group deleted"
+        },
+        "msgGroupRemovedError": {
+            "pl": "Nie usunięto grupy",
+            "eng": "Group not deleted"
+        },
+        "msgLeaveGroupError": {
+            "pl": "Nie udało się opuścić z grupy!",
+            "eng": "Could not leave the group!"
+        }
+    }
+}

@@ -12,7 +12,10 @@ public interface GroupDAO extends JpaRepository<Group, UUID>
 {
 	public boolean existsByGroupCode(String groupCode);
 	public Optional<Group> findByGroupCode(String groupCode);
-	public Page<Group> findAllByPlayers_idOrLecturers_id(UUID playerId, UUID lecturerId, Pageable pageable);
+	public Page<Group> findAllDistinctByPlayers_idOrLecturers_id(UUID playerId, UUID lecturerId, Pageable pageable);
 	public boolean existsByNameAndLecturers_id(String name, UUID id);
-	public List<Group> findAllByLecturers_id(UUID id);
+	public boolean existsByGroupCodeAndLecturers_idOrGroupCodeAndPlayers_id(
+			String groupCode1, UUID lecturerId, String groupCode2, UUID playerId);
+	public List<Group> findAllByLecturers_id(UUID lecturer_id);
+	public List<Group> findAllDistinctByLecturers_idOrPlayers_id(UUID lecturer_id, UUID player_id);
 }

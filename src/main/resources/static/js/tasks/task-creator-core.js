@@ -20,10 +20,7 @@ const TaskCreatorCore = (debug = false, $jq, myWindow, deps = {}, cbTest) => {
     self.variantObject;
 
     /*       logic functions          */
-    var TaskCreatorCoreInit = (initDeps) => {
-        
-        if (debug)
-            console.log("TaskCreatorCore init");
+    var TaskCreatorCoreInit = (initDeps_) => {
 
         self.GameCore = TaskGameCore();
 
@@ -33,8 +30,7 @@ const TaskCreatorCore = (debug = false, $jq, myWindow, deps = {}, cbTest) => {
 
     self.getVariant = (variantString) => {
 
-        //jeśli niepodano nazwy to wysyłam obecny variant
-        if ( !variantString)
+        if ( !variantString) // if name was not provided, send current variant
             if ( self.variantObject )
                 return self.variantObject
             else
@@ -42,7 +38,6 @@ const TaskCreatorCore = (debug = false, $jq, myWindow, deps = {}, cbTest) => {
 
         self.variantObject = {};
 
-        //sprawdzanie
         switch (variantString) {
             case "WordFill":
                 self.variantObject = WordFill_Creator();
@@ -76,7 +71,7 @@ const TaskCreatorCore = (debug = false, $jq, myWindow, deps = {}, cbTest) => {
 
     self.getVariant_GameCore = (variantString, taskToSetup) => {
 
-        //jeśli niepodano nazwy i obiektu taska to wysyłam obecny variant
+        // if name was not provided, send current variant
         if ( !variantString || !taskToSetup)
             if ( self.GameCore.getVariant() )
                 return self.GameCore.getVariant();
@@ -90,9 +85,6 @@ const TaskCreatorCore = (debug = false, $jq, myWindow, deps = {}, cbTest) => {
 
         var variantObject;
 
-        //w gameLogic jest setupNewTask, czy chce zrobić grugie takie tutaj?
-        //start setupNewTask gameLogic
-        //czy otrzymany task jest pusty
         if (variantString === null) {
             if (self.debug)
             console.warn("task was empty");
@@ -102,7 +94,6 @@ const TaskCreatorCore = (debug = false, $jq, myWindow, deps = {}, cbTest) => {
         if (!variantString)
             console.warn("Could not read task name!");
         
-        //wybieranie odpowiedniej logiki dla konkretnego template'a
         switch (variantString) {
             case "WordFill":
                 var task;
@@ -144,7 +135,7 @@ const TaskCreatorCore = (debug = false, $jq, myWindow, deps = {}, cbTest) => {
                 var wordChoices = task.rows.map((row) => {
                     return row.wordChoices.map((choice)=>[...choice.incorrectAnswers, choice.correctAnswer])
                 });
-                //var wordChoices = task.rows.map((row) => [...row.wordChoices.incorrectAnswers, row.wordChoices.correctAnswer]);
+                
                 var startWithText = task.rows.map((row) => row.startWithText);
 
                 task.text = text;
@@ -167,7 +158,7 @@ const TaskCreatorCore = (debug = false, $jq, myWindow, deps = {}, cbTest) => {
                 var task;
                 task = taskToSetup.taskContent;
                 task.answers = [...task.content.incorrectAnswers, ...task.content.correctAnswers];
-                task.content = task.content.content; // -.-
+                task.content = task.content.content;
                 delete task.content.incorrectAnswers;
                 delete task.content.correctAnswers;
                 delete task.content.content;
@@ -178,7 +169,6 @@ const TaskCreatorCore = (debug = false, $jq, myWindow, deps = {}, cbTest) => {
             default:
                 console.warn("To pole jest tylko dla jeszcze nie zaimplementowancyh tasków, w produkcji nie powinno się nigdy wykonać!");
                 variantObject = {};
-                //ListWordFill answers
                 variantObject.getAnswers = () => { 
                     return {answers: [["test"]]} 
                 }

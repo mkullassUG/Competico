@@ -1,5 +1,250 @@
 const ProfileModule = (function($) {
 
+
+    var Ajax = function(){
+        var self = {};
+ 
+        self.postNewGroup = (groupName, callback) => {
+
+            var send = {groupName:groupName}
+            return $.ajax({
+                type     : "POST",
+                cache    : false,
+                url      : "/api/v1/groups",
+                contentType: "application/json",
+                data     : JSON.stringify(send),
+                success: function(data, textStatus_, jqXHR_) {
+                    if (self.debug) {
+                        console.log("postNewGroup success");
+                        console.log(data);
+                    }
+                    if ( callback )
+                        callback(data);
+                },
+                error: function(data, status, err) {
+                    if (self.debug) {
+                        console.log("postNewGroup error");
+                        console.log(data);
+                    }
+                    if ( callback )
+                        callback(false, data.responseText);
+                }
+            });
+        } 
+
+        self.getGroupNames = (callback) => {
+
+            return $.ajax({
+                type     : "GET",
+                cache    : false,
+                url      : "/api/v1/groups/names",
+                contentType: "application/json",
+                success: function(data, textStatus_, jqXHR_) {
+                    if (self.debug) {
+                        console.log("getGroupNames success");
+                        console.log(data);
+                    }
+                    if ( callback )
+                        callback(data);
+                },
+                error: function(data, status, err) {
+                    if (debug) {
+                        console.warn("getGroupNames error");
+                        console.warn(data);
+                    }
+                    if ( callback )
+                        callback(false);
+                }
+            });
+        } 
+
+        self.getAllRequests = (callback) => {
+
+            return $.ajax({
+                type     : "GET",
+                cache    : false,
+                url      : "/api/v1/groups/requests/all",
+                contentType: "application/json",
+                success: function(data, textStatus_, jqXHR_) {
+                    if (self.debug) {
+                        console.log("getMyRequests success");
+                        console.log(data);
+                    }
+                    if ( callback )
+                        callback(data);
+                },
+                error: function(data, status, err) {
+                    if (self.debug) {
+                        console.warn("getMyRequests error");
+                        console.warn(data);
+                    }
+                    if ( callback )
+                        callback(false);
+                }
+            });
+        }
+
+        self.postReadMessage = (id, callback) => {
+            var send = JSON.stringify({messageRead:true});
+
+            return $.ajax({
+                type     : "POST",
+                cache    : false,
+                url      : "/api/v1/groups/message/"+id+"/read",
+                contentType: "application/json",
+                data     : send,
+                success: function(data, textStatus_, jqXHR_) {
+                    if (self.debug) {
+                        console.log("postReadMessage success");
+                        console.log(data);
+                    }
+                    if ( callback )
+                        callback(data);
+                },
+                error: function(data, status, err) {
+                    if (self.debug) {
+                        console.warn("postReadMessage error");
+                        console.warn(data);
+                    }
+                    if ( callback )
+                        callback(false, data.responseText);
+                }
+            });
+        }
+        
+        self.getJoinRequestsCount = (callback) => {
+            
+            return $.ajax({
+                type     : "GET",
+                cache    : false,
+                url      : "/api/v1/groups/joinrequests/count",
+                contentType: "application/json",
+                success: function(data, textStatus_, jqXHR_) {
+                    if (self.debug) {
+                        console.log("getJoinRequestsCount success");
+                        console.log(data);
+                    }
+                    if ( callback )
+                        callback(data);
+                },
+                error: function(data, status, err) {
+                    if (self.debug) {
+                        console.warn("getJoinRequestsCount error");
+                        console.warn(data);
+                    }
+                    if ( callback )
+                        callback(false);
+                }
+            });
+        }
+
+        self.getUnreadMessagesCount = (callback) => {
+            
+            return $.ajax({
+                type     : "GET",
+                cache    : false,
+                url      : "/api/v1/groups/messages/unread/count",
+                contentType: "application/json",
+                success: function(data, textStatus_, jqXHR_) {
+                    if (self.debug) {
+                        console.log("getJoinRequestsCount success");
+                        console.log(data);
+                    }
+                    if ( callback )
+                        callback(data);
+                },
+                error: function(data, status, err) {
+                    if (self.debug) {
+                        console.warn("getJoinRequestsCount error");
+                        console.warn(data);
+                    }
+                    if ( callback )
+                        callback(false);
+                }
+            });
+        }
+
+        self.getUnreadMessages = (callback) => {
+            
+            return $.ajax({
+                type     : "GET",
+                cache    : false,
+                url      : "/api/v1/groups/messages/unread",
+                contentType: "application/json",
+                success: function(data, textStatus_, jqXHR_) {
+                    if (self.debug) {
+                        console.log("getJoinRequestsCount success");
+                        console.log(data);
+                    }
+                    if ( callback )
+                        callback(data);
+                },
+                error: function(data, status, err) {
+                    if (self.debug) {
+                        console.warn("getJoinRequestsCount error");
+                        console.warn(data);
+                    }
+                    if ( callback )
+                        callback(false);
+                }
+            });
+        }
+
+        self.getGroupLobbiesFrom = (code, callback) => {
+                
+            return $.ajax({
+                type     : "GET",
+                cache    : false,
+                url      : "/api/v1/groups/"+code+"/lobbies",
+                contentType: "application/json",
+                success: function(data, textStatus_, jqXHR_) {
+                    if (self.debug) {
+                        console.log("getJoinRequestsCount success");
+                        console.log(data);
+                    }
+                    if ( callback )
+                        callback(data);
+                },
+                error: function(data, status, err) {
+                    if (self.debug) {
+                        console.warn("getJoinRequestsCount error");
+                        console.warn(data);
+                    }
+                    if ( callback )
+                        callback(false);
+                }
+            });
+        }
+
+        self.getGroupLobbies = (callback) => {
+            
+            return $.ajax({
+                type     : "GET",
+                cache    : false,
+                url      : "/api/v1/groups/lobbies",
+                contentType: "application/json",
+                success: function(data, textStatus_, jqXHR_) {
+                    if (self.debug) {
+                    console.log("getGroupLobbies success");
+                    console.log(data);
+                    }
+                    if ( callback )
+                        callback(data);
+                },
+                error: function(data, status, err) {
+                    if (self.debug) {
+                        console.warn("getGroupLobbies error");
+                        console.warn(data);
+                    }
+                    if ( callback )
+                        callback(false);
+                }
+            });
+        }
+
+        return self;
+    }();
+
     const ProfileLogic = (accountInfo_, debug = false, depMocks = {}, successfulCreationCallback) => {
     
         /* singleton */
@@ -12,7 +257,6 @@ const ProfileModule = (function($) {
             return ProfileLogic.getInstance(false, debug, depMocks, successfulCreationCallback);
     
         /* environment preparation */
-        // $ = typeof $ != 'undefined'? $ : depMocks.$mock;
         window = typeof window != 'undefined'? window : depMocks.windowMock;
     
         if ( depMocks.NavbarLogic && typeof NavbarLogic == "undefined")
@@ -32,26 +276,23 @@ const ProfileModule = (function($) {
         self.emailResponseAwaitTimeout;
         self.moznaProbowac = true;
         self.isMe = true;
+        Ajax.debug = debug;
+        var groupNameRegex = /^[a-zA-Z0-9ąĄłŁśŚćĆńŃóÓżŻźŹęĘ ./<>?;:"'`!@#$%^&*()[\]{}_+=|\\\-]{2,32}$/;
+        
         /*       logic functions          */
         self.profileInit = (accountInfo) => {
-
-            if ( debug )
-                console.log("profileInit");
                 
-            //TODO: check if profile owner
             var setupProfile = (profileUserData) => {
                 
                 self.nickname = profileUserData.nickname;
                 self.username = profileUserData.username;
                 self.roles = profileUserData.roles?profileUserData.roles:[];
     
-                //navbar preparation
                 if (typeof NavbarLogic != "undefined")
                     NavbarLogic(profileUserData, debug);
                 if ( typeof PageLanguageChanger != "undefined")
-                    PageLanguageChanger(false, debug, false, self.InitWithPageLanguageChanger);
+                    PageLanguageChanger(false, debug, {}, self.InitWithPageLanguageChanger);
                 
-                //tutaj pobieram własny relaive leaderboard a nie usera z profileUserData
                 if ( self.isMe )
                     self.ajaxGetRelativeLeaderboard(self.setupMyScoreFromRelativeLeaderboard);
                 else if ( profileUserData.hasRating === false)
@@ -73,33 +314,37 @@ const ProfileModule = (function($) {
                     $("#emailH6Text").addClass("emailNotVerifiedClass");
                 }
                 
-                //$("#currentUser").html(self.nickname + " <small>" + self.username + "</small>")
         
                 if ( self.roles.includes("LECTURER")) {
-                    $("#roleDiv").text(" Lektor");
+                    $("#roleDiv").text("Lektor");
                     self.setupPageForLecturer();
                 }
                 else
                     $("#roleDiv").text("Gracz");
         
                 if ( self.roles.includes("SWAGGER_ADMIN"))
-                $("#roleDiv").text("SAdmin");
+                    $("#roleDiv").text("S-Admin");
                 if ( self.roles.includes("TASK_DATA_ADMIN"))
-                    $("#roleDiv").text("TDAdmin");
+                    $("#roleDiv").text("TD-Admin");
                 if ( self.roles.includes("ACTUATOR_ADMIN"))
-                    $("#roleDiv").text("AAdmin");
+                    $("#roleDiv").text("A-Admin");
                 
                 listenersSetup();
                 tooltipsUpdate();
-        
+
+                if ( MessagesModule )
+                    MessagesModule().getInstance(false, (data)=>{data.setFunctionToInform(self.messagerFunction);});
+
                 if (successfulCreationCallback)
                     successfulCreationCallback(true);
             }
             var UrlHasUsername = getOtherProfileUser();
             if ( UrlHasUsername && UrlHasUsername !== self.username )
                 changeProfileToOther(UrlHasUsername, setupProfile);
-            else
+            else {
                 setupProfile(accountInfo);
+                isMeInitGroupsAndMessages();
+            }
 
             
         }
@@ -107,8 +352,6 @@ const ProfileModule = (function($) {
         self.InitWithPageLanguageChanger = (data, lang) => {
 
             if ( data === true){
-                if ( debug )
-                    console.log("PageLanguageChanger done");
                 return;
             }
             
@@ -126,7 +369,6 @@ const ProfileModule = (function($) {
             var setupEventListenersForEdit = () => {
                 self.stopHoverAnimation_nickname = false;
                 self.stopHoverAnimation_email = false;
-                //przycisk edycji znikanie
                 if ($("#nicknameRow").length > 0) {
                     $("#nicknameRow").hover(
                         function () {
@@ -165,12 +407,7 @@ const ProfileModule = (function($) {
     
                     $('#nicknameEditButt').on("click",
                         function () {
-                            /*
-                                1. zatrzymaj znikanie przycisku edycji
-                                2. zrób z nicknameDiv inputa
-                                3. focus na inputa
-                                4. event listener na inputa
-                            */
+                            
                             if ( $("#nicknameInput").length > 0 )
                                 createNicknameEditDiv();
                             else
@@ -188,7 +425,6 @@ const ProfileModule = (function($) {
                         $("#invalidEmailInfoIdentical").hide();
                         $("#invalidEmailInfoUsed").hide();
                         $("#invalidPasswordInfoEmail").hide();
-                        //walidacja emaila
                         var email = $("#newEmailInput").val();
                         var password = $("#oldPasswordInputEmail").val();
     
@@ -219,7 +455,6 @@ const ProfileModule = (function($) {
                         $("#invalidPasswordInfoPassword").hide();
                         $("#invalidNewPasswordInfoPassword").hide();
                         $("#invalidNewPasswordInfoPasswordIdentical").hide();
-                        //walidacja hasła
                         var newPassword = $("#newPasswordInput").val();
                         var password = $("#oldPasswordInputPassword").val();
     
@@ -254,7 +489,6 @@ const ProfileModule = (function($) {
                             setTimeout(function() {
                                 $("#nicknameInput").css({"color":"initial"})
                             },2000);
-                            // $("#invalidNewPasswordInfoPassword").show();
                             if (debug)
                                 console.warn("ERROR !!!");
                         }
@@ -280,8 +514,7 @@ const ProfileModule = (function($) {
                         return;
                     if ( self.moznaProbowac ) {
                         self.ajaxSendEmailVerification((data)=>{
-                            if ( debug )
-                                console.log(data);
+
                             self.emailResponseAwait = false;
                             $("#sendEmailVerifyButton")[0].disabled = false;
                             if ( data === false )
@@ -334,7 +567,6 @@ const ProfileModule = (function($) {
             $("#emailRow").remove();
             $("#saveChangesDiv").remove();
 
-            //TODO: pobierz z endpointa innego dane i je poustawiaj
             self.ajaxGetOtherUserProfile(
                 username,
                 callback
@@ -356,8 +588,6 @@ const ProfileModule = (function($) {
             for (let i = 0; i < data.length; i++) {
     
                 var player = data[i];
-                if (debug)
-                    console.log("player.position: " + player.position);
     
                 var isMe = (player.username===self.username && player.nickname===self.nickname);
                 if (isMe) {
@@ -378,18 +608,17 @@ const ProfileModule = (function($) {
         }
     
         self.setupMyScoreEmpty = () => {
-            $("#scoreDiv").text("Lektor, nie uczestniczy w grach"); //TODO:!! pobrać score z player info
+            $("#scoreDiv").text("Lektor, nie uczestniczy w grach");
         }
     
         self.setupPageForLecturer = () => {
-            $(".lectorEnableClass").show()
-            $(".lectorDisableClass").hide()
+            $(".lectorEnableClass").show();
         }
     
         var createNicknameEditInput = () => {
+            
             if ( $("#nicknameDiv").length > 0) {
     
-                //change div to input
                 self.stopHoverAnimation_nickname = true;
                 var currentValue = $("#nicknameDiv").text();
     
@@ -409,7 +638,6 @@ const ProfileModule = (function($) {
                 input.blur(
                     function () {
                         if (  $("#nicknameInput").length > 0 && self.nickname == $("#nicknameInput").val()) {
-                            //change input to div
                             var div = $(`<div id="nicknameDiv" class="col-sm-7 text-secondary">` + currentValue + `</input>`);
                             $("#nicknameInput").replaceWith(div);
                             self.stopHoverAnimation_nickname = false;
@@ -429,23 +657,14 @@ const ProfileModule = (function($) {
         }
     
         self.afterNicknameChangeAction = (data, nickname) => {
-            /*TODO:
-                informowanie użytkownika o stanie, czy zmieniono nickame
-                data:   true - udało się
-                        string- kod błędu ("BAD_NICKNAME")
-            */
-    
+            
             if ( $("#nicknameInput").length > 0) {
                 if ( data === true ) { 
-                    // location.reload();
     
-                    //zmiana input na div 
                     self.nickname = nickname;
                     createNicknameEditDiv();
-                    // $("#oldPasswordInputPassword").val("");
                 } else if (data === "BAD_NICKNAME"){
     
-                    //wyświetlenie info o błędzie
                     $("#nicknameInput").css({"color":"red"})
                     setTimeout(function() {
                         $("#nicknameInput").css({"color":"initial"})
@@ -466,21 +685,10 @@ const ProfileModule = (function($) {
     
         self.afterEmailChangeAction = (data, email) => {
     
-            /*TODO:
-                informowanie użytkownika o stanie, czy hasło złe, czy email zmieniony?
-                data:   true - udało się
-                        string- kod błędu (BAD_PASSWORD", "BAD_EMAIL", "USED_EMAIL", "SAME_EMAIL)
-            */
+            
             if ( data === true ) {
                 location.reload();
-                //zamknij modala albo wyświetl sukces
-                // $('#saveChangesEmailModal').modal('hide');
-                // //podmień na nowego emaila
-                // $("#emailDiv").html(email);
-                // $("#newEmailInput").val(email);
-    
-                // self.email = email;
-                // $("#oldPasswordInputEmail").val("");
+               
             } else if (data === "BAD_PASSWORD") {
                 $("#invalidPasswordInfoEmail").show();
             } else if (data === "BAD_EMAIL") {
@@ -490,27 +698,17 @@ const ProfileModule = (function($) {
             } else if (data === "SAME_EMAIL") {
                 $("#invalidEmailInfoIdentical").show();
             } else {
-                console.warn("Email change warning!");
+                if ( debug )
+                    console.warn("Email change warning!");
             }
         }
     
         self.afterPasswordChangeAction = (data) => {
-            /*
-                TODO:
-                informowanie użytkownika o stanie, czy hasło złe obecne lub stare
-                data:   true - udało się
-                        string- kod błędu ("BAD_NEW_PASSWORD, BAD_OLD_PASSWORD")
-            */
-            if (debug)
-                console.log(data);
+            
             
             if ( data === true ) {
                 location.reload();
     
-                //zamknij modala albo wyświetl sukces
-                // $('#saveChangesPasswordModal').modal('hide');
-                // $("#oldPasswordInputPassword").val("");
-                // $("#newPasswordInput").val("");
             } else if (data === "BAD_OLD_PASSWORD") {
     
                 $("#invalidPasswordInfoPassword").show();
@@ -521,16 +719,15 @@ const ProfileModule = (function($) {
     
                 $("#invalidNewPasswordInfoPasswordIdentical").show();
             } else {
-                console.warn("Password change warning!");
+                if ( debug )
+                    console.warn("Password change warning!");
             }
         }
     
         var showSaveButton = () => {
             if ( !areEmailAndNicknameSameAsCurrent() ) {
-                //pokaż przycisk
                 $("#saveChangesDiv").show();
             } else {
-                //schowaj przycisk
                 $("#saveChangesDiv").hide();
             }
         }
@@ -570,11 +767,153 @@ const ProfileModule = (function($) {
                   opacity: 0
                 }, 1000, function() {
                   // Second Animation complete.
-                  //failInfoDiv.remove();
                 });
               },2000)
               
             });
+        }
+
+
+        /* messages */
+        self.messagerFunction = (data) => {
+
+            if ( data.areNew ) {
+                //dźwiek
+                //console.log("Ding!")
+            }
+
+            $("#allMessagesCount").text(
+                (data.numberOfMessages?data.numberOfMessages:0)+
+                (data.numberOfLobbies?data.numberOfLobbies:0)
+                );
+            isMeInitGroupsAndMessages();
+            var updateNavbar = () => {
+                $("#messageUnreadMessages").text(
+                    (data.numberOfMessages+data.numberOfLobbies)?
+                    ((data.numberOfMessages+data.numberOfLobbies)>99?
+                    "99+":(data.numberOfMessages+data.numberOfLobbies)):"");
+                $("#messageAwaitingRequests").text(data.numberOfRequests?(data.numberOfRequests>99?"99+":data.numberOfRequests):"");
+            }
+            updateNavbar();
+        }
+
+        var isMeInitGroupsAndMessages = () => {
+
+            var requestArray = [
+                Ajax.getUnreadMessages(),
+                Ajax.getGroupLobbies(),
+            ]
+
+            if ( self.isLecturer ) {
+                requestArray.push(Ajax.getAllRequests());
+                requestArray.push(Ajax.getJoinRequestsCount());
+                requestArray.push(Ajax.getGroupNames());
+            }
+
+            Promise.all(requestArray).then(data=>{
+
+                var messages = data[0];
+                self.groupLobbies = data[1]
+                var groupTBody = $("#groupTBody");
+                groupTBody.html('');
+
+                var counter = 0;
+                for ( let i = 0; i < self.groupLobbies.length; i++) {
+                    var lobbyInfo = self.groupLobbies[i];
+
+                    counter++;
+                    var newTr = $(`<tr data-toggle="modal" data-target="#displayMessageLobbyGroupModal" aria-hidden="true">`),
+                    tdIndex = $("<td>").text(i+1),
+                    tdTitle = $("<td>").text("Lobby grupy: " + lobbyInfo.groupName),
+                    tdCrea = $("<td>");
+                    
+                    newTr.addClass("bg-warning")
+
+                    newTr[0].dataset["lobby"] = lobbyInfo.lobbyCode;
+
+                    newTr.on('click',(e)=> {
+                        var target = $(e.target);
+                        if ( !target.is("tr") )
+                            target = target.closest("tr");
+                        var lobby = target[0].dataset["lobby"];
+                        self.focusedMessagelobbyId = lobby;
+                        self.readMessageLobby(lobbyInfo);
+                    })
+                    
+                    newTr.append(tdIndex).append(tdTitle).append(tdCrea);
+                    groupTBody.append(newTr);
+                }
+
+                self.messages = messages;
+                for (let i = 0; i < messages.length; i++ ) {
+                    var message = messages[i];
+
+                    var tr, tdIndex, tdTitle, tdCrea;
+
+                    tr = $(`<tr data-toggle="modal" data-target="#displayMessageGroupModal" aria-hidden="true">`);
+                    tdIndex = $(`<td>`).text(i+1+counter);
+                    tdTitle = $(`<td>`).text(message.title);
+                    tdCrea = $(`<td>`).text(message.creationDate);
+
+                    tr.on('click',(e)=> {
+                        var target = $(e.target);
+                        var id = target.closest("tr")[0].dataset["id"];
+                        self.focusedMessageId = id;
+                        self.readMessage(id)
+                    });
+
+                    tr[0].dataset['id'] = message.id;
+                    tr.append(tdIndex).append(tdTitle).append(tdCrea);
+                    groupTBody.append(tr);
+                }
+
+            }).catch(e=>{
+                if ( debug )
+                    console.warn(e);
+            })
+        }
+
+
+        self.readMessage = (id) => {
+            
+            var message = self.messages.filter(m=>{
+                if ( m.id === id )
+                    return true;
+                else
+                    return false;
+            })[0];
+
+            $("#messageContentDisplay").html('');
+            if ( message.content.split("[[href|").length == 2 && message.content.split("|]]").length == 2) {
+                var span1 = $("<span>").text(message.content.split("[[href|")[0]);
+                var span2 = $("<span>").text(message.content.split("|]]")[1]);
+                var aHtml = $("<a>").text("Dołącz przez link").attr("href","/game/" + 
+                message.content.split("[[href|")[1].split("|]]")[0])
+
+                $("#messageContentDisplay").append(span1).append(aHtml).append(span2);
+            } else {
+                $("#messageContentDisplay").text(message.content).show();
+            }
+
+            $("#messageTitleDisplay").text(message.title).show();
+            $("#messagefromDisplay").text(message.username).show();
+            $("#messagefromGroupDisplay").text(" - " + message.groupName).show();
+            $("#messageDateDisplay").text(" - " + message.creationDate).show();
+            $("#messageDateEditedDisplay").text( (message.editDate?" - (" + message.editDate + ")*" : "")).show();
+            $("#messageOkBtn").show();
+
+            Ajax.postReadMessage(id);
+        }
+
+        self.readMessageLobby = (lobbyInfo) => {
+            
+            $("#messageLobbyContentDisplay").html('');
+
+            var span1 = $("<span>").text("dołącz przez kod: " + lobbyInfo.lobbyCode + ", \n lub link: ");
+            var aHtml = $("<a>").text(lobbyInfo.lobbyCode).attr("href","/game/" + lobbyInfo.lobbyCode)
+
+            $("#messageLobbyTitleDisplay").text("Lobby grupy " + lobbyInfo.groupName)
+            $("#messageLobbyContentDisplay").append(span1).append(aHtml);
         }
 
         /*     ajax http actions       */
@@ -590,7 +929,6 @@ const ProfileModule = (function($) {
                         console.log("ajaxSendEmailVerification success");
                         console.log(data);
                     }
-                    
                     callback(true);
                 },
                 error: function(jqXHR, status, err) {
@@ -616,11 +954,6 @@ const ProfileModule = (function($) {
                         console.log("ajaxSendProfileNicknameChanges success");
                         console.log(data);
                     }
-                    /*
-                        changeNickname():
-                        - OK
-                        - BAD_REQUEST ("BAD_NICKNAME")
-                    */
                     callback(true, nickname);
                     displayInfoAnimation("Zmieniono nickname.", true);
                 },
@@ -653,11 +986,6 @@ const ProfileModule = (function($) {
                         console.log("ajaxSendProfileEmailChanges success");
                         console.log(data);
                     }
-                    /*
-                        changeEmail():
-                        - OK
-                        - BAD_REQUEST ("BAD_PASSWORD", "BAD_EMAIL", "USED_EMAIL", "SAME_EMAIL")
-                    */
                     callback(true, email);
                     displayInfoAnimation("Zmieniono email.", true);
                 },
@@ -690,11 +1018,6 @@ const ProfileModule = (function($) {
                         console.log("ajaxSendProfilePasswordChanges success");
                         console.log(data);
                     }
-                    /*
-                        changePassword():
-                        - OK
-                        - BAD_REQUEST ("BAD_OLD_PASSWORD, BAD_OLD_PASSWORD")
-                    */
                     callback(true);
                     displayInfoAnimation("Zmieniono hasło.", true);
                 },
@@ -711,8 +1034,7 @@ const ProfileModule = (function($) {
     
         /*   ajax http requests       */
         self.ajaxGetTopLeaderboard = (callback) => {
-            if (debug)
-                console.log("ajaxGetTopLeaderboard");
+            
             $.ajax({
                 type     : "GET",
                 cache    : false,
@@ -735,8 +1057,7 @@ const ProfileModule = (function($) {
         }
 
         self.ajaxGetPlayerRating = (username, callback, otherData) => {
-            if (debug)
-                console.log("ajaxGetTopLeaderboard");
+            
             $.ajax({
                 type     : "GET",
                 cache    : false,
@@ -760,9 +1081,7 @@ const ProfileModule = (function($) {
         }
       
         self.ajaxGetRelativeLeaderboard = (callback) => {
-    
-            if (debug)
-                console.log("ajaxGetRelativeLeaderboard");
+            
             $.ajax({
                 type     : "GET",
                 cache    : false,
@@ -820,7 +1139,6 @@ const ProfileModule = (function($) {
         if (ProfileLogic.singleton)
             return ProfileLogic.singleton;
     
-        // $ = typeof $ != 'undefined'? $ : depMocks.$mock;
         window = typeof window != 'undefined'? window : depMocks.windowMock;
     
         var ajaxReceiveAccountInfo = ( ) => {
@@ -830,15 +1148,13 @@ const ProfileModule = (function($) {
             url      : "/api/v1/account/info",
             contentType: "application/json",
             success: function(accountInfo, textStatus, jqXHR) {
-                if (debug){
+                if (debug) {
                     console.log("ajaxReceiveAccountInfo success");
                     console.log(accountInfo);
-                    console.log(textStatus);
-                    console.log(jqXHR);
                 }
-                if (typeof accountInfo == 'string') //nie zalogowany
+                if (typeof accountInfo == 'string')
                     ProfileLogic.singleton = ProfileLogic({}, debug, depMocks, successfulCreationCallback);
-                else //zalogowany
+                else 
                     ProfileLogic.singleton = ProfileLogic(accountInfo, debug, depMocks, successfulCreationCallback);
     
             },

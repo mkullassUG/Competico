@@ -1,4 +1,3 @@
-//ChronologicalOrder
 const ChronologicalOrder_Game = (taskData) => {
     var self = TaskGameVariant(taskData);
     self.taskName = "ChronologicalOrder";
@@ -28,8 +27,8 @@ const ChronologicalOrder_Game = (taskData) => {
       
       $( "#sortable" ).sortable({
         zIndex: 9999,
-        placeholder: "ui-state-highlight", // new
-        forcePlaceholderSize: true, // new
+        placeholder: "ui-state-highlight",
+        forcePlaceholderSize: true,
         containment: "#GameWrapperDiv",
         appendTo: document.body,
         cursorAt: { top: 17 }

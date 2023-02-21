@@ -9,19 +9,24 @@ body {
 
 /* telefony */
 @media (max-width: 576px) {
-  h2:not(#mainTitle1):not(#mainTitle2) { /* not bo w taskmanager tego uzywam wtf*/
+  h2:not(#mainTitle1):not(#mainTitle2) {
     font-size: 1.5rem;
   }
 }
+/*desktop*/
 
-/* lepiej żeby zawsze był absolute bo hideBeforeModal się psuje */
+#gameBottom{
+  position: fixed;
+  left: 0!important;
+  right: 0;
+  margin: auto;
+}
+
 .fill {
   position: absolute;
 }
 /* nie telefony */
 @media (min-width: 576px) {
-
-  /* wyłączyć h2 z kodu */
 
   #lobbyBottom, #lobbyCenter, #lobbyTop {
     border-radius: 20px;
@@ -50,6 +55,15 @@ body {
 
 }
 
+.failSuccessInfo {
+	position: absolute;
+	top: -3%;
+	right: 0;
+	opacity: 0;
+	z-index: 1000;
+	transform: translateY(20%);
+}
+
 #lobbySettings {
   box-shadow: none !important;
   margin: auto;
@@ -65,7 +79,6 @@ body {
 }
 
 #lobbyplayers {
-  /* overflow-y: scroll; */
   height: 290px;
 }
 #lobbyPlayersTable{
@@ -76,9 +89,6 @@ body {
 
 #lobbyBottom, #lobbyCenter, #lobbyTop {
   background-color: rgba(15,80,185,0.85);
-  /* border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 0.3rem 0.5rem rgb(0 0 0 / 50%); */
 }
 
 .btnShadow {
@@ -134,9 +144,6 @@ nav {
 }
 
 .container {
-  /* display: -ms-flexbox;
-  display: flex;
-  -ms-flex-align: center; */
   align-items: center;
   padding-top: 40px;
   padding-bottom: 40px;
@@ -164,9 +171,6 @@ h2 {
   font-size:30px;
 }
 
-.gameDivDecoration {
-  /* overflow: hidden; */
-}
 
 #GameWrapperDiv  {
   margin-top: -100px;
@@ -194,18 +198,6 @@ h2 {
   width: 100%;
   height: 35px;
 }
-
-/*other*/
-
-/*useless??? \/*/
-
-/* .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  line-height: 60px;
-  z-index: 0!important;
-} */
 
 .form-signin {
   width: 100%;

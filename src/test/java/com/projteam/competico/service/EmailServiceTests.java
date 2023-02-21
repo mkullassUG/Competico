@@ -37,7 +37,7 @@ class EmailServiceTests
 		String subject = "Test subject";
 		String message = "Test message";
 		
-		emailService.sendEmail(address, subject, message);
+		emailService.sendEmailAsync(address, subject, message);
 		
 		verify(mailSender, times(1)).send((SimpleMailMessage) any());
 	}

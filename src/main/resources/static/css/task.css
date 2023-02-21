@@ -1,5 +1,5 @@
 #taskContent {
-  text-align: left; /*new 2021-02-26*/
+  text-align: left;
 }
 
 /*answers template0*/
@@ -10,15 +10,6 @@
   padding: 9px!important;;
 }
 .answer:active{
-  /*TODO
-    naprawić bug bo nie działa poprawnie
-
-    info odnoście możliwej poprawki
-    https://stackoverflow.com/questions/3227819/jquery-draggable-ui-overrides-normal-browser-behavior-for-html-elements-inside-d
-
-    nagle zaczęło działaćpo dodaniu tego .answer:active{
-    ale na firefoxie nie działa nadal
-  */
   cursor: grabbing;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
@@ -26,7 +17,6 @@
 
 .droppableAnswerHolder {
   position: absolute;
-  /* background-color: rgba(100,100,100,0.5); */
   width: calc(100% + 20px);
   padding: 16px;
   text-align: center;
@@ -37,26 +27,17 @@
 .draggable { 
   position: absolute; 
   padding: 0.3em; 
-  /* float: left;  */
   margin: 10px 10px 10px 0; 
-  /*double word answer wrap fix*/
   display: inline-block;
   white-space: nowrap;
 }
 
 .ui-draggable.ui-draggable-handle.ui-droppable.endpointDrag:active  {
-  /*TODO
-    naprawić bug bo nie działa poprawnie
-
-    info odnoście możliwej poprawki
-    https://stackoverflow.com/questions/3227819/jquery-draggable-ui-overrides-normal-browser-behavior-for-html-elements-inside-d
-  */
   cursor: grabbing;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
 }
 .answerHolderWrapper { 
-  /* background-color:rgba(0, 162, 255, 0.541); */
   margin:5px;
   display:inline-block;
   vertical-align: middle; 
@@ -78,9 +59,7 @@
 .ui-droppable-active {
   background-color: rgba(0, 61, 228, 0.5);
 }
-.ui-droppable {
-  /* background-color: rgba(228, 0, 0, 0.11); */
-}
+
 .ui-state-highlight {
   
   background: #f8f8f8!important;
@@ -109,7 +88,6 @@
 /*answers template2*/
 .ui-sortable-helper {
   position: absolute;
-  /* top:-400px; */
 }
 #sortable {
   list-style-type: none;
@@ -117,7 +95,7 @@
   position: relative;
   padding: 2px;
 }
-/*mniejszy margin dla game center*/
+
 @media (min-width: 1200px) {
   .m-custom {
     margin-top: 120px!important;
@@ -146,7 +124,6 @@
   }
 }
 
-/*margin top dla przycisku next i timera*/
 @media (max-width: 990px) {
   .button-m-custom {
     margin-top: 30px!important;
@@ -223,12 +200,10 @@ svg.fs-connector-hover path {
 .leftSideC {
   width:50%;
   display: inline-block;
-  /* float: left; */
 }
 .rightLineC{
   display: block;
   min-height: 10%;
-  /* nie prawda że błędnie wstawione bo robi różnice */
   float: right;
   width: 100%;
 }
@@ -252,15 +227,11 @@ svg.fs-connector-hover path {
   border: 2px solid blue;
   border-radius: 20%;
   display: inline-block;
-  /* nie prawda że błędnie wstawione bo robi różnice */
   float: right;
   width: 80%;
   min-height: 10%;
   word-break: break-word;
 }
-
-/*css template'a od chronological orderu*/
-
 
 #sortable:last-child {
   margin-bottom: 15px;
@@ -303,12 +274,6 @@ svg.fs-connector-hover path {
 }
 
 .ui-state-default.ui-sortable-handle:active {
-  /*TODO
-    naprawić bug bo nie działa poprawnie
-
-    info odnoście możliwej poprawki
-    https://stackoverflow.com/questions/3227819/jquery-draggable-ui-overrides-normal-browser-behavior-for-html-elements-inside-d
-  */
   cursor: grabbing;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
@@ -388,15 +353,10 @@ svg.fs-connector-hover path {
   text-align: center;
   margin-top: 20px;
 }
-/*z jakiegoś powodu musze inaczej ustawiać... czy w edytorze inaczej demo jest budowane?
-w game edytorze to jest zależne od
-*/
-/*gra*/
+
 #gameCenter > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivRandomizedWords,
 #gameCenter > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivOrderedWords
 {
-  /*tutaj się obchodzi dobrze pez relativa... ale nadal inaczej*/
-  /* position:relative; */
   width: 90%;
   display: inline-block;
 }
@@ -415,8 +375,6 @@ w game edytorze to jest zależne od
 #gameCenter > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivRandomizedWords > li.ui-sortable-helper,
 #gameCenter > #GameWrapperDiv > .gameDivDecoration > #GameDiv > .DivListSentenceForming > .DivOrderedWords > li.ui-sortable-helper
 {
-  
-  /* margin-top:-10px; */
   cursor: pointer;
   background-color:blue;
   color: white;
@@ -461,7 +419,7 @@ w game edytorze to jest zależne od
   min-width:20px;
   min-height:20px;
 }
-/* .DivRandomizedWords > li.ui-sortable-placeholder::before,  */
+
 .DivOrderedWords > li.ui-sortable-placeholder::before{
   content:"+";
 }
@@ -474,8 +432,8 @@ w game edytorze to jest zależne od
   background-color: rgb(10, 108, 255);
   color: white;
 }
-/*Template 6 ListChoiceWordFill*/
 
+/*Template 6 ListChoiceWordFill*/
 .answerListChoiceWordFillF {
   background-color: rgb(255, 255, 255);
   border: 3px solid rgb(10, 108, 255);
@@ -518,8 +476,6 @@ w game edytorze to jest zależne od
 }
 
 /*wordConnect*/
-/* :not(.ui-droppable-active) */
-
 ._jsPlumb_endpoint._jsPlumb_endpoint_anchor_.ui-draggable.ui-draggable-handle.ui-droppable.endpointDrag.ui-draggable-dragging,
 ._jsPlumb_endpoint._jsPlumb_endpoint_anchor_.ui-draggable.ui-draggable-handle.ui-droppable._jsPlumb_dragging._jsPlumb_endpoint_connected._jsPlumb_endpoint_full,
 ._jsPlumb_endpoint._jsPlumb_endpoint_anchor_.ui-draggable.ui-draggable-handle.ui-droppable._jsPlumb_endpoint_connected._jsPlumb_endpoint_full._jsPlumb_dragging {
@@ -575,5 +531,3 @@ w game edytorze to jest zależne od
   top: 50%!important;
   transform: translateY(-50%);
 }
-
-/*other global.css*/

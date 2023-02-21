@@ -1,4 +1,3 @@
-//WordConnect (nie działa na mobilnym?)
 const WordConnect_Game = (taskData) => {
     var self = TaskGameVariant(taskData);
     self.taskName = "WordConnect";
@@ -50,7 +49,6 @@ const WordConnect_Game = (taskData) => {
       var wordDivs = $(".word"),
       definitionDivs = $(".definition");
       
-      //connections
       self.JsPlumbObject = (data) => {
           var that = {}
           that.instance = jsPlumb.getInstance();
@@ -77,7 +75,6 @@ const WordConnect_Game = (taskData) => {
                       anchor: [0, 0, 0, 0, 10, 0],
                       connectorStyle: {strokeStyle: that.colorPicker(i), lineWidth: 4},
                       connectorHoverStyle: {lineWidth: 6},
-                      // connector : ["Bezier", { curviness: 30 }],
                       connector: "Bezier",
                   };
                   self.endpointSources.push(
@@ -104,7 +101,6 @@ const WordConnect_Game = (taskData) => {
                       anchor: [0, 0, 0, 0, -10, 0],
                       connectorStyle: {strokeStyle: that.colorPicker(i), lineWidth: 4},
                       connectorHoverStyle: {lineWidth: 6},
-                      // connector : ["Bezier", { curviness: 30 }],
                       connector: "Bezier",
                       
                   };
@@ -118,7 +114,7 @@ const WordConnect_Game = (taskData) => {
               }
     
               that.instance.bind("connection", function(info,ev) {
-                  //ważne
+
                   self.connections[info.sourceId] = {
                       info: info,
                       ev: ev
@@ -128,10 +124,7 @@ const WordConnect_Game = (taskData) => {
     
           that.fixEndpoints = (parentnode) => {
       
-              //get list of current endpoints
               var endpoints = that.instance.getEndpoints(parentnode);
-          
-              //there are 2 types - input and output
           
               var inputAr = $.grep(endpoints, function (elementOfArray, indexInArray) {
                   return elementOfArray.isSource; //input
@@ -149,19 +142,15 @@ const WordConnect_Game = (taskData) => {
     
           that.calculateEndpoint = (endpointArray, isInput) => {
       
-            //multiplyer
             var mult = 1 / (endpointArray.length + 1);
-        
             for (var i = 0; i < endpointArray.length; i++) {
         
                 if (isInput) {
         
-                    //position
                     endpointArray[i].anchor.x = 1;
                     endpointArray[i].anchor.y = mult * (i + 1);
                 } else {
         
-                    //position
                     endpointArray[i].anchor.x = 0;
                     endpointArray[i].anchor.y = mult * (i + 1);
                 }
@@ -194,23 +183,17 @@ const WordConnect_Game = (taskData) => {
     var getAnswersSuper = self.getAnswers;
     self.getAnswers = () => {
   
-      //obecnie jest bug gdzie nie czytawięcej niż jednego połączenie wychodzacego ze słowa
-      //w tym przypadku odpowiedzi nie są posegregowane 
-      //var answers = getAnswersSuper();
       var answers = {};
       
       var keys = Object.keys(self.connections);
   
       for (let i = 0; i < keys.length; i++) {
         var key = keys[i];
-        // var sourceIndex = parseInt($(self.connections[key].info.source[0]).data("order"));
-        // var targetIndex = parseInt($(self.connections[key].info.target[0]).data("order"));
   
         var sourceText = $(self.connections[key].info.source[0]).text();
         var targetText = $(self.connections[key].info.target[0]).text();
         answers[sourceText] = targetText;
       }
-      //TODO, zrobić mapę słowo index -> defincija index
       return  {"answerMapping": answers};
     }
   

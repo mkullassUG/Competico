@@ -1,7 +1,7 @@
 const ListChoiceWordFill_Game = (taskData) => {
     var self = TaskGameVariant(taskData);
+
     self.taskName = "ListChoiceWordFill";
-    
     self.singleChoiceWordFillArray = [];
 
     var taskVariantInitSuper = self.taskVariantInit;
@@ -9,7 +9,6 @@ const ListChoiceWordFill_Game = (taskData) => {
         taskVariantInitSuper(taskData);
   
         self.answerCurrentlyAt = [];
-
         self.textFields = taskData.text; 
         self.wordChoices = taskData.wordChoices;
         self.startWithText = taskData.startWithText;
@@ -68,8 +67,6 @@ const ListChoiceWordFill_Game = (taskData) => {
                     taskContentDiv.append(text);
                 }
             }
-
-
             
             var singleContentAnswerContainerDiv = $(`<div class="singleContentAnswerContainer">`);
             singleContentAnswerContainerDiv.append(taskContentDiv);
@@ -123,7 +120,6 @@ const ListChoiceWordFill_Game = (taskData) => {
                     var choice = that.choiceHoldingElements[i];
                     that.choiceContainers.push(ChoiceContainer(choice, that));
                 }
-
             }
 
             that.unuseAllChoices = () => {
@@ -152,9 +148,6 @@ const ListChoiceWordFill_Game = (taskData) => {
     self.getAnswers = () => {
         var answers = getAnswersSuper();
         answers = [];
-        /*
-        
-        */
 
         var choiceDivCounter = 0;
         var ChoiceWordFillRows = $(".singleContentAnswerContainer");
@@ -165,15 +158,13 @@ const ListChoiceWordFill_Game = (taskData) => {
 
             var choiceDivs = ChoiceWordFillRow.find(".choiceDiv");
             for ( let j = 0; j < choiceDivs.length; j++) {
-                //var choiceDiv = choiceDivs[j];
+                
                 var cwfContainer = self.singleChoiceWordFillArray[choiceDivCounter];
 
-                //pomieszałem obiekty choiceContainer z jquery znajdowaniem...
                 var answerWasSelected = false;
                 for ( let k = 0; k < cwfContainer.choiceContainers.length; k++) {
                     var singleChoiceElement = cwfContainer.choiceContainers[k];
     
-                    
                     if (singleChoiceElement.used){
                         answers[i][j] = singleChoiceElement.text;
                         answerWasSelected = true;
@@ -184,7 +175,6 @@ const ListChoiceWordFill_Game = (taskData) => {
 
                 choiceDivCounter++;
             }
-
         }
 
         return {"answers": answers};

@@ -85,7 +85,7 @@ class GroupServiceTests
 	{
 		Account lecturer = mockLecturer();
 		
-		when(groupDao.findAllByPlayers_idOrLecturers_id(any(), any(), any()))
+		when(groupDao.findAllDistinctByPlayers_idOrLecturers_id(any(), any(), any()))
 			.thenReturn(new PageImpl<>(List.of(
 					mockGroup("group1", lecturer), mockGroup("group2", lecturer))));
 		
@@ -99,7 +99,7 @@ class GroupServiceTests
 		when(accServ.getAuthenticatedAccount())
 			.thenReturn(Optional.of(lecturer));
 		
-		when(groupDao.findAllByPlayers_idOrLecturers_id(any(), any(), any()))
+		when(groupDao.findAllDistinctByPlayers_idOrLecturers_id(any(), any(), any()))
 			.thenReturn(new PageImpl<>(List.of(
 					mockGroup("group1", lecturer), mockGroup("group2", lecturer))));
 		
@@ -356,7 +356,7 @@ class GroupServiceTests
 		Account lecturer = mockLecturer();
 		Account player = mockPlayer();
 		
-		when(gjrDao.findAllByAccount_id(lecturer.getId()))
+		when(gjrDao.findAllByAccount_id(player.getId()))
 		.thenReturn(List.of(mockGroupJoinRequest(
 				mockGroup("groupName", lecturer),
 				player)));
@@ -371,7 +371,7 @@ class GroupServiceTests
 		when(accServ.getAuthenticatedAccount())
 			.thenReturn(Optional.of(player));
 		
-		when(gjrDao.findAllByAccount_id(lecturer.getId()))
+		when(gjrDao.findAllByAccount_id(player.getId()))
 			.thenReturn(List.of(mockGroupJoinRequest(
 					mockGroup("groupName", lecturer),
 					player)));
@@ -560,23 +560,20 @@ class GroupServiceTests
 	{
 		return new Group(UUID.randomUUID(),
 				name, new Date(), name + "code",
-				List.of(), List.of(lecturer), List.of(),
-				List.of(), List.of(), List.of());
+				List.of(), List.of(lecturer), List.of());
 	}
 	private static Group mockGroup(String name, String groupCode, Account lecturer)
 	{
 		return new Group(UUID.randomUUID(),
 				name, new Date(), groupCode,
-				List.of(), List.of(lecturer), List.of(),
-				List.of(), List.of(), List.of());
+				List.of(), List.of(lecturer), List.of());
 	}
 	private static Group mockGroup(String name, String groupCode,
 			Account lecturer, Account player)
 	{
 		return new Group(UUID.randomUUID(),
 				name, new Date(), groupCode,
-				List.of(), List.of(lecturer), List.of(player),
-				List.of(), List.of(), List.of());
+				List.of(), List.of(lecturer), List.of(player));
 	}
 	private static GroupJoinRequest mockGroupJoinRequest(Group group, Account sender)
 	{

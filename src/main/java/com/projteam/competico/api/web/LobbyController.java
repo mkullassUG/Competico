@@ -38,7 +38,7 @@ public class LobbyController
         return "lobby-join";
     }
 	@GetMapping("/game/{code}")
-	@ApiOperation(value = "Display the lobby with the given game code.")
+	@ApiOperation(value = "Display the lobby or game with the given game code.")
 	public String lobbyPage(@PathVariable("code") String code)
 	{
 		return "lobby";

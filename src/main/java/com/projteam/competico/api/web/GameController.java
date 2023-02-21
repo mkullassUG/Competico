@@ -16,7 +16,7 @@ public class GameController
 		return "game-results";
 	}
 	@GetMapping("/game/history/{page}")
-	@ApiOperation(value = "Display the results of a given game.")
+	@ApiOperation(value = "Display a list of the game history of the current user.")
 	public String gameHistory()
 	{
 		return "game-history";

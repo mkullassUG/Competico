@@ -1,14 +1,337 @@
-/*
-LobbyLogic odpowiada za:
-1.Odczytanie informacji o kliencie
-3.obsługiwanie przycisków i dynamicznego widoku lobby przez ajax i jquery
-4.przeniesienie klienta na następny widok z gameLogic
-*/
-//TODO 2021-05-13 odczytać id gry jeśli jestem lektorem i przenieść na tablice wyników.... czy tego nie robie przy starcie gry?
-//const LobbyLogic = (playerInfo, _lobbyCode, debug = false, $mock, windowMock) => {
-const LobbyModule = (function($, window) {
+const LobbyModule = (function(deps = {}) {
 
-  const LobbyLogic = (data, debug = false, successfulCreationCallback) => {
+  var debug = false;
+  if ( deps.debug )
+      debug = true;
+
+  if ( typeof $ === 'undefined' && typeof deps.$ === 'undefined')
+      throw Error("jQuery not defined");
+  else if ( typeof $ != 'undefined' && typeof deps.$ === 'undefined' )
+      deps.$ = $;
+
+  if ( typeof window === 'undefined' && typeof deps.window === 'undefined')
+      throw Error("window not defined");
+  else if ( typeof window != 'undefined' && typeof deps.window === 'undefined' )
+      deps.window = window;
+
+  
+
+  var Ajax = function(){
+    var self = {};
+
+    self.getWhoAmI = ( callback ) => {
+        
+        return deps.$.ajax({
+            type     : "GET",
+            cache    : false,
+            url      : "/api/v1/playerinfo",
+            contentType: "application/json",
+            success: function(playerInfo, textStatus, jqXHR) {
+                if (debug){
+                    console.log("getWhoAmI success");
+                    console.log(playerInfo);
+                }
+                if ( callback )
+                    callback(playerInfo);
+            },
+            error: function(jqXHR, status, err) {
+                if (debug){
+                    console.warn("getWhoAmI error");
+                    console.warn(jqXHR);
+                }
+                if ( callback )
+                    callback(false);
+            }
+        });
+    }
+
+    self.getAccountInfo = (callback) => {
+        return deps.$.ajax({
+            type     : "GET",
+            cache    : false,
+            url      : "/api/v1/account/info",
+            contentType: "application/json",
+            success: function(accountInfo, textStatus, jqXHR) {
+                if (debug) {
+                    console.log("getAccountInfo success");
+                    console.log(accountInfo);
+                }
+                if ( callback )
+                    callback(accountInfo);
+            },
+            error: function(data, status, err) {
+                if (debug) {
+                    console.warn("getAccountInfo error");
+                    console.warn(data);
+                }
+                if ( callback )
+                    callback(false);
+            }
+        });
+    } 
+
+    /*     ajax http actions       */
+    self.sendAjaxStart = (lobbyCode, callback) => {
+  
+      return deps.$.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "/api/v1/lobby/"+lobbyCode+"/start",
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          if (debug)
+            console.log("sendAjaxStart success");
+
+
+          if ( callback )
+            callback(data);
+        },
+        error: function(jqXHR, status, err) {
+          if (debug) {
+            console.log("sendAjaxStart error");
+          }
+
+          if ( callback )
+            callback(false);
+        }
+      });
+    }
+    self.sendAjaxLeave = (lobbyCode, callback) => {
+      console.log("sendAjaxLeave");
+      return deps.$.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "/api/v1/lobby/"+lobbyCode+"/leave",
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          if (debug)
+            console.log("sendAjaxLeave success");
+
+          if ( callback )
+            callback(data);
+        },
+        error: function(jqXHR, status, err) {
+          if (debug)
+            console.log("sendAjaxLeave error");
+          if ( callback )
+            callback(false);
+        }
+      });
+    }
+    self.sendAjaxKickPlayer = (lobbyCode, player, callback) => {
+      
+      var send = player;
+      return deps.$.ajax({
+        type     : "DELETE",
+        cache    : false,
+        url      : "/api/v1/lobby/" + lobbyCode + "/players",
+        data     : send,
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          if (debug){
+            console.log("sendAjaxKickPlayer success");
+          }
+
+          if ( callback )
+            callback(data);
+        },
+        error: function(jqXHR, status, err) {
+          if (debug)
+            console.log("sendAjaxKickPlayer error");
+
+          if ( callback )
+            callback(false);
+        }
+      });
+    }
+    self.sendAjaxSettingsChange = (lobbySettingsPlaceholder, lobbyCode, callback) => {
+  
+      var send = JSON.parse(JSON.stringify(lobbySettingsPlaceholder));
+      return deps.$.ajax({
+        type     : "PUT",
+        cache    : false,
+        url      : "/api/v1/lobby/" + lobbyCode,
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          if (debug == true) {
+            console.log("SettingsChange success");
+          }
+          if ( callback )
+            callback(data);
+        },
+        error: function(jqXHR, status, err) {
+          if (debug == true)
+            console.log("SettingsChange error");
+          if ( callback )
+            callback(false);
+        }
+      });
+    }
+    
+    /*   ajax http requests       */
+    self.ajaxConnectionLoop = (lobbyCode, callback ) => {
+      
+      return deps.$.ajax({
+        type     : "GET",
+        cache    : false,
+        url      : "/api/v1/lobby/" + lobbyCode + "/changes",
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          if (debug) {
+            console.log("ajaxConnectionLoop success");
+          }
+          if ( callback )
+            callback(data);
+  
+        },
+        error: function(data, status, err) {
+          if (debug){
+            console.warn("connectionLoop error");
+            console.warn(data);
+          }
+          if ( callback )
+            callback(data);
+        }
+      });
+    }
+    self.ajaxReceiveLobbyChange = (lobbyCode, callback) => {
+
+      return deps.$.ajax({
+        type     : "GET",
+        cache    : false,
+        url      : "/api/v1/lobby/" + lobbyCode,
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          if (debug) {
+            console.log("ajaxGetLobbyChange success");
+            console.log(data);
+          }
+          if ( callback )
+            callback(data);
+        },
+        error: function(jqXHR, status, err) {
+          if (debug){
+            console.warn("ajaxGetLobbyChange error");
+          }
+          if ( callback )
+            callback(false);
+        }
+      });
+    }
+    self.ajaxSendJoin = (lobbyCode, callback ) => {
+
+      return deps.$.ajax({
+        type     : "POST",
+        cache    : false,
+        url      : "/api/v1/lobby/join/" + lobbyCode,
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          if (debug) {
+            console.log("ajaxSendJoin success");
+            console.log(data);
+          }
+          if ( callback )
+            callback(data);
+        },
+        error: function(jqXHR, status, err) {
+          if (debug) {
+            console.warn("ajaxSendJoin error");
+            console.warn(jqXHR);
+          }
+          if ( callback )
+            callback(false);
+        }
+      });
+    }
+
+    self.getTasksetsInfo = ( callback ) => {
+    
+      return deps.$.ajax({
+          type: "GET",
+          cache: false,
+          url: "/api/v1/tasksets/info",
+          contentType: "application/json",
+          success: function (data, status)
+          {   
+              if (debug) {
+                  console.log("getTasksetsInfo success");
+                  console.log(data);
+              }
+
+              else if ( callback )
+                  callback(data);
+          },
+          error: function (xhr, desc, err)
+          {
+              if (debug ) {
+                  console.log("getTasksetsInfo error");
+                  console.log(xhr);
+              }
+              if ( callback)
+                  callback(false);
+          }
+      }); 
+    }
+
+    self.putSetLobbyTasksets = (tasksetNames, lobbyCode, callback) => {
+
+      var send = tasksetNames;
+  
+      return deps.$.ajax({
+        type     : "PUT",
+        cache    : false,
+        url      : "/api/v1/lobby/"+lobbyCode+"/tasksets",
+        data     : JSON.stringify(send),
+        contentType: "application/json",
+        success: function(data, textStatus, jqXHR) {
+          if ( debug ) {
+            console.log("putSetLobbyTasksets success");
+            console.log(data);
+          }
+          if ( callback )
+            callback(data);
+        },
+        error: function(jqXHR, status, err) {
+          if ( debug )
+            console.log("putSetLobbyTasksets error");
+          if ( callback )
+            callback(false);
+        }
+      });
+    }
+
+    self.getGroupInfo = (code, callback) => {
+
+      return deps.$.ajax({
+          type     : "GET",
+          cache    : false,
+          url      : "/api/v1/groups/"+code+"/info",
+          contentType: "application/json",
+          success: function(data, textStatus_, jqXHR_) {
+              if (debug) {
+                  console.log("getGroupInfo success");
+                  console.log(data);
+              }
+              if ( callback )
+                  callback(data);
+          },
+          error: function(data, status, err) {
+              if (debug) {
+                  console.warn("getGroupInfo error");
+                  console.warn(data);
+              }
+              if ( callback )
+                  callback(false);
+          }
+      });
+    } 
+
+    self.setTasksetForGame
+    return self;
+  }();
+
+  const LobbyLogic = (data, successfulCreationCallback) => {
   
     /*  singleton   */
     if (LobbyLogic.singleton) {
@@ -18,7 +341,7 @@ const LobbyModule = (function($, window) {
     }
     var self = {};
     if (!LobbyLogic.singleton && !data)
-      return LobbyLogic.getInstance(data, debug, successfulCreationCallback);
+      return LobbyLogic.getInstance(data, successfulCreationCallback);
     LobbyLogic.singleton = self;
 
     /*  environment preparation  */
@@ -35,10 +358,8 @@ const LobbyModule = (function($, window) {
     self.isHost;
     self.lobbyHost;
     self.isLecturer;
-    self.debug = debug;
     self.gameStarted;
   
-    //to nie musi być w self.
     self.ajaxLobbyLoopTimeout;
     self.lobbyCode;
     self.nickname;
@@ -47,21 +368,29 @@ const LobbyModule = (function($, window) {
     self.gameID;
     self.possiblyJoinedFromEndGame;
     self.preventFromShowingLobbyDeletedModal = true;
-  
+    self.selectedTasksets;
+    self.allTasksets;
+    self.isGroupLobby;
+    self.groupCode;
+    self.playerInfo;
+
     /*       logic functions          */
     var LobbyInit = (data) => {
-      /*data:
-        playerInfo, accountInfo, lobbyCode, hideModal, showModal
-      */
-  
-      if (self.debug)
-        console.log("LobbyInit");
-  
+      
+      self.initLobbyInfo = data.lobbyInfo;
+      self.playerInfo = data.playerInfo;
       self.isHost = data.playerInfo.isHost; 
       self.nickname = data.playerInfo.nickname;
       self.username = data.playerInfo.username;
       self.gameStarted = data.playerInfo.gameStarted;
       self.possiblyJoinedFromEndGame = data.playerInfo.gameCode? false : true;
+      self.isGroupLobby = data.lobbyInfo.isGroupLobby;
+      self.groupCode = data.lobbyInfo.groupCode;
+      self.groupInfo = data.groupInfo;
+      if (self.isGroupLobby) {
+        self.selectedTasksets = data.lobbyInfo.tasksets;
+        self.allTasksets = data.tasksets;
+      }
   
       self.roles = data.accountInfo.roles? data.accountInfo.roles : [];
   
@@ -77,62 +406,66 @@ const LobbyModule = (function($, window) {
         return;
       }
   
-      $("#lobbyTop").removeClass("collapse");
-      $("#lobbyCenter").removeClass("collapse");
-      $("#lobbyBottom").removeClass("collapse");
+      deps.$("#lobbyTop").removeClass("collapse");
+      deps.$("#lobbyCenter").removeClass("collapse");
+      deps.$("#lobbyBottom").removeClass("collapse");
   
-      if ($(".hideBeforeLoad").length)
-        $('.hideBeforeLoad').fadeIn();
+      if (deps.$(".hideBeforeLoad").length)
+        deps.$('.hideBeforeLoad').fadeIn();
       
-      //wysłać tylko jeśli z whoAmI wyszło że nie mam jeszcze lobby..??
-      if (!self.isHost)
-        ajaxSendJoin();
+      if (!self.isHost && !(self.playerInfo.gameCode === self.lobbyCode)) {
+        
+        self.showModal();
+        Ajax.ajaxSendJoin(self.lobbyCode,(data)=>{self.hideModal();});
+      }
   
-      if (typeof self.isHost == undefined && self.debug)
+      if (typeof self.isHost == undefined && debug)
         console.warn("Critical error, invalid data received from server isHost == undefined");
       
       if (self.isLecturer) 
-          $("body").addClass("lektorBody");
+        deps.$("body").addClass("lektorBody");
       else
-          $("body").addClass("playerBody");
+        deps.$("body").addClass("playerBody");
   
       if (self.isHost) {
-        //ustawianie lobby widoku hosta
-        $("#btnStart").show();
-        $("#btnSettings").show();
-        $("#lobbyHostUsername").text(self.nickname);
+        deps.$("#btnStart").show();
+        deps.$("#btnSettings").show();
+        deps.$("#lobbyHostUsername").text(self.nickname);
           if (self.isLecturer)
             self.setupLobbyForLecturer();
+          else {
+            deps.$("#dualList").remove();
+            deps.$(".lectorEnableClass ").remove();
+          }
+
       } else {
-        //ustawianie lobby widoku gracza
-        $("#lobbyMainHost").removeClass("col-10").addClass("col-12");
-        $("#lobbySettings").hide();
-        $(".btnKick").addClass("collapse");
+        deps.$("#lobbyMainHost").removeClass("col-10").addClass("col-12");
+        deps.$("#lobbySettings").hide();
+        deps.$(".btnKick").addClass("collapse");
+        deps.$("#dualList").remove();
+        deps.$(".lectorEnableClass ").remove();
       }
-      if ($('.btn').length && $('.btn').popover)
-          $('.btn').popover();
+      if (deps.$('.btn').length && deps.$('.btn').popover)
+        deps.$('.btn').popover();
   
-      //ustaw kod
-      if ($("#lobbyCode").length)
-        $("#lobbyCode").text("Kod: " + self.lobbyCode);
+      if (deps.$("#lobbyCode").length)
+        deps.$("#lobbyCode").text("Kod: " + self.lobbyCode);
   
-      /*TODO, jeśli skończyłem grę to może chce zobaczyć wyniki wszystkich!! lobby exist:false dostaje i wyświetlam tylko modala żeby wyjść!!
-      
-      */
-  
-      self.ajaxReceiveLobbyChange();
+      self.lobbySetupAfterChange(self.initLobbyInfo);
   
       tooltipsUpdate();
   
-      $('#exampleModalCenter').on('shown.bs.modal', function (e) {
-        $('#btnSettings').one('focus', function (e) {
-            $(this).blur();
+      deps.$('#exampleModalCenter').on('shown.bs.modal', function (e) {
+        deps.$('#btnSettings').one('focus', function (e) {
+          deps.$(this).blur();
         });
       });
       
       listenersSetup();
-      //callback true-> jeśli coś się zmieniło false -> jeśli nie
-      ajaxConnectionLoop((data)=>{self.updateCheck(data)});
+      Ajax.ajaxConnectionLoop(
+          self.lobbyCode,
+          (data)=>{self.updateCheck(data)}
+        );
       
       if (successfulCreationCallback)
           successfulCreationCallback(self);
@@ -141,187 +474,163 @@ const LobbyModule = (function($, window) {
     /*       event listeners          */
     var listenersSetup = () => {
   
-      if ($("#btnStart").length)
-        $("#btnStart").on("click",()=>{
-          if (self.debug)
-            console.log("btnStart");
+      if (deps.$("#btnSendStartGame").length)
+        deps.$("#btnSendStartGame").on("click",() => {
   
-          if (self.isHost == true)
-            sendAjaxStart();
+          if (self.isHost == true) {
+
+            clearTimeout(self.ajaxLobbyLoopTimeout);
+            self.showModal();
+
+            Ajax.sendAjaxStart(
+              self.lobbyCode,
+              (data) => {
+
+                self.ajaxLobbyLoopTimeout = setTimeout(()=>{
+                  Ajax.ajaxConnectionLoop(
+                    self.lobbyCode,
+                    (data_)=>{self.updateCheck(data_)}
+                  )},1000);
+                self.hideModal();
+
+              });
+          }
         });
-      if ($("#btnSendleave").length)
-        $("#btnSendleave").on("click",()=>{
-          if (self.debug)
-            console.log("btnSendleave")
-            sendAjaxLeave();
+      if (deps.$("#btnSendleave").length)
+        deps.$("#btnSendleave").on("click",()=>{
+
+          Ajax.sendAjaxLeave(self.lobbyCode, (data) => {self.leaveLobby();});
         });
-      if ($("#btnCopyCode").length)
-        $("#btnCopyCode").on("click",(e) => {
-          if (self.debug == true)
-            console.log("btnCopyCode")
+      if (deps.$("#btnCopyCode").length)
+        deps.$("#btnCopyCode").on("click",(e) => {
   
             self.copyTextToClipboard(self.lobbyCode);
         });
-      if ($("#btnSaveSettings").length)
-        $("#btnSaveSettings").on("click",()=>{
-          if (self.debug)
-            console.log("btnSaveSettings");
-  
-          if (self.isHost == true) {
-            self.lobbySettingsPlaceholder.maxPlayers = parseInt($("#inputMaxPlayers").val());
-            
-            self.lobbySettingsPlaceholder.allowsRandomPlayers = $("#allowsRandomPlayersCB")[0].checked;
-            sendAjaxSettingsChange();
-          }
+      if (deps.$("#btnSaveSettings").length)
+        deps.$("#btnSaveSettings").on("click",()=>{
+          
+          self.saveAndSendLobbySettings();
+          
         });
-      if ($("#btnEndGame").length)
-        $("#btnEndGame").on("click",()=>{
-          if (self.debug)
-            console.log("btnEndGame");
+      if (deps.$("#btnEndGame").length)
+        deps.$("#btnEndGame").on("click",()=>{
   
           if (self.gameStatus == "ended")
             sendAjaxEndGame();
         });
-      if ($("#btnSendLobbyDeleted").length)
-        $("#btnSendLobbyDeleted").on("click",()=>{
-          if (self.debug)
-            console.log("btnSendLobbyDeleted");
+      if (deps.$("#btnSendLobbyDeleted").length)
+        deps.$("#btnSendLobbyDeleted").on("click",()=>{
           self.leaveLobby();
         });
-      if ($("#btnSettings").length)
-        $("#btnSettings").on('click',(e) => {
-          $("#inputMaxPlayers").val(self.lobbySettings.maxPlayers);
-          $("#allowsRandomPlayersCB")[0].checked = self.allowsRandomPlayers;
+      if (deps.$("#btnSettings").length)
+        deps.$("#btnSettings").on('click',(e) => {
+          deps.$("#inputMaxPlayers").val(self.lobbySettings.maxPlayers);
+          deps.$("#allowsRandomPlayersCB")[0].checked = self.allowsRandomPlayers;
         });
-      if ($("#lektorCB").length)
-        $("#lektorCB").on('click',(e) => {
-            if ($("#lektorCB")[0].checked) {
-                //pokazać wybór grupy
-                $("#lectorModeOnDiv").show();
-                $("#lectorModeOffDiv").hide();
+      if (deps.$("#customTasksCB").length)
+        deps.$("#customTasksCB").on('click',(e) => {
+            if (deps.$("#customTasksCB")[0].checked) {
+                deps.$("#dualList").show();
             } else {
-                //zgasić wybór grupy
-                $("#lectorModeOnDiv").hide();
-                $("#lectorModeOffDiv").show();
-            }
-        });
-      if ($("#customTasksCB").length)
-        $("#customTasksCB").on('click',(e) => {
-            if ($("#customTasksCB")[0].checked) {
-                //pokazać wybór grupy
-                $("#customTaskSetModeOnDiv").show();
-            } else {
-                //zgasić wybór grupy
-                $("#customTaskSetModeOnDiv").hide();
+                deps.$("#dualList").hide();
             }
         });
   
-      if ($("#allowsRandomPlayersCB").length) 
-        $("#allowsRandomPlayersCB").on('click', (e)=> {
-            self.allowsRandomPlayers = $("#allowsRandomPlayersCB")[0].checked;
+      if (deps.$("#allowsRandomPlayersCB").length) 
+        deps.$("#allowsRandomPlayersCB").on('click', (e)=> {
+            self.allowsRandomPlayers = deps.$("#allowsRandomPlayersCB")[0].checked;
         });
   
-      window.onresize = resizeWindow;
+      deps.window.onresize = resizeWindow;
     }
-  
+    
     var tooltipsUpdate = () => {
   
-      if ( $('[data-toggle="tooltip"]').tooltip !== null && $('[data-toggle="tooltip"]').tooltip !== undefined)
-          $('[data-toggle="tooltip"]').tooltip({
+      if ( deps.$('[data-toggle="tooltip"]').tooltip !== null && deps.$('[data-toggle="tooltip"]').tooltip !== undefined)
+        deps.$('[data-toggle="tooltip"]').tooltip({
               trigger : 'hover'
           });
     }
   
-    //new 2021-04-27
     var resizeWindow = () => {
         
-        //var sy = window.scrollY;
-        $("html").height("100%");
-        if( self.debug )
-          console.log("res");
+        deps.$("html").height("100%");
 
         function isInt(n) {
           return n % 1 === 0;
         }
       
-        var h1 = $(window.document).height();
+        var h1 = deps.$(deps.window.document).height();
         if ( isInt (h1))
           h1 -= 1;
-        $("html").height(h1);
+        deps.$("html").height(h1);
     } 
     
     self.startGame = (cbGame) => {
-  
-      if ( debug ) {
-        console.log(self.isLecturer);
-        console.log(self.gameID);
-      }
+
       if ( self.isLecturer )
-          window.location.replace("/game/results/" + self.gameID);
-          //window.location = "/game/results/" + self.gameID;
+        deps.window.location.replace("/game/results/" + self.gameID);
       
-      if ( !window.document.hasFocus() )
+      if ( !deps.window.document.hasFocus() )
         startPageFlashing();
 
-      $("#bigChangeDiv").removeClass("text-center").removeClass("hideBeforeLoad");
-      $("#lobbyTop").hide();
-      $("#lobbyCenter").hide();
-      $("#lobbyBottom").hide();
-      $("#gameBottom").show();
-      $("#gameTop").show();
-      $("#gameCenter").show();
+      deps.$("#bigChangeDiv").removeClass("text-center").removeClass("hideBeforeLoad");
+      deps.$("#lobbyTop").hide();
+      deps.$("#lobbyCenter").hide();
+      deps.$("#lobbyBottom").hide();
+      deps.$("#gameBottom").show();
+      deps.$("#gameTop").show();
+      deps.$("#gameCenter").show();
   
-      //tutaj wywołac obiekt taska
-      self.gameObject = GameModule($, window).getInstance(self, false, cbGame);
+      self.gameObject = GameModule(deps.$, deps.window).getInstance(self, false, cbGame);
     }
   
     self.copyTextToClipboard = (text) => {
       
-      var textArea = window.document.createElement("textarea");
+      var textArea = deps.window.document.createElement("textarea");
       textArea.value = text
-      window.document.body.appendChild(textArea);
+      deps.window.document.body.appendChild(textArea);
       textArea.focus();
       textArea.select();
       
       var successful = false;
       try {
-        successful = window.document.execCommand('copy');
+        successful = deps.window.document.execCommand('copy');
         var msg = successful ? 'successful' : 'unsuccessful';
-        if (self.debug)
-          console.log('Copying text command was ' + msg);
+        
       } catch (err) {
-        if (self.debug)
+        if (debug)
           console.log('Oops, unable to copy');
       }
   
-      window.document.body.removeChild(textArea);
+      deps.window.document.body.removeChild(textArea);
       return successful;
     }
     
     var startPageFlashing = () => {
 
       var getIconUrl = () => {
-        var link = window.document.querySelector("link[rel~='icon']");
+        var link = deps.window.document.querySelector("link[rel~='icon']");
         if (!link) 
           throw Error("no Original Icon");
         return link.href;
       }
 
-      var original = window.document.title;
+      var original = deps.window.document.title;
       var originalURL = getIconUrl();
       var timeout;
 
       var flashTitle = function (newMsg, newURL, howManyTimes) {
 
         function step() {
-          window.document.title = (window.document.title == original) ? newMsg : original;
+          deps.window.document.title = (deps.window.document.title == original) ? newMsg : original;
           changeIcon(getIconUrl() == originalURL? newURL : originalURL);
 
           if (--howManyTimes > 0) {
               timeout = setTimeout(step, 1000);
           };
             
-          if ( window.document.hasFocus() )
+          if ( deps.window.document.hasFocus() )
             cancelFlashTitle(timeout);
         };
     
@@ -338,12 +647,12 @@ const LobbyModule = (function($, window) {
       
       var cancelFlashTitle = function () {
           clearTimeout(timeout);
-          window.document.title = original;
+          deps.window.document.title = original;
           changeIcon(originalURL);
       };
 
       var changeIcon = (newURL) => {
-        var link = window.document.querySelector("link[rel~='icon']");
+        var link = deps.window.document.querySelector("link[rel~='icon']");
         link.href = newURL;
       }
 
@@ -353,58 +662,45 @@ const LobbyModule = (function($, window) {
     }
 
     self.leaveLobby = () => {
-      //wyświewtlić modala czy napewno chce wyjść
-      //window.location = "/lobby"; 
-      window.location.replace("/lobby");
+      
+      deps.window.location.replace("/lobby");
     }
   
     self.lobbySetupAfterChange = (lobby) => {
-      /*
-      lobby: 
-      {
-        players: //tablica obiektów graczy z których można odczytać np "name"
-        maxPlayers: //jedno z ustawień lobby
-        host: nazwa obecnego hosta lobby
-      }
-      */
+      
       if (!lobby.exists && self.possiblyJoinedFromEndGame === false) {
-        if (self.debug)
+        if (debug)
           console.warn("lobby nie znalezione!");
-        /* wyswietlic że Lobby zostało zakończone przez Hosta modal */
-        //2021-04-22, (fast fix?) lobby deleted modal showing at the start randomly
         if (self.preventFromShowingLobbyDeletedModal) {
             self.preventFromShowingLobbyDeletedModal=false;
             return "prevented from displaying info";
         }
-        if (self.debug)
+        if (debug)
           console.warn("wyswietlic że Lobby zostało zakończone przez Hosta modal");
-        if ( $('#LobbyDeletedModalCenter').modal )
-          $('#LobbyDeletedModalCenter').modal('show');
+        if ( deps.$('#LobbyDeletedModalCenter').modal )
+          deps.$('#LobbyDeletedModalCenter').modal('show');
         return "displaying info";
       }
   
-      //setup lobby
       if (!lobby.host) {
-        if (self.debug)
+        if (debug)
           console.warn("Zainicjować wyjście klienta z tego lobby");
         return "lobby does not exist";
       }
       self.lobbyHost = lobby.host;
   
-      if ($("#lobbyHostUsername").length)
-        $("#lobbyHostUsername").text(self.lobbyHost.username + " " + self.lobbyHost.nickname);
-      //------player list
-      if($("#lobbyPlayersTable > .player").length)
-        $("#lobbyPlayersTable > .player").remove();
+      if (deps.$("#lobbyHostUsername").length)
+        deps.$("#lobbyHostUsername").text(self.lobbyHost.username + " " + self.lobbyHost.nickname);
+      if(deps.$("#lobbyPlayersTable > .player").length)
+        deps.$("#lobbyPlayersTable > .player").remove();
   
       if (typeof lobby.players == 'undefined') {
-        if (self.debug)
+        if (debug)
           console.warn("nie znaleziono żadnych graczy w lobby");
         return 0;
       }
       
       let playersLength = lobby.players.length;
-      
       var isFirstPlayerInTable = true;
 
       var nicknameRepeats = (nickname, players) => {
@@ -421,7 +717,9 @@ const LobbyModule = (function($, window) {
         return (counter>1);
       };
 
-      if ($("#lobbyPlayersTable").length) {
+      if (deps.$("#lobbyPlayersTable").length) {
+
+          var withLecturer = 0;
           if ( self.lobbyHost.roles.includes("PLAYER")) {
             var specialPlayer = "",
             specialClass = "";
@@ -433,7 +731,7 @@ const LobbyModule = (function($, window) {
               specialPlayer = "(host)";
             }
   
-            let playerDiv = $(`<div class="media text-muted `+(!isFirstPlayerInTable?"pt-3":"")+` player `+specialClass+`">
+            let playerDiv = deps.$(`<div class="media text-muted `+(!isFirstPlayerInTable?"pt-3":"")+` player `+specialClass+`">
                 <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 1"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="white" dy=".3em">1</text></svg>
                 <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                   <div class="d-flex justify-content-between align-items-center w-100">
@@ -445,8 +743,10 @@ const LobbyModule = (function($, window) {
                 </div>
               </div>`);
                 
-              $("#lobbyPlayersTable").append(playerDiv);
+              deps.$("#lobbyPlayersTable").append(playerDiv);
               isFirstPlayerInTable = false;
+
+              withLecturer++;
           }
   
           for (let i = 0; i < playersLength; i++) {
@@ -459,8 +759,8 @@ const LobbyModule = (function($, window) {
                 specialClass = "lobbyMe"
               }
       
-              let playerDiv = $(`<div class="media text-muted `+(!isFirstPlayerInTable?"pt-3":"")+` player `+specialClass+`">
-                    <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: `+(i+2)+`"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="white" dy=".3em">`+(i+2)+`</text></svg>
+              let playerDiv = deps.$(`<div class="media text-muted `+(!isFirstPlayerInTable?"pt-3":"")+` player `+specialClass+`">
+                    <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: `+(i+2)+`"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"></rect><text x="50%" y="50%" fill="white" dy=".3em">`+(i+1+ withLecturer)+`</text></svg>
                     <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                       <div class="d-flex justify-content-between align-items-center w-100">
                         <strong class="text-gray-dark">` + specialPlayer + ` `
@@ -472,35 +772,34 @@ const LobbyModule = (function($, window) {
                   </div>`);
               isFirstPlayerInTable = false;
                   
-                $("#lobbyPlayersTable").append(playerDiv);
+              deps.$("#lobbyPlayersTable").append(playerDiv);
             }
           }
       }
       
       
       if (self.isHost){
-        if ($(".btnKick").length)
-          $(".btnKick").on("click", (e) => {
+        if (deps.$(".btnKick").length)
+          deps.$(".btnKick").on("click", (e) => {
             e.preventDefault();
-  
-            sendAjaxKickPlayer($(e.target).data("username"));
-  
-            if (debug == true)
-              console.log("kicking: " + $(e.target).data("username"));
+            
+            if (self.isHost === true)
+              Ajax.sendAjaxKickPlayer(
+                  self.lobbyCode, 
+                  deps.$(e.target).data("username")
+                );
           });
       } else {
-        if ($(".btnKick").length)
-          $(".btnKick").addClass("collapse");
+        if (deps.$(".btnKick").length)
+          deps.$(".btnKick").addClass("collapse");
       }
-      //-----max players
       if (lobby.maxPlayers != null) {
-        $("#lobbyMaxPlayers").text("Gracze " + playersLength + "\\" + lobby.maxPlayers);
+        deps.$("#lobbyMaxPlayers").text("Gracze " + playersLength + "/" + lobby.maxPlayers);
       }
   
-      //------lobby settings dla hosta ustawic
       if (self.isHost) {
         if ( lobby.maxPlayers ) {
-          $("#inputMaxPlayers").val(lobby.maxPlayers);
+          deps.$("#inputMaxPlayers").val(lobby.maxPlayers);
           self.lobbySettings.maxPlayers = lobby.maxPlayers;
           self.lobbySettingsPlaceholder.maxPlayers = lobby.maxPlayers;
         }
@@ -508,345 +807,241 @@ const LobbyModule = (function($, window) {
         if (lobby.allowsRandomPlayers === true || lobby.allowsRandomPlayers === false) {
   
           self.allowsRandomPlayers = lobby.allowsRandomPlayers;
-          $("#allowsRandomPlayersCB")[0].checked == lobby.allowsRandomPlayers;
+          deps.$("#allowsRandomPlayersCB")[0].checked == lobby.allowsRandomPlayers;
           self.lobbySettings.allowsRandomPlayers = lobby.allowsRandomPlayers;
           self.lobbySettingsPlaceholder.allowsRandomPlayers = lobby.allowsRandomPlayers;
         }
       }
-  
-      //... pozostałe zmiany jakie mogą zajść w lobby dodac poniżej
     }
   
     self.updateCheck = (data) => {
-      
-      if ( debug )
-        console.log(data);
   
-      self.ajaxLobbyLoopTimeout = setTimeout(()=>{ajaxConnectionLoop((data_)=>{self.updateCheck(data_)})},1000);
+      self.ajaxLobbyLoopTimeout = setTimeout(()=>{
+        Ajax.ajaxConnectionLoop(
+            self.lobbyCode,
+            (data_)=>{self.updateCheck(data_)}
+          )},1000);
       if (data.lobbyExists === false) {
-        //2021-04-22, (fast fix?) lobby deleted modal showing at the start randomly
         if (self.preventFromShowingLobbyDeletedModal) {
             self.preventFromShowingLobbyDeletedModal=false;
-            //new bug fix
-            //new 2021-04-27
             resizeWindow();
             return;
         }
-        /*TODO 2021-03-01
-        bug (jest stan w którym nie istnieje lobby i gra kiedy gra się rozpoczyna)
-        fetchuje server wtedy dane z bazy więc nie wiadomo ile czasu trwa ten stan, a serwer nadal jes tw stanie odpowiadać na requesty*/
-        
   
-  
-        console.warn("jest stan w którym nie istnieje lobby i gra, kiedy gra się rozpoczyna");
-        if ( $('#LobbyDeletedModalCenter').modal )
-          $('#LobbyDeletedModalCenter').modal('show');
+        if ( debug )
+          console.warn("jest stan w którym nie istnieje lobby i gra, kiedy gra się rozpoczyna");
+        if ( deps.$('#LobbyDeletedModalCenter').modal )
+          deps.$('#LobbyDeletedModalCenter').modal('show');
       } else if (data.gameStarted == true) {
         
-        if ( debug )
-          console.log("start");
-        $("body").removeClass("lektorBody").removeClass("playerBody");
+        deps.$("body").removeClass("lektorBody").removeClass("playerBody");
         clearTimeout(self.ajaxLobbyLoopTimeout);
         self.gameID = data.gameID;
-        self.startGame(); //tutaj tworzyć obiekt taska?
+        self.startGame(); 
       } else if (data.lobbyContentChanged == true){
-        self.ajaxReceiveLobbyChange();
+        Ajax.ajaxReceiveLobbyChange(
+          self.lobbyCode,
+          (data) => {
+            self.lobbySetupAfterChange(data)
+          }
+        );
       }
     } 
   
     self.updateLobbySettingsAsHost = () => {
       
+      if ( data === false ) {
+        displayInfoAnimation("Nie udało się zapisać zmian", false);
+        return;
+      }
+      displayInfoAnimation("Zapisano zmiany", true);
+
       self.lobbySettings.maxPlayers = self.lobbySettingsPlaceholder.maxPlayers;
       self.lobbySettings.allowsRandomPlayers = self.lobbySettingsPlaceholder.allowsRandomPlayers;
-      //... pozostałe ustawienia które można dodać poniżej
+
+      if ( self.dualListLogic ) {
+        self.selectedTasksets = self.dualListLogic.getOutput();
+      }
     }
-  
+    
+    self.saveAndSendLobbySettings = () => {
+
+      if (self.isHost == true) {
+        self.lobbySettingsPlaceholder.maxPlayers = parseInt(deps.$("#inputMaxPlayers").val());
+        
+        var tasksets = [];
+        if ( self.dualListLogic ) {
+          tasksets = self.dualListLogic.getOutput();
+        }
+        
+        self.lobbySettingsPlaceholder.allowsRandomPlayers = deps.$("#allowsRandomPlayersCB")[0].checked;
+        if (self.isHost === true)
+          Ajax.sendAjaxSettingsChange(
+            self.lobbySettingsPlaceholder,
+            self.lobbyCode,
+            (data) => {
+              if ( data === false ) {
+                displayInfoAnimation("Nie udało się zapisać zmian", false);
+                return;
+              }
+              Ajax.putSetLobbyTasksets(
+                tasksets,
+                self.lobbyCode,
+                self.updateLobbySettingsAsHost
+              );
+            }
+          );
+      }
+    };
+
     self.setupLobbyForLecturer = () => {
-        $(".lectorEnableClass").show();
-        $(".lectorDisableClass").hide();
-    }
-  
-    /*     ajax http actions       */
-    var sendAjaxStart = () => {
-      if (self.isHost == false)
-        return;
-  
-      clearTimeout(self.ajaxLobbyLoopTimeout);
-  
-      self.showModal();
-      $.ajax({
-        type     : "POST",
-        cache    : false,
-        url      : "/api/v1/lobby/"+self.lobbyCode+"/start",
-        contentType: "application/json",
-        success: function(data, textStatus, jqXHR) {
-          if (self.debug)
-            console.log("sendAjaxStart success");
-          // if (data === false) {
-            self.ajaxLobbyLoopTimeout = setTimeout(()=>{ajaxConnectionLoop((data_)=>{self.updateCheck(data_)})},1000);
-          // }
-          self.hideModal();
-            //teraz lobbyloopa stopować
-        },
-        error: function(jqXHR, status, err) {
-          if (self.debug) {
-            console.log("sendAjaxStart error");
-          }
-  
-          self.ajaxLobbyLoopTimeout = setTimeout(()=>{ajaxConnectionLoop((data_)=>{self.updateCheck(data_)})},1000);
-          self.hideModal();
-        }
-      });
-    }
-    var sendAjaxLeave = () => {
-      console.log("sendAjaxLeave");
-      $.ajax({
-        type     : "POST",
-        cache    : false,
-        url      : "/api/v1/lobby/"+self.lobbyCode+"/leave",
-        contentType: "application/json",
-        success: function(data, textStatus, jqXHR) {
-          if (self.debug)
-            console.log("sendAjaxLeave success");
-  
-          self.leaveLobby();
-        },
-        error: function(jqXHR, status, err) {
-          if (self.debug)
-            console.log("sendAjaxLeave error");
-          self.leaveLobby();
-          
-        }
-      });
-    }
-    var sendAjaxKickPlayer = (player) => {
-      if (self.isHost == false)
-        return;
-  
-      var send = player;
-      $.ajax({
-        type     : "DELETE",
-        cache    : false,
-        url      : "/api/v1/lobby/" + self.lobbyCode + "/players",
-        data     : send,
-        contentType: "application/json",
-        success: function(data, textStatus, jqXHR) {
-          if (self.debug){
-            console.log("sendAjaxKickPlayer success");
-          }
-          //chyba że w checkChanges będzie usuwać go innym a samemu będzie pisac że lobby nie istnieje... albo whoami będzie sprawdzać kiedyś tam?
-          console.warn("Zaimplementować usuwanie gracza!!");
-        },
-        error: function(jqXHR, status, err) {
-          if (self.debug)
-            console.log("sendAjaxKickPlayer error");
-        }
-      });
-    }
-    var sendAjaxSettingsChange = () => {
-      if (self.isHost == false)
-        return;
-  
-      //coverage jest robione przez moduł istambul / esprima który nie wspiera kodu ECMAScript 2017 i wyżej.
-      //wspiera do ECMAScript 2016 
-      //var send = {...self.lobbySettingsPlaceholder};
-  
-      var send = JSON.parse(JSON.stringify(self.lobbySettingsPlaceholder));
-  
-      if (self.debug == true)
-        console.log(send);
-  
-      $.ajax({
-        type     : "PUT",
-        cache    : false,
-        url      : "/api/v1/lobby/" + self.lobbyCode,
-        data     : JSON.stringify(send),
-        contentType: "application/json",
-        success: function(data, textStatus, jqXHR) {
-          /* dostaje false jeśli:
-            lobby nie istnieje
-            nie jest hostem
-            póbuje zmniejszyć maxPlayerCount poniżej ilośc graczy obecnych w lobby
-          */
-          if (self.debug == true) {
-            console.log("SettingsChange success");
-          }
-          if (data)
-            self.updateLobbySettingsAsHost();
-        },
-        error: function(jqXHR, status, err) {
-          if (self.debug == true)
-            console.log("SettingsChange error");
-        }
-      });
-    }
-    
-    /*   ajax http requests       */
-    var ajaxConnectionLoop = ( callback ) => {
       
-      $.ajax({
-        type     : "GET",
-        cache    : false,
-        url      : "/api/v1/lobby/" + self.lobbyCode + "/changes",//"game/connectionLoop",
-        contentType: "application/json",
-        success: function(data, textStatus, jqXHR) {
-          if (self.debug) {
-            console.log("ajaxConnectionLoop success");
+      deps.$(".lectorEnableClass").show();
+      deps.$(".lectorDisableClass").hide();
+
+      if ( self.isGroupLobby && self.isHost) {
+
+        if ( !self.dualListLogic ) {
+          self.dualListLogic = DualListModule(deps).DualListLogic({selector:"#dualList", tasksets: Object.keys(data.tasksets)});
+
+          var prepareDualList = () => {
+
+            self.dualListLogic.refresh();
+            self.dualListLogic.insertOptions(Object.keys(self.allTasksets));
+      
+            
+            self.dualListLogic.move(self.selectedTasksets);
+      
           }
-          /*
-            callback dla:
-               self.ajaxLobbyLoopTimeout = setTimeout(ajaxConnectionLoop,1000);
-            lub niczego jeśli z końca gry odpalam LogicGame
-          */
-          callback(data);//true jeśli coś się zmieniło  
+          prepareDualList();
+        }
+
+        deps.$("#exampleModalLongTitle").text("Ustawienia Lobby grupy: " + self.groupInfo.name);
+
+        if ( self.selectedTasksets.length) {
+          deps.$("#customTasksCB")[0].checked = true;
+          deps.$("#dualList").show();
+        } else {
+          deps.$("#customTasksCB")[0].checked = false;
+          deps.$("#dualList").hide();
+        }
+        
+      } else {
+        deps.$(".lectorEnableClass").remove();
+        deps.$("#dualList").remove();
+
+      }
+    } 
+
+    var displayInfoAnimation = (text, success = true) => {
+      var previousMessages = deps.$(".failSuccessInfo");
+      previousMessages.each((b,t)=>{
+          deps.$(t).css({marginTop: '+=50px'});
+      });
+
+      var failInfoDiv = deps.$(`<div class="failSuccessInfo alert alert-`+(success?"success":"danger")+`">` + text + `</div>`)
+      deps.$("body").append(failInfoDiv)
   
-        },
-        error: function(data, status, err) {
-          if (self.debug){
-            console.warn("connectionLoop error");
-            console.warn(data);
-          }
-          callback(data);
-        }
+      failInfoDiv.animate({
+        top: "6%",
+        opacity: 1
+      }, 2000, function() {
+        // Animation complete.
+        setTimeout(function(){
+          failInfoDiv.animate({
+            top: "9%",
+            opacity: 0
+          }, 1000, function() {
+            // Second Animation complete.
+            failInfoDiv.remove();
+          });
+        },2000)
+        
       });
-    }
-    self.ajaxReceiveLobbyChange = ( ) => {
-      $.ajax({
-        type     : "GET",
-        cache    : false,
-        url      : "/api/v1/lobby/" + self.lobbyCode,//"game/getLobby",
-        contentType: "application/json",
-        success: function(data, textStatus, jqXHR) {
-          if (self.debug) {
-            console.log("ajaxGetLobbyChange success");
-            console.log(data);
-          }
-          self.lobbySetupAfterChange(data);
-        },
-        error: function(jqXHR, status, err) {
-          if (self.debug){
-            console.warn("ajaxGetLobbyChange error");
-          }
-        }
-      });
-    }
-    var ajaxSendJoin = ( ) => {
-      self.showModal();
-      $.ajax({
-        type     : "POST",
-        cache    : false,
-        url      : "/api/v1/lobby/join/" + self.lobbyCode,
-        contentType: "application/json",
-        success: function(data, textStatus, jqXHR) {
-          if (self.debug) {
-            console.log("ajaxSendJoin success");
-          }
-          self.hideModal();
-  
-        },
-        error: function(jqXHR, status, err) {
-          if (self.debug) {
-            console.warn("ajaxSendJoin error");
-          }
-          self.hideModal();
-        }
-      });
-    }
-    
+  }
     /*  initalization  */
     LobbyInit(data);
     
     return self;
   }
   
-  LobbyLogic.getInstance = (dataLazy, debug = false, successfulCreationCallback) => {
+  LobbyLogic.getInstance = (dataLazy, successfulCreationCallback) => {
   
       if (LobbyLogic.singleton)
           return LobbyLogic.singleton;
   
-      var lobbyCode = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+      var lobbyCode = deps.window.location.href.substring(deps.window.location.href.lastIndexOf('/') + 1);
       
       var showModal = () => {
-          if (typeof $("").modal != 'undefined') {
-              $('.hideBeforeLoadModal').modal('show');
+          if (typeof deps.$("").modal != 'undefined') {
+            deps.$('.hideBeforeLoadModal').modal('show');
           }
       }
       var hideModal = () => {
-          if (typeof $("").modal != 'undefined') {
-              $(".hideBeforeLoadModal").on('shown.bs.modal', function() { $(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
+          if (typeof deps.$("").modal != 'undefined') {
+            deps.$(".hideBeforeLoadModal").on('shown.bs.modal', function() { deps.$(".hideBeforeLoadModal").modal('hide'); }).modal('hide');
           }
       }
   
-      var ajaxReceiveWhoAmI = ( ) => {
-
-          return $.ajax({
-              type     : "GET",
-              cache    : false,
-              url      : "/api/v1/playerinfo",
-              contentType: "application/json",
-              success: function(playerInfo, textStatus, jqXHR) {
-                  if (debug){
-                      console.log("ajaxReceiveWhoAmI success");
-                  }
-              },
-              error: function(jqXHR, status, err) {
-                  if (debug){
-                      console.warn("ajaxReceiveWhoAmI error");
-                  }
-  
-              }
-          });
-      }
-  
-      var ajaxReceiveAccountInfo = ( ) => {
-  
-          return $.ajax({
-            type     : "GET",
-            cache    : false,
-            url      : "/api/v1/account/info",
-            contentType: "application/json",
-            success: function(accountInfo, textStatus, jqXHR) {
-                if (debug) {
-                    console.log("ajaxReceiveAccountInfo success");
-                    console.log(accountInfo);
-                }
-            },
-            error: function(jqXHR, status, err) {
-                if (debug) {
-                  console.warn("ajaxReceiveAccountInfo error");
-                }
-            }
-          });
-      }
+      
   
       if ( dataLazy )
-        return LobbyLogic(dataLazy, debug, successfulCreationCallback);
+        return LobbyLogic(dataLazy, successfulCreationCallback);
       else {
         showModal();
-        return Promise.all([ajaxReceiveWhoAmI(),ajaxReceiveAccountInfo()]).then((values)=>{
+        return Promise.all([
+          Ajax.getWhoAmI(),
+          Ajax.getAccountInfo(),
+          Ajax.ajaxReceiveLobbyChange(lobbyCode),
+        ]).then((values)=>{
           var playerInfo = values[0];
           var accountInfo = values[1];
-          if ( debug ) {
-            console.log(values);
-            console.log("done");
-          }
-
+          var lobbyInfo = values[2];
+          
           var data = {
             playerInfo: playerInfo,
             accountInfo, accountInfo,
             lobbyCode: lobbyCode,
             showModal: showModal,
-            hideModal: hideModal
+            hideModal: hideModal,
+            lobbyInfo: lobbyInfo
           }
 
-          LobbyLogic.singleton = LobbyLogic(data, debug, successfulCreationCallback);
-          hideModal();
+          if ( lobbyInfo.isGroupLobby && playerInfo.isHost && accountInfo.roles.includes("LECTURER") ) {
+
+            return Promise.all([
+              Ajax.getTasksetsInfo(),
+              lobbyInfo.isGroupLobby?Ajax.getGroupInfo(lobbyInfo.groupCode):null
+            ]).then((values)=>{
+
+              data.tasksets = values[0];
+              data.groupInfo = values[1];
+
+              LobbyLogic.singleton = LobbyLogic(data, successfulCreationCallback);
+              hideModal();
+
+            }).catch((e) => {
+
+              console.warn("failed to init 2");
+              console.warn(e);
+              hideModal();
+              if ( successfulCreationCallback )
+                successfulCreationCallback(false);
+            });
+          } else {
+            
+            LobbyLogic.singleton = LobbyLogic(data, successfulCreationCallback);
+            hideModal();
+          }
+
 
           return LobbyLogic.singleton;
         }).catch((e) => {
-          console.warn("failed");
+          console.warn("failed to init 1");
           console.warn(e);
           hideModal();
+          if ( successfulCreationCallback )
+            successfulCreationCallback(false);
           // all requests finished but one or more failed
         });
       }

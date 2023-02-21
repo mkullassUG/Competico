@@ -1,4 +1,4 @@
-const IndexLogic = (accountInfo_) => {
+const IndexLogic = (accountInfo_, debug = false) => {
   
     /*       logic variables          */
     var self = accountInfo_;
@@ -12,26 +12,22 @@ const IndexLogic = (accountInfo_) => {
     self.indexLogic = (accountInfo) => {
     
         self.roles = accountInfo.roles?accountInfo.roles:[];
-
-        //navbar preparation
         NavbarLogic.singleton = NavbarLogic(accountInfo, debug);
 
         if ( typeof PageLanguageChanger != "undefined")
-            PageLanguageChanger(false,false,false,self.InitWithPageLanguageChanger);
+            PageLanguageChanger(false,false,{},self.InitWithPageLanguageChanger);
+
+        if ( MessagesModule && self.roles.length )
+          MessagesModule().getInstance(false, (data)=>{data.setFunctionToInform(self.messagerFunction);});
     }
     
     self.InitWithPageLanguageChanger = (data, lang) => {
-      //prepare when data comes
 
       if ( data === true){
-        if ( debug )
-          console.log("PageLanguageChanger done");
         return;
       }
 
-      //NEW 2021-04-27 wymyslec jak
       if (self.authenticated) {
-        //wyświetl przycisk od gry na środku ekranu
         $("#indexHelloPlayer").text(
           data.OTHER_PAGE_ELEMENTS["#indexHelloPlayer"][lang][1] + 
           self.nickname + 
@@ -45,9 +41,25 @@ const IndexLogic = (accountInfo_) => {
         );
 
         $("#indexLogin").show();
-        //wyświetl przycisk od zalogowania się na środku ekranu
-        //nie pokazuj navbara
       }
+    }
+
+    /* messages */
+    self.messagerFunction = (data) => {
+
+      if ( data.areNew ) {
+          //dźwiek
+          //console.log("Ding!")
+      }
+      
+      var updateNavbar = () => {
+        $("#messageUnreadMessages").text(
+            (data.numberOfMessages+data.numberOfLobbies)?
+            ((data.numberOfMessages+data.numberOfLobbies)>99?
+            "99+":(data.numberOfMessages+data.numberOfLobbies)):"");
+        $("#messageAwaitingRequests").text(data.numberOfRequests?(data.numberOfRequests>99?"99+":data.numberOfRequests):"");
+    }
+      updateNavbar();
     }
 
     /*       event listeners          */
@@ -79,19 +91,15 @@ IndexLogic.getInstance = (debug = false) => {
         type     : "GET",
         cache    : false,
         url      : "/api/v1/account/info",
-        // url      : "/api/v1/playerinfo",
         contentType: "application/json",
         success: function(accountInfo, textStatus, jqXHR) {
           if (debug){
             console.log("ajaxReceiveAccountInfo success");
-            console.log(typeof accountInfo);
             console.log(accountInfo);
-            console.log(textStatus);
-            console.log(jqXHR);
           }
-          if (typeof accountInfo == 'string') //nie zalogowany
+          if (typeof accountInfo == 'string')
             IndexLogic.singleton = IndexLogic({}, debug);
-          else //zalogowany
+          else
             IndexLogic.singleton = IndexLogic(accountInfo, debug);
         },
         error: function(jqXHR, status, err) {

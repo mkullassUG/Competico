@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -428,6 +429,15 @@ public class TaskSetDataService
 	{
 		return Optional.ofNullable(findTaskById(id))
 				.map(t -> taskMapper.toDTO(t));
+	}
+	@Transactional
+	public Optional<Task> getRandomTask(UUID tasksetId, Random r)
+	{
+		return tsDao.findById(tasksetId)
+			.map(ts -> ts.getTaskInfos())
+			.map(tiSet -> new ArrayList<>(tiSet))
+			.map(tiList -> tiList.get(r.nextInt(tiList.size())))
+			.map(ti -> findTaskById(ti.getTaskID()));
 	}
 	@Transactional
 	public boolean removeTask(UUID id)

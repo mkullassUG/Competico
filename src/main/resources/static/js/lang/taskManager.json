@@ -87,6 +87,10 @@
         "pl": "Rankingi",
         "eng": "Dashboard"
     },
+    "#groupsHyperlinkMainNav > a": {
+        "pl": "Grupy",
+        "eng": "Groups"
+    },
     "#profileHyperlink > a": {
         "pl": "Profil",
         "eng": "Profile"
@@ -242,7 +246,80 @@
         "eng": "Cancel"
     },
 
-    
+    "#saveEditTaskModalLongTitle": {
+        "pl": "Czy na pewno zapisać edycje zadania?",
+        "eng": "Are you sure you want to save changes made to the task?"
+    },
+    "#btnSendSaveEditTask": {
+        "pl": "Zapisz edycje",
+        "eng": "Save edit"
+    },
+    "#saveTaskModalLongTitle": {
+        "pl": "Czy na pewno przesłać zadanie?",
+        "eng": "Are you sure you want to save the task?"
+    },  
+    "#saveTaskModalCenter > div > div > div.modal-body > div:nth-child(1) > div:nth-child(1) > div > label": {
+        "pl": "Zapis do zestawu",
+        "eng": "Save to task set"
+    },
+    "#newTasksetNameCol > label": {
+        "pl": "Nowy zestaw.",
+        "eng": "New task set"
+    },
+    "#newTasksetNameInput": {
+        "ATTRIBUTE": "placeholder",
+        "pl": "Nazwa",
+        "eng": "Name"
+    },
+    "#btnSendSaveTask": {
+        "pl": "Prześlij",
+        "eng": "Send"
+    },
+    "#duallist-non-selected-label-part1": {
+        "pl": "Pozostałe zestawy:",
+        "eng": "Other sets:"
+    },
+    "#duallist-selected-label-part1": {
+        "pl": "Zapisz do zestawów:",
+        "eng": "Save to sets:"
+    },
+    "#tasksetTasksInfoModalCenter > div > div > div.modal-header > h4": {
+        "pl": "Podsumowanie zadań:",
+        "eng": "Tasks summary:"
+    },
+    "#tasksetTasksInfoModalCenter > div > div > div.modal-body > div > table > thead > tr > th:nth-child(2)": {
+        "pl": "Typ wariantu",
+        "eng": "Variant type"
+    },
+    "#tasksetTasksInfoModalCenter > div > div > div.modal-body > div > table > thead > tr > th:nth-child(3)": {
+        "pl": "Ilość zadań",
+        "eng": "Tasks count"
+    },
+    "#editTaskModalLongTitle":{
+        "pl": "Czy na pewno zmienić zadanie?",
+        "eng": "Are you sure you want to change the task?"
+    },
+    "#btnSendEditTask": {
+        "pl": "Edytuj",
+        "eng": "Edit"
+    },
+    "#infoMoveBtn": {
+        "pl": "Przenieś do innego zestawu",
+        "eng": "Move to task set"
+    },
+    "#deleteTaskModalLongTitle": {
+        "pl": "Czy na pewno chcesz usunąć zadanie?",
+        "eng": "Are you sure you want to delete the task?"
+    },
+    "#btnSendDeleteTask": {
+        "pl": "Usuń",
+        "eng": "Delete"
+    },
+    "#invalidChoiceFillAddFill, #invalidConnectAddConnection, #invalidFillAddFill": {
+        "pl": "Uzupełnij puste pola w istniejących miejscach.",
+        "eng": "Fill in the blanks in the existing places."
+    },
+
     "OTHER_PAGE_ELEMENTS": {
         "tasksets": {
             "pl": "☰ Zestawy",

@@ -4,18 +4,24 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.projteam.competico.dao.group.GroupDAO;
@@ -30,9 +36,13 @@ import com.projteam.competico.dto.group.GroupDTO;
 import com.projteam.competico.dto.group.GroupInfoDTO;
 import com.projteam.competico.dto.group.GroupJoinRequestDTO;
 import com.projteam.competico.dto.group.GroupJoinRequestFullDTO;
+import com.projteam.competico.dto.group.GroupLobbyDTO;
 import com.projteam.competico.dto.group.GroupMessageDTO;
+import com.projteam.competico.dto.group.GroupMessageFullDTO;
 import com.projteam.competico.service.AccountService;
 import com.projteam.competico.service.game.GameService;
+import com.projteam.competico.service.game.LobbyService;
+import com.projteam.competico.utils.Initializable;
 
 @Service
 public class GroupService
@@ -43,6 +53,9 @@ public class GroupService
 	private GroupMessageDAO gmDao;
 	
 	private AccountService accServ;
+	private LobbyService lobbyServ;
+	
+	private Map<String, Set<String>> groupLobbies;
 	
 	private final char[] groupCodeChars;
 	private static final int GROUP_CODE_LENGTH = 9;
@@ -58,19 +71,23 @@ public class GroupService
 			GroupDAO groupDao,
 			GroupGameResultDAO ggrDao,
 			GroupJoinRequestDAO gjrDao,
-			GroupMessageDAO gmDao)
+			GroupMessageDAO gmDao,
+			@Lazy LobbyService lobbyServ)
 	{
 		this.accServ = accServ;
 		this.groupDao = groupDao;
 		this.ggrDao = ggrDao;
 		this.gjrDao = gjrDao;
 		this.gmDao = gmDao;
+		this.lobbyServ = lobbyServ;
 		
 		groupCodeChars = IntStream.range(0, 256)
 				.filter(GroupService::isValidGroupCodeChar)
 				.mapToObj(c -> Character.toString((char) c))
 	            .collect(Collectors.joining())
 	            .toCharArray();
+		
+		groupLobbies = new HashMap<>();
 	}
 
 	@Transactional
@@ -98,6 +115,11 @@ public class GroupService
 		return code;
 	}
 	@Transactional
+	public boolean groupExists(String groupCode)
+	{
+		return groupDao.existsByGroupCode(groupCode);
+	}
+	@Transactional
 	public Page<GroupInfoDTO> getGroupList(int page)
 	{
 		return getGroupList(page, getAccount());
@@ -106,7 +128,7 @@ public class GroupService
 	public Page<GroupInfoDTO> getGroupList(int page, Account acc)
 	{
 		UUID accId = acc.getId();
-		return groupDao.findAllByPlayers_idOrLecturers_id(accId, accId,
+		return groupDao.findAllDistinctByPlayers_idOrLecturers_id(accId, accId,
 					PageRequest.of(Math.max(page, 0),
 							GROUP_LIST_PAGE_SIZE,
 							Sort.by(Order.desc("name"),
@@ -632,6 +654,12 @@ public class GroupService
 	}
 	
 	@Transactional
+	public Optional<Group> findGroupByCode(String groupCode)
+	{
+		return init(groupDao.findByGroupCode(groupCode));
+	}
+	
+	@Transactional
 	public Page<Map<String, String>> getGameHistory(String groupCode, int page)
 	{
 		return getGameHistory(groupCode, page, getAccount());
@@ -652,6 +680,165 @@ public class GroupService
 				.map(gr -> Map.of(
 						"id", gr.getGameID().toString(),
 						"date", DATE_FORMAT.format(gr.getDate())));
+	}
+	
+	@Transactional
+	public int getTotalJoinRequestCount()
+	{
+		return getTotalJoinRequestCount(getAccount());
+	}
+	@Transactional
+	public int getTotalJoinRequestCount(Account acc)
+	{
+		return gjrDao.countByGroup_Lecturers_id(acc.getId());
+	}
+	@Transactional
+	public int getTotalUnreadMessagesCount()
+	{
+		return getTotalUnreadMessagesCount(getAccount());
+	}
+	@Transactional
+	public int getTotalUnreadMessagesCount(Account acc)
+	{
+		UUID id = acc.getId();
+		return gmDao.countUnreadMessages(id);
+	}
+	@Transactional
+	public List<GroupMessageFullDTO> getTotalUnreadMessages()
+	{
+		return getTotalUnreadMessages(getAccount());
+	}
+	@Transactional
+	public List<GroupMessageFullDTO> getTotalUnreadMessages(Account acc)
+	{
+		UUID id = acc.getId();
+		return gmDao.findAllUnreadMessages(id)
+				.stream()
+				.map(msg -> new GroupMessageFullDTO(msg.getId(),
+						msg.getAccount().getUsername(),
+						msg.getGroup().getName(),
+						msg.getGroup().getGroupCode(),
+						msg.getTitle(), msg.getContent(),
+						DATE_FORMAT.format(msg.getCreationDate()),
+						Optional.ofNullable(msg.getEditDate())
+							.map(d -> DATE_FORMAT.format(d))
+							.orElse(null),
+						msg.getReadBy().contains(id)))
+				.collect(Collectors.toList());
+	}
+	
+	public void addGroupLobby(String groupCode, String lobbyCode)
+	{
+		synchronized (groupLobbies)
+		{
+			groupLobbies.computeIfAbsent(groupCode, k -> new HashSet<>());
+			groupLobbies.get(groupCode).add(lobbyCode);
+		}
+	}
+	public void removeGroupLobby(String groupCode, String lobbyCode)
+	{
+		synchronized (groupLobbies)
+		{
+			groupLobbies.computeIfAbsent(groupCode, k -> new HashSet<>());
+			groupLobbies.get(groupCode).remove(lobbyCode);
+		}
+	}
+	@Transactional
+	public List<String> getGroupLobbies(String groupCode)
+	{
+		return getGroupLobbies(groupCode, getAccount());
+	}
+	@Transactional
+	public List<String> getGroupLobbies(String groupCode, Account acc)
+	{
+		UUID accId = acc.getId();
+		
+		if (!groupDao.existsByGroupCodeAndLecturers_idOrGroupCodeAndPlayers_id(
+				groupCode, accId, groupCode, accId))
+			throw new IllegalArgumentException("ACCESS_DENIED");
+		
+		return getGroupLobbiesDirect(groupCode);
+	}
+	@Transactional
+	public List<String> getAllGroupLobbies()
+	{
+		return getAllGroupLobbies(getAccount());
+	}
+	@Transactional
+	public List<String> getAllGroupLobbies(Account acc)
+	{
+		UUID id = acc.getId();
+		return groupDao.findAllDistinctByLecturers_idOrPlayers_id(id, id)
+			.stream()
+			.map(g -> g.getGroupCode())
+			.map(gc -> getGroupLobbiesDirect(gc))
+			.flatMap(list -> list.stream())
+			.collect(Collectors.toList());
+	}
+	@Transactional
+	public List<GroupLobbyDTO> getAllGroupLobbiesDto()
+	{
+		return getAllGroupLobbiesDto(getAccount());
+	}
+	@Transactional
+	public List<GroupLobbyDTO> getAllGroupLobbiesDto(Account acc)
+	{
+		UUID id = acc.getId();
+		return groupDao.findAllDistinctByLecturers_idOrPlayers_id(id, id)
+			.stream()
+			.flatMap(g -> getGroupLobbiesDirect(g.getGroupCode())
+					.stream()
+					.map(lc -> new GroupLobbyDTO(
+							g.getName(), g.getGroupCode(), lc)))
+			.collect(Collectors.toList());
+	}
+	private List<String> getGroupLobbiesDirect(String groupCode)
+	{
+		synchronized (groupLobbies)
+		{
+			ArrayList<String> ret = new ArrayList<>();
+			Set<String> lobbyCodes = groupLobbies.get(groupCode);
+			if (lobbyCodes == null)
+				return List.of();
+			Iterator<String> it = lobbyCodes.iterator();
+			while (it.hasNext())
+			{
+				String lobbyCode = it.next();
+				if (lobbyServ.lobbyExists(lobbyCode))
+					ret.add(lobbyCode);
+				else
+					it.remove();
+			}
+			return ret;
+		}
+	}
+	
+	@Transactional
+	public boolean groupContainsAccount(String groupCode)
+	{
+		Optional<Group> g = groupDao.findByGroupCode(groupCode);
+		if (g.isEmpty())
+			return false;
+		return accServ.getAuthenticatedAccount()
+				.map(acc -> groupContainsAccount(g.get(), acc))
+				.orElse(false);
+	}
+	
+	@Scheduled(cron = "0 0 3 * * *")
+	public void removeExpiredGroupLobbies()
+	{
+		synchronized (groupLobbies)
+		{
+			for (Set<String> lobbyCodes: groupLobbies.values())
+			{
+				Iterator<String> it = lobbyCodes.iterator();
+				while (it.hasNext())
+				{
+					if (!lobbyServ.lobbyExists(it.next()))
+						it.remove();
+				}
+			}
+		}
 	}
 	
 	private String getAvailableGroupCode()
@@ -704,5 +891,10 @@ public class GroupService
 	{
 		return accServ.getAuthenticatedAccount()
 				.orElseThrow(() -> new IllegalArgumentException("Not authenticated."));
+	}
+	private static <T extends Initializable> Optional<T> init(Optional<T> in)
+	{
+		in.ifPresent(i -> i.initialize());
+		return in;
 	}
 }

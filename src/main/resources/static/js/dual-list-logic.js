@@ -1,9 +1,3 @@
-/*
-TODO:
-dokończyć filtrowanie dla drugiej listy
-
-*/
-
 const DualListModule = (function(deps={}){
 		
     if ( typeof $ === 'undefined' && typeof deps.$ === 'undefined')
@@ -116,7 +110,6 @@ const DualListModule = (function(deps={}){
 
         //filtrowanie:
         var filterOptions = (text, selectElement) => {
-            //działa tylko dla inputSel bo self.filteredInputOptions
 
             //przywróć wszystkie 
             self.insertOptions(self.filteredInputOptions);
@@ -127,8 +120,8 @@ const DualListModule = (function(deps={}){
             var foundValues = [];
             if (text.trim() === "" )
                 return {values: foundValues, nodes: foundNodes}
-            //filtruj
 
+            //filtruj
             var options = getAllOptionsFrom(selectElement).nodes;
             deps.$(options).each((e,b)=>{
                 if ( !b.value.includes(text.trim()) ){
@@ -147,7 +140,6 @@ const DualListModule = (function(deps={}){
 
             var nodes = optArray.nodes;
             var values = optArray.values;
-            // optArray.forEach(opt => opt.prop("selected", false));
             deps.$(nodes).prop("selected", false);
             selectNodeTo.prepend(nodes)
 
@@ -176,17 +168,22 @@ const DualListModule = (function(deps={}){
             deps.$("#dualList > div:nth-child(2) > div:nth-child(2) > span > span").text(text + outOpts.length);
 
             
-            var inLab = deps.$("#duallist-non-selected-label");
-            inLab.text("Pozostałe zestawy: \n" + self.inputOptions.length);
-            inLab.html(inLab.html().replace(/\n/g,'<br/>'));
+            var inLab2 = deps.$("#duallist-non-selected-label-part2");
+            inLab2.text("\n" + self.inputOptions.length);
+            inLab2.html(inLab2.html().replace(/\n/g,'<br/>'));
 
-            var outLab = deps.$("#duallist-selected-label");
-            if ( (self.outputOptions.length + self.outsideTasks) > 0)
-                outLab.css({"color":"inherit"});
-            else
-                outLab.css({"color":"red"});
-            outLab.text("Zapisz do zestawów: \n" + (self.outputOptions.length + self.outsideTasks));
-            outLab.html(outLab.html().replace(/\n/g,'<br/>'));
+            var outLab1 = deps.$("#duallist-selected-label-part1");
+            var outLab2 = deps.$("#duallist-selected-label-part2");
+            if ( (self.outputOptions.length + self.outsideTasks) > 0){
+                outLab1.css({"color":"inherit"});
+                outLab2.css({"color":"inherit"});
+            } else {
+                outLab1.css({"color":"red"});
+                outLab2.css({"color":"red"});
+            }
+
+            outLab2.text("\n" + (self.outputOptions.length + self.outsideTasks));
+            outLab2.html(outLab2.html().replace(/\n/g,'<br/>'));
         }
 
         self.updateSaveToTasksetInfo = (add = 0) => {
@@ -214,7 +211,6 @@ const DualListModule = (function(deps={}){
         }
 
         //zaznaczenie np przefiltrowanych:re
-        //useless?
         var selectOpts = (optArray, selectNode) => selectNode.val(optArray);
 
         self.move = (optArr) => {
@@ -230,11 +226,7 @@ const DualListModule = (function(deps={}){
                 getSelected(inputSel),
                 outputSel
             );
-            // for ( let i = 0; i < optArr.length; i++) {
-            //     var value = optArr[i];
-
-                
-            // }
+            updateCounters();
         }
         //refresh duallist
         self.refresh = () => {

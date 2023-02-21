@@ -12,21 +12,31 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import com.projteam.competico.dao.game.TaskSetDAO;
 import com.projteam.competico.domain.Account;
 import com.projteam.competico.domain.game.Lobby;
+import com.projteam.competico.domain.game.TaskSet;
+import com.projteam.competico.domain.group.Group;
 import com.projteam.competico.dto.lobby.LobbyOptionsDTO;
 import com.projteam.competico.service.AccountService;
+import com.projteam.competico.service.group.GroupService;
+import com.projteam.competico.utils.Initializable;
 
 @Service
 public class LobbyService
 {
 	private AccountService accServ;
 	private PlayerDataService pdServ;
+	private GroupService groupServ;
+	
+	private TaskSetDAO tsDao;
 	
 	private Map<String, Lobby> lobbies;
 	private Set<String> lobbyCodesAllowingRandomPlayers;
@@ -45,7 +55,9 @@ public class LobbyService
 	
 	@Autowired
 	public LobbyService(AccountService accServ,
-			PlayerDataService pdServ)
+			PlayerDataService pdServ,
+			GroupService groupServ,
+			TaskSetDAO tsDao)
 	{
 		lobbies = syncMap();
 		lobbyCodesAllowingRandomPlayers = syncSet();
@@ -58,6 +70,8 @@ public class LobbyService
 		
 		this.accServ = accServ;
 		this.pdServ = pdServ;
+		this.groupServ = groupServ;
+		this.tsDao = tsDao;
 	}
 	
 	public String createLobby()
@@ -80,6 +94,37 @@ public class LobbyService
 		{
 			lobbies.put(gameCode, new Lobby(gameCode, host));
 		}
+		
+		return gameCode;
+	}
+	
+	public String createGroupLobby(String groupCode)
+	{
+		return createGroupLobby(groupCode, getAccount());
+	}
+	public String createGroupLobby(String groupCode, Account host)
+	{
+		Objects.requireNonNull(host);
+		Objects.requireNonNull(groupCode);
+		
+		Group group = groupServ.findGroupByCode(groupCode)
+				.orElseThrow(() -> new IllegalArgumentException("GROUP_NOT_FOUND"));
+		UUID groupId = group.getId();
+		
+		String gameCode = generateGameCode();
+		
+		for (int i = 0; i < MAX_GAME_CODE_REROLL_COUNT; i++)
+		{
+			if (lobbies.containsKey(gameCode))
+				gameCode = generateGameCode();
+		}
+		
+		synchronized (lobbies)
+		{
+			lobbies.put(gameCode, new Lobby(gameCode, host, groupId, groupCode));
+		}
+		
+		groupServ.addGroupLobby(groupCode, gameCode);
 		
 		return gameCode;
 	}
@@ -151,6 +196,40 @@ public class LobbyService
 	public int getMaximumPlayerCount(String gameCode)
 	{
 		return lobbies.get(gameCode).getMaximumPlayerCount();
+	}
+	public boolean isGroupLobby(String gameCode)
+	{
+		return lobbies.get(gameCode).isGroupLobby();
+	}
+	public Optional<UUID> getGroupId(String gameCode)
+	{
+		return lobbies.get(gameCode).getGroupId();
+	}
+	public Optional<String> getGroupCode(String gameCode)
+	{
+		return lobbies.get(gameCode).getGroupCode();
+	}
+	public List<String> getTasksetNames(String gameCode)
+	{
+		return lobbies.get(gameCode).getTasksetNames();
+	}
+	public List<TaskSet> getTasksets(String gameCode)
+	{
+		return lobbies.get(gameCode).getTasksets();
+	}
+	@Transactional
+	public void setTasksets(String gameCode, List<String> tasksets)
+	{
+		setTasksets(gameCode, tasksets, getAccount());
+	}
+	@Transactional
+	public void setTasksets(String gameCode, List<String> tasksets, Account acc)
+	{
+		List<TaskSet> tsList = tsDao.findAllByNameInAndLecturerID(tasksets, acc.getId())
+				.stream()
+				.map(ts -> Initializable.init(ts))
+				.collect(Collectors.toList());
+		lobbies.get(gameCode).setTasksets(tsList);
 	}
 	public boolean allowRandomPlayers(String gameCode, boolean allow, Account requestSource)
 	{

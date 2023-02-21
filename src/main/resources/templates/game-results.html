@@ -10,7 +10,6 @@
   <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/cover/">
   <link rel="icon" href="/assets/myIcons/CompeticoLogo.svg">
   <!-- Bootstrap core CSS -->
-  <!-- <link href="css/bootstrap.min.css" rel="stylesheet"> -->
   <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="/css/bootstrap/font-awesome.min.css">
   <!-- Custom styles for this template -->
@@ -33,10 +32,10 @@
     <!-- end game -->
     <div class="row mt-3" id="gameEndCenter">
       <div class="col-12">
-        <h2 class="text-white">Dziękuję za grę</h2>
+        <h2 class="text-white" id="mainLeaderboardHeader">Dziękuję za grę</h2>
         <div id="endGameDashboard" >
           <div class="col-12" id="endGameWrapperDiv">
-            <div class="m-custom my-3 p-3 rounded gameDivDecoration" /*style="overflow:hidden;"*/>
+            <div class="m-custom p-3 rounded gameDivDecoration" /*style="overflow:hidden;"*/>
               <div class="bg-light btnShadow" id="endGameDiv">
                 <h5>Tablica wyników:</h5>
                 <table class="table table-sm">
@@ -46,6 +45,7 @@
                       <th scope="col">Nazwa</th>
                       <th scope="col">Wynik</th>
                       <th scope="col">Czas</th>
+                      <th scope="col" class="collapse" id="lecturersView">Podgląd</th>
                     </tr>
                   </thead>
                   <tbody id="scoreTable">
@@ -60,18 +60,16 @@
     </div>
     <div class="row mt-3" id="gameEndBottom">
       <div class="col-12">
-        <buton class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnPersonalResults" data-toggle="modal" data-target="#personalResultsModal">Moje wyniki</buton>
+        <buton class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnPersonalResults" data-toggle="modal" data-target="#personalResultsModal">
+          Moje wyniki
+        </buton>
       </div>
       <div class="col-12">
           <buton class="btn btn-lg btn-secondary mb-3 btnShadow" id="btnLeave" data-toggle="modal" data-target="#areYouLeavingModal">Powrót do rankingów</buton>
       </div>
     </div>
   </div>
-  <!-- <footer class="footer">
-    <div class="container text-center">
-      <span class="text-muted m-auto">Ucz się angielskiego razem z nami <img src="/assets/myIcons/iconbigblack.svg" class="iconbig" style=" filter: invert(25%);"></span>
-    </div>
-  </footer> -->
+
   <!-- loading modal -->
   <div class="hideBeforeLoadModal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-sm">
@@ -80,6 +78,7 @@
         </div>
     </div>
   </div>
+  
   <!-- Modal personal Results -->
   <div class="modal fade" id="personalResultsModal" tabindex="-1" role="dialog" aria-labelledby="personalResultsModalModalTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
@@ -106,11 +105,11 @@
                 </table>
           </div>
           <div class="modal-footer center-block">
-            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnPersonalResults">Ok</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
           </div>
         </div>
       </div>
-    </div>
+  </div>
 
     <!-- Modal game finished -->
   <div class="modal fade" id="gameFinishedModal" tabindex="-1" role="dialog" aria-labelledby="gameFinishedModalModalTitle" aria-hidden="true">

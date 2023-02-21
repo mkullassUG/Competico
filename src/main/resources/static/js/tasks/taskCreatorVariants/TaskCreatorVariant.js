@@ -8,79 +8,58 @@ const TaskCreatorVariant = (data_, debug = false, $jq, myWindow) =>{
 
     /*  Variables */
     var self = data_;
-    self.taskID; //do edycji
+    self.taskID;
     self.taskContent = {};
     self.taskContent.tags = [];
     self.taskContent.difficulty = 100.0;
     self.taskContent.instruction = "ToDo instruction";
 
     /*  Logic functions */
-    var taskCreatorInit = () => {
-        /*TODO
-            zmieńdiva na diva konkretnego wariantu
-        
-        */
-        
-    }
+    var taskCreatorInit = () => { }
 
-    self.checkIfTaskReady = () => {
-        /*TODO:
-        sprawdzaj czy obecny wariant przeszedł wymogi zgodności do importu:
-
-        1. żadne pole nie jest puste
-        2. od ostatniego zapisu zaszły zmiany
-        2.1 task nie jest identyczny z innym taskiem z listy istniejącym???
-        */
-    }
+    self.checkIfTaskReady = () => { }
 
     self.prepareTaskJsonFile = () => {
-        
-        /*TODO:
-        spakuj gotowe zadanie do pliku*/
         return {};
     }
 
-    self.setupDemoFromCurrent = () => {
-        /*TODO:
-        podgląd stworzonego zadania jako gry*/
-    }
-    //wysłanie nowego
+    self.setupDemoFromCurrent = () => { }
+
     self.sendTaskVariant = (ajaxCallback, onSuccess, preparedTask) => {
         ajaxCallback(
             preparedTask,
             (data) => {
-                onSuccess(); // self.setupImportedTasksTable();
+                onSuccess();
             }
         );
     }
+
     self.sendTaskVariantToTasksets = (ajaxCallback, onSuccess, tasksets, isJson) => {
 
-        //obiekt który dziedziczy musi implementowac tą metode
         var preparedTask = self.prepareTaskJsonFile();
         
         ajaxCallback(
             preparedTask,
             tasksets,
             (data) => {
-                onSuccess(data); // self.setupImportedTasksTable();
+                onSuccess(data);
             },
             isJson
         );
     }
-    //TODO edycja starego 
+
     self.sendEditedTaskVariant = (ajaxCallback, onSuccess, taskID, preparedTask) => {
         ajaxCallback(
             preparedTask,
             taskID,
             (data) => {
-                onSuccess(data); // self.setupImportedTasksTable();
+                onSuccess(data);
             }
         );
     }
 
     self.sendEditedTaskVariantToTaskset = (ajaxCallback, onSuccess, taskIDs) => {
 
-        //obiekt który dziedziczy musi implementowac tą metode
         var preparedTask = self.prepareTaskJsonFile();
         
         var promiseArray = [];
@@ -96,20 +75,13 @@ const TaskCreatorVariant = (data_, debug = false, $jq, myWindow) =>{
             );
         }
         Promise.all(promiseArray)
-        .then((results) => {
-            //console.warn(results);
-            //onSuccess(results); 
+        .then((results_) => {
         });
     }
 
-    self.setupDemoFromCurrent = () => {
-        /*TODO:
-        podgląd stworzonego zadania jako gry*/
-    }
+    self.setupDemoFromCurrent = () => { }
 
     self.loadTaskFrom = (taskObject) => {
-        /*TODO:
-        wczytanie zadania na ekran z obiektu lub pliku json*/
         self.taskContent = taskObject.taskContent;
     }
 
@@ -125,20 +97,6 @@ const TaskCreatorVariant = (data_, debug = false, $jq, myWindow) =>{
 
         $("#"+taskDivName).show();
     }
-
-    /*Could do:*/
-    /*
-    self.prepareTaskCreatorButtons = (taskName) => {
-        //wszystkie przyciski zaczynające się na [btn]+[taskName]+*
-
-        //klonować i podmienić...
-
-        //ale jakie funkcje wstawić? z tego miejsca ich nie widzę
-        
-        //trzeba zrobić lokalnie dla pojedynczych tasków (zeby nie robić w init wszystkiego)?
-    }
-    */
-
 
     /*  Initialization */
     taskCreatorInit();

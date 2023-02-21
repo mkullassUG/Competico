@@ -99,7 +99,7 @@
         "pl": "Rankingi",
         "eng": "Rankings"
     },
-    "#groupsHyperlink": {
+    "#groupsHyperlinkMainNav > a": {
         "pl": "Grupy",
         "eng": "Groups"
     },

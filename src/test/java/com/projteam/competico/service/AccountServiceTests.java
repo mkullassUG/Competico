@@ -485,7 +485,7 @@ public class AccountServiceTests
 					inv.getArgument(0),
 					new Date()));
 		doThrow(Mockito.mock(MailException.class))
-			.when(emailServ).sendEmail(any(), any(), any());
+			.when(emailServ).sendEmailAsync(any(), any(), any());
 		
 		assertThrows(RuntimeException.class, () -> accountService.requestPasswordReset(username));
 	}
@@ -648,7 +648,7 @@ public class AccountServiceTests
 					inv.getArgument(0),
 					new Date()));
 		doThrow(Mockito.mock(MailException.class))
-			.when(emailServ).sendEmail(any(), any(), any());
+			.when(emailServ).sendEmailAsync(any(), any(), any());
 		
 		assertThrows(RuntimeException.class, () -> accountService.requestEmailVerification(acc));
 	}
