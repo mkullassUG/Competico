@@ -1,14 +1,20 @@
+//odkomentować dla https
 package com.projteam.competico.config;
 
 import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ConditionalOnProperty(
+	value="server.ssl.enabled", 
+	havingValue = "true", 
+	matchIfMissing = false)
 public class TomcatHttpConfig
 {
 	private int httpPort;
