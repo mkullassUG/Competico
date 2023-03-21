@@ -10,7 +10,7 @@
   <h3 align="center">Competico</h3>
 
   <p align="center">
-    An app for teachers who want to teach language more creatively!
+    Aplikacja dla nauczycieli i uczniów, którzy chcą kreatywnie uczyć się języka angielskiego!
     <br />
     <a href="https://github.com/mkullassUG/Competico/tree/master/dokumentacja"><strong>Explore the docs »</strong></a>
     <br />
@@ -164,9 +164,7 @@ Gdy zostanie oddane ostatnie zadanie, zostaną przeniesieni na widok tablicy wyn
 ## Creators
 
 * [![mkullassUG][mkullassUG-shield]][mkullassUG-url] 
-mkullass
-* [![GhillieWolf][GhillieWolf-shield]][GhillieWolf-url]
-GhillieWolf
+* [![GhillieWolf][GhillieWolf-shield]][GhillieWolf-url] 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -177,21 +175,18 @@ GhillieWolf
 
 
 
-
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 [Spring.io]: https://img.shields.io/badge/Spring-white?style=for-the-badge&logo=spring&logoColor=67aa3c
 [Spring-url]: https://spring.io
-[thymeleaf.org]: https://img.shields.io/badge/Thymeleaf-white?style=for-the-badge&logo=thymeleaf&logoColor=005f0f
+[thymeleaf.org]: https://img.shields.io/badge/Thymeleaf-005f0f?style=for-the-badge&logo=thymeleaf&logoColor=white
 [Thymeleaf-url]: https://www.thymeleaf.org
 [getbootstrap.com]: https://img.shields.io/badge/Bootstrap-6d2cf0?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
 [postgresql.org]: https://img.shields.io/badge/postgresql-white?style=for-the-badge&logo=postgresql&logoColor=30628a
 [PostgreSQL-url]: https://www.postgresql.org
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
+[JQuery.com]: https://img.shields.io/badge/postgresql-30628a?style=for-the-badge&logo=postgresql&logoColor=white
 [JQuery-url]: https://jquery.com 
 
 [mkullassUG-shield]: https://img.shields.io/badge/mkullass-161b22?style=for-the-badge&logo=github&logoColor=white
