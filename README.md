@@ -1,3 +1,5 @@
+<a name="readme-top"></a>
+
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -171,3 +173,22 @@ GhillieWolf
 ## License
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 -->
+
+
+
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[Spring.io]: https://img.shields.io/badge/Spring-white?style=for-the-badge&logo=spring&logoColor=67aa3c
+[Spring-url]: https://spring.io
+[thymeleaf.org]: https://img.shields.io/badge/Thymeleaf-white?style=for-the-badge&logo=thymeleaf&logoColor=005f0f
+[Thymeleaf-url]: https://www.thymeleaf.org
+[getbootstrap.com]: https://img.shields.io/badge/Bootstrap-6d2cf0?style=for-the-badge&logo=bootstrap&logoColor=white
+[Bootstrap-url]: https://getbootstrap.com
+[postgresql.org]: https://img.shields.io/badge/Spring-white?style=for-the-badge&logo=spring&logoColor=67aa3c
+[PostgreSQL-url]: https://www.postgresql.org
+[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
+[JQuery-url]: https://jquery.com 
