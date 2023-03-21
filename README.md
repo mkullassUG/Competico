@@ -184,9 +184,9 @@ Gdy zostanie oddane ostatnie zadanie, zostaną przeniesieni na widok tablicy wyn
 [Thymeleaf-url]: https://www.thymeleaf.org
 [getbootstrap.com]: https://img.shields.io/badge/Bootstrap-6d2cf0?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
-[postgresql.org]: https://img.shields.io/badge/postgresql-white?style=for-the-badge&logo=postgresql&logoColor=30628a
+[postgresql.org]: https://img.shields.io/badge/postgresql-30628a?style=for-the-badge&logo=postgresql&logoColor=white
 [PostgreSQL-url]: https://www.postgresql.org
-[JQuery.com]: https://img.shields.io/badge/postgresql-30628a?style=for-the-badge&logo=postgresql&logoColor=white
+[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
 
 [mkullassUG-shield]: https://img.shields.io/badge/mkullass-161b22?style=for-the-badge&logo=github&logoColor=white
