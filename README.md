@@ -162,10 +162,11 @@ Gdy zostanie oddane ostatnie zadanie, zostaną przeniesieni na widok tablicy wyn
 
 <!-- CONTRIBUTING -->
 ## Creators
+
+* [![mkullassUG][mkullassUG-shield]][mkullassUG-url] 
 mkullass
-* [![mkullassUG][https://github.com/mkullassUG]][mkullassUG-url]
+* [![GhillieWolf][GhillieWolf-shield]][GhillieWolf-url]
 GhillieWolf
-* [![GhillieWolf][github.com/GhillieWolf]][GhillieWolf-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -188,7 +189,12 @@ GhillieWolf
 [Thymeleaf-url]: https://www.thymeleaf.org
 [getbootstrap.com]: https://img.shields.io/badge/Bootstrap-6d2cf0?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
-[postgresql.org]: https://img.shields.io/badge/Spring-white?style=for-the-badge&logo=spring&logoColor=67aa3c
+[postgresql.org]: https://img.shields.io/badge/postgresql-white?style=for-the-badge&logo=postgresql&logoColor=30628a
 [PostgreSQL-url]: https://www.postgresql.org
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
+
+[mkullassUG-shield]: https://img.shields.io/badge/mkullass-161b22?style=for-the-badge&logo=github&logoColor=white
+[mkullassUG-url]: https://github.com/mkullassUG
+[GhillieWolf-shield]: https://img.shields.io/badge/GhillieWolf-161b22?style=for-the-badge&logo=github&logoColor=white
+[GhillieWolf-url]: https://github.com/GhillieWolf
