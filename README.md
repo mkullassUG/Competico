@@ -12,7 +12,7 @@
   <p align="center">
     Aplikacja dla nauczycieli i uczniów, którzy chcą kreatywnie uczyć się języka angielskiego!
     <br />
-    <a href="https://github.com/mkullassUG/Competico/tree/master/dokumentacja"><strong>Explore the docs »</strong></a>
+    <a href="Competico/tree/master/dokumentacja"><strong>Explore the docs »</strong></a>
     <br />
     <br />
    </p>
@@ -50,14 +50,14 @@ Celem aplikacji jest wspieranie użytkowników w nauce języka anielskiego poprz
 Daje ona lektorom łatwy dostęp do tworzenia interaktywnych ćwiczeń, dołączania uczniów do grup i przypisywania ich pod wcześniej wymyślone zadania do wspólnego rozwiązywania.
 Gracze mogą rywalizować ze sobą o miejsce w globalnym rankingu przez rozwiązywanie losowo wybranych z puli zadań, losowanych pod ich obecny poziom wiedzy.
 
-z aplikacji można korzystać zarówno na komputerach stacjonarnych jak i urządzeniach mobilnych.
+Z aplikacji można korzystać zarówno na komputerach stacjonarnych jak i urządzeniach mobilnych.
 
-Jstnieją inne dobre aplikacje od nauki języka angielskiego (Kahoot, Moodle), jednak nie łączą one w sobie zapamiętywania poziomu umiejętności gracza, rywalizacji o miejsce w globalnym rankingu oraz swobodnego prowadzenia zajęć dla grup uczniów pod nadzorem lektora.
+Istnieją inne dobre aplikacje od nauki języka angielskiego, takie jak "Kahoot" lub "Moodle", ale nie łączą one zapamiętywania poziomu umiejętności gracza, rywalizacji o miejsce w globalnym rankingu oraz swobodnego prowadzenia zajęć dla grup uczniów pod nadzorem lektora.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
-Główne frameworki/biblioteki użyte w budowie projektu:
+Główne aplikacje, frameworki i biblioteki użyte w budowie projektu:
 
 * [![Spring][Spring.io]][Spring-url]
 * [![Thymeleaf][thymeleaf.org]][Thymeleaf-url]
@@ -72,10 +72,10 @@ Główne frameworki/biblioteki użyte w budowie projektu:
 Niżej opisane są niezbędne wymagania oraz kroki do uruchomienia aplikacji na własnej maszynie.
 
 ### Prerequisites
-Dla minimalnej konfiguracji można użyć systemu Windows 10 z wcześniej zainstalowaną bazą danych PostgreSQL wersji 13 i środowiskiem Java w wersji 11+.
+Dla minimalnej konfiguracji można użyć systemu Windows 10, z wcześniej zainstalowaną bazą danych PostgreSQL w wersji 13 i środowiskiem Java w wersji 11+.
 
-Należy przygotować serwer SMTP, który używany będzie do potwierdzania zakładanych kont graczy i lektorów. Do minimalnej konfiguracji polacany jest gmail.
-Na obecną chwilę, gdy pisane jest to README, aby poprawnie połączyć serwer SMTP gmail'a z Competico należy na koncie google włączyć 2-etapową weryfikację oraz utworzyć 16-cyfrowy token dostępu który będzie używany przez Competico jako hasło do logowania się.
+Należy przygotować serwer SMTP, który używany będzie do potwierdzania zakładanych kont graczy i lektorów. Do minimalnej konfiguracji można przykładowo użyć serwisu Gmail.
+Na czas pisania Readme, aby poprawnie połączyć serwer SMTP Gmail'a z Competico należy na koncie Google włączyć 2-etapową weryfikację oraz utworzyć 16-cyfrowy token dostępu, który będzie używany przez Competico do uwierzytelniania połączenia z zewnętrznym serwisem.
 
 Opcjonalnym jest dodanie certyfikatu SSL do łączenia się z serwerem przez protokół HTTPS. 
 
@@ -87,27 +87,52 @@ Zalecane jest aby ustawiać wartości konfiguracyjne poprzez zmienne środowisko
 Konfiguracja składa się z kilku części:
 
 
-* PostgreSQL
+* PostgreSQL setup
 ```sh
-  COMPETICO_DATABASE:
-  Stwórz baze danych i użytą nazwę ustaw pod zmienną środowiskową COMPETICO_DATABASE
+	[...]
+	spring.datasource.url=jdbc:postgresql://localhost:5432/${COMPETICO_DATABASE:teamproj}
+	spring.datasource.username=postgres
+	spring.datasource.password=${POSTGRES_PASS}
+	[...]
+	#spring.jpa.hibernate.ddl-auto=create
+	spring.jpa.hibernate.ddl-auto=validate
+	[...]
 
-  POSTGRES_PASS: 
-  Hasło administratora bazy danych ustaw pod zmienną POSTGRES_PASS
+  Stworzyć baze danych (np. przez graficzny interfejs narzędzia pgAdmin), jej nazwę ustawić pod zmienną środowiskową COMPETICO_DATABASE.
 
-  Zmień wartość własności "spring.jpa.hibernate.ddl-auto" na "create" przed uruchomieniem ją po raz pierwszy. 
-  Przed ponownym uruchomieniem aplikacji ustaw spowrotem na "validate", w przeciwnym wypadku zawartość bazy danych zostanie usunięta.
+  Poniżej należy ustawić dane logowania administratora bazy danych. 
+  Analogicznie obok "spring.datasource.username=" podać nazwę użytkownika i pod zmienną środowiskową POSTGRES_PASS należy ustawić hasło 
+
+  Przy pierwszym uruchamianiu aplikacji, ustawić "spring.jpa.hibernate.ddl-auto" na "create". 
+  Przed ponownym uruchomieniem aplikacji, ustawić spowrotem na "validate". 
+  Pominięcie tego kroku będzie skutkować przywracaniem startowych wartości oraz usuwaniem nowych z bazy danych, przy każdym ponownym uruchomieniu aplikacji.
 
   ```
 
 * SMTP
 ```sh
-  Pod zmiennymi środowiskowymi EMAIL_USER i EMAIL_PASS ustaw dane logowania dla wybranego serwisu maila
-  Pozostałe własności pod nazwami "spring.mail" należy ustawić analogicznie według podanych zaleceń używanego serwisu SMTP
+	spring.mail.host=smtp.gmail.com
+	spring.mail.username=${EMAIL_USER} 
+	spring.mail.password=${EMAIL_PASS}
+	spring.mail.port=587
+	spring.mail.properties.mail.smtp.auth=true
+	spring.mail.properties.mail.smtp.starttls.enable=true
+
+  Pod zmiennymi środowiskowymi EMAIL_USER i EMAIL_PASS, 
+  ustawić dane logowania dla wybranego serwisu maila
+  
+  Pozostałe własności, pod nazwami "spring.mail", 
+  należy ustawić analogicznie, 
+  według podanych zaleceń wybranego serwisu SMTP
   ```
 * Domain
 ```sh
-  Pod zmienną SERVER_URL należy podać własną domenę, pod którą widoczny będzie serwer HTTP
+	[...]
+	app.url=${SERVER_URL:localhost}
+	[...]
+	
+  Pod zmienną SERVER_URL należy podać własną domenę, 
+  pod którą widoczny będzie serwer HTTP
   ```
 
 * SSL (Opcjonalne)
@@ -115,11 +140,24 @@ Konfiguracja składa się z kilku części:
   Aby serwer był widoczny pod protokołem HTTPS, należy:
   -Umieścić certyfikat SSL pod ścieżką "\src\main\resources\keystore"
   -Token certyfikatu umieścić pod zmienną środowiskową KEYSTORE_PASS
-  -W application.properties odpowiednio (postępując według komentarzy podanych w pliku) zakomentować i odkomentować odpowiednie wartości 
+  -W application.properties odpowiednio, zakomentować i odkomentować odpowiednie pola,
+	kierując się wskazówkami z komentarzy
+  -Konfiguracja z przykładową nazwą certyfikatu "teamproj.p12": 
+  
+	#dla wylaczonego ssl:
+	server.port=80
+	#dla wlaczonego ssl:
+	#server.port=443
+	#http.port=80
+	#server.ssl.key-store-type=PKCS12
+	#server.ssl.key-store=classpath:keystore/teamproj.p12
+	#server.ssl.key-store-password=${KEYSTORE_PASS}
+	#server.ssl.key-alias=teamproj
+	#server.ssl.enabled=true
   ```
 
-Zalecane jest aby aplikacja Spring'a została spakowana przez Maven'a, (odpowiedni plik pom.xml znajduje się w katalogu głównym) 
-następnie servery PostgreSQL i aplikacji umieszczone zostały na kontenerach np. używając Docker'a
+Zalecane jest aby aplikacja Spring'a została spakowana przez Maven'a, (odpowiedni plik pom.xml znajduje się w katalogu głównym). 
+Następnie aby servery PostgreSQL i aplikacji umieszczone zostały na kontenerach np. używając Docker'a.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -135,6 +173,7 @@ Rola gracza pozwala na:
   - Branie udziału w organizowanych przez lektora grach grupowych
   - Rywalizowanie w publicznych rozgrywkach, za które przypisywane są punkty i widoczne w globalnym rankingu graczy
 
+###Rozgrywka
 Zarówno gry globalne, jak i grupowe składają się z trzech faz – lobby, rozgrywki oraz tablicy wyników.
 
 Gracze po wejściu w zakładkę "Gra" mają wybór uczestniczenia w grze globalnej, mogą stworzyć własne lobby publiczne lub prywatne (do którego można dołączyć wyłącznie przez wygenerowany kod lobby) lub znaleźć istniejące lobby z innymi graczami. Do gier z przyjaciółmi mogą dołączać za pomocą kodów.
@@ -146,6 +185,9 @@ Lektor może zarządzać danym lobby, np. przez wybranie zestawów zadań, któr
 Gdy lektor lub gracz (zależnie od danego lobby) rozpoczną grę zostaną przeniesieni do widoku rozgrywki z pierwszym zadaniem z puli zadań.
 
 Gdy zostanie oddane ostatnie zadanie, zostaną przeniesieni na widok tablicy wyników. Na tym etapie gra się zakończyła i możliwe jest przejrzenie uzyskanych punktów za poszczególne zadania.
+
+###Tworzenie Zadań
+Dla użytkowników z rolą lektora, dodatkowo widnieje zakładka Task Manager. Jest to przycisk dropdown z listą różnych szablonów zadań. Po wybraniu odpowiedniego szablonu, użytkownik zostanie przeniesiony do widoku tworzenia i zarządzania swoimi zadaniami.
 
 <!-- ROADMAP -->
 ## Roadmap
