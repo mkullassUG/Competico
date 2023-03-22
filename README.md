@@ -173,7 +173,7 @@ Rola gracza pozwala na:
   - Branie udziału w organizowanych przez lektora grach grupowych
   - Rywalizowanie w publicznych rozgrywkach, za które przypisywane są punkty i widoczne w globalnym rankingu graczy
 
-###Rozgrywka
+### Rozgrywka
 Zarówno gry globalne, jak i grupowe składają się z trzech faz – lobby, rozgrywki oraz tablicy wyników.
 
 Gracze po wejściu w zakładkę "Gra" mają wybór uczestniczenia w grze globalnej, mogą stworzyć własne lobby publiczne lub prywatne (do którego można dołączyć wyłącznie przez wygenerowany kod lobby) lub znaleźć istniejące lobby z innymi graczami. Do gier z przyjaciółmi mogą dołączać za pomocą kodów.
@@ -186,7 +186,7 @@ Gdy lektor lub gracz (zależnie od danego lobby) rozpoczną grę zostaną przeni
 
 Gdy zostanie oddane ostatnie zadanie, zostaną przeniesieni na widok tablicy wyników. Na tym etapie gra się zakończyła i możliwe jest przejrzenie uzyskanych punktów za poszczególne zadania.
 
-###Tworzenie Zadań
+### Tworzenie Zadań
 Dla użytkowników z rolą lektora, dodatkowo widnieje zakładka Task Manager. Jest to przycisk dropdown z listą różnych szablonów zadań. Po wybraniu odpowiedniego szablonu, użytkownik zostanie przeniesiony do widoku tworzenia i zarządzania swoimi zadaniami.
 
 <!-- ROADMAP -->
