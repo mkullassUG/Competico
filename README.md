@@ -12,7 +12,7 @@
   <p align="center">
     Aplikacja dla nauczycieli i uczniów, którzy chcą kreatywnie uczyć się języka angielskiego!
     <br />
-    <a href="Competico/tree/master/dokumentacja"><strong>Explore the docs »</strong></a>
+    <a href="./dokumentacja"><strong>Explore the docs »</strong></a>
     <br />
     <br />
    </p>
