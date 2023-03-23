@@ -86,14 +86,11 @@ Konfiguracja składa się z kilku części:
 
 * PostgreSQL setup
 ```sh
-[...]
 spring.datasource.url=jdbc:postgresql://${POSTGRES_IP:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB}
 spring.datasource.username=${POSTGRES_USER}
 spring.datasource.password=${POSTGRES_PASS}
-[...]
 #spring.jpa.hibernate.ddl-auto=create
 spring.jpa.hibernate.ddl-auto=validate
-[...]
 ```
 Stworzyć baze danych (np. przez graficzny interfejs narzędzia pgAdmin), 
 jej nazwę ustawić pod zmienną środowiskową POSTGRES_DB.
@@ -105,8 +102,9 @@ Analogicznie pod zmienną środowiskową POSTGRES_USER podać nazwę użytkownik
 natomiast pod POSTGRES_PASS należy ustawić hasło. 
 
 Przy pierwszym uruchamianiu aplikacji, ustawić "spring.jpa.hibernate.ddl-auto" na "create". 
+Utworzy to odpowiednie relacje wewnątrz bazy danych. 
 Przed ponownym uruchomieniem aplikacji, ustawić spowrotem na "validate". 
-Pominięcie tego kroku będzie skutkować przywracaniem startowych wartości oraz usuwaniem nowych z bazy danych, przy każdym ponownym uruchomieniu aplikacji.
+Pominięcie tego kroku będzie skutkować utratą danych przy każdym ponownym uruchomieniu aplikacji.
 
 
 * SMTP
@@ -128,36 +126,38 @@ według podanych zaleceń wybranego serwisu SMTP
 
 * Domain
 ```sh
-[...]
 app.url=${SERVER_URL:localhost}
-[...]
 ```
 	
 Pod zmienną SERVER_URL należy podać własną domenę, 
-pod którą widoczny będzie serwer HTTP
+pod którą widoczna będzie aplikacja.
 
-* SSL (Opcjonalne)
+* HTTPS
+
+Aplikacja może być uruchamiana zarówno za pomocą protokołu HTTPS jak i bez niego.
+Aby uruchomić aplikacje używając wyłącznie protokołu HTTP, 
+należy wstawić następujący kod do application.properties:
+
 ```sh
-#dla wylaczonego ssl:
 server.port=80
-#dla wlaczonego ssl:
-#server.port=443
-#http.port=80
-#server.ssl.key-store-type=PKCS12
-#server.ssl.key-store=classpath:keystore/${KEYSTORE_NAME}
-#server.ssl.key-store-password=${KEYSTORE_PASS}
-#server.ssl.key-alias=${KEYSTORE_ALIAS}
-#server.ssl.enabled=true
 ```
 
-Aby serwer był widoczny pod protokołem HTTPS, należy:
--Umieścić certyfikat SSL pod ścieżką "\src\main\resources\keystore"
+Natomiast aby uruchomić aplikacje z włączonym protokołem HTTPS, należy:
+-Umieścić plik certyfikatu SSL pod ścieżką "\src\main\resources\keystore\"
+-Poniższy fragment kodu umieścić w application.properties
 -Token certyfikatu umieścić pod zmienną środowiskową KEYSTORE_PASS
--W application.properties odpowiednio zakomentować i odkomentować odpowiednie pola,
-	kierując się wskazówkami z komentarzy
 -Nazwę pliku z certyfikatem umieścić pod zmienną środowiskową KEYSTORE_NAME, 
 	natomiast nazwę pary kluczy używanych przez aplikację pod KEYSTORE_ALIAS 
 	
+```sh
+server.port=443
+http.port=80
+server.ssl.key-store-type=PKCS12
+server.ssl.key-store=classpath:keystore/${KEYSTORE_NAME}
+server.ssl.key-store-password=${KEYSTORE_PASS}
+server.ssl.key-alias=${KEYSTORE_ALIAS}
+server.ssl.enabled=true
+```
 
 * Maven
 ```sh
