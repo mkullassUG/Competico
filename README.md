@@ -52,8 +52,6 @@ Gracze mogą rywalizować ze sobą o miejsce w globalnym rankingu przez rozwiąz
 
 Z aplikacji można korzystać zarówno na komputerach stacjonarnych jak i urządzeniach mobilnych.
 
-Istnieją inne dobre aplikacje od nauki języka angielskiego, takie jak "Kahoot" lub "Moodle", ale nie łączą one zapamiętywania poziomu umiejętności gracza, rywalizacji o miejsce w globalnym rankingu oraz swobodnego prowadzenia zajęć dla grup uczniów pod nadzorem lektora.
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
@@ -72,10 +70,10 @@ Główne aplikacje, frameworki i biblioteki użyte w budowie projektu:
 Niżej opisane są niezbędne wymagania oraz kroki do uruchomienia aplikacji na własnej maszynie.
 
 ### Prerequisites
-Dla minimalnej konfiguracji można użyć systemu Windows 10, z wcześniej zainstalowaną bazą danych PostgreSQL w wersji 13 i środowiskiem Java w wersji 11+.
+Przy minimalnej konfiguracji można użyć systemu Windows, z wcześniej zainstalowaną bazą danych PostgreSQL w wersji 13 i środowiskiem Java w wersji 11+.
 
-Należy przygotować serwer SMTP, który używany będzie do potwierdzania zakładanych kont graczy i lektorów. Do minimalnej konfiguracji można przykładowo użyć serwisu Gmail.
-Na czas pisania Readme, aby poprawnie połączyć serwer SMTP Gmail'a z Competico należy na koncie Google włączyć 2-etapową weryfikację oraz utworzyć 16-cyfrowy token dostępu, który będzie używany przez Competico do uwierzytelniania połączenia z zewnętrznym serwisem.
+Dla poprawnego działania weryfikacji adresu email użytkowników należy przygotować serwer SMTP, który używany będzie do potwierdzania zakładanych kont graczy i lektorów. W tym celu można użyć serwisu Gmail.
+Aby poprawnie połączyć serwer SMTP Gmail'a z Competico należy na koncie Google włączyć 2-etapową weryfikację oraz utworzyć 16-cyfrowy token dostępu, który będzie używany przez Competico do uwierzytelniania połączenia z zewnętrznym serwisem.
 
 Opcjonalnym jest dodanie certyfikatu SSL do łączenia się z serwerem przez protokół HTTPS. 
 
@@ -89,75 +87,89 @@ Konfiguracja składa się z kilku części:
 
 * PostgreSQL setup
 ```sh
-	[...]
-	spring.datasource.url=jdbc:postgresql://localhost:5432/${COMPETICO_DATABASE:teamproj}
-	spring.datasource.username=postgres
-	spring.datasource.password=${POSTGRES_PASS}
-	[...]
-	#spring.jpa.hibernate.ddl-auto=create
-	spring.jpa.hibernate.ddl-auto=validate
-	[...]
+[...]
+spring.datasource.url=jdbc:postgresql://${POSTGRES_IP:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB}
+spring.datasource.username=${POSTGRES_USER}
+spring.datasource.password=${POSTGRES_PASS}
+[...]
+#spring.jpa.hibernate.ddl-auto=create
+spring.jpa.hibernate.ddl-auto=validate
+[...]
 
-  Stworzyć baze danych (np. przez graficzny interfejs narzędzia pgAdmin), jej nazwę ustawić pod zmienną środowiskową COMPETICO_DATABASE.
+Stworzyć baze danych (np. przez graficzny interfejs narzędzia pgAdmin), 
+jej nazwę ustawić pod zmienną środowiskową POSTGRES_DB.
 
-  Poniżej należy ustawić dane logowania administratora bazy danych. 
-  Analogicznie obok "spring.datasource.username=" podać nazwę użytkownika i pod zmienną środowiskową POSTGRES_PASS należy ustawić hasło 
+Adres oraz port używany do połączenia z bazą danych ustawić pod zmienne środowiskowe POSTGRES_IP i POSTGRES_PORT.
 
-  Przy pierwszym uruchamianiu aplikacji, ustawić "spring.jpa.hibernate.ddl-auto" na "create". 
-  Przed ponownym uruchomieniem aplikacji, ustawić spowrotem na "validate". 
-  Pominięcie tego kroku będzie skutkować przywracaniem startowych wartości oraz usuwaniem nowych z bazy danych, przy każdym ponownym uruchomieniu aplikacji.
+Poniżej należy ustawić dane logowania administratora bazy danych. 
+Analogicznie pod zmienną środowiskową POSTGRES_USER podać nazwę użytkownika, 
+natomiast pod POSTGRES_PASS należy ustawić hasło. 
 
-  ```
+Przy pierwszym uruchamianiu aplikacji, ustawić "spring.jpa.hibernate.ddl-auto" na "create". 
+Przed ponownym uruchomieniem aplikacji, ustawić spowrotem na "validate". 
+Pominięcie tego kroku będzie skutkować przywracaniem startowych wartości oraz usuwaniem nowych z bazy danych, przy każdym ponownym uruchomieniu aplikacji.
+
+```
 
 * SMTP
 ```sh
-	spring.mail.host=smtp.gmail.com
-	spring.mail.username=${EMAIL_USER} 
-	spring.mail.password=${EMAIL_PASS}
-	spring.mail.port=587
-	spring.mail.properties.mail.smtp.auth=true
-	spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.host=smtp.gmail.com
+spring.mail.username=${EMAIL_USER} 
+spring.mail.password=${EMAIL_PASS}
+spring.mail.port=587
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
 
-  Pod zmiennymi środowiskowymi EMAIL_USER i EMAIL_PASS, 
-  ustawić dane logowania dla wybranego serwisu maila
-  
-  Pozostałe własności, pod nazwami "spring.mail", 
-  należy ustawić analogicznie, 
-  według podanych zaleceń wybranego serwisu SMTP
+Pod zmiennymi środowiskowymi EMAIL_USER i EMAIL_PASS, 
+ustawić dane logowania dla wybranego serwisu maila
+
+Pozostałe własności, pod nazwami "spring.mail", 
+należy ustawić analogicznie, 
+według podanych zaleceń wybranego serwisu SMTP
   ```
 * Domain
 ```sh
-	[...]
-	app.url=${SERVER_URL:localhost}
-	[...]
+[...]
+app.url=${SERVER_URL:localhost}
+[...]
 	
-  Pod zmienną SERVER_URL należy podać własną domenę, 
-  pod którą widoczny będzie serwer HTTP
+Pod zmienną SERVER_URL należy podać własną domenę, 
+pod którą widoczny będzie serwer HTTP
   ```
 
 * SSL (Opcjonalne)
 ```sh
-  Aby serwer był widoczny pod protokołem HTTPS, należy:
-  -Umieścić certyfikat SSL pod ścieżką "\src\main\resources\keystore"
-  -Token certyfikatu umieścić pod zmienną środowiskową KEYSTORE_PASS
-  -W application.properties odpowiednio, zakomentować i odkomentować odpowiednie pola,
+Aby serwer był widoczny pod protokołem HTTPS, należy:
+-Umieścić certyfikat SSL pod ścieżką "\src\main\resources\keystore"
+-Token certyfikatu umieścić pod zmienną środowiskową KEYSTORE_PASS
+-W application.properties odpowiednio zakomentować i odkomentować odpowiednie pola,
 	kierując się wskazówkami z komentarzy
-  -Konfiguracja z przykładową nazwą certyfikatu "teamproj.p12": 
+-Nazwę pliku z certyfikatem umieścić pod zmienną środowiskową KEYSTORE_NAME, 
+	natomiast nazwę pary kluczy używanych przez aplikację pod KEYSTORE_ALIAS 
+	
   
-	#dla wylaczonego ssl:
-	server.port=80
-	#dla wlaczonego ssl:
-	#server.port=443
-	#http.port=80
-	#server.ssl.key-store-type=PKCS12
-	#server.ssl.key-store=classpath:keystore/teamproj.p12
-	#server.ssl.key-store-password=${KEYSTORE_PASS}
-	#server.ssl.key-alias=teamproj
-	#server.ssl.enabled=true
+#dla wylaczonego ssl:
+server.port=80
+#dla wlaczonego ssl:
+#server.port=443
+#http.port=80
+#server.ssl.key-store-type=PKCS12
+#server.ssl.key-store=classpath:keystore/${KEYSTORE_NAME}
+#server.ssl.key-store-password=${KEYSTORE_PASS}
+#server.ssl.key-alias=${KEYSTORE_ALIAS}
+#server.ssl.enabled=true
   ```
 
-Zalecane jest aby aplikacja Spring'a została spakowana przez Maven'a, (odpowiedni plik pom.xml znajduje się w katalogu głównym). 
-Następnie aby servery PostgreSQL i aplikacji umieszczone zostały na kontenerach np. używając Docker'a.
+
+* Maven
+```sh
+Następnie aby aplikacja Spring'a została spakowana przez Maven'a,
+zastosować poniższą komendę w katalogu głównym
+(odpowiedni plik pom.xml znajduje się w katalogu głównym).
+	
+mvn package
+```
+Zalecane jest aby servery PostgreSQL i aplikacji umieszczone zostały na kontenerach np. używając Docker'a.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
