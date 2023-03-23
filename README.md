@@ -84,7 +84,7 @@ Zalecane jest aby ustawiać wartości konfiguracyjne poprzez zmienne środowisko
 Konfiguracja składa się z kilku części:
 
 
-* PostgreSQL setup
+#### PostgreSQL setup
 ```sh
 spring.datasource.url=jdbc:postgresql://${POSTGRES_IP:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB}
 spring.datasource.username=${POSTGRES_USER}
@@ -107,7 +107,7 @@ Przed ponownym uruchomieniem aplikacji, ustawić spowrotem na "validate".
 Pominięcie tego kroku będzie skutkować utratą danych przy każdym ponownym uruchomieniu aplikacji.
 
 
-* SMTP
+#### SMTP
 ```sh
 spring.mail.host=smtp.gmail.com
 spring.mail.username=${EMAIL_USER} 
@@ -124,7 +124,7 @@ Pozostałe własności, pod nazwami "spring.mail",
 należy ustawić analogicznie, 
 według podanych zaleceń wybranego serwisu SMTP
 
-* Domain
+#### Domain
 ```sh
 app.url=${SERVER_URL:localhost}
 ```
@@ -132,7 +132,7 @@ app.url=${SERVER_URL:localhost}
 Pod zmienną SERVER_URL należy podać własną domenę, 
 pod którą widoczna będzie aplikacja.
 
-* HTTPS
+#### HTTPS
 
 Aplikacja może być uruchamiana zarówno za pomocą protokołu HTTPS jak i bez niego.
 Aby uruchomić aplikacje używając wyłącznie protokołu HTTP, 
@@ -142,10 +142,10 @@ należy wstawić następujący kod do application.properties:
 server.port=80
 ```
 
-Natomiast aby uruchomić aplikacje z włączonym protokołem HTTPS, należy:<br>
-- Umieścić plik certyfikatu SSL pod ścieżką "\src\main\resources\keystore\"<br>
-- Poniższy fragment kodu umieścić w application.properties<br>
-- Token certyfikatu umieścić pod zmienną środowiskową KEYSTORE_PASS<br>
+Natomiast aby uruchomić aplikacje z włączonym protokołem HTTPS, należy:
+- Umieścić plik certyfikatu SSL pod ścieżką "\src\main\resources\keystore\"
+- Poniższy fragment kodu umieścić w application.properties
+- Token certyfikatu umieścić pod zmienną środowiskową KEYSTORE_PASS
 - Nazwę pliku z certyfikatem umieścić pod zmienną środowiskową KEYSTORE_NAME, 
 	natomiast nazwę pary kluczy używanych przez aplikację pod KEYSTORE_ALIAS 
 	
@@ -159,7 +159,7 @@ server.ssl.key-alias=${KEYSTORE_ALIAS}
 server.ssl.enabled=true
 ```
 
-* Maven
+#### Maven
 ```sh
 mvn package
 ```
