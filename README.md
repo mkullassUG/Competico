@@ -37,7 +37,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <!--<li><a href="#license">License</a></li> -->
   </ol>
 </details>
 
@@ -95,7 +94,7 @@ spring.datasource.password=${POSTGRES_PASS}
 #spring.jpa.hibernate.ddl-auto=create
 spring.jpa.hibernate.ddl-auto=validate
 [...]
-
+```
 Stworzyć baze danych (np. przez graficzny interfejs narzędzia pgAdmin), 
 jej nazwę ustawić pod zmienną środowiskową POSTGRES_DB.
 
@@ -109,7 +108,6 @@ Przy pierwszym uruchamianiu aplikacji, ustawić "spring.jpa.hibernate.ddl-auto" 
 Przed ponownym uruchomieniem aplikacji, ustawić spowrotem na "validate". 
 Pominięcie tego kroku będzie skutkować przywracaniem startowych wartości oraz usuwaniem nowych z bazy danych, przy każdym ponownym uruchomieniu aplikacji.
 
-```
 
 * SMTP
 ```sh
@@ -120,34 +118,26 @@ spring.mail.port=587
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 
+```
 Pod zmiennymi środowiskowymi EMAIL_USER i EMAIL_PASS, 
 ustawić dane logowania dla wybranego serwisu maila
 
 Pozostałe własności, pod nazwami "spring.mail", 
 należy ustawić analogicznie, 
 według podanych zaleceń wybranego serwisu SMTP
-  ```
+
 * Domain
 ```sh
 [...]
 app.url=${SERVER_URL:localhost}
 [...]
+```
 	
 Pod zmienną SERVER_URL należy podać własną domenę, 
 pod którą widoczny będzie serwer HTTP
-  ```
 
 * SSL (Opcjonalne)
 ```sh
-Aby serwer był widoczny pod protokołem HTTPS, należy:
--Umieścić certyfikat SSL pod ścieżką "\src\main\resources\keystore"
--Token certyfikatu umieścić pod zmienną środowiskową KEYSTORE_PASS
--W application.properties odpowiednio zakomentować i odkomentować odpowiednie pola,
-	kierując się wskazówkami z komentarzy
--Nazwę pliku z certyfikatem umieścić pod zmienną środowiskową KEYSTORE_NAME, 
-	natomiast nazwę pary kluczy używanych przez aplikację pod KEYSTORE_ALIAS 
-	
-  
 #dla wylaczonego ssl:
 server.port=80
 #dla wlaczonego ssl:
@@ -158,17 +148,25 @@ server.port=80
 #server.ssl.key-store-password=${KEYSTORE_PASS}
 #server.ssl.key-alias=${KEYSTORE_ALIAS}
 #server.ssl.enabled=true
-  ```
+```
 
+Aby serwer był widoczny pod protokołem HTTPS, należy:
+-Umieścić certyfikat SSL pod ścieżką "\src\main\resources\keystore"
+-Token certyfikatu umieścić pod zmienną środowiskową KEYSTORE_PASS
+-W application.properties odpowiednio zakomentować i odkomentować odpowiednie pola,
+	kierując się wskazówkami z komentarzy
+-Nazwę pliku z certyfikatem umieścić pod zmienną środowiskową KEYSTORE_NAME, 
+	natomiast nazwę pary kluczy używanych przez aplikację pod KEYSTORE_ALIAS 
+	
 
 * Maven
 ```sh
-Następnie aby aplikacja Spring'a została spakowana przez Maven'a,
-zastosować poniższą komendę w katalogu głównym
-(odpowiedni plik pom.xml znajduje się w katalogu głównym).
-	
 mvn package
 ```
+Następnie aby aplikacja Spring'a została spakowana przez Maven'a,
+zastosować powyższą komendę w katalogu głównym 
+(w nim znajduje się odpowiedni plik pom.xml).
+
 Zalecane jest aby servery PostgreSQL i aplikacji umieszczone zostały na kontenerach np. używając Docker'a.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -204,7 +202,6 @@ Dla użytkowników z rolą lektora, dodatkowo widnieje zakładka Task Manager. J
 <!-- ROADMAP -->
 ## Roadmap
 
-- [...]
 - [x] Potwierdzanie adresu email konta
 - [x] Dodanie możliwości wysyłania komunikatów/wiadomości w grupach lektorskich
 - [ ] Dodanie zadań z obrazkami (file server)
@@ -221,13 +218,6 @@ Dla użytkowników z rolą lektora, dodatkowo widnieje zakładka Task Manager. J
 * [![GhillieWolf][GhillieWolf-shield]][GhillieWolf-url] 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- LICENSE 
-## License
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
--->
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
