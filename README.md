@@ -69,7 +69,7 @@ Główne aplikacje, frameworki i biblioteki użyte w budowie projektu:
 Niżej opisane są niezbędne wymagania oraz kroki do uruchomienia aplikacji na własnej maszynie.
 
 ### Prerequisites
-Przy minimalnej konfiguracji można użyć systemu Windows, z wcześniej zainstalowaną bazą danych PostgreSQL w wersji 13 i środowiskiem Java w wersji 11+.
+Przy minimalnej konfiguracji można użyć systemu Windows, z wcześniej zainstalowaną bazą danych PostgreSQL i środowiskiem Java w wersji 11+.
 
 Dla poprawnego działania weryfikacji adresu email użytkowników należy przygotować serwer SMTP, który używany będzie do potwierdzania zakładanych kont graczy i lektorów. W tym celu można użyć serwisu Gmail.
 Aby poprawnie połączyć serwer SMTP Gmail'a z Competico należy na koncie Google włączyć 2-etapową weryfikację oraz utworzyć 16-cyfrowy token dostępu, który będzie używany przez Competico do uwierzytelniania połączenia z zewnętrznym serwisem.
