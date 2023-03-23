@@ -143,10 +143,10 @@ server.port=80
 ```
 
 Natomiast aby uruchomić aplikacje z włączonym protokołem HTTPS, należy:<br>
--Umieścić plik certyfikatu SSL pod ścieżką "\src\main\resources\keystore\"<br>
--Poniższy fragment kodu umieścić w application.properties<br>
--Token certyfikatu umieścić pod zmienną środowiskową KEYSTORE_PASS<br>
--Nazwę pliku z certyfikatem umieścić pod zmienną środowiskową KEYSTORE_NAME, 
+- Umieścić plik certyfikatu SSL pod ścieżką "\src\main\resources\keystore\"<br>
+- Poniższy fragment kodu umieścić w application.properties<br>
+- Token certyfikatu umieścić pod zmienną środowiskową KEYSTORE_PASS<br>
+- Nazwę pliku z certyfikatem umieścić pod zmienną środowiskową KEYSTORE_NAME, 
 	natomiast nazwę pary kluczy używanych przez aplikację pod KEYSTORE_ALIAS 
 	
 ```sh
